@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="list_degree_courses">
+        <item>@string/list_degree_courses_informatica</item>
+        <item>@string/list_degree_courses_itss</item>
+    </string-array>
+</resources>

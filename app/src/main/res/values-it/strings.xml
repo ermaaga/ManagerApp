@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ManagerApp</string>
+
+    <string name="activity_label_login">Accesso</string>
+    <string name="activity_label_projects">Progetti</string>
+    <string name="activity_label_exams">Esami</string>
+    <string name="activity_label_degree_courses">Scegli il tuo Corso di Laurea</string>
+    <string name="activity_label_notifications">Notifiche</string>
+    <string name="activity_label_new_group">Crea Gruppo</string>
+
+    <string name="text_label_exams">Esami</string>
+    <string name="text_label_projects">Progetti</string>
+    <string name="text_label_settings">Impostazioni</string>
+    <string name="text_label_notifications">Notifiche</string>
+    <string name="text_label_home_social_ideas">Idee Sociali</string>
+    <string name="text_label_home_projects">Progetti</string>
+    <string name="text_label_project_notices">Bacheca</string>
+    <string name="text_label_project_files">Files</string>
+    <string name="text_label_project_members">Membri</string>
+    <string name="text_label_exam_study_cases">Casi di Studio</string>
+    <string name="text_label_exam_groups">Gruppi</string>
+
+</resources>
