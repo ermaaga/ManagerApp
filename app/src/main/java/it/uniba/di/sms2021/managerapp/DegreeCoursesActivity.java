@@ -81,7 +81,7 @@ public class DegreeCoursesActivity extends AppCompatActivity {
     private int getUserCourseFromString (String course) {
         if (course.equals(getString(R.string.list_degree_courses_informatica))) {
             return User.COURSE_INFORMATICA;
-        } else if (course.equals(getString(R.string.list_degree_courses_informatica))) {
+        } else if (course.equals(getString(R.string.list_degree_courses_itps))) {
             return User.COURSE_ITPS;
         } else {
             throw new IllegalStateException("Aggiungere i corsi nel metodo, rispettando quanti" +

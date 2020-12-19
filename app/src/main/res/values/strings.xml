@@ -25,6 +25,6 @@
     <string name="text_label_button_professor">Professor</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
-    <string name="list_degree_courses_itss" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
+    <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
 
 </resources>

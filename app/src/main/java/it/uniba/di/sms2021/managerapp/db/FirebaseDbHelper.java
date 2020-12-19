@@ -4,6 +4,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class FirebaseDbHelper {
     public static final String TABLE_USERS = "users";
+    public static final String TABLE_EXAMS = "exams";
 
     private static FirebaseDatabase INSTANCE;
     public static FirebaseDatabase getDBInstance() {

@@ -21,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.enitities.User;
 
 public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 1;
@@ -60,12 +61,23 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void checkIfUserExistsAndGoToHome(String id) {
+        // Aggiunta di un listener che esegue il metodo onDataChange la prima volta che arrivano
+        // i dati, o ogni volta che vengono aggiornati.
         usersReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 boolean found = false;
+
+                // Iterazione tra i vari elementi appartenenti al nodo "users"
                 for (DataSnapshot child: snapshot.getChildren()) {
                     if (child.getKey().equals(id)) {
+                        /*
+                        User user = child.getValue(User.class);       //Se serve il riferimento all'utente
+                        if (user.getRuolo() == User.ROLE_PROFESSOR) {
+
+                        }
+                         */
+
                         Log.d(TAG, "Id of child: " + child.getKey());
                         found = true;
                         startActivity(new Intent(LoginActivity.this, HomeActivity.class));

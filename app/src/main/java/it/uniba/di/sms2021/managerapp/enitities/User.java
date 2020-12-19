@@ -1,5 +1,7 @@
 package it.uniba.di.sms2021.managerapp.enitities;
 
+import com.google.firebase.database.Exclude;
+
 public class User {
     public static final int ROLE_STUDENT = 1;
     public static final int ROLE_PROFESSOR = 2;
@@ -72,5 +74,11 @@ public class User {
 
     public void setCorso(int corso) {
         this.corso = corso;
+    }
+
+    //@Exclude esclude il campo dalla serializzazione di firebase.
+    @Exclude
+    public String getFullName () {
+        return nome + " " + cognome;
     }
 }

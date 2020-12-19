@@ -2,6 +2,6 @@
 <resources>
     <string-array name="list_degree_courses">
         <item>@string/list_degree_courses_informatica</item>
-        <item>@string/list_degree_courses_itss</item>
+        <item>@string/list_degree_courses_itps</item>
     </string-array>
 </resources>
