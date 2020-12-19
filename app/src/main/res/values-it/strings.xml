@@ -20,5 +20,7 @@
     <string name="text_label_project_members">Membri</string>
     <string name="text_label_exam_study_cases">Casi di Studio</string>
     <string name="text_label_exam_groups">Gruppi</string>
+    <string name="text_label_button_student">Studente</string>
+    <string name="text_label_button_professor">Professore</string>
 
 </resources>

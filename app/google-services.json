@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "156527908296",
+    "project_id": "managerapp-148da",
+    "storage_bucket": "managerapp-148da.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:156527908296:android:0fcdcede5ad2dcc94fdcfd",
+        "android_client_info": {
+          "package_name": "it.uniba.di.sms2021.managerapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "156527908296-djkfkbikct807ttsscm101toq3e5dulq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD67_3IYqOJvjUpS2yR3nCPCYLs9Z3NDsI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "156527908296-djkfkbikct807ttsscm101toq3e5dulq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

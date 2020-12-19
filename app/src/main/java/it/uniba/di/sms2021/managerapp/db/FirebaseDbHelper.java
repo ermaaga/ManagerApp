@@ -1,0 +1,16 @@
+package it.uniba.di.sms2021.managerapp.db;
+
+import com.google.firebase.database.FirebaseDatabase;
+
+public class FirebaseDbHelper {
+    public static final String TABLE_USERS = "users";
+
+    private static FirebaseDatabase INSTANCE;
+    public static FirebaseDatabase getDBInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = FirebaseDatabase.getInstance();
+            INSTANCE.setPersistenceEnabled(true);
+        }
+        return INSTANCE;
+    }
+}

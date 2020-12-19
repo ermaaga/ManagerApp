@@ -21,13 +21,10 @@
     <string name="text_label_project_members">Members</string>
     <string name="text_label_exam_study_cases">Study Cases</string>
     <string name="text_label_exam_groups">Groups</string>
+    <string name="text_label_button_student">Student</string>
+    <string name="text_label_button_professor">Professor</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itss" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
-
-
-
-
-
 
 </resources>
