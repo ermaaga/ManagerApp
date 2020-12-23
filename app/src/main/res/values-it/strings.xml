@@ -23,4 +23,6 @@
     <string name="text_label_button_student">Studente</string>
     <string name="text_label_button_professor">Professore</string>
 
+    <string name="error_sha1_not_found">Chiave dell\' app non trovata. L\' app potrebbe essere stata modificata da enti esterni.</string>
+
 </resources>

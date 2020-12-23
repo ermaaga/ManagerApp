@@ -27,4 +27,6 @@
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
 
+    <string name="error_sha1_not_found">App key not found. The app may have been modified from third parties.</string>
+
 </resources>
