@@ -29,4 +29,7 @@
 
     <string name="error_sha1_not_found">App key not found. The app may have been modified from third parties.</string>
 
+    <string name="text_label_name_study_case">Name</string>
+    <string name="text_label_desc_study_case">Description</string>
+
 </resources>
