@@ -1,11 +1,11 @@
-package it.uniba.di.sms2021.managerapp;
+package it.uniba.di.sms2021.managerapp.login;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
+import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 
 public class UserRoleActivity extends AppCompatActivity {

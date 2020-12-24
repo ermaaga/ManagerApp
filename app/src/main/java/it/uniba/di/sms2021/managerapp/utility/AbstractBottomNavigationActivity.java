@@ -1,4 +1,4 @@
-package it.uniba.di.sms2021.managerapp;
+package it.uniba.di.sms2021.managerapp.utility;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,11 +10,27 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import it.uniba.di.sms2021.managerapp.exams.ExamsActivity;
+import it.uniba.di.sms2021.managerapp.projects.ProjectsActivity;
+import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.home.HomeActivity;
+
 /**
  * Activity con bottom navigation bar. Il file layout dell'activity deve necessariamente
  * includere il layout bottom_navigation con medesimo id.
  */
 public abstract class AbstractBottomNavigationActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+
+    /**
+     * Ritorna l'id del layout da associare all'activity
+     */
+    protected abstract int getLayoutId();
+
+    /**
+     * Ritorna l'id dell'elemento che dovrebbe essere selezionato nel menù di navigazione, quando
+     * questa activity è attiva.
+     */
+    protected abstract int getBottomNavigationMenuItemId();
 
     protected BottomNavigationView navigationView;
 
@@ -62,19 +78,8 @@ public abstract class AbstractBottomNavigationActivity extends AppCompatActivity
         selectBottomNavigationBarItem(actionId);
     }
 
-    void selectBottomNavigationBarItem(int itemId) {
+    protected void selectBottomNavigationBarItem(int itemId) {
         MenuItem item = navigationView.getMenu().findItem(itemId);
         item.setChecked(true);
     }
-
-    /**
-     * Ritorna l'id del layout da associare all'activity
-     */
-    abstract int getLayoutId();
-
-    /**
-     * Ritorna l'id dell'elemento che dovrebbe essere selezionato nel menù di navigazione, quando
-     * questa activity è attiva.
-     */
-    abstract int getBottomNavigationMenuItemId();
 }

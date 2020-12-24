@@ -1,19 +1,14 @@
-package it.uniba.di.sms2021.managerapp;
+package it.uniba.di.sms2021.managerapp.exams;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -24,10 +19,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.lists.ExamsRecyclerAdapter;
+import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
 public class ExamsActivity extends AbstractBottomNavigationActivity {
@@ -87,12 +84,12 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
     }
 
     @Override
-    int getLayoutId() {
+    protected int getLayoutId() {
         return R.layout.activity_exams;
     }
 
     @Override
-    int getBottomNavigationMenuItemId() {
+    protected int getBottomNavigationMenuItemId() {
         return R.id.nav_exams;
     }
 

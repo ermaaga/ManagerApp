@@ -1,26 +1,28 @@
-package it.uniba.di.sms2021.managerapp;
+package it.uniba.di.sms2021.managerapp.exams;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.material.tabs.TabLayout;
 
+import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
-public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
-    private static final int NOTICES_TAB_POSITION = 0;
-    private static final int FILES_TAB_POSITION = 1;
-    private static final int MEMBERS_TAB_POSITION = 2;
+public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
+    private static final int STUDY_CASES_TAB_POSITION = 0;
+    private static final int GROUPS_TAB_POSITION = 1;
 
     @Override
     protected Fragment getInitialFragment() {
-        return new ProjectNoticesFragment();
+        return new ExamStudyCasesFragment();
     }
 
     @Override
@@ -31,24 +33,22 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     }
 
     @Override
-    int getLayoutId() {
-        return R.layout.activity_project_detail;
+    protected int getLayoutId() {
+        return R.layout.activity_exam_detail;
     }
 
     @Override
-    int getBottomNavigationMenuItemId() {
-        return R.id.nav_projects;
+    protected int getBottomNavigationMenuItemId() {
+        return R.id.nav_exams;
     }
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         int tabPosition = tab.getPosition();
-        if (tabPosition == NOTICES_TAB_POSITION) {
-            navigateTo(new ProjectNoticesFragment(), false);
-        } else if (tabPosition == FILES_TAB_POSITION) {
-            navigateTo(new ProjectFilesFragment(), false);
-        } else if (tabPosition == MEMBERS_TAB_POSITION) {
-            navigateTo(new ProjectMembersFragment(), false);
+        if (tabPosition == STUDY_CASES_TAB_POSITION) {
+            navigateTo(new ExamStudyCasesFragment(), false);
+        } else if (tabPosition == GROUPS_TAB_POSITION) {
+            navigateTo(new ExamGroupsFragment(), false);
         }
     }
 
@@ -86,5 +86,9 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         }
 
         return super.onSupportNavigateUp();
+    }
+
+    public void scegliTemplate(View view) {
+        startActivity(new Intent(this, NewGroupActivity.class));
     }
 }

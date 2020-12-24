@@ -1,4 +1,4 @@
-package it.uniba.di.sms2021.managerapp;
+package it.uniba.di.sms2021.managerapp.home;
 
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,6 +10,8 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.tabs.TabLayout;
 
+import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivity;
+import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
 public class HomeActivity extends AbstractTabbedNavigationHubActivity {
@@ -54,12 +56,12 @@ public class HomeActivity extends AbstractTabbedNavigationHubActivity {
     }
 
     @Override
-    int getLayoutId() {
+    protected int getLayoutId() {
         return R.layout.activity_home;
     }
 
     @Override
-    int getBottomNavigationMenuItemId() {
+    protected int getBottomNavigationMenuItemId() {
         return R.id.nav_home;
     }
 

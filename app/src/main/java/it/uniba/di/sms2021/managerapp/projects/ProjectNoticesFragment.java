@@ -1,4 +1,4 @@
-package it.uniba.di.sms2021.managerapp;
+package it.uniba.di.sms2021.managerapp.projects;
 
 import android.os.Bundle;
 
@@ -10,8 +10,7 @@ import android.view.ViewGroup;
 
 import it.uniba.di.sms2021.managerapp.R;
 
-
-public class HomeSocialIdeasFragment extends Fragment {
+public class ProjectNoticesFragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -21,6 +20,6 @@ public class HomeSocialIdeasFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_home_social_ideas, container, false);
+        return inflater.inflate(R.layout.fragment_project_notices, container, false);
     }
 }

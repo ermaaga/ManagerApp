@@ -1,4 +1,4 @@
-package it.uniba.di.sms2021.managerapp;
+package it.uniba.di.sms2021.managerapp.login;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,8 +22,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
-import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.home.HomeActivity;
 
 public class LoginActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 1;

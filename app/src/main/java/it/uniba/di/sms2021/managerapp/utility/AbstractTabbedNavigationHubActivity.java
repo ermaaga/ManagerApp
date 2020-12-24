@@ -1,13 +1,13 @@
-package it.uniba.di.sms2021.managerapp;
+package it.uniba.di.sms2021.managerapp.utility;
 
 import android.os.Bundle;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.tabs.TabLayout;
+
+import it.uniba.di.sms2021.managerapp.R;
 
 public abstract class AbstractTabbedNavigationHubActivity extends AbstractBottomNavigationActivity implements TabLayout.OnTabSelectedListener {
     /**
