@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,9 +15,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
@@ -49,7 +47,9 @@ public class ExamsRecyclerAdapter extends ListAdapter<Exam, RecyclerView.ViewHol
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         View itemView = holder.itemView;
-        itemView.setOnClickListener(view -> listener.onItemClicked(getItem(position)));
+
+        CardView cardLayout = itemView.findViewById(R.id.exam_card);
+        cardLayout.setOnClickListener(view -> listener.onItemClicked(getItem(position)));
 
         TextView titleTextView = itemView.findViewById(R.id.exam_title_text_view);
         TextView professorTextView = itemView.findViewById(R.id.exam_professor_text_view);
