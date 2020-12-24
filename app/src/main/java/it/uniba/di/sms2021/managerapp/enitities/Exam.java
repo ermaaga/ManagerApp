@@ -18,6 +18,7 @@ public class Exam {
     private String name;
     private List<String> professors;
     private List<String> students;
+    private List<StudyCase> studyCases;
     private int year;
 
     public Exam() {
@@ -62,6 +63,26 @@ public class Exam {
         this.year = year;
     }
 
+    public List<StudyCase> getStudyCases () {
+        return studyCases;
+    }
+
+    public void addStudyCase (StudyCase studyCase) {
+        studyCases.add(studyCase);
+    }
+
+    public void removeStudyCase (StudyCase studyCase) {
+        studyCases.remove(studyCase);
+    }
+
+    public void emptyStudyCases () {
+        studyCases.clear();
+    }
+
+    public void setStudyCases (List<StudyCase> studyCases) {
+        this.studyCases = studyCases;
+    }
+
     //TODO reimplementare equals con i parametri che servono
     @Override
     public boolean equals(Object o) {
@@ -71,11 +92,12 @@ public class Exam {
         return year == exam.year &&
                 Objects.equals(name, exam.name) &&
                 Objects.equals(professors, exam.professors) &&
-                Objects.equals(students, exam.students);
+                Objects.equals(students, exam.students) &&
+                Objects.equals(studyCases, exam.studyCases);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, professors, students, year);
+        return Objects.hash(name, professors, students, studyCases, year);
     }
 }
