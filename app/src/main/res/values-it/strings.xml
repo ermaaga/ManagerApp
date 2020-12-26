@@ -28,4 +28,5 @@
 
     <string name="text_label_name_study_case">Nome</string>
     <string name="text_label_desc_study_case">Descrizione</string>
+    <string name="text_buttom_create_study_case">Crea</string>
 </resources>
