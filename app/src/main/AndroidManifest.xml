@@ -43,6 +43,9 @@
         <activity
             android:name=".home.HomeActivity"
             android:label="@string/activity_label_home" />
+        <activity
+            android:name=".exams.FormTemplateActivity"
+            android:label="@string/activity_label_create_studycase" />
     </application>
 
 </manifest>

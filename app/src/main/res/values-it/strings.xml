@@ -8,6 +8,7 @@
     <string name="activity_label_degree_courses">Scegli il tuo Corso di Laurea</string>
     <string name="activity_label_notifications">Notifiche</string>
     <string name="activity_label_new_group">Crea Gruppo</string>
+    <string name="activity_label_create_studycase">Crea Caso di Studio</string>
 
     <string name="text_label_exams">Esami</string>
     <string name="text_label_projects">Progetti</string>
