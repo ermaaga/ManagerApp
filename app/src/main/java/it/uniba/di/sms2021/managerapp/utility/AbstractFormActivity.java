@@ -9,6 +9,12 @@ import androidx.appcompat.app.ActionBar;
 
 import it.uniba.di.sms2021.managerapp.R;
 
+/**
+ * Classe di utility per creare una schermata secondaria con opzione di tornare indietro
+ * e menù standard.
+ * Richiede che il layout includa la toolbar e la bottom navigation bar, attraverso il tag
+ * include e utilizzando i layout già presenti.
+ */
 public abstract class AbstractFormActivity extends AbstractBottomNavigationActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
