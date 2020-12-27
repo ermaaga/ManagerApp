@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -125,5 +126,10 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
                 User.ROLE_PROFESSOR, User.COURSE_ITPS));
         DatabaseReference newElement = tableRef.push();
         newElement.setValue(new Exam(newElement.getKey(), "SMS20-21", Arrays.asList("ABC"), null, 2020));
+    }
+
+    public void creatNewExam(View view) {
+        Intent exp_int = new Intent(this,NewExamActivity.class);
+        startActivity(exp_int);
     }
 }

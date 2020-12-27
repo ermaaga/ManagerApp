@@ -9,6 +9,7 @@
     <string name="activity_label_notifications">Notifiche</string>
     <string name="activity_label_new_group">Crea Gruppo</string>
     <string name="activity_label_create_studycase">Crea Caso di Studio</string>
+    <string name="activity_label_create_newExam">Crea un nuovo Esame</string>
 
     <string name="text_label_exams">Esami</string>
     <string name="text_label_projects">Progetti</string>
@@ -34,4 +35,13 @@
     <string name="description_add_study_case">Aggiungi un Caso di Studio</string>
 
     <string name="text_message_not_yet_implemented">Funzionalità non ancora implementata</string>
+
+    <string name="text_button_create_new_exam">Crea un nuovo esame</string>
+    <string name="text_label_exam_name">Nome:</string>
+    <string name="text_label_exam_description">Descrizione:</string>
+    <string name="text_button_new_exam_startDate">Date inizio:</string>
+    <string name="text_button_new_exam_accept">Accetta</string>
+    <string name="text_button_new_exam_decline">Elimina</string>
+
+
 </resources>
