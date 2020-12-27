@@ -104,6 +104,6 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
      * Chiamato dal bottone di aggiunta casi di studio (nel fragment dei casi di studio)
      */
     public void addStudyCase(View view) {
-        Toast.makeText(this, R.string.text_message_not_yet_implemented, Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, FormTemplateActivity.class));
     }
 }

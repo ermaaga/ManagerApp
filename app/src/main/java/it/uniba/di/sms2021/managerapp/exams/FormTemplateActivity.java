@@ -2,11 +2,15 @@ package it.uniba.di.sms2021.managerapp.exams;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DatabaseReference;
@@ -15,16 +19,28 @@ import com.google.firebase.database.FirebaseDatabase;
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
+import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
+import it.uniba.di.sms2021.managerapp.utility.AbstractFormActivity;
+import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
-//TODO renderlo un fragment
-public class FormTemplateActivity extends AppCompatActivity{
+//TODO renderlo un fragment?
+public class FormTemplateActivity extends AbstractFormActivity {
     private FirebaseDatabase database;
     private DatabaseReference studycasesReference;
 
     @Override
+    protected int getLayoutId() {
+        return R.layout.activity_form_template;
+    }
+
+    @Override
+    protected int getBottomNavigationMenuItemId() {
+        return R.id.nav_exams;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_form_template);
 
         Button button = findViewById(R.id.create_study_case);
         button.setOnClickListener(new View.OnClickListener() {
@@ -52,6 +68,8 @@ public class FormTemplateActivity extends AppCompatActivity{
 
                 Toast toast = Toast.makeText(context, text, duration);
                 toast.show();
+
+                FormTemplateActivity.super.onBackPressed();
             }
         });
     }
