@@ -16,6 +16,7 @@ import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 
+//TODO renderlo un fragment
 public class FormTemplateActivity extends AppCompatActivity{
     private FirebaseDatabase database;
     private DatabaseReference studycasesReference;
@@ -32,10 +33,14 @@ public class FormTemplateActivity extends AppCompatActivity{
                 EditText name = findViewById(R.id.editText_name_study_case);
                 EditText desc = findViewById(R.id.editText_desc_study_case);
 
-                StudyCase studycase = new StudyCase(name.getText().toString(),desc.getText().toString());
                 database = FirebaseDbHelper.getDBInstance();
                 studycasesReference = database.getReference(FirebaseDbHelper.TABLE_STUDYCASES);
-                studycasesReference.push().setValue(studycase);
+
+                //Ho modificato questa parte per inizializzare il caso di studio con un id.
+                DatabaseReference newElement = studycasesReference.push();
+                StudyCase studycase = new StudyCase(newElement.getKey(),
+                        name.getText().toString(),desc.getText().toString());
+                newElement.setValue(studycase);
 
                 /*aggiungere controlli:
                 di validazione campi

@@ -44,9 +44,8 @@
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tab_layout">
-
-    </FrameLayout>
+        app:layout_constraintTop_toBottomOf="@+id/tab_layout"
+        tools:layout="@layout/fragment_exam_study_cases" />
 
     <include
         android:id="@+id/bottom_navigation"

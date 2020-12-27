@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -32,6 +33,8 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
     RecyclerView recyclerView;
     ExamsRecyclerAdapter adapter;
 
+    public static final String CHOSEN_EXAM = "ChosenExam";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +56,7 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
             @Override
             public void onItemClicked(Exam exam) {
                 //TODO rendere dinamico in base all'item cliccato.
-                startActivity(new Intent(ExamsActivity.this, ExamDetailActivity.class));
+                chooseExam(exam);
             }
         });
         recyclerView.setAdapter(adapter);
@@ -107,11 +110,11 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    /*
-    public void scegliEsame1(View view) {
-        startActivity(new Intent(this, ExamDetailActivity.class));
+    private void chooseExam (Exam exam) {
+        Intent intent = new Intent(ExamsActivity.this, ExamDetailActivity.class);
+        intent.putExtra(CHOSEN_EXAM, exam);
+        startActivity(intent);
     }
-     */
 
     //TODO rimuovere questo codice nella versione finale.
     public void test () {
@@ -120,6 +123,7 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
 
         userRef.child("ABC").setValue(new User("ABC", "Fabrizio", "Balducci", "Email@email.com",
                 User.ROLE_PROFESSOR, User.COURSE_ITPS));
-        tableRef.push().setValue(new Exam("SMS20-21", Arrays.asList("ABC"), null, 2020));
+        DatabaseReference newElement = tableRef.push();
+        newElement.setValue(new Exam(newElement.getKey(), "SMS20-21", Arrays.asList("ABC"), null, 2020));
     }
 }

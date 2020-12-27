@@ -6,19 +6,27 @@ import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.enitities.Exam;
+import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
 public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
     private static final int STUDY_CASES_TAB_POSITION = 0;
     private static final int GROUPS_TAB_POSITION = 1;
+
+    //I frammenti sottostanti useranno metodi presenti in questa classe che opereranno su
+    // questo campo.
+    private Exam exam;
 
     @Override
     protected Fragment getInitialFragment() {
@@ -30,6 +38,10 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
         super.onCreate(savedInstanceState);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //TODO vedere se serve gestirlo in caso di cambi di configurazioni
+        exam = getIntent().getExtras().getParcelable(ExamsActivity.CHOSEN_EXAM);
+        Log.d("ExamDetailActivity", exam.toString());
     }
 
     @Override
@@ -88,7 +100,10 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
         return super.onSupportNavigateUp();
     }
 
-    public void scegliTemplate(View view) {
-        startActivity(new Intent(this, NewGroupActivity.class));
+    /**
+     * Chiamato dal bottone di aggiunta casi di studio (nel fragment dei casi di studio)
+     */
+    public void addStudyCase(View view) {
+        Toast.makeText(this, R.string.text_message_not_yet_implemented, Toast.LENGTH_SHORT).show();
     }
 }

@@ -34,4 +34,11 @@
     <string name="text_label_name_study_case">Name</string>
     <string name="text_label_desc_study_case">Description</string>
     <string name="text_buttom_create_study_case">Create</string>
+
+    <string name="description_case_study_info">Open Info</string>
+    <string name="description_add_study_case">Add Study Case</string>
+
+    <string name="text_message_not_yet_implemented">Feature not yet implemented</string>
+
+
 </resources>

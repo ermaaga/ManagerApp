@@ -5,15 +5,26 @@ import androidx.annotation.NonNull;
 import java.util.Objects;
 
 public class StudyCase {
+    //Aggiungo id per serializzazione più semplice
+    private String id;
     private String nome;
     private String descrizione;
 
     public StudyCase() {
     }
 
-    public StudyCase(String nome, String descrizione) {
+    public StudyCase(String id, String nome, String descrizione) {
+        this.id = id;
         this.nome = nome;
         this.descrizione = descrizione;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getNome() {
