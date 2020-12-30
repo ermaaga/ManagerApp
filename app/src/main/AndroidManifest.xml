@@ -43,7 +43,7 @@
             android:name=".home.HomeActivity"
             android:label="@string/activity_label_home" />
         <activity
-            android:name=".exams.FormTemplateActivity"
+            android:name=".exams.NewStudyCaseActivity"
             android:label="@string/activity_label_create_studycase" />
         <activity
             android:name=".exams.NewExamActivity"

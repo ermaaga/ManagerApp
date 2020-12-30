@@ -104,6 +104,6 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
      * Chiamato dal bottone di aggiunta casi di studio (nel fragment dei casi di studio)
      */
     public void addStudyCase(View view) {
-        startActivity(new Intent(this, FormTemplateActivity.class));
+        startActivity(new Intent(this, NewStudyCaseActivity.class));
     }
 }

@@ -26,6 +26,7 @@
     <string name="text_label_button_professor">Professore</string>
 
     <string name="error_sha1_not_found">Chiave dell\' app non trovata. L\' app potrebbe essere stata modificata da enti esterni.</string>
+    <string name="required_field">Campo richiesto</string>
 
     <string name="text_label_name_study_case">Nome</string>
     <string name="text_label_desc_study_case">Descrizione</string>
@@ -35,6 +36,7 @@
     <string name="description_add_study_case">Aggiungi un Caso di Studio</string>
 
     <string name="text_message_not_yet_implemented">Funzionalità non ancora implementata</string>
+    <string name="text_message_study_case_created">Il caso di studio è stato creato</string>
 
     <string name="text_button_create_new_exam">Crea un nuovo esame</string>
     <string name="text_label_exam_name">Nome:</string>
