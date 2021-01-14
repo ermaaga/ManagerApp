@@ -38,6 +38,8 @@
 
     <string name="description_case_study_info">Open Info</string>
     <string name="description_add_study_case">Add Study Case</string>
+    <string name="description_add_file">Add a File</string>
+    <string name="description_default_file_type">File type not found</string>
 
     <string name="text_message_not_yet_implemented">Feature not yet implemented</string>
     <string name="text_message_study_case_created">The study case was created</string>

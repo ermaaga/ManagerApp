@@ -34,6 +34,8 @@
 
     <string name="description_case_study_info">Apri Info</string>
     <string name="description_add_study_case">Aggiungi un Caso di Studio</string>
+    <string name="description_add_file">Aggiungi un File</string>
+    <string name="description_default_file_type">Tipo di file non trovato</string>
 
     <string name="text_message_not_yet_implemented">Funzionalità non ancora implementata</string>
     <string name="text_message_study_case_created">Il caso di studio è stato creato</string>
