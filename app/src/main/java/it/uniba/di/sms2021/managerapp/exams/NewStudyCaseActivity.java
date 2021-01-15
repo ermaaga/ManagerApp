@@ -62,19 +62,19 @@ public class NewStudyCaseActivity extends AbstractFormActivity {
     }
 
    private boolean validate(EditText name, EditText desc){
-        boolean validate = true;
+        boolean valid = true;
 
         if(name.getText().toString().length()==0) {
-            validate=false;
+            valid=false;
             name.setError(getString(R.string.required_field));
 
         }
         if(desc.getText().toString().length()==0) {
-            validate=false;
+            valid=false;
             desc.setError(getString(R.string.required_field));
         }
 
-        return validate;
+        return valid;
     }
 
 }

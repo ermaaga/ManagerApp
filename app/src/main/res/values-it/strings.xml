@@ -10,6 +10,7 @@
     <string name="activity_label_new_group">Crea Gruppo</string>
     <string name="activity_label_create_studycase">Crea Caso di Studio</string>
     <string name="activity_label_create_newExam">Crea un nuovo Esame</string>
+    <string name="activity_label_sign_in">Registrati</string>
 
     <string name="text_label_exams">Esami</string>
     <string name="text_label_projects">Progetti</string>
@@ -26,7 +27,9 @@
     <string name="text_label_button_professor">Professore</string>
 
     <string name="error_sha1_not_found">Chiave dell\' app non trovata. L\' app potrebbe essere stata modificata da enti esterni.</string>
-    <string name="required_field">Campo richiesto</string>
+    <string name="required_field">Campo richiesto.</string>
+    <string name="error_password"> La password deve contenere almeno 8 caratteri.</string>
+    <string name="error_email"> L\'email non è nel formato valido</string>
 
     <string name="text_label_name_study_case">Nome</string>
     <string name="text_label_desc_study_case">Descrizione</string>
@@ -52,5 +55,6 @@
     <string name="text_button_new_exam_accept">Accetta</string>
     <string name="text_button_new_exam_decline">Elimina</string>
 
+    <string name="text_hint_name_studycase">Es:Caso di studio 1</string>
 
 </resources>
