@@ -7,6 +7,10 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.text.format.Formatter;
 
+import androidx.core.content.ContextCompat;
+
+import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
+
 public class FileUtil {
     private FileUtil () { }
 
@@ -21,7 +25,9 @@ public class FileUtil {
          */
         int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
         returnCursor.moveToFirst();
-        return returnCursor.getString(nameIndex);
+        String fileName = returnCursor.getString(nameIndex);
+        returnCursor.close();
+        return fileName;
     }
 
     public static Long getFileSizeFromURI (Context context, Uri uri) {
@@ -35,7 +41,9 @@ public class FileUtil {
          */
         int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
         returnCursor.moveToFirst();
-        return returnCursor.getLong(sizeIndex);
+        Long fileSize = returnCursor.getLong(sizeIndex);
+        returnCursor.close();
+        return fileSize;
     }
 
     public static String getMimeTypeFromUri (Context context, Uri uri) {
@@ -48,6 +56,13 @@ public class FileUtil {
 
     public static String getFormattedSize (Context context, Long size) {
         return Formatter.formatFileSize(context, size);
+    }
+
+    /**
+     * Returns true if the file can be previewed in the app.
+     */
+    public static boolean isFilePreviewable (ManagerFile file) {
+        return true; // TODO implementare con solo i file compatibili
     }
 
 }

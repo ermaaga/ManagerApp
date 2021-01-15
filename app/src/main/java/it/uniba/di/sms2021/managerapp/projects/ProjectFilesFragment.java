@@ -177,13 +177,13 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.files_add_file_floating_action_button) {
-            selectImage();
+            selectDocument();
         }
     }
 
     static final int REQUEST_IMAGE_GET = 1;
 
-    private void selectImage() {
+    private void selectDocument() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
         startActivityForResult(intent, REQUEST_IMAGE_GET);
@@ -207,7 +207,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private void upload (Uri file) {
         // Create the file metadata
         StorageMetadata metadata = new StorageMetadata.Builder()
-                .setContentType("image/jpeg")
+                .setContentType(FileUtil.getMimeTypeFromUri(getContext(), file))
                 .build();
 
         // Upload file and metadata to the path 'images/mountains.jpg'
@@ -218,6 +218,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                // TODO implementare schermata di dialogo con progresso
                 double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                 Log.d(TAG, "Upload is " + progress + "% done");
             }
@@ -247,6 +248,12 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                     Toast.LENGTH_LONG).show();
             return;
         }
+        if (!FileUtil.isFilePreviewable(file)) {
+            Toast.makeText(getContext(), R.string.text_message_temp_file_not_supported,
+                    Toast.LENGTH_LONG).show();
+            return;
+        }
+
         File path = new File(getContext().getFilesDir(), gruppo);
         if (!path.exists()) {
             path.mkdirs();
@@ -274,6 +281,17 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(uri, mimeType);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        startActivity(intent);
+
+        String title = getString(R.string.chooser_title_preview);
+        Intent chooser = Intent.createChooser(intent, title);
+
+        //TODO controllare warning dato dal lint
+        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
+            startActivity(chooser);
+        } else {
+            //TODO usare qualcosa diverso da un toast
+            Toast.makeText(getContext(), R.string.text_message_temp_file_not_supported,
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }

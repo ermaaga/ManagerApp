@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -37,6 +38,7 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
                 R.layout.list_item_file, parent, false);
         return new RecyclerView.ViewHolder(itemView) {
             @Override
+            @NonNull
             public String toString() {
                 return super.toString();
             }
@@ -60,8 +62,14 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
     }
 
     private void setTypeImageView (ImageView imageView, String fileType) {
-        if (fileType.equals("image/jpeg")) {
+        if (fileType.contains("image/")) {
             imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.image));
+        } else if (fileType.equals("application/pdf")) {
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.pdf));
+        } else {
+            //TODO rimuovere dall'applicazione finale
+            Toast.makeText(context, "Tipo " + fileType + " non supportato.", Toast.LENGTH_LONG).show();
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.file));
         }
     }
 
