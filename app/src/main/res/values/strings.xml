@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">ManagerApp</string>
+    <string name="authority" translatable="false">it.uniba.di.sms2021.managerapp</string>
 
     <string name="activity_label_login">Login</string>
     <string name="activity_label_projects">Projects</string>
@@ -43,6 +44,8 @@
 
     <string name="text_message_not_yet_implemented">Feature not yet implemented</string>
     <string name="text_message_study_case_created">The study case was created</string>
+    <string name="text_message_temp_file_too_big">The selected file is too big for a preview.</string>
+    <string name="text_message_preview_open_failed">An error has occurred while opening the file.</string>
 
     <string name="text_button_create_new_exam">Create new exam</string>
     <string name="text_label_exam_name">Name:</string>

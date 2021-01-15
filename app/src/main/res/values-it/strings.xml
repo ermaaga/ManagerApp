@@ -39,6 +39,8 @@
 
     <string name="text_message_not_yet_implemented">Funzionalità non ancora implementata</string>
     <string name="text_message_study_case_created">Il caso di studio è stato creato</string>
+    <string name="text_message_temp_file_too_big"> Il file selezionato è troppo grande per visualizzarne un\'anteprima.</string>
+    <string name="text_message_preview_open_failed">Si è verificato un errore mentre si tentava di aprire il file.</string>
 
     <string name="text_button_create_new_exam">Crea un nuovo esame</string>
     <string name="text_label_exam_name">Nome:</string>
