@@ -93,10 +93,7 @@ public class ExamStudyCasesFragment extends Fragment {
 
     private void doStudyCaseAction(StudyCase studyCase) {
         Intent intent = new Intent(getContext(), StudyCaseDetailActivity.class);
-        intent.putExtra(StudyCase.Keys.ID, studyCase.getId());
-        intent.putExtra(StudyCase.Keys.NOME, studyCase.getNome());
-        intent.putExtra(StudyCase.Keys.DESCRIZIONE, studyCase.getDescrizione());
-        intent.putExtra(StudyCase.Keys.ESAME, studyCase.getEsame());
+        intent.putExtra(StudyCase.Keys.ID, studyCase);
         startActivity(intent);
     }
 

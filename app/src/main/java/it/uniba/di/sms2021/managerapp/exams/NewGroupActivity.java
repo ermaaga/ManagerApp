@@ -44,11 +44,14 @@ public class NewGroupActivity extends AbstractFormActivity {
                     groupsRef = database.getReference(FirebaseDbHelper.TABLE_GROUPS);
 
                     DatabaseReference newElement = groupsRef.push();
-                    Group group = new Group(newElement.getKey(), name.getText().toString(), intent.getStringExtra(StudyCase.Keys.ID), intent.getStringExtra(StudyCase.Keys.ESAME));
+
+                    //TODO: aggiungere utente loggato nei membri
+                    Group group = new Group(newElement.getKey(), name.getText().toString(), intent.getStringExtra(StudyCase.Keys.ID),
+                            intent.getStringExtra(StudyCase.Keys.ESAME));
                     newElement.setValue(group);
 
                     Toast.makeText(getApplicationContext(), R.string.text_message_group_created , Toast.LENGTH_SHORT).show();
-                    //NewGroupActivity.super.onBackPressed();
+                    NewGroupActivity.super.onBackPressed();
                 }
 
             }

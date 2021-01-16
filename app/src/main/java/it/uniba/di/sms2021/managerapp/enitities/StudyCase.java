@@ -1,8 +1,11 @@
 package it.uniba.di.sms2021.managerapp.enitities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Objects;
 
-public class StudyCase {
+public class StudyCase implements Parcelable {
     //Aggiungo id per serializzazione più semplice
     private String id;
     private String nome;
@@ -72,6 +75,36 @@ public class StudyCase {
     public int hashCode() {
         return Objects.hash(id, nome, descrizione, esame);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(nome);
+        dest.writeString(descrizione);
+        dest.writeString(esame);
+    }
+
+    public static final Parcelable.Creator<StudyCase> CREATOR
+            = new Parcelable.Creator<StudyCase>() {
+        public StudyCase createFromParcel(Parcel in) {
+            StudyCase studyCase = new StudyCase();
+            studyCase.setId(in.readString());
+            studyCase.setNome(in.readString());
+            studyCase.setDescrizione(in.readString());
+            studyCase.setEsame(in.readString());
+
+            return studyCase;
+        }
+
+        public StudyCase[] newArray(int size) {
+            return new StudyCase[size];
+        }
+    };
 
     public interface Keys{
         String ID = "id";

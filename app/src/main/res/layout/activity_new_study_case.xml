@@ -36,7 +36,7 @@
         android:ems="10"
         android:inputType="text"
         android:textColorHint="@color/black"
-        android:hint="@+id/text_hint_name_studycase"
+        android:hint="@string/text_hint_name_studycase"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.407"
         app:layout_constraintStart_toStartOf="parent"

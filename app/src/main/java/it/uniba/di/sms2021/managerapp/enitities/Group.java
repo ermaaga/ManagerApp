@@ -1,5 +1,6 @@
 package it.uniba.di.sms2021.managerapp.enitities;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Group {
@@ -7,12 +8,14 @@ public class Group {
     private String name;
     private String studyCase;
     private String exam;
+    private List<String> membri;
 
-    public Group(String id, String name, String studyCase, String exam) {
+    public Group(String id, String name, String studyCase, String exam/*, List<String> membri*/) {
         this.id = id;
         this.name = name;
         this.studyCase = studyCase;
         this.exam = exam;
+        //this.membri = membri;
     }
 
     public String getId() {
@@ -47,6 +50,14 @@ public class Group {
         this.exam = exam;
     }
 
+    public List<String> getMembri() {
+        return membri;
+    }
+
+    public void setMembri(List<String> membri) {
+        this.membri = membri;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -55,11 +66,12 @@ public class Group {
         return Objects.equals(id, group.id) &&
                 Objects.equals(name, group.name) &&
                 Objects.equals(studyCase, group.studyCase) &&
-                Objects.equals(exam, group.exam);
+                Objects.equals(exam, group.exam) &&
+                Objects.equals(membri, group.membri);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, studyCase, exam);
+        return Objects.hash(id, name, studyCase, exam, membri);
     }
 }

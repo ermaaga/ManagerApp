@@ -13,8 +13,7 @@ import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 
 public class StudyCaseDetailActivity extends AppCompatActivity {
 
-    String id;
-    String esame;
+    private StudyCase studyCase;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -23,13 +22,13 @@ public class StudyCaseDetailActivity extends AppCompatActivity {
 
 
         Intent intent = getIntent();
-        id = intent.getStringExtra(StudyCase.Keys.ID);
-        esame = intent.getStringExtra(StudyCase.Keys.ESAME);
+        studyCase = (StudyCase) intent.getParcelableExtra(StudyCase.Keys.ID);
+
         TextView textName = (TextView) findViewById(R.id.textView_name_study_case);
         TextView textDesc = (TextView) findViewById(R.id.textView_desc_study_case);
 
-        textName.setText(intent.getStringExtra(StudyCase.Keys.NOME));
-        textDesc.setText(intent.getStringExtra(StudyCase.Keys.DESCRIZIONE));
+        textName.setText(studyCase.getNome());
+        textDesc.setText(studyCase.getDescrizione());
     }
 
     @Override
@@ -39,8 +38,8 @@ public class StudyCaseDetailActivity extends AppCompatActivity {
 
     public void createGroup(View v){
         Intent intent = new Intent(this, NewGroupActivity.class);
-        intent.putExtra(StudyCase.Keys.ID, id);
-        intent.putExtra(StudyCase.Keys.ESAME, esame);
+        intent.putExtra(StudyCase.Keys.ID, studyCase.getId());
+        intent.putExtra(StudyCase.Keys.ESAME, studyCase.getEsame());
         startActivity(intent);
     }
 }
