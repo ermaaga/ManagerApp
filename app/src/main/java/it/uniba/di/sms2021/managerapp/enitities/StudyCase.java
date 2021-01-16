@@ -15,12 +15,6 @@ public class StudyCase implements Parcelable {
     public StudyCase() {
     }
 
-    public StudyCase(String id, String nome, String descrizione) {
-        this.id = id;
-        this.nome = nome;
-        this.descrizione = descrizione;
-    }
-
     public StudyCase(String id, String nome, String descrizione, String esame) {
         this.id = id;
         this.nome = nome;

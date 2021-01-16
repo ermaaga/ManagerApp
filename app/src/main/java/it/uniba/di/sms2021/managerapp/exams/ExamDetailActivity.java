@@ -40,7 +40,8 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //TODO vedere se serve gestirlo in caso di cambi di configurazioni
-        exam = getIntent().getExtras().getParcelable(ExamsActivity.CHOSEN_EXAM);
+        exam = getIntent().getParcelableExtra(Exam.Keys.ID);
+
         Log.d("ExamDetailActivity", exam.toString());
     }
 
@@ -100,10 +101,12 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
         return super.onSupportNavigateUp();
     }
 
-    /**
+    /*
      * Chiamato dal bottone di aggiunta casi di studio (nel fragment dei casi di studio)
-     */
+   */
     public void addStudyCase(View view) {
-        startActivity(new Intent(this, NewStudyCaseActivity.class));
+        Intent intent = new Intent(this, NewStudyCaseActivity.class);
+        intent.putExtra(Exam.Keys.ID,exam.getId());
+        startActivity(intent);
     }
 }

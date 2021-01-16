@@ -1,5 +1,6 @@
 package it.uniba.di.sms2021.managerapp.exams;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 import it.uniba.di.sms2021.managerapp.utility.AbstractFormActivity;
 
@@ -42,14 +44,17 @@ public class NewStudyCaseActivity extends AbstractFormActivity {
                 EditText desc = (EditText) findViewById(R.id.editText_desc_study_case);
 
                 if(validate(name,desc)) {
-                    //TODO inserire l'esame del caso di studio
+
                     database = FirebaseDbHelper.getDBInstance();
                     studycasesReference = database.getReference(FirebaseDbHelper.TABLE_STUDYCASES);
 
                     //Ho modificato questa parte per inizializzare il caso di studio con un id.
                     DatabaseReference newElement = studycasesReference.push();
+
+                    Intent intent = getIntent();
+
                     StudyCase studycase = new StudyCase(newElement.getKey(),
-                            name.getText().toString(), desc.getText().toString());
+                            name.getText().toString(), desc.getText().toString(),intent.getStringExtra(Exam.Keys.ID));
                     newElement.setValue(studycase);
 
                     Toast.makeText(getApplicationContext(), R.string.text_message_study_case_created, Toast.LENGTH_SHORT).show();

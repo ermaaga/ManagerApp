@@ -190,4 +190,12 @@ public class Exam implements Parcelable {
             return new Exam[size];
         }
     };
+
+    public interface Keys{
+        String ID = "id";
+        String NAME = "name";
+        String PROFESSORS = "professors";
+        String STUDENTS = "students";
+        String YEAR = "year";
+    }
 }

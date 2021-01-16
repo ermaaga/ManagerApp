@@ -34,8 +34,6 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
     RecyclerView recyclerView;
     ExamsRecyclerAdapter adapter;
 
-    public static final String CHOSEN_EXAM = "ChosenExam";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +111,7 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
 
     private void chooseExam (Exam exam) {
         Intent intent = new Intent(ExamsActivity.this, ExamDetailActivity.class);
-        intent.putExtra(CHOSEN_EXAM, exam);
+        intent.putExtra(Exam.Keys.ID, exam);
         startActivity(intent);
     }
 
