@@ -51,6 +51,9 @@
         <activity
             android:name=".exams.NewExamActivity"
             android:label="@string/activity_label_create_newExam" />
+        <activity
+            android:name=".exams.StudyCaseDetailActivity"
+            android:label="@string/activity_label_detail_study_case" />
 
         <!-- Provider che gestisce le richieste di acquisizione di Uri per file presenti nella
              cache dell'app. -->
@@ -64,4 +67,5 @@
                 android:resource="@xml/provider_paths" />
         </provider>
      </application>
+
 </manifest>

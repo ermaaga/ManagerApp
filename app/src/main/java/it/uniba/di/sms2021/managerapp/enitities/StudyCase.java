@@ -1,7 +1,5 @@
 package it.uniba.di.sms2021.managerapp.enitities;
 
-import androidx.annotation.NonNull;
-
 import java.util.Objects;
 
 public class StudyCase {
@@ -9,6 +7,7 @@ public class StudyCase {
     private String id;
     private String nome;
     private String descrizione;
+    private String esame;
 
     public StudyCase() {
     }
@@ -17,6 +16,13 @@ public class StudyCase {
         this.id = id;
         this.nome = nome;
         this.descrizione = descrizione;
+    }
+
+    public StudyCase(String id, String nome, String descrizione, String esame) {
+        this.id = id;
+        this.nome = nome;
+        this.descrizione = descrizione;
+        this.esame = esame;
     }
 
     public String getId() {
@@ -43,17 +49,35 @@ public class StudyCase {
         this.descrizione = descrizione;
     }
 
+    public String getEsame() {
+        return esame;
+    }
+
+    public void setEsame(String esame) {
+        this.esame = esame;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         StudyCase studyCase = (StudyCase) o;
-        return nome.equals(studyCase.nome) &&
-                Objects.equals(descrizione, studyCase.descrizione);
+        return Objects.equals(id, studyCase.id) &&
+                Objects.equals(nome, studyCase.nome) &&
+                Objects.equals(descrizione, studyCase.descrizione) &&
+                Objects.equals(esame, studyCase.esame);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(nome, descrizione);
+        return Objects.hash(id, nome, descrizione, esame);
+    }
+
+    public interface Keys{
+        String ID = "id";
+        String NOME = "nome";
+        String DESCRIZIONE = "descrizione";
+        String ESAME = "esame";
+
     }
 }

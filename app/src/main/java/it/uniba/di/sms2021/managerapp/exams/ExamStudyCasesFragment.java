@@ -1,6 +1,11 @@
 package it.uniba.di.sms2021.managerapp.exams;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -8,11 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
@@ -91,9 +91,13 @@ public class ExamStudyCasesFragment extends Fragment {
                 });
     }
 
-    //TODO implementare azione (creazione gruppo a partire dal caso di studio)
     private void doStudyCaseAction(StudyCase studyCase) {
-        Toast.makeText(requireContext(), R.string.text_message_not_yet_implemented, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getContext(), StudyCaseDetailActivity.class);
+        intent.putExtra(StudyCase.Keys.ID, studyCase.getId());
+        intent.putExtra(StudyCase.Keys.NOME, studyCase.getNome());
+        intent.putExtra(StudyCase.Keys.DESCRIZIONE, studyCase.getDescrizione());
+        intent.putExtra(StudyCase.Keys.ESAME, studyCase.getEsame());
+        startActivity(intent);
     }
 
     //TODO implementare visualizzazione del pdf di info

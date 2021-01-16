@@ -1,6 +1,5 @@
 package it.uniba.di.sms2021.managerapp.exams;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -43,7 +42,7 @@ public class NewStudyCaseActivity extends AbstractFormActivity {
                 EditText desc = (EditText) findViewById(R.id.editText_desc_study_case);
 
                 if(validate(name,desc)) {
-
+                    //TODO inserire l'esame del caso di studio
                     database = FirebaseDbHelper.getDBInstance();
                     studycasesReference = database.getReference(FirebaseDbHelper.TABLE_STUDYCASES);
 

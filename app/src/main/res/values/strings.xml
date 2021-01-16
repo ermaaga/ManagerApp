@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">ManagerApp</string>
-    <string name="authority" translatable="false">it.uniba.di.sms2021.managerapp</string>
 
     <string name="activity_label_login">Login</string>
     <string name="activity_label_projects">Projects</string>
@@ -11,6 +10,8 @@
     <string name="activity_label_new_group">Create Group</string>
     <string name="activity_label_create_studycase">Create Study Case</string>
     <string name="activity_label_create_newExam">Create New Exam</string>
+    <string name="activity_label_detail_study_case">Detail Study Case</string>
+
     <string name="activity_label_sign_in">Sign In</string>
 
     <string name="text_label_exams">Exams</string>
@@ -64,6 +65,10 @@
     <string name="text_hint_email" translatable="false">Email</string>
     <string name="text_hint_password" translatable="false">Password</string>
     <string name="text_hint_name_studycase">Ex:Study Case 1</string>
+    <string name="text_button_save_new_group">Save</string>
+    <string name="text_hint_name_group">Name</string>
+    <string name="text_button_go_create_group">Create group</string>
+    <string name="text_message_group_created">The group was created</string>
 
 
 </resources>
