@@ -5,11 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -20,12 +18,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,7 +35,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
-import it.uniba.di.sms2021.managerapp.exams.NewStudyCaseActivity;
 import it.uniba.di.sms2021.managerapp.home.HomeActivity;
 import it.uniba.di.sms2021.managerapp.utility.FormUtil;
 
@@ -46,7 +46,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private GoogleSignInOptions gso;
     private GoogleSignInClient mGoogleSignInClient;
-    private GoogleSignInAccount account;
+    private GoogleSignInAccount googleSignInAccount;
 
     private FirebaseDatabase database;
     private DatabaseReference usersReference;
@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-        account = GoogleSignIn.getLastSignedInAccount(this);
+        googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
 
         database = FirebaseDbHelper.getDBInstance();
         usersReference = database.getReference(FirebaseDbHelper.TABLE_USERS);
@@ -102,12 +102,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onStart() {
         super.onStart();
 
-        if (account != null) {
-            checkIfUserExistsAndGoToHome(account.getId());
+        if (googleSignInAccount != null) {
+            loginWithGoogleCredentials();
         }
     }
 
     private void checkIfUserExistsAndGoToHome(String id) {
+        if (mAuth.getCurrentUser() == null) {
+            Log.w(TAG, "User is null, please check sign in method.");
+        }
+
         // Aggiunta di un listener che esegue il metodo onDataChange la prima volta che arrivano
         // i dati, o ogni volta che vengono aggiornati.
         usersReference.addValueEventListener(new ValueEventListener() {
@@ -166,9 +170,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
-            account = completedTask.getResult(ApiException.class);
+            googleSignInAccount = completedTask.getResult(ApiException.class);
 
-            checkIfUserExistsAndGoToHome(account.getId());
+            //Mi ero scordato di fare effettivamente l'accesso a firebase, così da poter usare
+            //auth nelle regole del db.
+            //TODO rimuovere questo commento in seguito
+            loginWithGoogleCredentials();
+
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
@@ -177,6 +185,27 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
         }
+    }
+
+    private void loginWithGoogleCredentials() {
+        AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(),
+                null);
+        loginWithCredentials(authCredential, googleSignInAccount.getId());
+    }
+
+    private void loginWithCredentials(AuthCredential credential, String accountId) {
+        mAuth.signInWithCredential(credential).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+            @Override
+            public void onSuccess(AuthResult authResult) {
+                checkIfUserExistsAndGoToHome(accountId);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                //TODO aggiungere messaggio di errore visibile
+                Log.i(TAG, "Login failed: " + e.getMessage());
+            }
+        });
     }
 
     @Override
