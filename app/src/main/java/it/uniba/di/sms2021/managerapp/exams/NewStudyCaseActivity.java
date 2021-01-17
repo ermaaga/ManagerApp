@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -40,8 +41,8 @@ public class NewStudyCaseActivity extends AbstractFormActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText name = (EditText) findViewById(R.id.editText_name_study_case);
-                EditText desc = (EditText) findViewById(R.id.editText_desc_study_case);
+                TextInputEditText name = (TextInputEditText) findViewById(R.id.name_edit_text);
+                TextInputEditText desc = (TextInputEditText) findViewById(R.id.desc_edit_text);
 
                 if(validate(name,desc)) {
 

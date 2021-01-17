@@ -10,12 +10,12 @@ public class Group {
     private String exam;
     private List<String> membri;
 
-    public Group(String id, String name, String studyCase, String exam/*, List<String> membri*/) {
+    public Group(String id, String name, String studyCase, String exam, List<String> membri) {
         this.id = id;
         this.name = name;
         this.studyCase = studyCase;
         this.exam = exam;
-        //this.membri = membri;
+        this.membri = membri;
     }
 
     public String getId() {

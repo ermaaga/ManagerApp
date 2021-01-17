@@ -8,8 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
@@ -45,9 +49,11 @@ public class NewGroupActivity extends AbstractFormActivity {
 
                     DatabaseReference newElement = groupsRef.push();
 
-                    //TODO: aggiungere utente loggato nei membri
+                    List<String> membri = new ArrayList<String>();
+                    membri.add(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
                     Group group = new Group(newElement.getKey(), name.getText().toString(), intent.getStringExtra(StudyCase.Keys.ID),
-                            intent.getStringExtra(StudyCase.Keys.ESAME));
+                            intent.getStringExtra(StudyCase.Keys.ESAME), membri);
                     newElement.setValue(group);
 
                     Toast.makeText(getApplicationContext(), R.string.text_message_group_created , Toast.LENGTH_SHORT).show();

@@ -30,6 +30,7 @@
     <string name="registration_success">Registrazione avvenuta con successo</string>
     <string name="send_verification_email_success">Email di verifica inviata a </string>
     <string name="login_success">Login effettuato con successo!</string>
+    <string name="text_message_group_created">Il gruppo è stato creato</string>
 
     <string name="error_sha1_not_found">Chiave dell\' app non trovata. L\' app potrebbe essere stata modificata da enti esterni.</string>
     <string name="required_field">Campo richiesto.</string>
@@ -39,8 +40,6 @@
     <string name="registration_failed">Registrazione fallita</string>
     <string name="login_failed">Login fallito! Per favore riprova più tardi</string>
 
-    <string name="text_label_name_study_case">Nome</string>
-    <string name="text_label_desc_study_case">Descrizione</string>
     <string name="text_buttom_create_study_case">Crea</string>
 
     <string name="description_case_study_info">Apri Info</string>
@@ -56,22 +55,23 @@
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
-    <string name="text_button_create_new_exam">Crea un nuovo esame</string>
     <string name="text_label_exam_name">Nome:</string>
     <string name="text_label_exam_description">Descrizione:</string>
+    <string name="text_label_name_study_case">Nome</string>
+    <string name="text_label_desc_study_case">Descrizione</string>
+
+    <string name="text_button_create_new_exam">Crea un nuovo esame</string>
     <string name="text_button_new_exam_startDate">Date inizio:</string>
     <string name="text_button_new_exam_accept">Accetta</string>
     <string name="text_button_new_exam_decline">Elimina</string>
-
-    <string name="text_hint_name_studycase">Es:Caso di studio 1</string>
     <string name="text_button_save_new_group">Salva</string>
+    <string name="text_button_go_create_group">Crea gruppo</string>
+
+    <string name="text_hint_name_studycase">Nome</string>
     <string name="text_hint_name_group">Nome</string>
     <string name="text_hint_name_user">Nome</string>
     <string name="text_hint_surname_user">Cognome</string>
-
-    <string name="text_button_go_create_group">Crea gruppo</string>
-    <string name="text_message_group_created">Il gruppo è stato creato</string>
-
+    <string name="text_hint_desc_study_case">Descrizione</string>
 
 
 </resources>
