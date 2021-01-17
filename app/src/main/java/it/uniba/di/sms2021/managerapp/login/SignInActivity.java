@@ -21,10 +21,12 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
+import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.exams.NewStudyCaseActivity;
 import it.uniba.di.sms2021.managerapp.utility.AbstractFormActivity;
 import it.uniba.di.sms2021.managerapp.utility.FormUtil;
@@ -34,12 +36,18 @@ public class SignInActivity extends AbstractFormActivity {
     private static final String TAG = "SignInActivity";
 
     private FirebaseAuth mAuth;
+    private FirebaseDatabase database;
+    private DatabaseReference usersReference;
 
     private TextInputEditText emailEditText;
     private TextInputEditText passwordEditText;
+    private TextInputEditText nameEditText;
+    private TextInputEditText surnameEditText;
 
     private TextInputLayout emailInputLayout;
     private TextInputLayout passwordInputLayout;
+    private TextInputLayout nameInputLayout;
+    private TextInputLayout surnameInputLayout;
 
     ProgressBar progressBar;
 
@@ -62,48 +70,102 @@ public class SignInActivity extends AbstractFormActivity {
 
         emailEditText = (TextInputEditText) findViewById(R.id.email_edit_text);
         passwordEditText = (TextInputEditText) findViewById(R.id.password_edit_text);
+        nameEditText = (TextInputEditText) findViewById(R.id.name_edit_text);
+        surnameEditText = (TextInputEditText) findViewById(R.id.surname_edit_text);
 
         emailInputLayout = (TextInputLayout) findViewById(R.id.email_input_layout);
         passwordInputLayout = (TextInputLayout) findViewById(R.id.password_input_layout);
+        nameInputLayout = (TextInputLayout) findViewById(R.id.name_input_layout);
+        surnameInputLayout = (TextInputLayout) findViewById(R.id.surname_input_layout);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
     }
 
-    //TODO da migliorare
     public void saveNewAccount(View v) {
-        String email = emailEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
+        String email = emailEditText.getText().toString().trim();
+        String password = passwordEditText.getText().toString().trim();
+        String name = nameEditText.getText().toString().trim();
+        String surname = surnameEditText.getText().toString().trim();
 
         Log.d(TAG, "createAccount method:" + email);
-       if (FormUtil.validateEmailPassword(email, password, getApplicationContext(),emailInputLayout,passwordInputLayout )) {
+       if (FormUtil.validateEmailPassword(email, password, getApplicationContext(), emailInputLayout,passwordInputLayout )) {
 
            progressBar.setVisibility(View.VISIBLE);
-           Log.w(TAG, "is validate");
+           Log.d(TAG, "is validate");
 
            mAuth.createUserWithEmailAndPassword(email, password)
                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                        @Override
                        public void onComplete(@NonNull Task<AuthResult> task) {
                            if (task.isSuccessful()) {
-                               Log.w(TAG, "success");
-                               Toast.makeText(getApplicationContext(), "Registration successful!", Toast.LENGTH_LONG).show();
+
+                               User user = new User(
+                                       FirebaseAuth.getInstance().getCurrentUser().getUid(),
+                                       name,
+                                       surname,
+                                       email
+                               );
+
+                               database = FirebaseDbHelper.getDBInstance();
+                               usersReference = database.getReference(FirebaseDbHelper.TABLE_USERS);
+
+                               usersReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                       .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                   @Override
+                                   public void onComplete(@NonNull Task<Void> task) {
+
+                                       progressBar.setVisibility(View.INVISIBLE);
+
+                                       if (task.isSuccessful()) {
+                                           Log.d(TAG, getString(R.string.registration_success));
+                                           Toast.makeText(SignInActivity.this, getString(R.string.registration_success), Toast.LENGTH_SHORT).show();
+                                       } else {
+                                           Log.e(TAG, getString(R.string.registration_failed));
+                                           Toast.makeText(SignInActivity.this, getString(R.string.registration_failed), Toast.LENGTH_SHORT).show();
+                                       }
+                                   }
+                               });
+
+                               sendEmailVerification();
+
                                Intent intent = new Intent(SignInActivity.this, LoginActivity.class);
                                startActivity(intent);
                            }
                            else {
-                               Log.w(TAG, "failed");
-                               Toast.makeText(getApplicationContext(), "Registration failed! Please try again later", Toast.LENGTH_LONG).show();
-
+                               Log.e(TAG, getString(R.string.registration_failed));
+                               Log.e(TAG, task.getException().getMessage());
+                               Toast.makeText(SignInActivity.this, getString(R.string.registration_failed), Toast.LENGTH_LONG).show();
                            }
                        }
                    });
        }
         else{
-            Log.w(TAG, "not validate");
+            Log.e(TAG, "not validate");
         }
     }
 
+    private void sendEmailVerification() {
+
+        final FirebaseUser user = mAuth.getCurrentUser();
+        user.sendEmailVerification()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, getString(R.string.send_verification_email_success));
+                            Toast.makeText(SignInActivity.this, getString(R.string.send_verification_email_success) + user.getEmail(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.e(TAG, getString(R.string.send_verification_email_failed));
+                            Log.e(TAG, task.getException().getMessage());
+                            Toast.makeText(SignInActivity.this, getString(R.string.send_verification_email_failed), Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+
+    }
 
     /* metodi  duplicati sia in questa activity che in LoginActivity
     per questo motivo è stata creta la classe utility FormUtil (da migliorare)

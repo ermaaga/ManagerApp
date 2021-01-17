@@ -28,6 +28,13 @@ public class User {
         this.corso = corso;
     }
 
+    public User(String accountId, String nome, String cognome, String email) {
+        this.accountId = accountId;
+        this.nome = nome;
+        this.cognome = cognome;
+        this.email = email;
+    }
+
     public String getAccountId() {
         return accountId;
     }

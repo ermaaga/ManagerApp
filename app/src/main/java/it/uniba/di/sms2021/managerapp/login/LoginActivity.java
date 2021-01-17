@@ -26,6 +26,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -236,29 +237,34 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             progressBar.setVisibility(View.VISIBLE);
 
-            Log.w(TAG, "is validate");
+            Log.d(TAG, "is validate");
 
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
+                            progressBar.setVisibility(View.INVISIBLE);
                             if (task.isSuccessful()) {
-                                Toast.makeText(getApplicationContext(), "Login successful!", Toast.LENGTH_LONG).show();
+                                Log.d(TAG, getString(R.string.login_success));
+                                Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_LONG).show();
 
                                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                 startActivity(intent);
                             }
                             else {
-                                Toast.makeText(getApplicationContext(), "Login failed! Please try again later", Toast.LENGTH_LONG).show();
+                                Log.e(TAG, getString(R.string.login_failed));
+                                Log.e(TAG, task.getException().getMessage());
+                                Toast.makeText(getApplicationContext(), getString(R.string.login_failed), Toast.LENGTH_LONG).show();
                             }
-                           progressBar.setVisibility(View.INVISIBLE);
+
                         }
                     });
 
         }else{
-            Log.w(TAG, "not validate");
+            Log.e(TAG, "not validate");
         }
     }
+
 
    /* metodi  duplicati sia in questa activity che in SignInActivity
    per questo motivo è stata creta la classe utility FormUtil (da migliorare)

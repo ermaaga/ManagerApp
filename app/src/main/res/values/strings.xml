@@ -32,10 +32,16 @@
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
 
+    <string name="registration_success">Registered Successfully</string>
+    <string name="send_verification_email_success">Verification email sent to </string>
+
+
     <string name="error_sha1_not_found">App key not found. The app may have been modified from third parties.</string>
     <string name="required_field">Required field</string>
     <string name="error_password">Password must contain at least 8 characters.</string>
     <string name="error_email">The email is not in the valid format</string>
+    <string name="send_verification_email_failed">Failed to send verification email.</string>
+    <string name="registration_failed">Registration failed</string>
 
     <string name="text_label_name_study_case">Name</string>
     <string name="text_label_desc_study_case">Description</string>
@@ -62,13 +68,17 @@
     <string name="text_button_new_exam_decline">Decline</string>
 
 
-    <string name="text_hint_email" translatable="false">Email</string>
-    <string name="text_hint_password" translatable="false">Password</string>
+    <string name="text_hint_email_user" translatable="false">Email</string>
+    <string name="text_hint_password_user" translatable="false">Password</string>
     <string name="text_hint_name_studycase">Ex:Study Case 1</string>
     <string name="text_button_save_new_group">Save</string>
     <string name="text_hint_name_group">Name</string>
     <string name="text_button_go_create_group">Create group</string>
     <string name="text_message_group_created">The group was created</string>
+    <string name="text_hint_name_user">Name</string>
+    <string name="text_hint_surname_user">Surname</string>
+    <string name="login_success">Login successful!</string>
+    <string name="login_failed">Login failed! Please try again later</string>
 
 
 </resources>
