@@ -89,57 +89,57 @@ public class SignInActivity extends AbstractFormActivity {
         String surname = surnameEditText.getText().toString().trim();
 
         Log.d(TAG, "createAccount method:" + email);
-       if (FormUtil.validateEmailPassword(email, password, getApplicationContext(), emailInputLayout,passwordInputLayout )) {
+        if (FormUtil.validateEmailPassword(email, password, getApplicationContext(), emailInputLayout,passwordInputLayout )) {
 
-           progressBar.setVisibility(View.VISIBLE);
-           Log.d(TAG, "is validate");
+            progressBar.setVisibility(View.VISIBLE);
+            Log.d(TAG, "is validate");
 
-           mAuth.createUserWithEmailAndPassword(email, password)
-                   .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                       @Override
-                       public void onComplete(@NonNull Task<AuthResult> task) {
-                           if (task.isSuccessful()) {
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
 
-                               User user = new User(
-                                       FirebaseAuth.getInstance().getCurrentUser().getUid(),
-                                       name,
-                                       surname,
-                                       email
-                               );
+                                User user = new User(
+                                        mAuth.getCurrentUser().getUid(),
+                                        name,
+                                        surname,
+                                        email
+                                );
 
-                               database = FirebaseDbHelper.getDBInstance();
-                               usersReference = database.getReference(FirebaseDbHelper.TABLE_USERS);
+                                database = FirebaseDbHelper.getDBInstance();
+                                usersReference = database.getReference(FirebaseDbHelper.TABLE_USERS);
 
-                               usersReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                       .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                   @Override
-                                   public void onComplete(@NonNull Task<Void> task) {
+                                usersReference.child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
 
-                                       progressBar.setVisibility(View.INVISIBLE);
+                                        progressBar.setVisibility(View.INVISIBLE);
 
-                                       if (task.isSuccessful()) {
-                                           Log.d(TAG, getString(R.string.registration_success));
-                                           Toast.makeText(SignInActivity.this, getString(R.string.registration_success), Toast.LENGTH_SHORT).show();
-                                       } else {
-                                           Log.e(TAG, getString(R.string.registration_failed));
-                                           Toast.makeText(SignInActivity.this, getString(R.string.registration_failed), Toast.LENGTH_SHORT).show();
-                                       }
-                                   }
-                               });
+                                        if (task.isSuccessful()) {
+                                            Log.d(TAG, getString(R.string.registration_success));
+                                            Toast.makeText(SignInActivity.this, getString(R.string.registration_success), Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Log.e(TAG, getString(R.string.registration_failed));
+                                            Toast.makeText(SignInActivity.this, getString(R.string.registration_failed), Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
 
-                               sendEmailVerification();
+                                sendEmailVerification();
 
-                               Intent intent = new Intent(SignInActivity.this, LoginActivity.class);
-                               startActivity(intent);
-                           }
-                           else {
-                               Log.e(TAG, getString(R.string.registration_failed));
-                               Log.e(TAG, task.getException().getMessage());
-                               Toast.makeText(SignInActivity.this, getString(R.string.registration_failed), Toast.LENGTH_LONG).show();
-                           }
-                       }
-                   });
-       }
+                                Intent intent = new Intent(SignInActivity.this, LoginActivity.class);
+                                startActivity(intent);
+                            }
+                            else {
+                                Log.e(TAG, getString(R.string.registration_failed));
+                                Log.e(TAG, task.getException().getMessage());
+                                Toast.makeText(SignInActivity.this, getString(R.string.registration_failed), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
+        }
         else{
             Log.e(TAG, "not validate");
         }

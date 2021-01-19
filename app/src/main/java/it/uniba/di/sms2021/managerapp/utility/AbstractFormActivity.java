@@ -1,8 +1,13 @@
 package it.uniba.di.sms2021.managerapp.utility;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -23,6 +28,15 @@ public abstract class AbstractFormActivity extends AbstractBottomNavigationActiv
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_baseline_clear_24);
+
+        //codice per nascondere la keyboard quando si clicca fuori dall'editText
+        findViewById(android.R.id.content).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                hideKeyboard(AbstractFormActivity.this);
+                return false;
+            }
+        });
     }
 
     @Override
@@ -43,5 +57,10 @@ public abstract class AbstractFormActivity extends AbstractBottomNavigationActiv
     public boolean onSupportNavigateUp() {
         finish();
         return super.onSupportNavigateUp();
+    }
+
+    public static void hideKeyboard(Activity context) {
+        InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow( context.getCurrentFocus().getWindowToken(), 0);
     }
 }

@@ -8,11 +8,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
@@ -21,6 +26,7 @@ import it.uniba.di.sms2021.managerapp.home.HomeActivity;
 import it.uniba.di.sms2021.managerapp.lists.RecyclerViewArrayAdapter;
 
 public class DegreeCoursesActivity extends AppCompatActivity {
+    private static final String TAG = "DegreeCoursesActivity";
     private RecyclerView recyclerView;
 
     private int userRole;
@@ -54,7 +60,6 @@ public class DegreeCoursesActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(String item) {
                 submitUser(item);
-
                 Intent intent = new Intent(DegreeCoursesActivity.this, HomeActivity.class);
 
                 // Pulisce il backstack delle activity (un utente non dovrebbe navigare indietro
@@ -73,11 +78,35 @@ public class DegreeCoursesActivity extends AppCompatActivity {
 
     private void submitUser (String userDegreeCourse) {
         int course = getUserCourseFromString(userDegreeCourse);
+        GoogleSignInAccount accountGoogle = GoogleSignIn.getLastSignedInAccount(this);
 
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        User user = new User(account.getId(), account.getGivenName(), account.getFamilyName(),
-                account.getEmail(), userRole, course);
-        usersReference.child(account.getId()).setValue(user);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        String id = mAuth.getCurrentUser().getUid();
+
+        /*Se non ha effettuato l'accesso con Google l'utente è presente sia in Authentication
+        * che in Realtime Database senza ruolo e corso quindi deve solo aggiornare quest'ultimi
+        */
+        if(mAuth.getCurrentUser()!=null && accountGoogle == null){
+
+            HashMap childUpdates = new HashMap();
+            childUpdates.put("/corso/", course);
+            childUpdates.put("/ruolo/", userRole);
+
+            usersReference.child(id).updateChildren(childUpdates);
+
+        }else{
+            /*se ha effettuato l'accesso con Google l'utente è presente solo in Authentication
+            * quindi salva l'utente in Realtime Database
+            */
+            if(mAuth.getCurrentUser()!=null && accountGoogle != null) {
+                User user = new User(id, accountGoogle.getGivenName(), accountGoogle.getFamilyName(),
+                        accountGoogle.getEmail(), userRole, course);
+                usersReference.child(id).setValue(user);
+
+            }
+        }
+
+
     }
 
     private int getUserCourseFromString (String course) {

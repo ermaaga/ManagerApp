@@ -36,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.home.HomeActivity;
 import it.uniba.di.sms2021.managerapp.utility.FormUtil;
 
@@ -103,6 +104,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onStart() {
         super.onStart();
 
+        if(mAuth.getCurrentUser()!=null && googleSignInAccount == null){
+            checkIfUserExistsAndGoToHome(mAuth.getCurrentUser().getUid());
+        }
+
         if (googleSignInAccount != null) {
             loginWithGoogleCredentials();
         }
@@ -132,7 +137,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                         Log.d(TAG, "Id of child: " + child.getKey());
                         found = true;
-                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                        User user = child.getValue(User.class);
+
+                        if(user.getRuolo() == 0){
+
+                            Intent intent = new Intent(LoginActivity.this, UserRoleActivity.class);
+                            startActivity(intent);
+                        }else{
+                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                        }
+
                     }
                 }
 
@@ -191,14 +205,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void loginWithGoogleCredentials() {
         AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(),
                 null);
-        loginWithCredentials(authCredential, googleSignInAccount.getId());
+        loginWithCredentials(authCredential);
     }
 
-    private void loginWithCredentials(AuthCredential credential, String accountId) {
+    private void loginWithCredentials(AuthCredential credential) {
         mAuth.signInWithCredential(credential).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-                checkIfUserExistsAndGoToHome(accountId);
+                checkIfUserExistsAndGoToHome(mAuth.getUid());
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
