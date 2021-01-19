@@ -139,8 +139,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         found = true;
                         User user = child.getValue(User.class);
 
+                        /*Se non ha effettuato l'accesso con Google l'utente è presente sia in Authentication
+                         * che in Realtime Database senza ruolo e corso quindi deve permettere la scelta di quest'ultimi
+                         */
                         if(user.getRuolo() == 0){
-
                             Intent intent = new Intent(LoginActivity.this, UserRoleActivity.class);
                             startActivity(intent);
                         }else{
@@ -149,7 +151,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
                     }
                 }
-
+                /*se ha effettuato l'accesso con Google l'utente è presente solo in Authentication
+                 * quindi deve permettere la scelta del ruolo e del corso e salvare l'utente in Realtime Database
+                 */
                 if (!found) {
                     Intent intent = new Intent(LoginActivity.this, UserRoleActivity.class);
                     startActivity(intent);
