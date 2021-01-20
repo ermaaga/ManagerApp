@@ -54,7 +54,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/button_choose_file"
+        android:id="@+id/button_select_file"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="84dp"
@@ -66,7 +66,7 @@
         app:layout_constraintTop_toBottomOf="@+id/desc_input_layout" />
 
     <Button
-        android:id="@+id/create_study_case"
+        android:id="@+id/button_create_study_case"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
