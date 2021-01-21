@@ -54,18 +54,6 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/button_select_file"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
-        android:layout_weight="1"
-        android:text="Choose"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.202"
-        app:layout_constraintStart_toEndOf="@+id/file_card"
-        app:layout_constraintTop_toBottomOf="@+id/desc_input_layout" />
-
-    <Button
         android:id="@+id/button_create_study_case"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -75,8 +63,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.455"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/file_card"
-        app:layout_constraintVertical_bias="0.487" />
+        app:layout_constraintTop_toBottomOf="@+id/file_card" />
 
     <include
         android:id="@+id/bottom_navigation"
@@ -88,12 +75,10 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/file_card"
-        android:layout_width="165dp"
-        android:layout_height="179dp"
-        android:layout_marginStart="20dp"
+        android:layout_width="411dp"
+        android:layout_height="188dp"
         android:layout_marginTop="20dp"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/desc_input_layout">
 
 
@@ -107,6 +92,7 @@
                 android:layout_height="80dp"
                 android:layout_marginTop="4dp"
                 android:contentDescription="@string/description_default_file_type"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.494"
                 app:layout_constraintStart_toStartOf="parent"
@@ -120,12 +106,13 @@
                 android:layout_height="39dp"
                 android:maxLines="2"
                 android:textSize="19sp"
-                tools:text="file"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/file_type_image_view"
-                app:layout_constraintVertical_bias="0.446" />
+                app:layout_constraintVertical_bias="0.446"
+                tools:text="file" />
 
             <TextView
                 android:id="@+id/file_size_text_view"
@@ -134,9 +121,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:textSize="16sp"
-                tools:text="16MB"
+                android:visibility="invisible"
                 app:layout_constraintStart_toStartOf="@+id/file_name_text_view"
-                app:layout_constraintTop_toBottomOf="@+id/file_name_text_view" />
+                app:layout_constraintTop_toBottomOf="@+id/file_name_text_view"
+                tools:text="16MB" />
+
+            <ImageButton
+                android:id="@+id/button_select_file"
+                android:layout_width="61dp"
+                android:layout_height="63dp"
+                android:backgroundTint="#3F51B5"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/file_type_image_view"
+                app:srcCompat="@android:drawable/stat_sys_upload" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

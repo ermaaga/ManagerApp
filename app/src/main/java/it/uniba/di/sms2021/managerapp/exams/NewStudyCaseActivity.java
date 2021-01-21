@@ -8,12 +8,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -46,7 +46,7 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
     StorageReference storageRef;
 
     Button buttoncreate;
-    Button buttonchoose;
+    ImageButton buttonchoose;
 
     TextInputEditText name;
     TextInputEditText desc;
@@ -74,8 +74,8 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        buttoncreate = findViewById(R.id.button_create_study_case);
-        buttonchoose = findViewById(R.id.button_select_file);
+        buttoncreate = (Button) findViewById(R.id.button_create_study_case);
+        buttonchoose = (ImageButton) findViewById(R.id.button_select_file);
 
         buttoncreate.setOnClickListener(this);
         buttonchoose.setOnClickListener(this);
@@ -203,7 +203,10 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
             sizeTextView.setText(FileUtil.getFormattedSize(NewStudyCaseActivity.this, size));
             FileUtil.setTypeImageView(NewStudyCaseActivity.this, typeImageView, FileUtil.getMimeTypeFromUri(NewStudyCaseActivity.this, fullFileUri));
 
-            cardView.setVisibility(View.VISIBLE);
+            nameTextView.setVisibility(View.VISIBLE);
+            sizeTextView.setVisibility(View.VISIBLE);
+            typeImageView.setVisibility(View.VISIBLE);
+            buttonchoose.setVisibility(View.INVISIBLE);
         }
     }
 
