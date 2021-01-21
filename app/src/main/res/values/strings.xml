@@ -60,6 +60,7 @@
     <string name="text_message_preview_open_failed">An error has occurred while opening the file.</string>
     <string name="text_message_temp_file_not_supported">The selected file isn\'t supported. Try downloading it instead.</string>
     <string name="text_message_group_created">The group was created</string>
+    <string name="text_message_file_study_case_failure">Upload failed</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 

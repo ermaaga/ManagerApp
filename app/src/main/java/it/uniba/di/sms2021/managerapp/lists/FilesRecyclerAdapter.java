@@ -58,19 +58,7 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
 
         nameTextView.setText(file.getName());
         sizeTextView.setText(FileUtil.getFormattedSize(context, file.getSize()));
-        setTypeImageView(typeImageView, file.getType());
-    }
-
-    private void setTypeImageView (ImageView imageView, String fileType) {
-        if (fileType.contains("image/")) {
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.image));
-        } else if (fileType.equals("application/pdf")) {
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.pdf));
-        } else {
-            //TODO rimuovere dall'applicazione finale
-            Toast.makeText(context, "Tipo " + fileType + " non supportato.", Toast.LENGTH_LONG).show();
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.file));
-        }
+        FileUtil.setTypeImageView(context, typeImageView, file.getType());
     }
 
     public interface OnActionListener {

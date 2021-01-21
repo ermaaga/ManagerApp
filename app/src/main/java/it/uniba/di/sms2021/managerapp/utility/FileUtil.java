@@ -6,9 +6,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.text.format.Formatter;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
+import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
 
 public class FileUtil {
@@ -63,6 +66,21 @@ public class FileUtil {
      */
     public static boolean isFilePreviewable (ManagerFile file) {
         return true; // TODO implementare con solo i file compatibili
+    }
+
+    /*Questo metodo era in FilesRecyclerAdapter ed è stato spostato qui perchè
+    * potrebbe essere utile in altre classi.
+    */
+    public static void setTypeImageView (Context context, ImageView imageView, String fileType) {
+        if (fileType.contains("image/")) {
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.image));
+        } else if (fileType.equals("application/pdf")) {
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.pdf));
+        } else {
+            //TODO rimuovere dall'applicazione finale
+            Toast.makeText(context, "Tipo " + fileType + " non supportato.", Toast.LENGTH_LONG).show();
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.file));
+        }
     }
 
 }

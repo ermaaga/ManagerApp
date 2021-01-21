@@ -92,6 +92,7 @@
         android:layout_height="179dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="20dp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/desc_input_layout">
 
