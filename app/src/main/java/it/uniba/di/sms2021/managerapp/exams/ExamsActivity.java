@@ -111,7 +111,7 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
 
     private void chooseExam (Exam exam) {
         Intent intent = new Intent(ExamsActivity.this, ExamDetailActivity.class);
-        intent.putExtra(Exam.Keys.ID, exam);
+        intent.putExtra(Exam.Keys.EXAM, exam);
         startActivity(intent);
     }
 

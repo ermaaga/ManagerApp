@@ -24,6 +24,7 @@ import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 import it.uniba.di.sms2021.managerapp.lists.StudyCasesRecyclerAdapter;
 
@@ -70,6 +71,7 @@ public class ExamStudyCasesFragment extends Fragment {
 
         //TODO far si che i casi di studio siano legati ad un esame e leggere solo i casi
         // di studio di un esame
+        Exam selectedExam = ((ExamDetailActivity) getActivity()).getSelectedExam();
         FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_STUDYCASES)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -77,7 +79,11 @@ public class ExamStudyCasesFragment extends Fragment {
                         List<StudyCase> studyCases = new ArrayList<>();
 
                         for (DataSnapshot child: snapshot.getChildren()) {
-                            studyCases.add(child.getValue(StudyCase.class));
+                            StudyCase currentStudyCase = child.getValue(StudyCase.class);
+
+                            if (currentStudyCase.getEsame().equals(selectedExam.getId())) {
+                                studyCases.add(currentStudyCase);
+                            }
                         }
 
                         adapter.submitList(studyCases);  //Ogni volta che i casi di studio
