@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -15,6 +16,8 @@ import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
 
 public class FileUtil {
+    private static final String TAG = "FileUtil";
+
     private FileUtil () { }
 
     public static String getFileNameFromURI (Context context, Uri uri) {
@@ -61,13 +64,6 @@ public class FileUtil {
         return Formatter.formatFileSize(context, size);
     }
 
-    /**
-     * Returns true if the file can be previewed in the app.
-     */
-    public static boolean isFilePreviewable (ManagerFile file) {
-        return true; // TODO implementare con solo i file compatibili
-    }
-
     /*Questo metodo era in FilesRecyclerAdapter ed è stato spostato qui perchè
     * potrebbe essere utile in altre classi.
     */
@@ -76,9 +72,16 @@ public class FileUtil {
             imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.image));
         } else if (fileType.equals("application/pdf")) {
             imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.pdf));
+        } else if (fileType.contains("audio/")) {
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.audio));
+        } else if (fileType.contains("video/")) {
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.video));
+        } else if (fileType.contains("text/plain")) {
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.text));
+        } else if (fileType.contains("application/vnd.android.package-archive")) {
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.apk));
         } else {
-            //TODO rimuovere dall'applicazione finale
-            Toast.makeText(context, "Tipo " + fileType + " non supportato.", Toast.LENGTH_LONG).show();
+            Log.i(TAG, "Tipo " + fileType + " non supportato.");
             imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.file));
         }
     }

@@ -28,6 +28,7 @@
     <string name="text_label_exam_groups">Groups</string>
     <string name="text_label_button_student">Student</string>
     <string name="text_label_button_professor">Professor</string>
+    <string name="text_label_upload_dialog_title">Upload</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
@@ -61,6 +62,8 @@
     <string name="text_message_temp_file_not_supported">The selected file isn\'t supported. Try downloading it instead.</string>
     <string name="text_message_group_created">The group was created</string>
     <string name="text_message_file_study_case_failure">Upload failed</string>
+    <string name="text_message_upload_progress">Upload is %.2f%% done</string>
+    <string name="text_message_file_preview_message">To preview the file, an external app will be used.</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -73,6 +76,10 @@
     <string name="text_button_new_exam_decline">Decline</string>
     <string name="text_button_save_new_group">Save</string>
     <string name="text_button_go_create_group">Create group</string>
+    <string name="text_button_dismiss">Dismiss</string>
+    <string name="text_button_download">Download</string>
+    <string name="text_button_confirm">Confirm</string>
+    <string name="text_button_cancel">Cancel</string>
 
     <string name="text_hint_email_user" translatable="false">Email</string>
     <string name="text_hint_password_user" translatable="false">Password</string>
@@ -81,6 +88,5 @@
     <string name="text_hint_name_user">Name</string>
     <string name="text_hint_surname_user">Surname</string>
     <string name="text_hint_desc_study_case">Description</string>
-
 
 </resources>

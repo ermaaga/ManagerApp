@@ -26,6 +26,7 @@
     <string name="text_label_exam_groups">Gruppi</string>
     <string name="text_label_button_student">Studente</string>
     <string name="text_label_button_professor">Professore</string>
+    <string name="text_label_upload_dialog_title">Caricamento</string>
 
     <string name="registration_success">Registrazione avvenuta con successo</string>
     <string name="send_verification_email_success">Email di verifica inviata a </string>
@@ -53,6 +54,8 @@
     <string name="text_message_preview_open_failed">Si è verificato un errore mentre si tentava di aprire il file.</string>
     <string name="text_message_temp_file_not_supported">Il file selezionato non è supportato. Prova a scaricarlo.</string>
     <string name="text_message_file_study_case_failure">Caricamento fallito</string>
+    <string name="text_message_upload_progress">Caricamento completato al %.2f%%</string>
+    <string name="text_message_file_preview_message">Per visualizzare il file, sarà utilizzata una app esterna.</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -67,6 +70,10 @@
     <string name="text_button_new_exam_decline">Elimina</string>
     <string name="text_button_save_new_group">Salva</string>
     <string name="text_button_go_create_group">Crea gruppo</string>
+    <string name="text_button_dismiss">Ignora</string>
+    <string name="text_button_download">Scarica</string>
+    <string name="text_button_confirm">Conferma</string>
+    <string name="text_button_cancel">Annulla</string>
 
     <string name="text_hint_name_studycase">Nome</string>
     <string name="text_hint_name_group">Nome</string>

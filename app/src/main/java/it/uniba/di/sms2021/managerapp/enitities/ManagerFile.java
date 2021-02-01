@@ -23,6 +23,13 @@ public class ManagerFile {
     String type;
     Long size;
 
+    /**
+     *
+     * @param reference il riferimento del file in firebase storage
+     * @param name il nome completo del file inclusa l'estensione
+     * @param type il tipo mime del file
+     * @param size dimensione del file in byte
+     */
     public ManagerFile(@NonNull StorageReference reference, String name, String type, Long size) {
         this.reference = reference;
         this.name = name;
@@ -37,6 +44,10 @@ public class ManagerFile {
 
     public String getName() {
         return name;
+    }
+
+    public String getNameWithoutExtension() {
+        return name.replaceAll("[.].{2,4}$", "");
     }
 
     public String getType() {
