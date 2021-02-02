@@ -46,6 +46,13 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        getSupportActionBar().setTitle(exam.getName());
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.activity_exam_detail;
     }
