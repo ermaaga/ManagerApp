@@ -74,7 +74,7 @@ public class ExamsRecyclerAdapter extends ListAdapter<Exam, RecyclerView.ViewHol
         }
     }
 
-    //Nota: questo metodo è placeholder, capire se c'è un metodo migliore.
+    //TODO Nota: questo metodo è placeholder, capire se c'è un metodo migliore.
     public void setFirstProfessorName(TextView textView, Exam exam) {
         DatabaseReference ref = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS);
         ref.addValueEventListener(new ValueEventListener() {

@@ -1,16 +1,19 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.android.material.tabs.TabLayout;
 
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.db.Project;
 import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
@@ -18,6 +21,10 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     private static final int NOTICES_TAB_POSITION = 0;
     private static final int FILES_TAB_POSITION = 1;
     private static final int MEMBERS_TAB_POSITION = 2;
+
+    private static final String TAG = "ProjectDetailActivity";
+
+    private Project project;
 
     @Override
     protected Fragment getInitialFragment() {
@@ -29,6 +36,18 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         super.onCreate(savedInstanceState);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        project = getIntent().getParcelableExtra(Project.KEY);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(project.getName() + " - " + project.getStudyCaseName());
+        actionBar.setSubtitle(project.getExamName());
+        Log.i(TAG, project.toString());
     }
 
     @Override
@@ -87,5 +106,9 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         }
 
         return super.onSupportNavigateUp();
+    }
+
+    public Project getSelectedProject () {
+        return project;
     }
 }

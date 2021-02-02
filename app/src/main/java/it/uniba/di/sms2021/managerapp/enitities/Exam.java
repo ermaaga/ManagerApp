@@ -193,10 +193,10 @@ public class Exam implements Parcelable {
 
     public interface Keys{
         String EXAM = "exam";
-        String ID = "id";
-        String NAME = "name";
-        String PROFESSORS = "professors";
-        String STUDENTS = "students";
-        String YEAR = "year";
+        String ID = "exam_id";
+        String NAME = "exam_name";
+        String PROFESSORS = "exam_professors";
+        String STUDENTS = "exam_students";
+        String YEAR = "exam_year";
     }
 }

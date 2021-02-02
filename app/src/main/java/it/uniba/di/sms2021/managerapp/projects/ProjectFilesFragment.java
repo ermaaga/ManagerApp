@@ -44,6 +44,7 @@ import java.util.Set;
 
 import it.uniba.di.sms2021.managerapp.BuildConfig;
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.db.Project;
 import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
 import it.uniba.di.sms2021.managerapp.lists.FilesRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
@@ -56,16 +57,18 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
 
     // Si possono visualizzare file grandi massimo 10MB
     private static final int MAX_TEMP_FILE_SIZE = 1024*1024*10;
-    private String gruppo = "Gruppo1";
 
-    //TODO rendere riferimento dinamico
-    private StorageReference storageRef = FirebaseStorage.getInstance().getReference().child(gruppo);
+    private StorageReference storageRef;
     private Set<StorageReference> elaboratingReferences;
     private List<ManagerFile> files;
 
     private FilesRecyclerAdapter adapter;
 
+    private static final String GROUPS_FOLDER = "Groups";
+
     private boolean previewWarning = true;
+
+    private Project project;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,6 +82,9 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         FloatingActionButton addFileFloatingActionButton =
                 view.findViewById(R.id.files_add_file_floating_action_button);
         addFileFloatingActionButton.setOnClickListener(this);
+
+        project = ((ProjectDetailActivity)getActivity()).getSelectedProject();
+        storageRef = FirebaseStorage.getInstance().getReference().child(GROUPS_FOLDER).child(project.getId());
 
         RecyclerView filesRecyclerView = view.findViewById(R.id.files_recyclerView);
         adapter = new FilesRecyclerAdapter(getContext(), new FilesRecyclerAdapter.OnActionListener() {
@@ -224,7 +230,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         dialog.setTitle(R.string.text_label_upload_dialog_title);
         dialog.show();
 
-        uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+        uploadTask.addOnProgressListener(requireActivity(), new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
                 double progress =  Math.round((100.0 *
@@ -262,7 +268,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
             return;
         }
 
-        File path = new File(getContext().getFilesDir(), gruppo);
+        File path = new File(getContext().getFilesDir(), project.getId());
         if (!path.exists()) {
             path.mkdirs();
         }

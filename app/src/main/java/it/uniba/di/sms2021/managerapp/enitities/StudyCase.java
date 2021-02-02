@@ -55,6 +55,16 @@ public class StudyCase implements Parcelable {
     }
 
     @Override
+    public String toString() {
+        return "StudyCase{" +
+                "id='" + id + '\'' +
+                ", nome='" + nome + '\'' +
+                ", descrizione='" + descrizione + '\'' +
+                ", esame='" + esame + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -101,10 +111,10 @@ public class StudyCase implements Parcelable {
     };
 
     public interface Keys{
-        String ID = "id";
-        String NOME = "nome";
-        String DESCRIZIONE = "descrizione";
-        String ESAME = "esame";
+        String ID = "studyCase_id";
+        String NOME = "studyCase_nome";
+        String DESCRIZIONE = "studyCase_descrizione";
+        String ESAME = "studyCase_esame";
 
     }
 }

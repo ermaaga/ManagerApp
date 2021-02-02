@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.Toolbar
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
@@ -12,4 +11,7 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     app:menu="@menu/menu_main"
+    app:subtitleTextAppearance="@style/ToolbarSubtitle"
+    app:subtitleTextColor="?android:attr/textColorSecondaryInverse"
+    app:titleTextAppearance="@style/ToolbarTitle"
     app:titleTextColor="@color/white" />
