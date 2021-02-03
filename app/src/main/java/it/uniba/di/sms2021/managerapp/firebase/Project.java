@@ -1,4 +1,4 @@
-package it.uniba.di.sms2021.managerapp.db;
+package it.uniba.di.sms2021.managerapp.firebase;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -35,6 +35,10 @@ public class Project implements Parcelable {
          */
         public abstract void onProjectInitialised (Project project);
 
+        /**
+         * Initializza il progetto con tutti i campi necessari a partire dal gruppo
+         * @param group il gruppo associato al progetto
+         */
         public void initialiseProject(Group group) {
             project = new Project(group);
 
@@ -159,7 +163,10 @@ public class Project implements Parcelable {
         this.examName = examName;
     }
 
-    public boolean isInitialisationDone () {
+    /**
+     * Ritorna true se tutti i campi sono stati inizializzati, false altrimenti
+     */
+    private boolean isInitialisationDone () {
         return studyCaseName != null && examName != null;
     }
 

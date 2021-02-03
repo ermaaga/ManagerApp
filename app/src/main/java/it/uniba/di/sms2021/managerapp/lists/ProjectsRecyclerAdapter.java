@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.db.Project;
+import it.uniba.di.sms2021.managerapp.firebase.Project;
 
 public class ProjectsRecyclerAdapter extends ListAdapter<Project, RecyclerView.ViewHolder>  {
     OnActionListener listener;

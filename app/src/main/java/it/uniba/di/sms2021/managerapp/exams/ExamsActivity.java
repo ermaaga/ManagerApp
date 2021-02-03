@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.lists.ExamsRecyclerAdapter;

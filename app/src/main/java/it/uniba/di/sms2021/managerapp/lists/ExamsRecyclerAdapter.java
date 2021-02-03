@@ -17,7 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 

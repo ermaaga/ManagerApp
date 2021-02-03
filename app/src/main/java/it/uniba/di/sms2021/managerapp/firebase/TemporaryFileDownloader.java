@@ -1,7 +1,6 @@
-package it.uniba.di.sms2021.managerapp.db;
+package it.uniba.di.sms2021.managerapp.firebase;
 
 import android.content.Context;
-import android.net.Uri;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,8 +48,8 @@ public abstract class TemporaryFileDownloader {
     }
 
     /**
-     * Scarica il file in una cartella interna, chiama onSuccessAction quando usando il file scaricato
-     * o il file in memoria se già era presente.
+     * Scarica il file in una cartella interna e quando finisce chiama onSuccessAction usando
+     * il file scaricato o il file in memoria se già era presente.
      *
      * @param file il file da scaricare
      * @param internalFolderName nome della cartella in cui salvare il file

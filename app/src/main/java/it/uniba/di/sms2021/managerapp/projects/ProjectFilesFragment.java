@@ -10,7 +10,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,7 +26,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.OnPausedListener;
@@ -42,10 +40,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import it.uniba.di.sms2021.managerapp.BuildConfig;
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.db.Project;
-import it.uniba.di.sms2021.managerapp.db.TemporaryFileDownloader;
+import it.uniba.di.sms2021.managerapp.firebase.Project;
+import it.uniba.di.sms2021.managerapp.firebase.TemporaryFileDownloader;
 import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
 import it.uniba.di.sms2021.managerapp.lists.FilesRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;

@@ -18,7 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.HashMap;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.home.HomeActivity;
 import it.uniba.di.sms2021.managerapp.lists.RecyclerViewArrayAdapter;

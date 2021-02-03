@@ -29,7 +29,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 import it.uniba.di.sms2021.managerapp.utility.AbstractFormActivity;

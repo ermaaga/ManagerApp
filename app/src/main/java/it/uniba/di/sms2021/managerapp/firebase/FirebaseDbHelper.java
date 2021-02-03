@@ -1,4 +1,4 @@
-package it.uniba.di.sms2021.managerapp.db;
+package it.uniba.di.sms2021.managerapp.firebase;
 
 import com.google.firebase.database.FirebaseDatabase;
 

@@ -1,8 +1,7 @@
-package it.uniba.di.sms2021.managerapp.db;
+package it.uniba.di.sms2021.managerapp.firebase;
 
 import android.content.Context;
 
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import it.uniba.di.sms2021.managerapp.R;

@@ -5,14 +5,11 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.common.api.GoogleApi;
 import com.google.firebase.auth.FirebaseAuth;
 
 import it.uniba.di.sms2021.managerapp.NotificationsActivity;
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.db.LoginHelper;
+import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.login.LoginActivity;
 
 public class MenuUtil {

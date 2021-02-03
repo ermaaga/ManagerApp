@@ -21,11 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
-import it.uniba.di.sms2021.managerapp.enitities.Exam;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
-import it.uniba.di.sms2021.managerapp.db.Project;
-import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
+import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.lists.ProjectsRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;

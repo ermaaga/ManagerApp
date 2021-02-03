@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import com.google.android.material.tabs.TabLayout;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.db.Project;
+import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 

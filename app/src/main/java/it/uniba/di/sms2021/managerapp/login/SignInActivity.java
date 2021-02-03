@@ -2,11 +2,8 @@ package it.uniba.di.sms2021.managerapp.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -24,10 +21,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
-import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.User;
-import it.uniba.di.sms2021.managerapp.exams.NewStudyCaseActivity;
 import it.uniba.di.sms2021.managerapp.utility.AbstractFormActivity;
 import it.uniba.di.sms2021.managerapp.utility.FormUtil;
 
