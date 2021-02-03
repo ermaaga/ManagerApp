@@ -41,7 +41,7 @@
                 android:maxLines="2"
                 android:textSize="19sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/file_action_overflow_image_view"
                 app:layout_constraintStart_toEndOf="@+id/file_type_image_view"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Caso di studio sugli animali in corso di estinzione - Presentazione" />
@@ -56,6 +56,18 @@
                 app:layout_constraintStart_toStartOf="@+id/file_name_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/file_name_text_view"
                 tools:text="16MB" />
+
+            <ImageView
+                android:id="@+id/file_action_overflow_image_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="@string/description_file_actions"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_baseline_more_vert_32" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 

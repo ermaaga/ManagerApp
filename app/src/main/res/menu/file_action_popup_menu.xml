@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/file_download_action"
+        android:title="@string/text_action_download_file" />
+    <item android:id="@+id/file_delete_action"
+        android:title="@string/text_action_delete_file" />
+    <item android:id="@+id/file_share_action"
+        android:title="@string/text_action_share_file" />
+</menu>

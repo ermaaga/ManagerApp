@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
@@ -93,6 +94,41 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                 showFile(file);
                 /*Toast.makeText(getContext(), R.string.text_message_not_yet_implemented,
                         Toast.LENGTH_SHORT).show();*/
+            }
+
+            @Override
+            public void onDelete(ManagerFile file) {
+                // Delete the file
+                file.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        // File deleted successfully
+                        files.remove(file);
+                        adapter.submitList(files);
+                        adapter.notifyDataSetChanged();
+                        Snackbar.make(requireView(), R.string.text_message_file_deleted_successfully,
+                                Snackbar.LENGTH_LONG).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception exception) {
+                        // Uh-oh, an error occurred!
+                        Snackbar.make(requireView(), R.string.text_message_file_deletion_failed,
+                                Snackbar.LENGTH_LONG).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onShare(ManagerFile file) {
+                Toast.makeText(getContext(), R.string.text_message_not_yet_implemented,
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDownload(ManagerFile file) {
+                Toast.makeText(getContext(), R.string.text_message_not_yet_implemented,
+                        Toast.LENGTH_SHORT).show();
             }
         });
         filesRecyclerView.setAdapter(adapter);

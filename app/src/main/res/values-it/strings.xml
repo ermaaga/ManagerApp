@@ -47,15 +47,18 @@
     <string name="description_add_study_case">Aggiungi un Caso di Studio</string>
     <string name="description_add_file">Aggiungi un File</string>
     <string name="description_default_file_type">Tipo di file non trovato</string>
+    <string name="description_file_actions">Azioni File</string>
 
     <string name="text_message_not_yet_implemented">Funzionalità non ancora implementata</string>
     <string name="text_message_study_case_created">Il caso di studio è stato creato</string>
-    <string name="text_message_temp_file_too_big"> Il file selezionato è troppo grande per visualizzarne un\'anteprima.</string>
-    <string name="text_message_preview_open_failed">Si è verificato un errore mentre si tentava di aprire il file.</string>
-    <string name="text_message_temp_file_not_supported">Il file selezionato non è supportato. Prova a scaricarlo.</string>
+    <string name="text_message_temp_file_too_big"> Il file selezionato è troppo grande per visualizzarne un\'anteprima</string>
+    <string name="text_message_preview_open_failed">Si è verificato un errore mentre si tentava di aprire il file</string>
+    <string name="text_message_temp_file_not_supported">Il file selezionato non è supportato. Prova a scaricarlo</string>
     <string name="text_message_file_study_case_failure">Caricamento fallito</string>
     <string name="text_message_upload_progress">Caricamento completato al %.2f%%</string>
-    <string name="text_message_file_preview_message">Per visualizzare il file, sarà utilizzata una app esterna.</string>
+    <string name="text_message_file_preview_message">Per visualizzare il file, sarà utilizzata una app esterna</string>
+    <string name="text_message_file_deletion_failed">Non è stato possibile eliminare il file, riprova successivamente</string>
+    <string name="text_message_file_deleted_successfully">File eliminato con successo</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -81,6 +84,8 @@
     <string name="text_hint_surname_user">Cognome</string>
     <string name="text_hint_desc_study_case">Descrizione</string>
 
-
+    <string name="text_action_delete_file">Elimina</string>
+    <string name="text_action_share_file">Condividi</string>
+    <string name="text_action_download_file">Scarica</string>
 
 </resources>
