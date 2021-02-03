@@ -11,7 +11,11 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
+import java.io.File;
+
+import it.uniba.di.sms2021.managerapp.BuildConfig;
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
 
@@ -84,6 +88,15 @@ public class FileUtil {
             Log.i(TAG, "Tipo " + fileType + " non supportato.");
             imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.file));
         }
+    }
+
+    /**
+     * Ritorna l'uri del file se presente nella memoria interna dell'app.
+     * Per far sì che accetti altre locazioni, modificare il provider nel manifest.
+     */
+    public static Uri getUriFromFile (Context context, File localFile) {
+        return FileProvider.getUriForFile(context,
+                BuildConfig.APPLICATION_ID + ".provider", localFile);
     }
 
 }

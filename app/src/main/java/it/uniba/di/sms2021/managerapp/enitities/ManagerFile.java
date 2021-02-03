@@ -1,17 +1,10 @@
 package it.uniba.di.sms2021.managerapp.enitities;
 
-import android.content.Context;
-import android.net.Uri;
-import android.text.format.Formatter;
-
 import androidx.annotation.NonNull;
 
 import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
 import java.util.Objects;
-
-import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 
 /**
  * Entità che rappresenta un file caricato usando l'app
@@ -22,6 +15,7 @@ public class ManagerFile {
     String name;
     String type;
     Long size;
+    Long lastUpdateTime;
 
     /**
      *
@@ -29,12 +23,14 @@ public class ManagerFile {
      * @param name il nome completo del file inclusa l'estensione
      * @param type il tipo mime del file
      * @param size dimensione del file in byte
+     * @param lastUpdateTime tempo dall'ultimo aggiornamento in ms
      */
-    public ManagerFile(@NonNull StorageReference reference, String name, String type, Long size) {
+    public ManagerFile(@NonNull StorageReference reference, String name, String type, Long size, Long lastUpdateTime) {
         this.reference = reference;
         this.name = name;
         this.type = type;
         this.size = size;
+        this.lastUpdateTime = lastUpdateTime;
     }
 
     @NonNull
@@ -58,6 +54,10 @@ public class ManagerFile {
         return size;
     }
 
+    public Long getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -66,12 +66,13 @@ public class ManagerFile {
         return reference.equals(that.reference) &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(type, that.type) &&
-                Objects.equals(size, that.size);
+                Objects.equals(size, that.size) &&
+                Objects.equals(lastUpdateTime, that.lastUpdateTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(reference, name, type, size);
+        return Objects.hash(reference, name, type, size, lastUpdateTime);
     }
 
     @Override
@@ -81,6 +82,7 @@ public class ManagerFile {
                 ", name='" + name + '\'' +
                 ", type='" + type + '\'' +
                 ", size=" + size +
+                ", creationTime=" + lastUpdateTime +
                 '}';
     }
 }

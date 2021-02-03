@@ -26,7 +26,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
@@ -96,6 +95,11 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                         Toast.LENGTH_SHORT).show();*/
             }
 
+            /**
+             * Codice preso e modificato da:
+             * https://firebase.google.com/docs/storage/android/delete-files
+             * @param file file da cancellare
+             */
             @Override
             public void onDelete(ManagerFile file) {
                 // Delete the file
@@ -173,7 +177,8 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                                 public void onSuccess(StorageMetadata storageMetadata) {
                                     files.add(new ManagerFile(item, item.getName(),
                                             storageMetadata.getContentType(),
-                                            storageMetadata.getSizeBytes()));
+                                            storageMetadata.getSizeBytes(),
+                                            storageMetadata.getUpdatedTimeMillis()));
                                     dropElaboratingReference(item);
                                 }
                             });
@@ -228,17 +233,17 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    static final int REQUEST_IMAGE_GET = 1;
+    static final int REQUEST_DOCUMENT_GET = 1;
 
     private void selectDocument() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
-        startActivityForResult(intent, REQUEST_IMAGE_GET);
+        startActivityForResult(intent, REQUEST_DOCUMENT_GET);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_DOCUMENT_GET && resultCode == RESULT_OK) {
             Bitmap thumbnail = data.getParcelableExtra("data"); /*TODO farci qualcosa come mostrare una finestra di dialogo
                                                                          che mostri il progresso dell'upload e che usi il thumbnail*/
             Uri fullPhotoUri = data.getData();
@@ -298,6 +303,10 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         });
     }
 
+    /**
+     * Scarica il file in una cartella interna e lo visualizza usando un'app esterna in grado di farlo.
+     * @param file file da visualizzare
+     */
     private void showFile (ManagerFile file) {
         if (file.getSize() > MAX_TEMP_FILE_SIZE) {
             showDownloadSuggestion(R.string.text_message_temp_file_too_big);
@@ -309,47 +318,60 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
             path.mkdirs();
         }
         File localFile = new File(path, file.getName());
+        if (localFile.exists()) {
+            Uri uri = FileUtil.getUriFromFile(getContext(), localFile);
 
-        file.getReference().getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-            @Override
-            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                //Ottengo l'uri del file salvato in memoria
-                Uri uri = FileProvider.getUriForFile(getContext(),
-                        BuildConfig.APPLICATION_ID + ".provider", localFile);
+            previewFile(uri, file);
+        } else {
+            file.getReference().getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    //Ottengo l'uri del file salvato in memoria
+                    Uri uri = FileUtil.getUriFromFile(getContext(), localFile);
 
-                if (previewWarning) {
-                    //Avvisa l'utente che l'app userà applicazioni esterne per fare la preview
-                    new AlertDialog.Builder(getContext()).setMessage(R.string.text_message_file_preview_message)
-                            .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            previewWarning = false;
-                                            //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
-                                            if (!openFile(uri, file.getType())) {
-                                                showDownloadSuggestion(R.string.text_message_temp_file_not_supported);
-                                            }
-                                        }
-                                    }
-                            ).setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    }).create().show();
-                } else {
-                    //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
-                    if (!openFile(uri, file.getType())) {
-                        showDownloadSuggestion(R.string.text_message_temp_file_not_supported);
-                    }
+                    previewFile(uri, file);
                 }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Toast.makeText(getContext(), R.string.text_message_preview_open_failed,
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+    }
+
+    /**
+     *
+     * @param uri
+     * @param file
+     */
+    private void previewFile(Uri uri, ManagerFile file) {
+        if (previewWarning) {
+            //Avvisa l'utente che l'app userà applicazioni esterne per fare la preview
+            new AlertDialog.Builder(getContext()).setMessage(R.string.text_message_file_preview_message)
+                    .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    previewWarning = false;
+                                    //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
+                                    if (!openFileWithViewIntent(uri, file.getType())) {
+                                        showDownloadSuggestion(R.string.text_message_temp_file_not_supported);
+                                    }
+                                }
+                            }
+                    ).setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            }).create().show();
+        } else {
+            //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
+            if (!openFileWithViewIntent(uri, file.getType())) {
+                showDownloadSuggestion(R.string.text_message_temp_file_not_supported);
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception exception) {
-                Toast.makeText(getContext(), R.string.text_message_preview_open_failed,
-                        Toast.LENGTH_LONG).show();
-            }
-        });
+        }
     }
 
     /**
@@ -358,7 +380,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
      * @param mimeType il tipo mime del file
      * @return true se il file è apribile, false altrimenti
      */
-    private boolean openFile (Uri uri, String mimeType) {
+    private boolean openFileWithViewIntent(Uri uri, String mimeType) {
         // I file apk devono prima essere scaricati
         if (mimeType.equals(("application/vnd.android.package-archive"))) {
             return false;

@@ -56,7 +56,7 @@
             android:label="@string/activity_label_detail_study_case" />
 
         <!-- Provider che gestisce le richieste di acquisizione di Uri per file presenti nella
-             cache dell'app. -->
+             cartella interna dell'app. -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
