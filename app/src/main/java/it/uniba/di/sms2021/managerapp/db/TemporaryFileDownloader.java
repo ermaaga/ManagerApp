@@ -30,6 +30,10 @@ public abstract class TemporaryFileDownloader {
      * @param messageRes il messaggio da mostrare
      */
     protected abstract void showDownloadSuggestion(int messageRes);
+
+    /**
+     * Specifica l'azione da compiere quando il file è stato scaricato.
+     */
     protected abstract void onSuccessAction(File localFile);
 
     private Context context;

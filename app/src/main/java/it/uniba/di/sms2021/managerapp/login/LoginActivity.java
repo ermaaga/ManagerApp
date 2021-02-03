@@ -36,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.db.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.db.LoginHelper;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.home.HomeActivity;
 import it.uniba.di.sms2021.managerapp.utility.FormUtil;
@@ -88,10 +89,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         loginGoogleButton.setOnClickListener(this);
 
 
-        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
+        gso = LoginHelper.getOptions(this);
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
 

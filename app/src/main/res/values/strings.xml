@@ -29,6 +29,7 @@
     <string name="text_label_button_student">Student</string>
     <string name="text_label_button_professor">Professor</string>
     <string name="text_label_upload_dialog_title">Upload</string>
+    <string name="text_label_logout">Logout</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>

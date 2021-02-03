@@ -27,6 +27,7 @@
     <string name="text_label_button_student">Studente</string>
     <string name="text_label_button_professor">Professore</string>
     <string name="text_label_upload_dialog_title">Caricamento</string>
+    <string name="text_label_logout">Disconnettiti</string>
 
     <string name="registration_success">Registrazione avvenuta con successo</string>
     <string name="send_verification_email_success">Email di verifica inviata a </string>
@@ -89,6 +90,6 @@
     <string name="text_action_download_file">Scarica</string>
 
     <string name="text_send_subject">Condivisione File</string>
-    <string name="text_send_content">Date un\'occhiata al mio nuovo file %s che ho creato con il mio progetto %s!</string>
+    <string name="text_send_content">Date un\'occhiata al mio nuovo file %s che ho creato nel mio progetto %s!</string>
 
 </resources>

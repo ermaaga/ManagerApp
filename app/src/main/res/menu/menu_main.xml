@@ -5,11 +5,16 @@
         android:id="@+id/action_notifications"
         android:enabled="true"
         android:icon="@drawable/ic_baseline_notifications_24"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="@string/text_label_notifications" />
     <item
         android:id="@+id/action_settings"
         android:enabled="true"
         app:showAsAction="never"
         android:title="@string/text_label_settings" />
+    <item
+        android:id="@+id/action_logout"
+        android:enabled="true"
+        app:showAsAction="never"
+        android:title="@string/text_label_logout" />
 </menu>
