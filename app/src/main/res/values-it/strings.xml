@@ -88,4 +88,7 @@
     <string name="text_action_share_file">Condividi</string>
     <string name="text_action_download_file">Scarica</string>
 
+    <string name="text_send_subject">Condivisione File</string>
+    <string name="text_send_content">Date un\'occhiata al mio nuovo file %s che ho creato con il mio progetto %s!</string>
+
 </resources>

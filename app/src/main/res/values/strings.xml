@@ -96,4 +96,7 @@
     <string name="text_action_share_file">Share</string>
     <string name="text_action_download_file">Download</string>
 
+    <string name="text_send_subject">File Sharing</string>
+    <string name="text_send_content">Check out my new file %s that i created in my project %s!</string>
+
 </resources>

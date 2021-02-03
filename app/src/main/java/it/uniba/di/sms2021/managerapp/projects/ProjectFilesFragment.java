@@ -45,6 +45,7 @@ import java.util.Set;
 import it.uniba.di.sms2021.managerapp.BuildConfig;
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.db.Project;
+import it.uniba.di.sms2021.managerapp.db.TemporaryFileDownloader;
 import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
 import it.uniba.di.sms2021.managerapp.lists.FilesRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
@@ -54,9 +55,6 @@ import static android.app.Activity.RESULT_OK;
 public class ProjectFilesFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "ProjectFilesFragment";
-
-    // Si possono visualizzare file grandi massimo 10MB
-    private static final int MAX_TEMP_FILE_SIZE = 1024*1024*10;
 
     private StorageReference storageRef;
     private Set<StorageReference> elaboratingReferences;
@@ -87,12 +85,27 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         storageRef = FirebaseStorage.getInstance().getReference().child(GROUPS_FOLDER).child(project.getId());
 
         RecyclerView filesRecyclerView = view.findViewById(R.id.files_recyclerView);
+
+        //Nel listener dichiaro tutte le azioni eseguibili su un file della lista
         adapter = new FilesRecyclerAdapter(getContext(), new FilesRecyclerAdapter.OnActionListener() {
             @Override
             public void onClick(ManagerFile file) {
-                showFile(file);
-                /*Toast.makeText(getContext(), R.string.text_message_not_yet_implemented,
-                        Toast.LENGTH_SHORT).show();*/
+
+                //Scarica il file temporaneo e lo visualizza usando un app esterna
+                new TemporaryFileDownloader(getContext()) {
+                    @Override
+                    protected void showDownloadSuggestion(int messageRes) {
+                        //Mostra un messaggio qualora il file non sia scaricabile come file temporaneo
+                        ProjectFilesFragment.this.showDownloadSuggestion(messageRes);
+                    }
+
+                    @Override
+                    protected void onSuccessAction(File localFile) {
+                        Uri uri = FileUtil.getUriFromFile(getContext(), localFile);
+
+                        previewFile(uri, file);
+                    }
+                }.downloadTempFile(file, project.getId());
             }
 
             /**
@@ -125,8 +138,36 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
 
             @Override
             public void onShare(ManagerFile file) {
-                Toast.makeText(getContext(), R.string.text_message_not_yet_implemented,
-                        Toast.LENGTH_SHORT).show();
+                //Scarica il file temporaneo e lo condivido permettendo all'utente di scegliere il
+                //mezzo di condivisione.
+                new TemporaryFileDownloader(getContext()) {
+                    @Override
+                    protected void showDownloadSuggestion(int messageRes) {
+                        ProjectFilesFragment.this.showDownloadSuggestion(messageRes);
+                    }
+
+                    @Override
+                    protected void onSuccessAction(File localFile) {
+                        Uri uri = FileUtil.getUriFromFile(getContext(), localFile);
+
+                        Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+
+                        if(uri != null) {
+                            intentShareFile.setType(file.getType());
+                            intentShareFile.putExtra(Intent.EXTRA_STREAM, uri);
+
+                            intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
+                                    R.string.text_send_subject);
+                            intentShareFile.putExtra(Intent.EXTRA_TEXT,
+                                    getString(R.string.text_send_content,
+                                    file.getName(), project.getName()));
+
+                            startActivity(Intent.createChooser(intentShareFile, "Share File"));
+                        }
+                    }
+                }.downloadTempFile(file, project.getId());
+
+
             }
 
             @Override
@@ -304,47 +345,8 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     }
 
     /**
-     * Scarica il file in una cartella interna e lo visualizza usando un'app esterna in grado di farlo.
-     * @param file file da visualizzare
-     */
-    private void showFile (ManagerFile file) {
-        if (file.getSize() > MAX_TEMP_FILE_SIZE) {
-            showDownloadSuggestion(R.string.text_message_temp_file_too_big);
-            return;
-        }
-
-        File path = new File(getContext().getFilesDir(), project.getId());
-        if (!path.exists()) {
-            path.mkdirs();
-        }
-        File localFile = new File(path, file.getName());
-        if (localFile.exists()) {
-            Uri uri = FileUtil.getUriFromFile(getContext(), localFile);
-
-            previewFile(uri, file);
-        } else {
-            file.getReference().getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    //Ottengo l'uri del file salvato in memoria
-                    Uri uri = FileUtil.getUriFromFile(getContext(), localFile);
-
-                    previewFile(uri, file);
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    Toast.makeText(getContext(), R.string.text_message_preview_open_failed,
-                            Toast.LENGTH_LONG).show();
-                }
-            });
-        }
-    }
-
-    /**
-     *
-     * @param uri
-     * @param file
+     * Mostra un messaggio informativo all'utente ed apre il file usando una della applicazioni
+     * installate.
      */
     private void previewFile(Uri uri, ManagerFile file) {
         if (previewWarning) {
@@ -409,7 +411,10 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         Toast.makeText(getContext(), R.string.text_message_not_yet_implemented, Toast.LENGTH_SHORT).show();
     }
 
-
+    /**
+     * Mostra un messaggio qualora il file non sia scaricabile come file temporaneo
+     * @param textMessageId il messaggio da visualizzare
+     */
     private void showDownloadSuggestion (int textMessageId) {
         Snackbar.make(getView(), textMessageId, Snackbar.LENGTH_LONG)
                 .setAction(R.string.text_button_download, new View.OnClickListener() {
