@@ -2,15 +2,19 @@ package it.uniba.di.sms2021.managerapp.exams;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,7 +22,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
@@ -53,7 +59,6 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
         adapter = new ExamsRecyclerAdapter(new ExamsRecyclerAdapter.OnActionListener() {
             @Override
             public void onItemClicked(Exam exam) {
-                //TODO rendere dinamico in base all'item cliccato.
                 chooseExam(exam);
             }
         });
@@ -109,9 +114,41 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
     }
 
     private void chooseExam (Exam exam) {
-        Intent intent = new Intent(ExamsActivity.this, ExamDetailActivity.class);
-        intent.putExtra(Exam.Keys.EXAM, exam);
-        startActivity(intent);
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        //Se lu studente partecipa già all'esame, lo fa entrare. Altrimenti manda una richiesta
+        //per partecipare.
+        if (exam.getStudents() != null && exam.getStudents().contains(uid)) {
+            Intent intent = new Intent(ExamsActivity.this, ExamDetailActivity.class);
+            intent.putExtra(Exam.Keys.EXAM, exam);
+            startActivity(intent);
+        } else {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.text_message_join_exam)
+                    .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //TODO implementare sistema di richiesta di accesso
+                            List<String> students = exam.getStudents();
+                            if (students == null) {
+                                students = new ArrayList<>();
+                            }
+                            students.add(uid);
+
+                            FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_EXAMS)
+                                    .child(exam.getId()).child(Exam.Keys.STUDENTS).setValue(students);
+
+                            Intent intent = new Intent(ExamsActivity.this, ExamDetailActivity.class);
+                            intent.putExtra(Exam.Keys.EXAM, exam);
+                            startActivity(intent);
+                        }
+                    }).setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            }).show();
+        }
     }
 
     //TODO rimuovere questo codice nella versione finale.

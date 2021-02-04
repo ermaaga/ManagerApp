@@ -17,6 +17,7 @@ import com.google.android.material.tabs.TabLayout;
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
+import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
@@ -84,7 +85,7 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_exams, menu);
         return true;
     }
 
@@ -92,6 +93,12 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int menuId = item.getItemId();
         MenuUtil.performMainActions(this, menuId);
+        if (menuId == R.id.action_exam_partecipants) {
+            Intent intent = new Intent(this, ExamsPartecipantsActivity.class);
+            intent.putExtra(Exam.Keys.EXAM, exam);
+            startActivity(intent);
+            //Toast.makeText(this, R.string.text_message_not_yet_implemented, Toast.LENGTH_SHORT).show();
+        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -57,6 +57,9 @@
         <activity
             android:name=".exams.StudyCaseDetailActivity"
             android:label="@string/activity_label_detail_study_case" />
+        <activity
+            android:name=".exams.ExamsPartecipantsActivity"
+            android:label="@string/activity_label_exam_partecipants" />
 
         <!-- Provider che gestisce le richieste di acquisizione di Uri per file presenti nella
              cartella interna dell'app. -->

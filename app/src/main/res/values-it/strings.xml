@@ -13,6 +13,7 @@
     <string name="activity_label_detail_study_case">Dettaglio caso di studio</string>
     <string name="activity_label_sign_in">Registrati</string>
     <string name="activity_label_department">Scegli</string>
+    <string name="activity_label_exam_partecipants">Partecipanti</string>
 
     <string name="text_label_exams">Esami</string>
     <string name="text_label_projects">Progetti</string>
@@ -29,6 +30,7 @@
     <string name="text_label_button_professor">Professore</string>
     <string name="text_label_upload_dialog_title">Caricamento</string>
     <string name="text_label_logout">Disconnettiti</string>
+    <string name="text_label_exam_partecipants">Partecipanti</string>
 
     <string name="registration_success">Registrazione avvenuta con successo</string>
     <string name="send_verification_email_success">Email di verifica inviata a </string>
@@ -61,6 +63,7 @@
     <string name="text_message_file_preview_message">Per visualizzare il file, sarà utilizzata una app esterna</string>
     <string name="text_message_file_deletion_failed">Non è stato possibile eliminare il file, riprova successivamente</string>
     <string name="text_message_file_deleted_successfully">File eliminato con successo</string>
+    <string name="text_message_join_exam">Stai per chiede di unirti all\'esame. Quando la richiesta è stata accettata, verrai notificato nella sezione notifiche.</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
