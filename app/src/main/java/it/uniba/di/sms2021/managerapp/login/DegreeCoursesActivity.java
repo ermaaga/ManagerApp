@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
+import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
@@ -28,6 +29,7 @@ public class DegreeCoursesActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
 
     private int userRole;
+    private List<String> userDepartments;
 
     private FirebaseDatabase database;
     private DatabaseReference usersReference;
@@ -43,6 +45,7 @@ public class DegreeCoursesActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.degreeCoursesRecyclerView);
 
         userRole = getIntent().getIntExtra(UserRoleActivity.USER_ROLE, 0);
+        userDepartments = getIntent().getStringArrayListExtra(DepartmentActivity.USER_DEPARTMENTS);
 
         database = FirebaseDbHelper.getDBInstance();
         usersReference = database.getReference(FirebaseDbHelper.TABLE_USERS);
@@ -82,13 +85,14 @@ public class DegreeCoursesActivity extends AppCompatActivity {
         String id = mAuth.getCurrentUser().getUid();
 
         /*Se non ha effettuato l'accesso con Google l'utente è presente sia in Authentication
-        * che in Realtime Database senza ruolo e corso quindi deve solo aggiornare quest'ultimi
+        * che in Realtime Database senza ruolo, dipartimento e corso quindi deve solo aggiornare quest'ultimi
         */
         if(mAuth.getCurrentUser()!=null && accountGoogle == null){
 
             HashMap childUpdates = new HashMap();
-            childUpdates.put("/corso/", course);
             childUpdates.put("/ruolo/", userRole);
+            childUpdates.put("/dipartimenti/", userDepartments);
+            childUpdates.put("/corso/", course);
 
             usersReference.child(id).updateChildren(childUpdates);
 
@@ -98,7 +102,7 @@ public class DegreeCoursesActivity extends AppCompatActivity {
             */
             if(mAuth.getCurrentUser()!=null && accountGoogle != null) {
                 User user = new User(id, accountGoogle.getGivenName(), accountGoogle.getFamilyName(),
-                        accountGoogle.getEmail(), userRole, course);
+                        accountGoogle.getEmail(), userRole, userDepartments, course);
                 usersReference.child(id).setValue(user);
 
             }

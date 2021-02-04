@@ -21,7 +21,7 @@ public class UserRoleActivity extends AppCompatActivity {
 
     public void pickRole(android.view.View view) {
         int id = view.getId();
-        Intent intent = new Intent(this, DegreeCoursesActivity.class);
+        Intent intent = new Intent(this, DepartmentActivity.class);
         if (id == R.id.studentChoiceButton) {
             intent.putExtra(USER_ROLE, User.ROLE_STUDENT);
         } else if (id == R.id.professorChoiceButton) {

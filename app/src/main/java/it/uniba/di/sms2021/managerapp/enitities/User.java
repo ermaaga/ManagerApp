@@ -2,6 +2,8 @@ package it.uniba.di.sms2021.managerapp.enitities;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.List;
+
 public class User {
     public static final int ROLE_STUDENT = 1;
     public static final int ROLE_PROFESSOR = 2;
@@ -14,18 +16,20 @@ public class User {
     private String cognome;
     private String email;
     private int ruolo;
+    private List<String> dipartimenti;
     private int corso;
 
     public User() {
     }
 
-    public User(String accountId, String nome, String cognome, String email, int ruolo, int corso) {
+    public User(String accountId, String nome, String cognome, String email, int ruolo, List<String> dipartimenti, int corso) {
         this.accountId = accountId;
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
         this.ruolo = ruolo;
         this.corso = corso;
+        this.dipartimenti = dipartimenti;
     }
 
     public User(String accountId, String nome, String cognome, String email) {
@@ -81,6 +85,14 @@ public class User {
 
     public void setCorso(int corso) {
         this.corso = corso;
+    }
+
+    public List<String> getDipartimenti() {
+        return dipartimenti;
+    }
+
+    public void setDipartimenti(List<String> dipartimenti) {
+        this.dipartimenti = dipartimenti;
     }
 
     //@Exclude esclude il campo dalla serializzazione di firebase.

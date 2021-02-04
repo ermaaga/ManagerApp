@@ -20,7 +20,6 @@ public class StudyCaseDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_study_case_detail);
 
-
         Intent intent = getIntent();
         studyCase = (StudyCase) intent.getParcelableExtra(StudyCase.Keys.ID);
 
