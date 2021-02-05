@@ -1,10 +1,8 @@
 package it.uniba.di.sms2021.managerapp.lists;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,14 +28,13 @@ public class RecyclerViewArrayAdapter extends RecyclerView.Adapter<RecyclerView.
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_simple_string, parent,
                 false);
-        RecyclerView.ViewHolder viewHolder = new RecyclerView.ViewHolder(view) {
+
+        return new RecyclerView.ViewHolder(view) {
             @Override
             public String toString() {
                 return super.toString();
             }
         };
-
-        return viewHolder;
     }
 
     @Override

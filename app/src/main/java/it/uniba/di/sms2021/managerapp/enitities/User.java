@@ -3,6 +3,7 @@ package it.uniba.di.sms2021.managerapp.enitities;
 import com.google.firebase.database.Exclude;
 
 import java.util.List;
+import java.util.Objects;
 
 public class User {
     public static final int ROLE_STUDENT = 1;
@@ -98,6 +99,35 @@ public class User {
     //@Exclude esclude il campo dalla serializzazione di firebase.
     @Exclude
     public String getFullName () {
-        return nome + " " + cognome;
+        String nomeLowerCase = nome;
+        if (nome.length() > 1) {
+            nomeLowerCase = nome.substring(0,1) + nome.substring(1).toLowerCase();
+        }
+
+        String cognomeLowerCase = cognome;
+        if (cognome.length() > 1) {
+            cognomeLowerCase = cognome.substring(0,1) + cognome.substring(1).toLowerCase();
+        }
+
+        return nomeLowerCase + " " + cognomeLowerCase;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return ruolo == user.ruolo &&
+                corso == user.corso &&
+                Objects.equals(accountId, user.accountId) &&
+                Objects.equals(nome, user.nome) &&
+                Objects.equals(cognome, user.cognome) &&
+                Objects.equals(email, user.email) &&
+                Objects.equals(dipartimenti, user.dipartimenti);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(accountId, nome, cognome, email, ruolo, dipartimenti, corso);
     }
 }

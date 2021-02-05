@@ -4,12 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,8 +18,6 @@ import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Department;
-import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
-import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 
 public class DepartmentRecyclerAdapter extends ListAdapter<Department, RecyclerView.ViewHolder> {
 
@@ -56,7 +51,7 @@ public class DepartmentRecyclerAdapter extends ListAdapter<Department, RecyclerV
         Department department = getItem(position);
 
         TextView departmentTextView = itemView.findViewById(R.id.simpleListItemTextView);
-        MaterialCardView card = itemView.findViewById(R.id.simple_item_card);
+        MaterialCardView card = itemView.findViewById(R.id.user_item_card);
 
         departmentTextView.setText(department.getName());
 

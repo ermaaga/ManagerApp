@@ -22,13 +22,14 @@ import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.lists.StringRecyclerAdapter;
+import it.uniba.di.sms2021.managerapp.lists.UserRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
 public class ExamsPartecipantsActivity extends AbstractBottomNavigationActivity {
 
     private RecyclerView partecipantsRecyclerView;
-    private StringRecyclerAdapter adapter;
+    private UserRecyclerAdapter adapter;
 
     private Exam exam;
 
@@ -47,10 +48,12 @@ public class ExamsPartecipantsActivity extends AbstractBottomNavigationActivity 
 
         exam = getIntent().getParcelableExtra(Exam.Keys.EXAM);
 
-        adapter = new StringRecyclerAdapter(new StringRecyclerAdapter.OnActionListener() {
+        adapter = new UserRecyclerAdapter(new UserRecyclerAdapter.OnActionListener() {
             @Override
-            public void onItemClicked(String string) {
-                //Do nothing
+            public void onItemClicked(User string) {
+                //TODO implementare visualizzazione profilo
+                Toast.makeText(ExamsPartecipantsActivity.this,
+                        R.string.text_message_not_yet_implemented, Toast.LENGTH_SHORT).show();
             }
         });
         partecipantsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -58,13 +61,13 @@ public class ExamsPartecipantsActivity extends AbstractBottomNavigationActivity 
 
         FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS)
                 .addValueEventListener(new ValueEventListener() {
-                    List<String> partecipants = new ArrayList<>();
+                    List<User> partecipants = new ArrayList<>();
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         for (DataSnapshot child: snapshot.getChildren()) {
                             if (exam.getStudents().contains(child.getKey())) {
                                 User user = child.getValue(User.class);
-                                partecipants.add(user.getFullName());
+                                partecipants.add(user);
                             }
                         }
                         adapter.submitList(partecipants);

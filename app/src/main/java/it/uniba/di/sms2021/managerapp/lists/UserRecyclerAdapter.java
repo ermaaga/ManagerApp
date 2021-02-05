@@ -10,20 +10,23 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import it.uniba.di.sms2021.managerapp.R;
+import com.google.android.material.card.MaterialCardView;
 
-public class StringRecyclerAdapter extends ListAdapter<String, RecyclerView.ViewHolder> {
+import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.enitities.User;
+
+public class UserRecyclerAdapter extends ListAdapter<User, RecyclerView.ViewHolder> {
     private OnActionListener listener;
 
-    public StringRecyclerAdapter(OnActionListener listener) {
-        super(new StringDiffCallback());
+    public UserRecyclerAdapter(OnActionListener listener) {
+        super(new UserDiffCallback());
         this.listener = listener;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_simple_string,
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_user,
                 parent, false);
 
         //Nota: volendo si può creare una classe ViewHolder a parte.
@@ -38,26 +41,32 @@ public class StringRecyclerAdapter extends ListAdapter<String, RecyclerView.View
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         View itemView = holder.itemView;
-        itemView.setOnClickListener(view -> listener.onItemClicked(getItem(position)));
+        User user = getItem(position);
 
-        TextView contentTextView = itemView.findViewById(R.id.simpleListItemTextView);
-        contentTextView.setText(getItem(position));
+        MaterialCardView cardView = itemView.findViewById(R.id.user_item_card);
+        cardView.setOnClickListener(view -> listener.onItemClicked(user));
+
+        TextView fullNameTextView = itemView.findViewById(R.id.fullname_TextView);
+        TextView emailTextView = itemView.findViewById(R.id.email_TextView);
+
+        fullNameTextView.setText(user.getFullName());
+        emailTextView.setText(user.getEmail());
     }
 
-    static class StringDiffCallback extends DiffUtil.ItemCallback<String> {
+    static class UserDiffCallback extends DiffUtil.ItemCallback<User> {
 
         @Override
-        public boolean areItemsTheSame(@NonNull String oldItem, @NonNull String newItem) {
+        public boolean areItemsTheSame(@NonNull User oldItem, @NonNull User newItem) {
             return oldItem == newItem;
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull String oldItem, @NonNull String newItem) {
+        public boolean areContentsTheSame(@NonNull User oldItem, @NonNull User newItem) {
             return oldItem.equals(newItem);
         }
     }
 
     public interface OnActionListener {
-        void onItemClicked (String string);
+        void onItemClicked (User string);
     }
 }
