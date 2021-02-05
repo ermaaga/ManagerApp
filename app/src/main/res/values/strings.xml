@@ -32,6 +32,7 @@
     <string name="text_label_upload_dialog_title">Upload</string>
     <string name="text_label_logout">Logout</string>
     <string name="text_label_exam_partecipants">Partecipants</string>
+    <string name="text_label_search">Search</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
@@ -98,6 +99,7 @@
     <string name="text_hint_name_user">Name</string>
     <string name="text_hint_surname_user">Surname</string>
     <string name="text_hint_desc_study_case">Description</string>
+    <string name="text_hint_search_file">Search File</string>
 
     <string name="text_action_delete_file">Delete</string>
     <string name="text_action_share_file">Share</string>
@@ -105,7 +107,5 @@
 
     <string name="text_send_subject">File Sharing</string>
     <string name="text_send_content">Check out my new file %s that i created in my project %s!</string>
-
-
 
 </resources>

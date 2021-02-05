@@ -20,7 +20,8 @@
             android:label="@string/activity_label_notifications" />
         <activity
             android:name=".projects.ProjectDetailActivity"
-            android:label="Gruppo 1 (rendere dinamico)" />
+            android:label="Gruppo 1 (rendere dinamico)" >
+        </activity>
         <activity
             android:name=".login.DepartmentActivity"
             android:label="@string/activity_label_department" />

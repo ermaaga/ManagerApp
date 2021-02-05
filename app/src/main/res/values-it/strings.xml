@@ -31,6 +31,7 @@
     <string name="text_label_upload_dialog_title">Caricamento</string>
     <string name="text_label_logout">Disconnettiti</string>
     <string name="text_label_exam_partecipants">Partecipanti</string>
+    <string name="text_label_search">Ricerca</string>
 
     <string name="registration_success">Registrazione avvenuta con successo</string>
     <string name="send_verification_email_success">Email di verifica inviata a </string>
@@ -88,6 +89,7 @@
     <string name="text_hint_name_user">Nome</string>
     <string name="text_hint_surname_user">Cognome</string>
     <string name="text_hint_desc_study_case">Descrizione</string>
+    <string name="text_hint_search_file">Cerca File</string>
 
     <string name="text_action_delete_file">Elimina</string>
     <string name="text_action_share_file">Condividi</string>

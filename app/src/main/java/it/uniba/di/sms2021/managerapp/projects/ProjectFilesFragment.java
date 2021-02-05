@@ -1,7 +1,9 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -64,6 +66,29 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private boolean previewWarning = true;
 
     private Project project;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        ProjectDetailActivity activity = (ProjectDetailActivity) getActivity();
+
+        //Quando l'utente digita qualcosa nella barra di ricerca, la lista dei file verrà aggiornata
+        //con i file che abbiano o nome o tipo corrispondenti alla query.
+        activity.setUpSearchAction(true, new ProjectDetailActivity.OnSearchListener() {
+            @Override
+            public void onSearchAction(String query) {
+                List<ManagerFile> searchFile = new ArrayList<>();
+                for (ManagerFile file: files) {
+                    if (query.equals("") ||
+                            file.getName().toLowerCase().contains(query.toLowerCase()) ||
+                            file.getType().toLowerCase().contains(query.toLowerCase())) {
+                        searchFile.add(file);
+                    }
+                }
+                adapter.submitList(searchFile);
+            }
+        });
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

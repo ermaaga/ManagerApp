@@ -1,14 +1,22 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -25,6 +33,10 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     private static final String TAG = "ProjectDetailActivity";
 
     private Project project;
+
+    private MenuItem searchMenuItem;
+    private boolean searchActivated;
+    private OnSearchListener onSearchListener;
 
     @Override
     protected Fragment getInitialFragment() {
@@ -84,7 +96,35 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_project_detail, menu);
+        searchMenuItem = menu.findItem(R.id.action_search);
+        searchMenuItem.setVisible(searchActivated);
+
+        //Impostazioni per la barra di ricerca. La barra è solo attivata nei fragment che la richiedono.
+        if (searchActivated) {
+            SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+            searchView.setIconifiedByDefault(true);
+            searchView.setQueryHint(getString(R.string.text_hint_search_file));
+            searchView.setInputType(InputType.TYPE_CLASS_TEXT);
+
+            //Quando un utente digita qualcosa nella barra, il fragment decide che azioni prendere.
+            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    onSearchListener.onSearchAction(query);
+
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    onSearchListener.onSearchAction(newText);
+
+                    return false;
+                }
+            });
+        }
+
         return true;
     }
 
@@ -110,5 +150,21 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
 
     public Project getSelectedProject () {
         return project;
+    }
+
+    /**
+     * Imposta la visibilità e l'azione dell'azione di ricerca nello specifico fragment.
+     * Deve essere chiamato in onAttach in ogni fragment dell'activity.
+     * @param activated se l'azione di ricerca è attivata nel fragment corrente
+     * @param listener cosa fà l'azione di ricerca nel fragment corrente
+     */
+    public void setUpSearchAction (boolean activated, @Nullable OnSearchListener listener) {
+        this.searchActivated = activated;
+        this.onSearchListener = listener;
+        invalidateOptionsMenu();
+    }
+
+    public interface OnSearchListener {
+        void onSearchAction(String query);
     }
 }
