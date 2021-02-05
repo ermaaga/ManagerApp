@@ -75,6 +75,10 @@
     <string name="text_message_file_deletion_failed">File couldn\'t be deleted, try again later</string>
     <string name="text_message_file_deleted_successfully">File deleted successfully</string>
     <string name="text_message_join_exam">You will request to join the exam. When the request is accepted you will be notified in the notifications tab.</string>
+    <string name="text_message_download_path_not_usable">The download folder couldn\'t be used. Try again later</string>
+    <string name="text_message_external_storage_not_found">The external storage couldn\'t be accessed at this time. Try again later.</string>
+    <string name="text_message_file_downloaded_successfully">File downloaded successfully</string>
+    <string name="text_message_file_download_message">You are about to download the file in the external storage, making it accessible to other apps.</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -91,6 +95,8 @@
     <string name="text_button_download">Download</string>
     <string name="text_button_confirm">Confirm</string>
     <string name="text_button_cancel">Cancel</string>
+    <string name="text_button_retry">Retry</string>
+    <string name="text_button_show_file">Open</string>
 
     <string name="text_hint_email_user" translatable="false">Email</string>
     <string name="text_hint_password_user" translatable="false">Password</string>
@@ -107,5 +113,4 @@
 
     <string name="text_send_subject">File Sharing</string>
     <string name="text_send_content">Check out my new file %s that i created in my project %s!</string>
-
 </resources>

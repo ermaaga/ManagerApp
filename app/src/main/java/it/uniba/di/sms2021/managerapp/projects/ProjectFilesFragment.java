@@ -1,6 +1,5 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -21,7 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -43,6 +41,7 @@ import java.util.List;
 import java.util.Set;
 
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.firebase.FileDownloader;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.firebase.TemporaryFileDownloader;
 import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
@@ -64,6 +63,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private static final String GROUPS_FOLDER = "Groups";
 
     private boolean previewWarning = true;
+    private boolean downloadWarning = true;
 
     private Project project;
 
@@ -112,13 +112,12 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         adapter = new FilesRecyclerAdapter(getContext(), new FilesRecyclerAdapter.OnActionListener() {
             @Override
             public void onClick(ManagerFile file) {
-
                 //Scarica il file temporaneo e lo visualizza usando un app esterna
                 new TemporaryFileDownloader(getContext()) {
                     @Override
                     protected void showDownloadSuggestion(int messageRes) {
                         //Mostra un messaggio qualora il file non sia scaricabile come file temporaneo
-                        ProjectFilesFragment.this.showDownloadSuggestion(messageRes);
+                        ProjectFilesFragment.this.showDownloadSuggestion(messageRes, file);
                     }
 
                     @Override
@@ -165,7 +164,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                 new TemporaryFileDownloader(getContext()) {
                     @Override
                     protected void showDownloadSuggestion(int messageRes) {
-                        ProjectFilesFragment.this.showDownloadSuggestion(messageRes);
+                        ProjectFilesFragment.this.showDownloadSuggestion(messageRes, file);
                     }
 
                     @Override
@@ -194,8 +193,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
 
             @Override
             public void onDownload(ManagerFile file) {
-                Toast.makeText(getContext(), R.string.text_message_not_yet_implemented,
-                        Toast.LENGTH_SHORT).show();
+                downloadWithWarning(file);
             }
         });
         filesRecyclerView.setAdapter(adapter);
@@ -273,6 +271,9 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         }
     }
 
+    /**
+     * Mostra la lista dei file trovati
+     */
     private void showFiles () {
         Log.i(TAG, files.toString());
         adapter.submitList(files);
@@ -375,15 +376,16 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
             //Avvisa l'utente che l'app userà applicazioni esterne per fare la preview
             new AlertDialog.Builder(getContext()).setMessage(R.string.text_message_file_preview_message)
                     .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    previewWarning = false;
-                                    //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
-                                    if (!openFileWithViewIntent(uri, file.getType())) {
-                                        showDownloadSuggestion(R.string.text_message_temp_file_not_supported);
-                                    }
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                previewWarning = false;
+                                //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
+                                if (!openFileWithViewIntent(uri, file.getType())) {
+                                    showDownloadSuggestion(
+                                            R.string.text_message_temp_file_not_supported, file);
                                 }
                             }
+                        }
                     ).setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -393,7 +395,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         } else {
             //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
             if (!openFileWithViewIntent(uri, file.getType())) {
-                showDownloadSuggestion(R.string.text_message_temp_file_not_supported);
+                showDownloadSuggestion(R.string.text_message_temp_file_not_supported, file);
             }
         }
     }
@@ -428,21 +430,74 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    private void download () {
-        //TODO implementare
-        Toast.makeText(getContext(), R.string.text_message_not_yet_implemented, Toast.LENGTH_SHORT).show();
+    /**
+     * Avvisa l'utente che il file sarà accessibile anche ad altre applicazioni.
+     * Se l'utente accetta l'applicazione procederà al download.
+     * @param file il file da scaricare
+     */
+    private void downloadWithWarning(ManagerFile file) {
+        if (downloadWarning) {
+            new AlertDialog.Builder(getContext()).setMessage(R.string.text_message_file_download_message)
+                    .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    downloadWarning = false;
+                                    download(file);
+                                }
+                            }
+                    ).setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            }).create().show();
+        } else {
+            download(file);
+        }
+    }
+
+    /**
+     * Scarica il file e notifica l'utente a download finito.
+     * Se l'utente vuole può anche aprire direttamente il file scaricato.
+     * In caso di errori, essi verranno mostrati e sarà data la possibilità all'utente di riprovare.
+     */
+    private void download (ManagerFile file) {
+        new FileDownloader(getContext()) {
+            @Override
+            protected void onSuccessAction(File localFile) {
+                Snackbar.make(getView(), R.string.text_message_file_downloaded_successfully,
+                        Snackbar.LENGTH_LONG)
+                        .setAction(R.string.text_button_show_file, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                previewFile(FileUtil.getUriFromFile(getContext(), localFile), file);
+                            }
+                        }).show();
+            }
+
+            @Override
+            protected void showErrorMessage(int message) {
+                Snackbar.make(getView(), message, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.text_button_retry, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                downloadWithWarning(file);
+                            }
+                        }).show();
+            }
+        }.downloadFile(file);
     }
 
     /**
      * Mostra un messaggio qualora il file non sia scaricabile come file temporaneo
      * @param textMessageId il messaggio da visualizzare
      */
-    private void showDownloadSuggestion (int textMessageId) {
+    private void showDownloadSuggestion (int textMessageId, ManagerFile file) {
         Snackbar.make(getView(), textMessageId, Snackbar.LENGTH_LONG)
                 .setAction(R.string.text_button_download, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        download();
+                        downloadWithWarning(file);
                     }
                 }).show();
     }

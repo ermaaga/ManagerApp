@@ -1,6 +1,7 @@
 package it.uniba.di.sms2021.managerapp.firebase;
 
 import android.content.Context;
+import android.os.Environment;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,18 +50,26 @@ public abstract class TemporaryFileDownloader {
 
     /**
      * Scarica il file in una cartella interna e quando finisce chiama onSuccessAction usando
-     * il file scaricato o il file in memoria se già era presente.
+     * il file scaricato o il file in memoria interna se già era presente.
+     * Inoltre controlla se il file è stato già scaricato in precedenza nella cartella dei downloads
+     * in memoria esterna, e se è presente lo utilizza.
      *
      * @param file il file da scaricare
      * @param internalFolderName nome della cartella in cui salvare il file
      */
     public void downloadTempFile (ManagerFile file, String internalFolderName) {
+        File downloadedFile = new File (context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), file.getName());
+        if (downloadedFile.exists()) {
+            onSuccessAction(downloadedFile);
+            return;
+        }
+
         if (file.getSize() > MAX_TEMP_FILE_SIZE) {
             showDownloadSuggestion(R.string.text_message_temp_file_too_big);
             return;
         }
 
-        File path = new File(context.getFilesDir(), internalFolderName); // project.getId()
+        File path = new File(context.getFilesDir(), internalFolderName);
         if (!path.exists()) {
             path.mkdirs();
         }

@@ -65,6 +65,10 @@
     <string name="text_message_file_deletion_failed">Non è stato possibile eliminare il file, riprova successivamente</string>
     <string name="text_message_file_deleted_successfully">File eliminato con successo</string>
     <string name="text_message_join_exam">Stai per chiede di unirti all\'esame. Quando la richiesta è stata accettata, verrai notificato nella sezione notifiche.</string>
+    <string name="text_message_download_path_not_usable">Non è stato possibile accedere alla cartella dei download. Riprova più tardi.</string>
+    <string name="text_message_external_storage_not_found">Non è stato possibile accedere alla memoria esterna. Riprova più tardi.</string>
+    <string name="text_message_file_downloaded_successfully">File scaricato con successo</string>
+    <string name="text_message_file_download_message">Stai per scaricare il file nella memoria esterna, rendendolo accessibile ad altre app.</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -83,6 +87,8 @@
     <string name="text_button_download">Scarica</string>
     <string name="text_button_confirm">Conferma</string>
     <string name="text_button_cancel">Annulla</string>
+    <string name="text_button_retry">Riprova</string>
+    <string name="text_button_show_file">Apri</string>
 
     <string name="text_hint_name_studycase">Nome</string>
     <string name="text_hint_name_group">Nome</string>
