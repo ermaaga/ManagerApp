@@ -61,6 +61,9 @@
         <activity
             android:name=".exams.ExamsPartecipantsActivity"
             android:label="@string/activity_label_exam_partecipants" />
+        <activity
+            android:name=".ProfileActivity"
+            android:label="@string/activity_label_user_profile" />
 
         <!-- Provider che gestisce le richieste di acquisizione di Uri per file presenti nella
              cartella interna dell'app. -->

@@ -96,6 +96,19 @@ public class User {
         this.dipartimenti = dipartimenti;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "accountId='" + accountId + '\'' +
+                ", nome='" + nome + '\'' +
+                ", cognome='" + cognome + '\'' +
+                ", email='" + email + '\'' +
+                ", ruolo=" + ruolo +
+                ", dipartimenti=" + dipartimenti +
+                ", corso=" + corso +
+                '}';
+    }
+
     //@Exclude esclude il campo dalla serializzazione di firebase.
     @Exclude
     public String getFullName () {

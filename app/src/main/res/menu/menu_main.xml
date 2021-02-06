@@ -13,6 +13,11 @@
         app:showAsAction="never"
         android:title="@string/text_label_settings" />
     <item
+        android:id="@+id/action_profile"
+        android:enabled="true"
+        app:showAsAction="never"
+        android:title="@string/text_label_profile" />
+    <item
         android:id="@+id/action_logout"
         android:enabled="true"
         app:showAsAction="never"

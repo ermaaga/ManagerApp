@@ -12,6 +12,7 @@
     <string name="activity_label_create_newExam">Crea un nuovo Esame</string>
     <string name="activity_label_detail_study_case">Dettaglio caso di studio</string>
     <string name="activity_label_sign_in">Registrati</string>
+    <string name="activity_label_user_profile">Profilo</string>
     <string name="activity_label_department">Scegli</string>
     <string name="activity_label_exam_partecipants">Partecipanti</string>
 
@@ -30,6 +31,14 @@
     <string name="text_label_button_professor">Professore</string>
     <string name="text_label_upload_dialog_title">Caricamento</string>
     <string name="text_label_logout">Disconnettiti</string>
+    <string name="text_label_exam_name">Nome:</string>
+    <string name="text_label_exam_description">Descrizione:</string>
+    <string name="text_label_name_study_case">Nome</string>
+    <string name="text_label_desc_study_case">Descrizione</string>
+    <string name="text_label_name_account">Nome</string>
+    <string name="text_label_surname_account">Cognome</string>
+    <string name="text_label_profile">Profilo</string>
+    <string name="text_label_corso_account">Corso</string>
     <string name="text_label_exam_partecipants">Partecipanti</string>
     <string name="text_label_search">Ricerca</string>
 
@@ -45,8 +54,6 @@
     <string name="send_verification_email_failed">Invio dell\'email di verifica fallito.</string>
     <string name="registration_failed">Registrazione fallita</string>
     <string name="login_failed">Login fallito! Per favore riprova più tardi</string>
-
-    <string name="text_buttom_create_study_case">Crea</string>
 
     <string name="description_case_study_info">Apri Info</string>
     <string name="description_add_study_case">Aggiungi un Caso di Studio</string>
@@ -72,11 +79,6 @@
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
-    <string name="text_label_exam_name">Nome:</string>
-    <string name="text_label_exam_description">Descrizione:</string>
-    <string name="text_label_name_study_case">Nome</string>
-    <string name="text_label_desc_study_case">Descrizione</string>
-
     <string name="text_button_create_new_exam">Crea un nuovo esame</string>
     <string name="text_button_new_exam_startDate">Date inizio:</string>
     <string name="text_button_new_exam_accept">Accetta</string>
@@ -87,6 +89,9 @@
     <string name="text_button_download">Scarica</string>
     <string name="text_button_confirm">Conferma</string>
     <string name="text_button_cancel">Annulla</string>
+    <string name="text_buttom_create_study_case">Crea</string>
+    <string name="text_button_edit_profile">Modifica</string>
+    <string name="text_button_save_profile">Salva</string>
     <string name="text_button_retry">Riprova</string>
     <string name="text_button_show_file">Apri</string>
 
@@ -104,4 +109,11 @@
     <string name="text_send_subject">Condivisione File</string>
     <string name="text_send_content">Date un\'occhiata al mio nuovo file %s che ho creato nel mio progetto %s!</string>
 
+    <string name="label_dialog_title_departments">Seleziona i dipartimenti</string>
+
+
+    <plurals name="numberOfDepartments">
+        <item quantity="one">Dipartimento</item>
+        <item quantity="other">Dipartimenti</item>
+    </plurals>
 </resources>

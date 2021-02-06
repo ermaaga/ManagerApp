@@ -11,6 +11,8 @@
     <string name="activity_label_create_studycase">Create Study Case</string>
     <string name="activity_label_create_newExam">Create New Exam</string>
     <string name="activity_label_detail_study_case">Detail Study Case</string>
+    <string name="activity_label_user_profile">Profile</string>
+
     <string name="activity_label_sign_in">Sign In</string>
     <string name="activity_label_department">Choose the department</string>
     <string name="activity_label_exam_partecipants">Partecipants</string>
@@ -31,6 +33,15 @@
     <string name="text_label_button_professor">Professor</string>
     <string name="text_label_upload_dialog_title">Upload</string>
     <string name="text_label_logout">Logout</string>
+    <string name="text_label_name_study_case">Name</string>
+    <string name="text_label_desc_study_case">Description</string>
+    <string name="text_label_exam_name">Name:</string>
+    <string name="text_label_exam_description">Description:</string>
+    <string name="text_label_name_account">Name</string>
+    <string name="text_label_surname_account">Surname</string>
+    <string name="text_label_email_account" translatable="false">Email</string>
+    <string name="text_label_profile">Profile</string>
+    <string name="text_label_corso_account">Course</string>
     <string name="text_label_exam_partecipants">Partecipants</string>
     <string name="text_label_search">Search</string>
 
@@ -52,10 +63,6 @@
     <string name="send_verification_email_failed">Failed to send verification email.</string>
     <string name="registration_failed">Registration failed</string>
     <string name="login_failed">Login failed! Please try again later</string>
-
-    <string name="text_label_name_study_case">Name</string>
-    <string name="text_label_desc_study_case">Description</string>
-    <string name="text_buttom_create_study_case">Create</string>
 
     <string name="description_case_study_info">Open Info</string>
     <string name="description_add_study_case">Add Study Case</string>
@@ -82,9 +89,6 @@
 
     <string name="chooser_title_preview">Preview this file with</string>
 
-    <string name="text_label_exam_name">Name:</string>
-    <string name="text_label_exam_description">Description:</string>
-
     <string name="text_button_create_new_exam">Create new exam</string>
     <string name="text_button_new_exam_startDate">Start Date:</string>
     <string name="text_button_new_exam_accept">Accept</string>
@@ -95,6 +99,9 @@
     <string name="text_button_download">Download</string>
     <string name="text_button_confirm">Confirm</string>
     <string name="text_button_cancel">Cancel</string>
+    <string name="text_buttom_create_study_case">Create</string>
+    <string name="text_button_edit_profile">Edit</string>
+    <string name="text_button_save_profile">Save</string>
     <string name="text_button_retry">Retry</string>
     <string name="text_button_show_file">Open</string>
 
@@ -113,4 +120,12 @@
 
     <string name="text_send_subject">File Sharing</string>
     <string name="text_send_content">Check out my new file %s that i created in my project %s!</string>
+
+    <string name="label_dialog_title_departments">Select departments</string>
+
+
+    <plurals name="numberOfDepartments">
+        <item quantity="one">Department</item>
+        <item quantity="other">Departments</item>
+    </plurals>
 </resources>

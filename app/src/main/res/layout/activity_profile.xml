@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_main"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/image_account"
+        android:layout_width="132dp"
+        android:layout_height="133dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:srcCompat="@drawable/ic_baseline_account_circle_24"
+        app:tint="@color/purple_500" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="?android:attr/listDivider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/image_account" />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="250dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/label_name_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/text_label_name_account"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/value_name_account_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toStartOf="@+id/label_name_account"
+                app:layout_constraintTop_toBottomOf="@+id/label_name_account"
+                tools:text="TextView" />
+
+            <EditText
+                android:id="@+id/value_name_account_edit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/label_name_account"
+                app:layout_constraintTop_toBottomOf="@+id/label_name_account" />
+
+            <TextView
+                android:id="@+id/label_surname_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:text="@string/text_label_surname_account"
+                app:layout_constraintStart_toStartOf="@+id/value_name_account_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/value_name_account_edit_text" />
+
+            <TextView
+                android:id="@+id/value_surname_account_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toStartOf="@+id/label_surname_account"
+                app:layout_constraintTop_toBottomOf="@+id/label_surname_account"
+                tools:text="TextView" />
+
+            <EditText
+                android:id="@+id/value_surname_account_edit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/label_surname_account"
+                app:layout_constraintTop_toBottomOf="@+id/label_surname_account" />
+
+            <TextView
+                android:id="@+id/label_email_account"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:text="@string/text_label_email_account"
+                app:layout_constraintStart_toStartOf="@+id/value_surname_account_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/value_surname_account_edit_text" />
+
+            <TextView
+                android:id="@+id/value_email_account_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toStartOf="@+id/label_email_account"
+                app:layout_constraintTop_toBottomOf="@+id/label_email_account"
+                tools:text="TextView" />
+
+            <EditText
+                android:id="@+id/value_email_account_edit_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
+                app:layout_constraintStart_toStartOf="@+id/label_email_account"
+                app:layout_constraintTop_toBottomOf="@+id/label_email_account" />
+
+            <TextView
+                android:id="@+id/label_department"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:text="TextView"
+                app:layout_constraintStart_toStartOf="@+id/value_email_account_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/value_email_account_text_view" />
+
+            <TextView
+                android:id="@+id/value_department"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:inputType="textMultiLine"
+                android:lines="4"
+                app:layout_constraintStart_toStartOf="@+id/label_department"
+                app:layout_constraintTop_toBottomOf="@+id/label_department"
+                tools:text="TextView" />
+
+            <TextView
+                android:id="@+id/label_course"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:text="@string/text_label_corso_account"
+                app:layout_constraintStart_toStartOf="@+id/value_department"
+                app:layout_constraintTop_toBottomOf="@+id/value_department" />
+
+            <TextView
+                android:id="@+id/value_course"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                app:layout_constraintStart_toStartOf="@+id/label_course"
+                app:layout_constraintTop_toBottomOf="@+id/label_course"
+                tools:text="TextView" />
+
+            <Button
+                android:id="@+id/button_edit_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="80dp"
+                android:layout_marginEnd="20dp"
+                android:onClick="editProfile"
+                android:text="@string/text_button_edit_profile"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/value_course" />
+
+            <Button
+                android:id="@+id/button_save_profile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="80dp"
+                android:layout_marginEnd="20dp"
+                android:onClick="saveProfile"
+                android:text="@string/text_button_save_profile"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/value_course" />
+
+            <ImageButton
+                android:id="@+id/departments_button"
+                android:layout_width="39dp"
+                android:layout_height="24dp"
+                android:backgroundTint="@color/white"
+                android:tint="@color/purple_500"
+                android:visibility="gone"
+                app:layout_constraintStart_toEndOf="@+id/label_department"
+                app:layout_constraintTop_toTopOf="@+id/label_department"
+                app:srcCompat="@drawable/ic_baseline_expand_more_24" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
