@@ -183,7 +183,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     public void editDepartments() {
-        departmentsReference.addValueEventListener(new ValueEventListener() {
+        departmentsReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -209,6 +209,8 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                     i++;
                 }
+
+                showDeparmentChooserDialog();
             }
 
             @Override
@@ -216,7 +218,9 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
         });
+    }
 
+    private void showDeparmentChooserDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
 
         builder.setMultiChoiceItems(departmentList, depIsChecked, new DialogInterface.OnMultiChoiceClickListener(){
