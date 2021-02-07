@@ -24,6 +24,8 @@
     <string name="label_Dialog_success">Operation successful, you are now part of the group: </string>
     <string name="label_Dialog_failed">Error while adding to the group: </string>
 
+    <string name="text_error_validation">The group name cannot have much than 20 characters</string>
+
     <string name="text_label_exams">Exams</string>
     <string name="text_label_home" translatable="false">Home</string>
     <string name="text_label_projects">Projects</string>

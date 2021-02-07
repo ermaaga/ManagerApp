@@ -49,30 +49,11 @@
                 app:startIconDrawable="@drawable/ic_exams"
                 app:endIconMode="clear_text"
                 app:counterEnabled="true"
-                app:counterMaxLength="8"
+                app:counterMaxLength="20"
                 android:hint="@string/text_label_exam_name">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txt_exam_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tli_exam_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                app:endIconMode="clear_text"
-                app:startIconDrawable="@drawable/ic_baseline_add_24"
-                app:counterEnabled="true"
-                app:counterMaxLength="20"
-                android:hint="@string/text_label_exam_description">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/txt_exam_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     />

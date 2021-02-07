@@ -17,6 +17,7 @@
 
     <string name="activity_label_exam_partecipants">Partecipanti</string>
     <string name="creation_exam_failed">Errore durante la creazione</string>
+    <string name="text_error_validation">Il nome del gruppo non può essere maggiore di 20 caratteri</string>
 
     <string name="text_label_exams">Esami</string>
     <string name="text_label_projects">Progetti</string>

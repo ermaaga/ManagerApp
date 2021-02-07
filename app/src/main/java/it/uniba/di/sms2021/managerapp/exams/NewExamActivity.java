@@ -44,8 +44,8 @@ public class NewExamActivity extends AbstractFormActivity {
 
 
     private  int yearCounter = 3;
-    private TextInputEditText examName,examDescription;
-    private TextInputLayout tlExamName,tlExamDescription,tlExamYear;
+    private TextInputEditText examName;
+    private TextInputLayout tlExamName,tlExamYear;
     private AutoCompleteTextView examYear;
     private Button bt_create_exam;
 
@@ -75,11 +75,10 @@ public class NewExamActivity extends AbstractFormActivity {
             @Override
             public void onClick(View v) {
                 String text_examName = examName.getText().toString();
-                String text_examDescription = examDescription.getText().toString();
                 String text_examYear = examYear.getText().toString();
 
                 if(everyThingOk(text_examName,text_examYear)){
-                   createExam(text_examName, text_examDescription, text_examYear);
+                   createExam(text_examName,text_examYear);
                 }
             }
         });
@@ -91,7 +90,12 @@ public class NewExamActivity extends AbstractFormActivity {
 
         try {
             if (!(TextUtils.isEmpty(examName) || TextUtils.isEmpty(examYear) )) {
-                result = true;
+                if (examName.length()<20){
+                    result = true;
+                }else{
+                    tlExamName.setError(getString(R.string.text_error_validation));
+                }
+
             } else {
                 String error = getString(R.string.label_error_fields);
                 Toast.makeText(NewExamActivity.this, error, Toast.LENGTH_SHORT).show();
@@ -105,12 +109,10 @@ public class NewExamActivity extends AbstractFormActivity {
     private void initialize(){
         //EditText
         examName = findViewById(R.id.txt_exam_name);
-        examDescription = findViewById(R.id.txt_exam_description);
         examYear = findViewById(R.id.atc_exam_year);
 
         //Layout
         tlExamName =findViewById(R.id.tli_exam_name);
-        tlExamDescription =findViewById(R.id.tli_exam_description);
         tlExamYear =findViewById(R.id.tli_exam_year);
 
         bt_create_exam = findViewById(R.id.btn_create_NewExam);
@@ -122,7 +124,7 @@ public class NewExamActivity extends AbstractFormActivity {
         //DropDown menu
         List<String> years = new ArrayList<String>();
         Calendar now = Calendar.getInstance();
-        int year = now.get(Calendar.YEAR) + 1;
+        int year = now.get(Calendar.YEAR) + 2;
         while(yearCounter > 0){
             String yearInString = String.valueOf(year);
             years.add(yearInString);
@@ -137,7 +139,7 @@ public class NewExamActivity extends AbstractFormActivity {
         examYear.setAdapter(adapter);
     }
 
-    private void createExam(String text_examName,String text_examDescription,String text_examYear){
+    private void createExam(String text_examName,String text_examYear){
 
         DatabaseReference newElement = examsRef.push();
 
