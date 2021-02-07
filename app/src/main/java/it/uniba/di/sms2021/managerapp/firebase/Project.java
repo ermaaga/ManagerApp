@@ -201,7 +201,7 @@ public class Project implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(group, 0);
+        dest.writeParcelable((Parcelable) group, 0);
         dest.writeString(studyCaseName);
         dest.writeString(examName);
     }
