@@ -127,4 +127,11 @@ public class Group implements Parcelable {
             return new Group[size];
         }
     };
+    public interface Keys{
+        String EXAM = "exam";
+        String ID = "id";
+        String NAME = "name";
+        String STUDYCASE = "studyCase";
+        String MEMBERS = "membri";
+    }
 }

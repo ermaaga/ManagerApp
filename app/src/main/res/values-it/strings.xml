@@ -46,6 +46,14 @@
     <string name="text_label_year">Anno</string>
     <string name="label_error_fields">Per poter proseguire è necessario inserire il nome e anno</string>
 
+
+    <string name="label_Dialog_Header">Informazione</string>
+    <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>
+    <string name="label_Dialog_confimation">Si</string>
+    <string name="label_Dialog_declination">No</string>
+    <string name="label_Dialog_success">Operazione avvenuta con successo, ora fai parte del gruppo: </string>
+    <string name="label_Dialog_failed">Errore durante inserimento al gruppo: </string>
+
     <string name="registration_success">Registrazione avvenuta con successo</string>
     <string name="send_verification_email_success">Email di verifica inviata a </string>
     <string name="login_success">Login effettuato con successo!</string>

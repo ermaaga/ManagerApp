@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -25,9 +26,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
+import it.uniba.di.sms2021.managerapp.exams.ExamDetailActivity;
+import it.uniba.di.sms2021.managerapp.exams.ExamGroupsFragment;
+import it.uniba.di.sms2021.managerapp.exams.ExamsActivity;
+import it.uniba.di.sms2021.managerapp.exams.NewExamActivity;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 
 public class ConfirmGroupDialog  extends AppCompatDialogFragment {
@@ -36,6 +42,7 @@ public class ConfirmGroupDialog  extends AppCompatDialogFragment {
     private DatabaseReference groupsRef;
 
     private Group group;
+    private String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
     public ConfirmGroupDialog(Group group) {
         this.group = group;
@@ -45,23 +52,25 @@ public class ConfirmGroupDialog  extends AppCompatDialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Informazione")
-                .setMessage("Vuoi far parte di quest ogruppo studio ?")
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+        builder.setTitle(getString(R.string.label_Dialog_Header))
+                .setMessage(R.string.label_Dialog_confimation_message)
+                .setNegativeButton(R.string.label_Dialog_declination, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 })
-                .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.label_Dialog_confimation, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        //TODO implementare sistema di richiesta di accesso
+
                         if (updateMembers()){
-                            CharSequence text = "Operazione avvenuta con successo, ora fai parte del gruppo: "+group.getName();
+                            CharSequence text = R.string.label_Dialog_success + group.getName();
                             int duration = Toast.LENGTH_SHORT;
                             Toast toast = Toast.makeText(getContext(), text, duration);
                             toast.show();
                         }else{
-                            CharSequence text = "Errore durante l'inserimento al gruppo"+group.getName();
+                            CharSequence text = R.string.label_Dialog_failed + group.getName();
                             int duration = Toast.LENGTH_SHORT;
                             Toast toast = Toast.makeText(getContext(), text, duration);
                             toast.show();
@@ -75,23 +84,18 @@ public class ConfirmGroupDialog  extends AppCompatDialogFragment {
     private boolean updateMembers(){
         boolean result = false;
         try {
-            HashMap childUpdates = new HashMap();
-
-            List<String> currentMembers = getMembers(group.getId());
-            if(!currentMembers.contains(FirebaseAuth.getInstance().getCurrentUser().getUid())){
-                currentMembers.add(FirebaseAuth.getInstance().getCurrentUser().getUid());
+            List<String> members = group.getMembri();
+            if (members == null) {
+                members = new ArrayList<>();
             }
-            Log.i("count", String.valueOf(currentMembers));
-
-            int count = 0;
-            for(String item : currentMembers){
-                Log.i("infos",String.valueOf(count));
-                childUpdates.put(String.valueOf(count),item);
-                count++;
-            }
-
-            //FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS).child(group.getId()).child("membri")
-              //      .updateChildren(childUpdates);
+            members.add(currentUserId);
+            FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS)
+                    .child(group.getId()).child(Group.Keys.MEMBERS).setValue(members, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
+                    System.err.println("Value was set. Error = "+error);
+                }
+            });
             result = true;
 
         } catch (Exception e) {
@@ -138,4 +142,6 @@ public class ConfirmGroupDialog  extends AppCompatDialogFragment {
         return  lstGroupMembers;
 
     }
+
+
 }
