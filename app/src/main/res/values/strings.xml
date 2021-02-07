@@ -35,8 +35,8 @@
     <string name="text_label_logout">Logout</string>
     <string name="text_label_name_study_case">Name</string>
     <string name="text_label_desc_study_case">Description</string>
-    <string name="text_label_exam_name">Name:</string>
-    <string name="text_label_exam_description">Description:</string>
+    <string name="text_label_exam_name">Name</string>
+    <string name="text_label_exam_description">Description</string>
     <string name="text_label_name_account">Name</string>
     <string name="text_label_surname_account">Surname</string>
     <string name="text_label_email_account" translatable="false">Email</string>
@@ -44,6 +44,8 @@
     <string name="text_label_corso_account">Course</string>
     <string name="text_label_exam_partecipants">Partecipants</string>
     <string name="text_label_search">Search</string>
+    <string name="text_label_year">Year</string>
+    <string name="label_error_fields">The Exam name and yeare are necessary</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
@@ -63,6 +65,8 @@
     <string name="send_verification_email_failed">Failed to send verification email.</string>
     <string name="registration_failed">Registration failed</string>
     <string name="login_failed">Login failed! Please try again later</string>
+    <string name="creation_exam_failed">Error during exam creation</string>
+
 
     <string name="description_case_study_info">Open Info</string>
     <string name="description_add_study_case">Add Study Case</string>
@@ -76,6 +80,7 @@
     <string name="text_message_preview_open_failed">An error has occurred while opening the file</string>
     <string name="text_message_temp_file_not_supported">The selected file isn\'t supported. Try downloading it instead</string>
     <string name="text_message_group_created">The group was created</string>
+    <string name="text_message_exam_created">The Exam was created</string>
     <string name="text_message_file_study_case_failure">Upload failed</string>
     <string name="text_message_upload_progress">Upload is %.2f%% done</string>
     <string name="text_message_file_preview_message">To preview the file, an external app will be used</string>

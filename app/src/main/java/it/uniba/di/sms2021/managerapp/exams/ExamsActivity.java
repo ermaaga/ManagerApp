@@ -13,7 +13,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,19 +36,33 @@ import it.uniba.di.sms2021.managerapp.lists.ExamsRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
+
 public class ExamsActivity extends AbstractBottomNavigationActivity {
 
     RecyclerView recyclerView;
     ExamsRecyclerAdapter adapter;
 
+    FloatingActionButton btn_CreateNewExam;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getApplicationContext());
+        // initialize components
+
+        initialize();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         recyclerView = findViewById(R.id.exams_recyclerView);
+
+
+        btn_CreateNewExam.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(ExamsActivity.this,NewExamActivity.class));
+            }
+        });
     }
 
     @Override
@@ -162,8 +178,7 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
         newElement.setValue(new Exam(newElement.getKey(), "SMS20-21", Arrays.asList("ABC"), null, 2020));
     }
 
-    public void creatNewExam(View view) {
-        Intent exp_int = new Intent(this, NewExamActivity.class);
-        startActivity(exp_int);
+    private void initialize() {
+        btn_CreateNewExam = findViewById(R.id.exam_add_floating_action_button);
     }
 }

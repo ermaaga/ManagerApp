@@ -14,7 +14,9 @@
     <string name="activity_label_sign_in">Registrati</string>
     <string name="activity_label_user_profile">Profilo</string>
     <string name="activity_label_department">Scegli</string>
+
     <string name="activity_label_exam_partecipants">Partecipanti</string>
+    <string name="creation_exam_failed">Errore durante la creazione</string>
 
     <string name="text_label_exams">Esami</string>
     <string name="text_label_projects">Progetti</string>
@@ -41,12 +43,14 @@
     <string name="text_label_corso_account">Corso</string>
     <string name="text_label_exam_partecipants">Partecipanti</string>
     <string name="text_label_search">Ricerca</string>
+    <string name="text_label_year">Anno</string>
+    <string name="label_error_fields">Per poter proseguire è necessario inserire il nome e anno</string>
 
     <string name="registration_success">Registrazione avvenuta con successo</string>
     <string name="send_verification_email_success">Email di verifica inviata a </string>
     <string name="login_success">Login effettuato con successo!</string>
     <string name="text_message_group_created">Il gruppo è stato creato</string>
-
+    <string name="text_message_exam_created">Esame creato con successo</string>
     <string name="error_sha1_not_found">Chiave dell\' app non trovata. L\' app potrebbe essere stata modificata da enti esterni.</string>
     <string name="required_field">Campo richiesto.</string>
     <string name="error_password"> La password deve contenere almeno 8 caratteri.</string>

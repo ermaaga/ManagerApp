@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -27,126 +27,86 @@
             android:id="@+id/bodyNewExam"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="16dp">
 
-            <TextView
-                android:id="@+id/lbNewExam"
-                android:layout_width="191dp"
-                android:layout_height="34dp"
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/activity_label_create_newExam"
+                android:textSize="20sp"
+                android:textStyle="bold"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tli_exam_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:startIconDrawable="@drawable/ic_exams"
+                app:endIconMode="clear_text"
+                app:counterEnabled="true"
+                app:counterMaxLength="8"
+                android:hint="@string/text_label_exam_name">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txt_exam_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tli_exam_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:endIconMode="clear_text"
+                app:startIconDrawable="@drawable/ic_baseline_add_24"
+                app:counterEnabled="true"
+                app:counterMaxLength="20"
+                android:hint="@string/text_label_exam_description">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txt_exam_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tli_exam_year"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:startIconDrawable="@drawable/ic_round_arrow_right_24"
+                android:hint="@string/text_label_year"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                >
+
+                <AutoCompleteTextView
+                    android:id="@+id/atc_exam_year"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/btn_create_NewExam"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
                 android:text="@string/text_button_create_new_exam"
-                android:textColor="#000000"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <TextView
-                android:id="@+id/textView20"
-                android:layout_width="85dp"
-                android:layout_height="41dp"
-                android:text="@string/text_button_new_exam_startDate"
-                android:textColor="#000000"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.076"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.421" />
-
-            <TextView
-                android:id="@+id/textView18"
-                android:layout_width="85dp"
-                android:layout_height="41dp"
-                android:text="@string/text_label_exam_name"
-                android:textColor="#000000"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.076"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.066" />
-
-            <EditText
-                android:id="@+id/editTextNewExamName"
-                android:layout_width="266dp"
-                android:layout_height="57dp"
-                android:backgroundTint="#B8B5B5"
-                android:ems="10"
-                android:inputType="textPersonName"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.896"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.067" />
-
-            <TextView
-                android:id="@+id/textView19"
-                android:layout_width="85dp"
-                android:layout_height="41dp"
-                android:text="@string/text_label_exam_description"
-                android:textColor="#000000"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.076"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.205" />
-
-            <EditText
-                android:id="@+id/editTextNewExamDescription"
-                android:layout_width="266dp"
-                android:layout_height="107dp"
-                android:backgroundTint="#BFBFBF"
-                android:ems="10"
-                android:gravity="start|top"
-                android:inputType="textMultiLine"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.889"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.228" />
-
-            <Button
-                android:id="@+id/buttonDeclineExam"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onDecline"
-                android:text="@string/text_button_new_exam_decline"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.298"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.905" />
-
-            <Button
-                android:id="@+id/buttonAcceptNewExam"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onAccept"
-                android:text="@string/text_button_new_exam_accept"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.683"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.905" />
-
-            <CalendarView
-                android:id="@+id/calendarView"
-                android:layout_width="266dp"
-                android:layout_height="232dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.862"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.602" />
-
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                />
+        </LinearLayout>
             <include
                 android:id="@+id/bottom_navigation"
                 layout="@layout/bottom_navigation"
@@ -160,17 +120,4 @@
 
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.05" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.95" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+</RelativeLayout>
