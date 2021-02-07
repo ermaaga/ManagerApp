@@ -101,6 +101,7 @@
     <string name="text_message_external_storage_not_found">The external storage couldn\'t be accessed at this time. Try again later.</string>
     <string name="text_message_file_downloaded_successfully">File downloaded successfully</string>
     <string name="text_message_file_download_message">You are about to download the file in the external storage, making it accessible to other apps.</string>
+    <string name="text_message_alert_dialog_department">Please, select at least one department.</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 

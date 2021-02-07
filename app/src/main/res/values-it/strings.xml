@@ -89,6 +89,7 @@
     <string name="text_message_external_storage_not_found">Non è stato possibile accedere alla memoria esterna. Riprova più tardi.</string>
     <string name="text_message_file_downloaded_successfully">File scaricato con successo</string>
     <string name="text_message_file_download_message">Stai per scaricare il file nella memoria esterna, rendendolo accessibile ad altre app.</string>
+    <string name="text_message_alert_dialog_department">Per favore, selezionare almeno un dipartimento.</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 

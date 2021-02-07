@@ -2,6 +2,7 @@ package it.uniba.di.sms2021.managerapp;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -46,6 +48,7 @@ public class ProfileActivity extends AppCompatActivity {
     Button editButton;
     Button saveButton;
     ImageButton editDepartments;
+    TextView textDepartments;
 
     List<String> departmentsChecked;
     String[] departmentList;
@@ -65,7 +68,7 @@ public class ProfileActivity extends AppCompatActivity {
         editButton = (Button) findViewById(R.id.button_edit_profile);
         saveButton = (Button) findViewById(R.id.button_save_profile);
         editDepartments = (ImageButton) findViewById(R.id.departments_button);
-        TextView textDepartments = (TextView) findViewById(R.id.value_department);
+        textDepartments = (TextView) findViewById(R.id.value_department);
         TextView textCourses = (TextView) findViewById(R.id.value_course);
 
 
@@ -76,17 +79,13 @@ public class ProfileActivity extends AppCompatActivity {
         departmentsChecked = new ArrayList<String>();
 
         String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference currentUser = usersReference.child(userid);
 
-        usersReference.addValueEventListener(new ValueEventListener() {
+        currentUser.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                // Iterazione tra i vari elementi appartenenti al nodo "users"
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    if (child.getKey().equals(userid)) {
-                        Log.d(TAG, "Id of child: " + child.getKey());
-
-                        user = child.getValue(User.class);
+                        user = snapshot.getValue(User.class);
 
                         textName.setText(user.getNome());
                         textSurname.setText(user.getCognome());
@@ -96,43 +95,42 @@ public class ProfileActivity extends AppCompatActivity {
                         TextView labelDepartments = (TextView) findViewById(R.id.label_department);
                         labelDepartments.setText(getResources().getQuantityString(R.plurals.numberOfDepartments, size));
 
-                        departmentsReference.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                                // Iterazione tra i vari elementi appartenenti al nodo "departments"
-                                for (String dep : user.getDipartimenti()) {
-                                    for (DataSnapshot child : snapshot.getChildren()) {
-                                        if (child.getKey().equals(dep)) {
-                                            Log.d(TAG, "Id of child: " + child.getKey());
-                                            Department department = child.getValue(Department.class);
-
-                                            textDepartments.append(department.getName() + "\n");
-
-                                            //Lista dei dipartimenti dell'utente
-                                            departmentsChecked.add(department.getId());
-                                        }
-                                    }
-                                }
-
-                                Log.d(TAG, departmentsChecked.toString());
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-
-                        });
                         //TODO fare plurale corsi
                         /*int size = user.getDipartimenti().size();
                         TextView labelDepartments = (TextView) findViewById(R.id.label_department);
                         labelDepartments.setText(getResources().getQuantityString(R.plurals.numberOfDepartments, size));*/
 
                         textCourses.setText("" + user.getCorso());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+        });
+
+
+        departmentsReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                // Iterazione tra i vari elementi appartenenti al nodo "departments"
+                for (String dep : user.getDipartimenti()) {
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        if (child.getKey().equals(dep)) {
+                            Log.d(TAG, "Id of child: " + child.getKey());
+                            Department department = child.getValue(Department.class);
+
+                            textDepartments.append(department.getName() + "\n");
+
+                            //Lista dei dipartimenti dell'utente
+                            departmentsChecked.add(department.getId());
+                        }
                     }
                 }
+
+                Log.d(TAG, departmentsChecked.toString());
 
             }
 
@@ -178,6 +176,10 @@ public class ProfileActivity extends AppCompatActivity {
         childUpdates.put("/cognome/", editSurname.getText().toString());
 
         usersReference.child(user.getAccountId()).updateChildren(childUpdates);
+
+        Intent refresh = new Intent(this, ProfileActivity.class);
+        startActivity(refresh);
+        finish();
     }
 
     public void editDepartments() {
@@ -217,12 +219,16 @@ public class ProfileActivity extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
 
-        builder.setTitle(R.string.label_dialog_title_departments);
-
         builder.setMultiChoiceItems(departmentList, depIsChecked, new DialogInterface.OnMultiChoiceClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
                 depIsChecked[which] = isChecked;
+                if (((AlertDialog) dialog).getListView().getCheckedItemCount() == 0) {
+                    ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                    Toast.makeText(ProfileActivity.this, R.string.text_message_alert_dialog_department, Toast.LENGTH_SHORT).show();
+                }else{
+                    ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                }
             }
         });
 
@@ -230,31 +236,26 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                HashMap childUpdates = new HashMap();
-                List<String> currentList = new ArrayList<String>();
-                for(int i=0; i<depIsChecked.length; i++){
-                    boolean checked = depIsChecked[i];
-                    if(checked){
-                        currentList.add(departmentListId[i]);
+                    HashMap childUpdates = new HashMap();
+                    List<String> currentList = new ArrayList<String>();
+                    textDepartments.setText("");
+                    for (int i = 0; i < depIsChecked.length; i++) {
+                        boolean checked = depIsChecked[i];
+                        if (checked) {
+                            currentList.add(departmentListId[i]);
+                            textDepartments.append(departmentList[i] + "\n");
+                            Log.d(TAG, departmentList[i]);
+                            Log.d(TAG, departmentListId[i]);
+                        }
                     }
-                }
-                childUpdates.put("/dipartimenti/", currentList);
-                usersReference.child(user.getAccountId()).updateChildren(childUpdates);
+                    departmentsChecked = currentList;
+
+                    childUpdates.put("/dipartimenti/", currentList);
+                    usersReference.child(user.getAccountId()).updateChildren(childUpdates);
             }
         });
 
-        //TODO scegliere tra negativo e neutrale e fare qualcosa quando li si clicca
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-
-        builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
+        builder.setTitle(R.string.label_dialog_title_departments);
 
         AlertDialog dialog = builder.create();
         dialog.show();
