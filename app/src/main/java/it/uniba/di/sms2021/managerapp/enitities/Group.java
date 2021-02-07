@@ -1,9 +1,13 @@
 package it.uniba.di.sms2021.managerapp.enitities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Group {
+public class Group implements Parcelable {
     private String id;
     private String name;
     private String studyCase;
@@ -16,6 +20,9 @@ public class Group {
         this.studyCase = studyCase;
         this.exam = exam;
         this.membri = membri;
+    }
+
+    public Group() {
     }
 
     public String getId() {
@@ -74,4 +81,50 @@ public class Group {
     public int hashCode() {
         return Objects.hash(id, name, studyCase, exam, membri);
     }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", studyCase='" + studyCase + '\'' +
+                ", exam='" + exam + '\'' +
+                ", membri=" + membri +
+                '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(studyCase);
+        dest.writeString(exam);
+        dest.writeList(membri);
+    }
+
+    public static final Parcelable.Creator<Group> CREATOR
+            = new Parcelable.Creator<Group>() {
+        public Group createFromParcel(Parcel in) {
+            Group group = new Group();
+            group.setId(in.readString());
+            group.setName(in.readString());
+            group.setStudyCase(in.readString());
+            group.setStudyCase(in.readString());
+
+            List<String> membri = new ArrayList<>();
+            in.readList(membri, String.class.getClassLoader());
+            group.setMembri(membri);
+
+            return group;
+        }
+
+        public Group[] newArray(int size) {
+            return new Group[size];
+        }
+    };
 }
