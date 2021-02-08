@@ -20,3 +20,13 @@ Ogni app consegnata per l’esame nell’a.a. 2020-2021 deve rispettare le segue
 - uso di almeno un sensore
 - uso di almeno un canale di connettività wireless (BT, BTLE, WiFi, NFC, ...)
 - gestione di almeno due tipi di utente (profilo dell’utente e quindi l'interfaccia dell'app cambia a seconda del login, …) 
+
+Aggiornamento: ai fini della valutazione si consiglia di fornire l’app con le credenziali di un utente demo, che abbia già dati
+e valori pronti per testare le funzionalità significative dell’app.
+Esempi: se un’app permette di caricare e visualizzare documenti, il profilo demo avrà già dei documenti a lui associati; se
+l’app permette di scegliere i turni di una palestra l’utente demo sarà già iscritto ad una ‘palestra demo’ che offre dei turni
+da poter subito scegliere; se l’app prevede la funzione di scegliere un gruppo di studio a cui unirsi, nell’app ci sono già dei
+gruppi creati per tale funzionalità…. e così via).
+Si consiglia inoltre di gestire sempre i casi in cui non ci sia connettività sul device oppure essa sia limitata, fornendo opportuni
+feedback ed alternative, quando possibile. Si ricorda infine che la valutazione viene fatta sempre utilizzando l’emulatore di
+Android Studio
