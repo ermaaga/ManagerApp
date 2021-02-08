@@ -47,6 +47,7 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
 
     Button buttoncreate;
     ImageButton buttonchoose;
+    ImageButton buttondelete;
 
     TextInputEditText name;
     TextInputEditText desc;
@@ -55,6 +56,7 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
     ImageView typeImageView;
     TextView nameTextView;
     TextView sizeTextView;
+    TextView uploadTextView;
 
     String idExam;
 
@@ -76,9 +78,11 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
 
         buttoncreate = (Button) findViewById(R.id.button_create_study_case);
         buttonchoose = (ImageButton) findViewById(R.id.button_select_file);
+        buttondelete = (ImageButton) findViewById(R.id.button_delete);
 
         buttoncreate.setOnClickListener(this);
         buttonchoose.setOnClickListener(this);
+        buttondelete.setOnClickListener(this);
 
         name = (TextInputEditText) findViewById(R.id.name_edit_text);
         desc = (TextInputEditText) findViewById(R.id.desc_edit_text);
@@ -87,6 +91,7 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
         typeImageView = (ImageView) findViewById(R.id.file_type_image_view);
         nameTextView = (TextView) findViewById(R.id.file_name_text_view);
         sizeTextView = (TextView) findViewById(R.id.file_size_text_view);
+        uploadTextView = (TextView) findViewById(R.id.upload_text_view);
 
         database=FirebaseDbHelper.getDBInstance();
         studycasesReference=database.getReference(FirebaseDbHelper.TABLE_STUDYCASES);
@@ -124,8 +129,13 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
             case R.id.button_create_study_case:
                createNewStudyCase();
                 break;
+            case R.id.button_delete:
+                deleteFile();
+                break;
         }
     }
+
+
 
     private void createNewStudyCase(){
         if(validate(name,desc)){
@@ -188,6 +198,16 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
         startActivityForResult(intent, REQUEST_IMAGE_GET);
     }
 
+    private void deleteFile() {
+        fullFileUri=null;
+        nameTextView.setVisibility(View.INVISIBLE);
+        sizeTextView.setVisibility(View.INVISIBLE);
+        typeImageView.setVisibility(View.INVISIBLE);
+        buttonchoose.setVisibility(View.VISIBLE);
+        uploadTextView.setVisibility(View.VISIBLE);
+        buttondelete.setVisibility(View.INVISIBLE);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -206,7 +226,9 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
             nameTextView.setVisibility(View.VISIBLE);
             sizeTextView.setVisibility(View.VISIBLE);
             typeImageView.setVisibility(View.VISIBLE);
+            buttondelete.setVisibility(View.VISIBLE);
             buttonchoose.setVisibility(View.INVISIBLE);
+            uploadTextView.setVisibility(View.INVISIBLE);
         }
     }
 

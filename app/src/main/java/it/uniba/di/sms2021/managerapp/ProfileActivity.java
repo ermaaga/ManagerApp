@@ -259,7 +259,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        builder.setTitle(R.string.label_dialog_title_departments);
+        builder.setTitle(R.string.text_label_dialog_title_departments);
 
         AlertDialog dialog = builder.create();
         dialog.show();

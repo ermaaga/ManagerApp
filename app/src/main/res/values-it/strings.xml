@@ -45,8 +45,8 @@
     <string name="text_label_exam_partecipants">Partecipanti</string>
     <string name="text_label_search">Ricerca</string>
     <string name="text_label_year">Anno</string>
-    <string name="label_error_fields">Per poter proseguire è necessario inserire il nome e anno</string>
-
+    <string name="text_label_dialog_title_departments">Seleziona i dipartimenti</string>
+    <string name="text_label_upload_file">Carica file</string>
 
     <string name="label_Dialog_Header">Informazione</string>
     <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>
@@ -67,6 +67,7 @@
     <string name="send_verification_email_failed">Invio dell\'email di verifica fallito.</string>
     <string name="registration_failed">Registrazione fallita</string>
     <string name="login_failed">Login fallito! Per favore riprova più tardi</string>
+    <string name="label_error_fields">Per poter proseguire è necessario inserire il nome e anno</string>
 
     <string name="description_case_study_info">Apri Info</string>
     <string name="description_add_study_case">Aggiungi un Caso di Studio</string>
@@ -123,7 +124,7 @@
     <string name="text_send_subject">Condivisione File</string>
     <string name="text_send_content">Date un\'occhiata al mio nuovo file %s che ho creato nel mio progetto %s!</string>
 
-    <string name="label_dialog_title_departments">Seleziona i dipartimenti</string>
+
 
 
     <plurals name="numberOfDepartments">

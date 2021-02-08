@@ -75,10 +75,11 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/file_card"
-        android:layout_width="411dp"
-        android:layout_height="188dp"
+        android:layout_width="387dp"
+        android:layout_height="193dp"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/desc_input_layout">
 
 
@@ -136,6 +137,34 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/file_type_image_view"
                 app:srcCompat="@android:drawable/stat_sys_upload" />
+
+            <TextView
+                android:id="@+id/upload_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/text_label_upload_file"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button_select_file"
+                app:layout_constraintVertical_bias="0.142" />
+
+            <ImageButton
+                android:id="@+id/button_delete"
+                android:layout_width="48dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="107dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="139dp"
+                android:backgroundTint="@color/white"
+                android:tint="@color/purple_500"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/file_type_image_view"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_baseline_cancel_24" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

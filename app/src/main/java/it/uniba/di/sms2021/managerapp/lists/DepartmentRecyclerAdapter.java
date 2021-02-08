@@ -1,6 +1,7 @@
 package it.uniba.di.sms2021.managerapp.lists;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,20 +15,29 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Department;
+import it.uniba.di.sms2021.managerapp.enitities.User;
 
 public class DepartmentRecyclerAdapter extends ListAdapter<Department, RecyclerView.ViewHolder> {
+    private static final String TAG = "DepRecyclerAdapter";
 
     private Context context;
     private OnActionListener listener;
+    private int userRole;
+    private final Set<Integer> itemsSelected;
 
-    public DepartmentRecyclerAdapter(Context context, OnActionListener listener) {
+    public DepartmentRecyclerAdapter(Context context, int userRole, OnActionListener listener) {
         super(new DiffCallback());
         this.listener = listener;
         this.context = context;
+        this.userRole = userRole;
+        itemsSelected = new HashSet<>();
     }
 
     @NonNull
@@ -54,26 +64,34 @@ public class DepartmentRecyclerAdapter extends ListAdapter<Department, RecyclerV
         MaterialCardView card = itemView.findViewById(R.id.user_item_card);
 
         departmentTextView.setText(department.getName());
-
-        if (department.isSelect()) {
+        //controllare se eliminare questo codice
+        //se l'elemento è stato già selezionato lo deseleziona
+        if (itemsSelected.contains(position)) {
             card.setCardBackgroundColor(context.getResources().getColor(R.color.lightGrey, context.getTheme()));
-        } else {
+        } else {//se l'elemento non è stato selezionato lo seleziona
             card.setCardBackgroundColor(context.getResources().getColor(R.color.white, context.getTheme()));
         }
         card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (department.isSelect()) {
-                    card.setCardBackgroundColor(context.getResources().getColor(R.color.white, context.getTheme()));
-                    department.setSelect(false);
-                    if (selectedDepartments().size() == 0) {
-                        listener.onSelectionAction(false);
+                if(userRole == User.ROLE_PROFESSOR){
+                    if (itemsSelected.contains(position)) {
+                        card.setCardBackgroundColor(context.getResources().getColor(R.color.white, context.getTheme()));
+                        itemsSelected.remove(position);
+                        if (selectedDepartments().size() == 0) {
+                            listener.onSelectionActionProfessor(false);
+                        }
+                    } else {
+                        card.setCardBackgroundColor(context.getResources().getColor(R.color.lightGrey, context.getTheme()));
+                        itemsSelected.add(position);
+                        listener.onSelectionActionProfessor(true);
                     }
-                } else {
+                }else{ //altrimenti l'utente è uno studente e viene passato l'id del singolo dipartimento
                     card.setCardBackgroundColor(context.getResources().getColor(R.color.lightGrey, context.getTheme()));
-                    department.setSelect(true);
-                    listener.onSelectionAction(true);
-                }
+                    itemsSelected.add(position);
+                    listener.onSelectionActionStudent(department.getId());
+                    }
+                Log.d(TAG, Arrays.toString(selectedDepartments().toArray()));
             }
         });
 
@@ -94,17 +112,18 @@ public class DepartmentRecyclerAdapter extends ListAdapter<Department, RecyclerV
 
     public List<String> selectedDepartments() {
         List<String> selectedDepartments = new ArrayList<>();
-        for (Department depart : getCurrentList()) {
-            if (depart.isSelect()) {
-                selectedDepartments.add(depart.getId());
-            }
+
+        for (int position: itemsSelected) {
+            selectedDepartments.add(getItem(position).getId());
         }
+
         return selectedDepartments;
     }
 
 
     public interface OnActionListener {
-        void onSelectionAction(Boolean isSelected);
+        void onSelectionActionProfessor(Boolean isSelected);
+        void onSelectionActionStudent(String idDepartment);
     }
 
 }

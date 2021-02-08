@@ -5,7 +5,6 @@ import java.util.Objects;
 public class Department {
     private String id;
     private String name;
-    private boolean isSelect;
 
     public Department() {
     }
@@ -29,14 +28,6 @@ public class Department {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setSelect(boolean select) {
-        isSelect = select;
-    }
-
-    public boolean isSelect() {
-        return isSelect;
     }
 
     @Override

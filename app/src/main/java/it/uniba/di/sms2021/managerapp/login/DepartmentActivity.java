@@ -45,6 +45,7 @@ public class DepartmentActivity extends AppCompatActivity {
     private FloatingActionButton buttonnext;
 
     private int userRole;
+    private List<String> listdip;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,15 @@ public class DepartmentActivity extends AppCompatActivity {
         departmentRecyclerView = findViewById(R.id.departmentRecyclerView);
         buttonnext = (FloatingActionButton) findViewById(R.id.floatingActionButtonNext);
 
+        //viene visualizzato solo se il ruolo è PROFESSORS
+        buttonnext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listdip = adapter.selectedDepartments();
+                nextToDegreeCourses();
+            }
+        });
+
         userRole = getIntent().getIntExtra(UserRoleActivity.USER_ROLE, 0);
         Log.d(TAG, "onCreate");
     }
@@ -64,16 +74,22 @@ public class DepartmentActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        adapter = new DepartmentRecyclerAdapter(DepartmentActivity.this, new DepartmentRecyclerAdapter.OnActionListener() {
-
+        adapter = new DepartmentRecyclerAdapter(DepartmentActivity.this, userRole, new DepartmentRecyclerAdapter.OnActionListener() {
             @Override
-            public void onSelectionAction(Boolean isSelected) {
+            public void onSelectionActionProfessor(Boolean isSelected) {
                 if(isSelected){
                     buttonnext.setVisibility(View.VISIBLE);
                 }else{
                     buttonnext.setVisibility(View.GONE);
                 }
+            }
+
+            @Override
+            public void onSelectionActionStudent(String idDepartment) {
+                listdip = new ArrayList<>();
+                listdip.add(idDepartment);
+
+                nextToDegreeCourses();
             }
         });
 
@@ -104,8 +120,13 @@ public class DepartmentActivity extends AppCompatActivity {
         Log.d(TAG, "onStart");
     }
 
-public void nextToDegreeCourses(View v){
-    List<String> listdip = adapter.selectedDepartments();
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop");
+    }
+
+    public void nextToDegreeCourses(){
     Intent intent = new Intent(DepartmentActivity.this, DegreeCoursesActivity.class);
     intent.putExtra(UserRoleActivity.USER_ROLE, userRole);
     intent.putStringArrayListExtra(USER_DEPARTMENTS, (ArrayList<String>)listdip);

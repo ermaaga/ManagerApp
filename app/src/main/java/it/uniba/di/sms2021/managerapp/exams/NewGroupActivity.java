@@ -32,6 +32,7 @@ import it.uniba.di.sms2021.managerapp.lists.UserSelectionRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractFormActivity;
 
 public class NewGroupActivity extends AbstractFormActivity {
+    private static final String TAG = "NewGroupActivity";
     private FirebaseDatabase database;
     private DatabaseReference groupsRef;
     private Exam exam;
@@ -54,6 +55,8 @@ public class NewGroupActivity extends AbstractFormActivity {
         name = findViewById(R.id.name_edit_text);
         button = findViewById(R.id.button_create_new_group);
         userRecyclerView = findViewById(R.id.group_members_recycler_view);
+
+        database = FirebaseDbHelper.getDBInstance();
     }
 
     @Override
@@ -70,14 +73,20 @@ public class NewGroupActivity extends AbstractFormActivity {
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         userRecyclerView.setAdapter(adapter);
 
+        //TODO Vedere se cambiare il tipo di Listener perchè può dare problemi alle altre activity
         FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         List<User> students = new ArrayList<>();
+
                         for (DataSnapshot child: snapshot.getChildren()) {
                             if (exam.getStudents().contains(child.getKey())) {
-                                students.add(child.getValue(User.class));
+                                String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+                                if(!child.getKey().equals(currentUser)) {
+                                    students.add(child.getValue(User.class));
+                                }
                             }
                         }
                         adapter.submitList(students);
@@ -96,7 +105,6 @@ public class NewGroupActivity extends AbstractFormActivity {
                 if (!TextUtils.isEmpty(name.getText().toString())) {
                     Intent intent = getIntent();
 
-                    database = FirebaseDbHelper.getDBInstance();
                     groupsRef = database.getReference(FirebaseDbHelper.TABLE_GROUPS);
 
                     DatabaseReference newElement = groupsRef.push();
