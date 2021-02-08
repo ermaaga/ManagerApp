@@ -114,7 +114,7 @@
     <string name="text_hint_name_user">Nome</string>
     <string name="text_hint_surname_user">Cognome</string>
     <string name="text_hint_desc_study_case">Descrizione</string>
-    <string name="text_hint_search_file">Cerca File</string>
+    <string name="text_hint_search_file">Cerca File (ex. txt, rilascio, etc.)</string>
 
     <string name="text_action_delete_file">Elimina</string>
     <string name="text_action_share_file">Condividi</string>

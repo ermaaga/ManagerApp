@@ -77,11 +77,22 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         activity.setUpSearchAction(true, new ProjectDetailActivity.OnSearchListener() {
             @Override
             public void onSearchAction(String query) {
+                String[] keyWords = query.split(" ");
+
                 List<ManagerFile> searchFile = new ArrayList<>();
+
                 for (ManagerFile file: files) {
-                    if (query.equals("") ||
-                            file.getName().toLowerCase().contains(query.toLowerCase()) ||
-                            file.getType().toLowerCase().contains(query.toLowerCase())) {
+                    boolean toAdd = true;
+                    for (String string: keyWords) {
+                        if (toAdd) {
+                            //Se il file non include una delle parole chiavi, non verrà mostrato
+                            toAdd = query.equals("") ||
+                                    file.getName().toLowerCase().contains(string.toLowerCase()) ||
+                                    file.getType().toLowerCase().contains(string.toLowerCase());
+                        }
+                    }
+
+                    if (toAdd) {
                         searchFile.add(file);
                     }
                 }

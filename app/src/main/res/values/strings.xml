@@ -128,7 +128,7 @@
     <string name="text_hint_name_user">Name</string>
     <string name="text_hint_surname_user">Surname</string>
     <string name="text_hint_desc_study_case">Description</string>
-    <string name="text_hint_search_file">Search File</string>
+    <string name="text_hint_search_file">Search File (ex. txt, release, etc.)</string>
 
     <string name="text_action_delete_file">Delete</string>
     <string name="text_action_share_file">Share</string>
