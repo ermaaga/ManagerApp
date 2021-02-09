@@ -49,11 +49,15 @@ public class ProfileActivity extends AppCompatActivity {
     Button saveButton;
     ImageButton editDepartments;
     TextView textDepartments;
+    TextView textCourses;
 
     List<String> departmentsChecked;
     String[] departmentList;
     String[] departmentListId;
     boolean[] depIsChecked;
+    private ValueEventListener userListener;
+    private ValueEventListener departmentsListener;
+    private DatabaseReference currentUserReference;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity {
         saveButton = (Button) findViewById(R.id.button_save_profile);
         editDepartments = (ImageButton) findViewById(R.id.departments_button);
         textDepartments = (TextView) findViewById(R.id.value_department);
-        TextView textCourses = (TextView) findViewById(R.id.value_course);
+        textCourses = (TextView) findViewById(R.id.value_course);
 
 
         database = FirebaseDbHelper.getDBInstance();
@@ -77,30 +81,36 @@ public class ProfileActivity extends AppCompatActivity {
         departmentsReference = database.getReference(FirebaseDbHelper.TABLE_DEPARTMENTS);
 
         departmentsChecked = new ArrayList<String>();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference currentUser = usersReference.child(userid);
+        currentUserReference = usersReference.child(userid);
 
-        currentUser.addValueEventListener(new ValueEventListener() {
+        //TODO considerare l'utilizzo di LoginHelper.getCurrentUser()
+        userListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                        user = snapshot.getValue(User.class);
+                user = snapshot.getValue(User.class);
 
-                        textName.setText(user.getNome());
-                        textSurname.setText(user.getCognome());
-                        textEmail.setText(user.getEmail());
+                textName.setText(user.getNome());
+                textSurname.setText(user.getCognome());
+                textEmail.setText(user.getEmail());
 
-                        int size = user.getDipartimenti().size();
-                        TextView labelDepartments = (TextView) findViewById(R.id.label_department);
-                        labelDepartments.setText(getResources().getQuantityString(R.plurals.numberOfDepartments, size));
+                int size = user.getDipartimenti().size();
+                TextView labelDepartments = (TextView) findViewById(R.id.label_department);
+                labelDepartments.setText(getResources().getQuantityString(R.plurals.numberOfDepartments, size));
 
-                        //TODO fare plurale corsi
+                //TODO fare plurale corsi
                         /*int size = user.getDipartimenti().size();
                         TextView labelDepartments = (TextView) findViewById(R.id.label_department);
                         labelDepartments.setText(getResources().getQuantityString(R.plurals.numberOfDepartments, size));*/
 
-                        textCourses.setText("" + user.getCorso());
+                textCourses.setText("" + user.getCorso());
             }
 
             @Override
@@ -108,10 +118,11 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
 
-        });
+        };
+        currentUserReference.addValueEventListener(userListener);
 
 
-        departmentsReference.addValueEventListener(new ValueEventListener() {
+        departmentsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -139,7 +150,8 @@ public class ProfileActivity extends AppCompatActivity {
 
             }
 
-        });
+        };
+        departmentsReference.addValueEventListener(departmentsListener);
 
         editDepartments.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,8 +162,10 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onStop() {
+        super.onStop();
+        currentUserReference.removeEventListener(userListener);
+        departmentsReference.removeEventListener(departmentsListener);
     }
 
     //metodo usato per modificare le TextView in EditText

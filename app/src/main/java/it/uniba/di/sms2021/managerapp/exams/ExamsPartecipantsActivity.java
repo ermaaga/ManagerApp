@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public class ExamsPartecipantsActivity extends AbstractBottomNavigationActivity 
     private UserRecyclerAdapter adapter;
 
     private Exam exam;
+    private DatabaseReference userReference;
+    private ValueEventListener partecipantsListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,25 +62,33 @@ public class ExamsPartecipantsActivity extends AbstractBottomNavigationActivity 
         partecipantsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         partecipantsRecyclerView.setAdapter(adapter);
 
-        FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS)
-                .addValueEventListener(new ValueEventListener() {
-                    List<User> partecipants = new ArrayList<>();
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        for (DataSnapshot child: snapshot.getChildren()) {
-                            if (exam.getStudents().contains(child.getKey())) {
-                                User user = child.getValue(User.class);
-                                partecipants.add(user);
-                            }
-                        }
-                        adapter.submitList(partecipants);
-                    }
+        userReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS);
+        partecipantsListener = new ValueEventListener() {
+            List<User> partecipants = new ArrayList<>();
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    if (exam.getStudents().contains(child.getKey())) {
+                        User user = child.getValue(User.class);
+                        partecipants.add(user);
                     }
-                });
+                }
+                adapter.submitList(partecipants);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        userReference.addValueEventListener(partecipantsListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        userReference.removeEventListener(partecipantsListener);
     }
 
     @Override

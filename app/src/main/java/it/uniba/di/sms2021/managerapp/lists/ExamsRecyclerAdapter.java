@@ -74,11 +74,10 @@ public class ExamsRecyclerAdapter extends ListAdapter<Exam, RecyclerView.ViewHol
         }
     }
 
-    //TODO Nota: questo metodo è placeholder, capire se c'è un metodo migliore.
-    //TODO Vedere se cambiare il tipo di Listener perchè può dare problemi alle altre activity
+    //TODO Crere una classe utility che incapsuli l'esame insieme al nome del professore
     public void setFirstProfessorName(TextView textView, Exam exam) {
         DatabaseReference ref = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS);
-        ref.addValueEventListener(new ValueEventListener() {
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot child: snapshot.getChildren()) {

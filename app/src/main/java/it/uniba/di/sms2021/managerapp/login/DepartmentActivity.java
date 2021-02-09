@@ -46,6 +46,8 @@ public class DepartmentActivity extends AppCompatActivity {
 
     private int userRole;
     private List<String> listdip;
+    private DatabaseReference departmentsReference;
+    private ValueEventListener departmentsListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,25 +100,26 @@ public class DepartmentActivity extends AppCompatActivity {
                 DividerItemDecoration.VERTICAL));
         departmentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_DEPARTMENTS)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        List<Department> departments = new ArrayList<>();
+        departmentsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_DEPARTMENTS);
+        departmentsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Department> departments = new ArrayList<>();
 
-                        for (DataSnapshot child: snapshot.getChildren()) {
-                            Department currentDepartment = child.getValue(Department.class);
-                            departments.add(currentDepartment);
-                        }
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    Department currentDepartment = child.getValue(Department.class);
+                    departments.add(currentDepartment);
+                }
 
-                        adapter.submitList(departments);
-                    }
+                adapter.submitList(departments);
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+            }
+        };
+        departmentsReference.addValueEventListener(departmentsListener);
         Log.d(TAG, "onStart");
     }
 
@@ -124,6 +127,7 @@ public class DepartmentActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         Log.d(TAG, "onStop");
+        departmentsReference.removeEventListener(departmentsListener);
     }
 
     public void nextToDegreeCourses(){

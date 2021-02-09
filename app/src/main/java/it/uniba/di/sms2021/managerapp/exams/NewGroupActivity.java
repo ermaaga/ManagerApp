@@ -42,6 +42,8 @@ public class NewGroupActivity extends AbstractFormActivity {
 
     private RecyclerView userRecyclerView;
     private UserSelectionRecyclerAdapter adapter;
+    private DatabaseReference userReference;
+    private ValueEventListener examMembersListener;
 
     @Override
     protected int getLayoutId() { return R.layout.activity_new_group; }
@@ -73,30 +75,30 @@ public class NewGroupActivity extends AbstractFormActivity {
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         userRecyclerView.setAdapter(adapter);
 
-        //TODO Vedere se cambiare il tipo di Listener perchè può dare problemi alle altre activity
-        FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        List<User> students = new ArrayList<>();
+        userReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS);
+        examMembersListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<User> students = new ArrayList<>();
 
-                        for (DataSnapshot child: snapshot.getChildren()) {
-                            if (exam.getStudents().contains(child.getKey())) {
-                                String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    if (exam.getStudents().contains(child.getKey())) {
+                        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-                                if(!child.getKey().equals(currentUser)) {
-                                    students.add(child.getValue(User.class));
-                                }
-                            }
+                        if (!child.getKey().equals(currentUser)) {
+                            students.add(child.getValue(User.class));
                         }
-                        adapter.submitList(students);
                     }
+                }
+                adapter.submitList(students);
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+            }
+        };
+        userReference.addValueEventListener(examMembersListener);
 
 
         button.setOnClickListener(new View.OnClickListener() {
@@ -128,5 +130,11 @@ public class NewGroupActivity extends AbstractFormActivity {
 
             }
         });
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        userReference.removeEventListener(examMembersListener);
     }
 }

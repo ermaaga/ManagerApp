@@ -118,7 +118,7 @@ public class ConfirmGroupDialog  extends AppCompatDialogFragment {
         List<String> lstGroupMembers = new ArrayList<>();
         try {
             FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS)
-                    .addValueEventListener(new ValueEventListener() {
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
 

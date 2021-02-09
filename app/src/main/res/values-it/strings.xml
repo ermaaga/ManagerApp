@@ -15,7 +15,6 @@
     <string name="activity_label_user_profile">Profilo</string>
     <string name="activity_label_department">Scegli</string>
     <string name="activity_label_project_permissions">Permessi</string>
-
     <string name="activity_label_exam_partecipants">Partecipanti</string>
     <string name="creation_exam_failed">Errore durante la creazione</string>
     <string name="text_error_validation">Il nome del gruppo non può essere maggiore di 20 caratteri</string>
@@ -123,7 +122,7 @@
     <string name="text_hint_name_user">Nome</string>
     <string name="text_hint_surname_user">Cognome</string>
     <string name="text_hint_desc_study_case">Descrizione</string>
-    <string name="text_hint_search_file">Cerca File (ex. txt, rilascio, etc.)</string>
+    <string name="text_hint_search_file">Cerca File (ex. video, rilascio, etc.)</string>
 
     <string name="text_action_delete_file">Elimina</string>
     <string name="text_action_share_file">Condividi</string>

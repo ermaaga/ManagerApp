@@ -116,7 +116,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         // Aggiunta di un listener che esegue il metodo onDataChange la prima volta che arrivano
-        // i dati, o ogni volta che vengono aggiornati.
+        // i dati.
         usersReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

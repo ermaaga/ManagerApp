@@ -7,17 +7,12 @@ import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 
@@ -38,7 +33,12 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
 
     private MenuItem searchMenuItem;
     private boolean searchActivated;
+    // Listener custom implementato nei fragment al momento della loro creazione
     private OnSearchListener onSearchListener;
+
+    // Elementi della seach view presente nell'action bar
+    private SearchView searchView;
+    private SearchView.OnQueryTextListener queryTextListener;
 
     @Override
     protected Fragment getInitialFragment() {
@@ -104,13 +104,13 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
 
         //Impostazioni per la barra di ricerca. La barra è solo attivata nei fragment che la richiedono.
         if (searchActivated) {
-            SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+            searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
             searchView.setIconifiedByDefault(true);
             searchView.setQueryHint(getString(R.string.text_hint_search_file));
             searchView.setInputType(InputType.TYPE_CLASS_TEXT);
 
             //Quando un utente digita qualcosa nella barra, il fragment decide che azioni prendere.
-            searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            queryTextListener = new SearchView.OnQueryTextListener() {
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     onSearchListener.onSearchAction(query);
@@ -124,10 +124,16 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
 
                     return false;
                 }
-            });
+            };
+            searchView.setOnQueryTextListener(queryTextListener);
         }
 
         return true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     @Override

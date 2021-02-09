@@ -2,7 +2,6 @@ package it.uniba.di.sms2021.managerapp.exams;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,7 +12,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,9 +22,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
@@ -43,6 +39,10 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
     ExamsRecyclerAdapter adapter;
 
     FloatingActionButton btn_CreateNewExam;
+
+    private DatabaseReference examsReference;
+    private ValueEventListener examsListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,26 +83,33 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
         //Ottengo i dati con cui riempire la lista.
-        FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_EXAMS)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        List<Exam> exams = new ArrayList<>();
+        examsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_EXAMS);
+        examsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Exam> exams = new ArrayList<>();
 
-                        for (DataSnapshot child: snapshot.getChildren()) {
-                            exams.add(child.getValue(Exam.class));
-                        }
+                for (DataSnapshot child: snapshot.getChildren()) {
+                    exams.add(child.getValue(Exam.class));
+                }
 
-                        adapter.submitList(exams);  //Ogni volta che gli esami cambiano, la lista
-                                                    //visualizzata cambia.
-                    }
+                adapter.submitList(exams);  //Ogni volta che gli esami cambiano, la lista
+                //visualizzata cambia.
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+            }
+        };
+        examsReference.addValueEventListener(examsListener);
 
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        examsReference.removeEventListener(examsListener);
     }
 
     @Override

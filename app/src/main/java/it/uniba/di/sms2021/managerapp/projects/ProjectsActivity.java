@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
     private ProjectsRecyclerAdapter adapter;
 
     private static final String TAG = "ProjectsActivity";
+    private DatabaseReference groupsReference;
+    private ValueEventListener projectListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,37 +65,44 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //Ottengo i dati con cui riempire la lista.
-        FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        List<Project> projects = new ArrayList<>();
+        groupsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS);
+        projectListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Project> projects = new ArrayList<>();
 
-                        for (DataSnapshot child: snapshot.getChildren()) {
-                            Group group = child.getValue(Group.class);
-                            String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                            if (group.getMembri().contains(currentUserId)) {
-                                //Uso l'inizializzatore di progetti per ottenere tutti i dati utili
-                                //e quando è inizializzato, lo visualizzo nella lista
-                                new Project.Initialiser() {
-                                    @Override
-                                    public void onProjectInitialised(Project project) {
-                                        Log.d(TAG, currentUserId + " " + group.getName() + " " +
-                                                group.getMembri());
-                                        projects.add(project);
-                                        adapter.submitList(projects);
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                }.initialiseProject(group);
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    Group group = child.getValue(Group.class);
+                    String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    if (group.getMembri().contains(currentUserId)) {
+                        //Uso l'inizializzatore di progetti per ottenere tutti i dati utili
+                        //e quando è inizializzato, lo visualizzo nella lista
+                        new Project.Initialiser() {
+                            @Override
+                            public void onProjectInitialised(Project project) {
+                                Log.d(TAG, currentUserId + " " + group.getName() + " " +
+                                        group.getMembri());
+                                projects.add(project);
+                                adapter.submitList(projects);
+                                adapter.notifyDataSetChanged();
                             }
-                        }
+                        }.initialiseProject(group);
                     }
+                }
+            }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+            }
+        };
+        groupsReference.addValueEventListener(projectListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        groupsReference.removeEventListener(projectListener);
     }
 
     @Override

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -34,6 +35,8 @@ public class ExamStudyCasesFragment extends Fragment {
     private StudyCasesRecyclerAdapter adapter;
 
     private FloatingActionButton addStudyCaseFloatingActionButton;
+    private DatabaseReference studyCasesReference;
+    private ValueEventListener studyCasesListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,29 +75,36 @@ public class ExamStudyCasesFragment extends Fragment {
         //TODO far si che i casi di studio siano legati ad un esame e leggere solo i casi
         // di studio di un esame
         Exam selectedExam = ((ExamDetailActivity) getActivity()).getSelectedExam();
-        FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_STUDYCASES)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        List<StudyCase> studyCases = new ArrayList<>();
+        studyCasesReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_STUDYCASES);
+        studyCasesListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<StudyCase> studyCases = new ArrayList<>();
 
-                        for (DataSnapshot child: snapshot.getChildren()) {
-                            StudyCase currentStudyCase = child.getValue(StudyCase.class);
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    StudyCase currentStudyCase = child.getValue(StudyCase.class);
 
-                            if (currentStudyCase.getEsame().equals(selectedExam.getId())) {
-                                studyCases.add(currentStudyCase);
-                            }
-                        }
-
-                        adapter.submitList(studyCases);  //Ogni volta che i casi di studio
-                        // cambiano, la lista visualizzata cambia.
+                    if (currentStudyCase.getEsame().equals(selectedExam.getId())) {
+                        studyCases.add(currentStudyCase);
                     }
+                }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
+                adapter.submitList(studyCases);  //Ogni volta che i casi di studio
+                // cambiano, la lista visualizzata cambia.
+            }
 
-                    }
-                });
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        studyCasesReference.addValueEventListener(studyCasesListener);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        studyCasesReference.removeEventListener(studyCasesListener);
     }
 
     private void doStudyCaseAction(StudyCase studyCase) {
