@@ -18,18 +18,18 @@ public class User {
     private String email;
     private int ruolo;
     private List<String> dipartimenti;
-    private int corso;
+    private List<String> corsi;
 
     public User() {
     }
 
-    public User(String accountId, String nome, String cognome, String email, int ruolo, List<String> dipartimenti, int corso) {
+    public User(String accountId, String nome, String cognome, String email, int ruolo, List<String> dipartimenti, List<String> corsi) {
         this.accountId = accountId;
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
         this.ruolo = ruolo;
-        this.corso = corso;
+        this.corsi = corsi;
         this.dipartimenti = dipartimenti;
     }
 
@@ -80,12 +80,12 @@ public class User {
         this.ruolo = ruolo;
     }
 
-    public int getCorso() {
-        return corso;
+    public List<String> getCorsi() {
+        return corsi;
     }
 
-    public void setCorso(int corso) {
-        this.corso = corso;
+    public void setCorsi(List<String> corsi) {
+        this.corsi = corsi;
     }
 
     public List<String> getDipartimenti() {
@@ -105,7 +105,7 @@ public class User {
                 ", email='" + email + '\'' +
                 ", ruolo=" + ruolo +
                 ", dipartimenti=" + dipartimenti +
-                ", corso=" + corso +
+                ", corsi=" + corsi +
                 '}';
     }
 
@@ -131,16 +131,16 @@ public class User {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
         return ruolo == user.ruolo &&
-                corso == user.corso &&
                 Objects.equals(accountId, user.accountId) &&
                 Objects.equals(nome, user.nome) &&
                 Objects.equals(cognome, user.cognome) &&
                 Objects.equals(email, user.email) &&
-                Objects.equals(dipartimenti, user.dipartimenti);
+                Objects.equals(dipartimenti, user.dipartimenti) &&
+                Objects.equals(corsi, user.corsi);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountId, nome, cognome, email, ruolo, dipartimenti, corso);
+        return Objects.hash(accountId, nome, cognome, email, ruolo, dipartimenti, corsi);
     }
 }

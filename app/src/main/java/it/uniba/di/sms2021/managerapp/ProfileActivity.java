@@ -110,7 +110,7 @@ public class ProfileActivity extends AppCompatActivity {
                         TextView labelDepartments = (TextView) findViewById(R.id.label_department);
                         labelDepartments.setText(getResources().getQuantityString(R.plurals.numberOfDepartments, size));*/
 
-                textCourses.setText("" + user.getCorso());
+                        textCourses.setText("" + user.getCorsi());
             }
 
             @Override

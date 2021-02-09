@@ -60,7 +60,7 @@ public class DepartmentActivity extends AppCompatActivity {
         departmentRecyclerView = findViewById(R.id.departmentRecyclerView);
         buttonnext = (FloatingActionButton) findViewById(R.id.floatingActionButtonNext);
 
-        //viene visualizzato solo se il ruolo è PROFESSORS
+        //viene visualizzato solo se il ruolo è PROFESSOR
         buttonnext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

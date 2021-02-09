@@ -180,7 +180,7 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
         DatabaseReference tableRef = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_EXAMS);
 
         userRef.child("ABC").setValue(new User("ABC", "Fabrizio", "Balducci", "Email@email.com",
-                User.ROLE_PROFESSOR, Arrays.asList("dipart informatica"),  User.COURSE_ITPS));
+                User.ROLE_PROFESSOR, Arrays.asList("dipart informatica"),  Arrays.asList("Informatica e Tecnologie per la produzione del software")));
         DatabaseReference newElement = tableRef.push();
         newElement.setValue(new Exam(newElement.getKey(), "SMS20-21", Arrays.asList("ABC"), null, 2020));
     }
