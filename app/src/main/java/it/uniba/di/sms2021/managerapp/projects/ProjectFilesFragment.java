@@ -86,6 +86,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                     for (String string: keyWords) {
                         if (toAdd) {
                             //Se il file non include una delle parole chiavi, non verrà mostrato
+                            //Verrà sempre mostrato se la query è vuota
                             toAdd = query.equals("") ||
                                     file.getName().toLowerCase().contains(string.toLowerCase()) ||
                                     file.getType().toLowerCase().contains(string.toLowerCase());

@@ -14,6 +14,7 @@
     <string name="activity_label_sign_in">Registrati</string>
     <string name="activity_label_user_profile">Profilo</string>
     <string name="activity_label_department">Scegli</string>
+    <string name="activity_label_project_permissions">Permessi</string>
 
     <string name="activity_label_exam_partecipants">Partecipanti</string>
     <string name="creation_exam_failed">Errore durante la creazione</string>
@@ -47,6 +48,9 @@
     <string name="text_label_year">Anno</string>
     <string name="text_label_dialog_title_departments">Seleziona i dipartimenti</string>
     <string name="text_label_upload_file">Carica file</string>
+    <string name="text_label_permissions">Permessi</string>
+
+    <string name="text_label_project_preference_visibility">Chiunque può accedere al progetto</string>
 
     <string name="label_Dialog_Header">Informazione</string>
     <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>
@@ -54,6 +58,9 @@
     <string name="label_Dialog_declination">No</string>
     <string name="label_Dialog_success">Operazione avvenuta con successo, ora fai parte del gruppo: </string>
     <string name="label_Dialog_failed">Errore durante inserimento al gruppo: </string>
+    <string name="label_Dialog_title_departments">Seleziona Dipartimenti</string>
+    <string name="label_Dialog_confimation_message_join_necessary">A causa di impostazioni sui permessi, questo gruppo può
+         essere aperto solo dai propri membri. Vuoi far parte di questo gruppo studio?</string>
 
     <string name="registration_success">Registrazione avvenuta con successo</string>
     <string name="send_verification_email_success">Email di verifica inviata a </string>
@@ -74,6 +81,7 @@
     <string name="description_add_file">Aggiungi un File</string>
     <string name="description_default_file_type">Tipo di file non trovato</string>
     <string name="description_file_actions">Azioni File</string>
+    <string name="description_preview_action">Preview</string>
 
     <string name="text_message_not_yet_implemented">Funzionalità non ancora implementata</string>
     <string name="text_message_study_case_created">Il caso di studio è stato creato</string>
@@ -123,9 +131,6 @@
 
     <string name="text_send_subject">Condivisione File</string>
     <string name="text_send_content">Date un\'occhiata al mio nuovo file %s che ho creato nel mio progetto %s!</string>
-
-
-
 
     <plurals name="numberOfDepartments">
         <item quantity="one">Dipartimento</item>

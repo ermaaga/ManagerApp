@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.google.android.material.tabs.TabLayout;
 
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
@@ -132,6 +134,11 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int menuId = item.getItemId();
         MenuUtil.performMainActions(this, menuId);
+        if (menuId == R.id.action_project_permissions) {
+            Intent intent = new Intent(this, ProjectPermissionsActivity.class);
+            intent.putExtra(Group.Keys.GROUP, project.getGroup());
+            startActivity(intent);
+        }
 
         return super.onOptionsItemSelected(item);
     }

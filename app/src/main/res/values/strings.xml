@@ -12,6 +12,7 @@
     <string name="activity_label_create_newExam">Create New Exam</string>
     <string name="activity_label_detail_study_case">Detail Study Case</string>
     <string name="activity_label_user_profile">Profile</string>
+    <string name="activity_label_project_permissions">Permissions</string>
 
     <string name="activity_label_sign_in">Sign In</string>
     <string name="activity_label_department">Choose the department</string>
@@ -23,6 +24,8 @@
     <string name="label_Dialog_declination">No</string>
     <string name="label_Dialog_success">Operation successful, you are now part of the group: </string>
     <string name="label_Dialog_failed">Error while adding to the group: </string>
+    <string name="label_Dialog_title_departments">Select departments</string>
+    <string name="label_Dialog_confimation_message_join_necessary">Due to permission settings, this group can only be opened by members. Do you want to be part of this study group?</string>
 
     <string name="text_error_validation">The group name cannot have much than 20 characters</string>
 
@@ -54,6 +57,9 @@
     <string name="text_label_exam_partecipants">Partecipants</string>
     <string name="text_label_search">Search</string>
     <string name="text_label_year">Year</string>
+    <string name="text_label_permissions">Permissions</string>
+
+    <string name="text_label_project_preference_visibility">Everyone can access the project</string>
 
     <string name="text_label_dialog_title_departments">Select departments</string>
     <string name="text_label_upload_file">Upload file</string>
@@ -84,6 +90,7 @@
     <string name="description_add_file">Add a File</string>
     <string name="description_default_file_type">File type not found</string>
     <string name="description_file_actions">File Actions</string>
+    <string name="description_preview_action">Preview</string>
 
     <string name="text_message_not_yet_implemented">Feature not yet implemented</string>
     <string name="text_message_study_case_created">The study case was created</string>
@@ -137,9 +144,6 @@
 
     <string name="text_send_subject">File Sharing</string>
     <string name="text_send_content">Check out my new file %s that i created in my project %s!</string>
-
-
-
 
     <plurals name="numberOfDepartments">
         <item quantity="one">Department</item>

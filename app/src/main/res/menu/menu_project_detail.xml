@@ -15,6 +15,11 @@
         app:showAsAction="ifRoom"
         android:title="@string/text_label_notifications" />
     <item
+        android:id="@+id/action_project_permissions"
+        android:enabled="true"
+        app:showAsAction="never"
+        android:title="@string/text_label_permissions" />
+    <item
         android:id="@+id/action_settings"
         android:enabled="true"
         app:showAsAction="never"

@@ -42,8 +42,9 @@ public class Project implements Parcelable {
         public void initialiseProject(Group group) {
             project = new Project(group);
 
+            //Inizializza il campo del nome dell'esame a cui appartiene il progetto
             FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_EXAMS)
-                    .addValueEventListener(new ValueEventListener() {
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             boolean found = false;
@@ -71,8 +72,10 @@ public class Project implements Parcelable {
 
                         }
                     });
+
+            //Inizializza il campo del nome del caso di studio del progetto
             FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_STUDYCASES)
-                    .addValueEventListener(new ValueEventListener() {
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             boolean found = false;
@@ -86,8 +89,8 @@ public class Project implements Parcelable {
                             }
                             if (!found) {
                                 //TODO testare per fare in modo che questa eccezione non venga mai lanciata
-                                throw new RuntimeException("Impossibile trovare l'esame con l'id "
-                                        + group.getExam());
+                                throw new RuntimeException("Impossibile trovare il caso di studio con l'id "
+                                        + group.getStudyCase());
                             }
 
                             if (project.isInitialisationDone()) {
@@ -161,6 +164,10 @@ public class Project implements Parcelable {
 
     public void setExamName(String examName) {
         this.examName = examName;
+    }
+
+    public Group getGroup () {
+        return group;
     }
 
     /**

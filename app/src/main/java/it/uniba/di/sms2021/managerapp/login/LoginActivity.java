@@ -143,6 +143,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             Intent intent = new Intent(LoginActivity.this, UserRoleActivity.class);
                             startActivity(intent);
                         }else{
+                            // Setta l'utente attuale in una variabile accessibile nel resto dell'applicazione
+                            LoginHelper.setCurrentUser(user);
                             startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                         }
 
@@ -226,16 +228,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.buttonLoginEmailPassword:
-                loginEmailPassword(emailEditText.getText().toString(), passwordEditText.getText().toString());
-                break;
-            case R.id.buttonLoginGoogle:
-                loginGoogle();
-                break;
-            case R.id.goButtonCreateAccount:
-                goCreateAccount();
-                break;
+        int id = v.getId();
+        if (id == R.id.buttonLoginEmailPassword) {
+            loginEmailPassword(emailEditText.getText().toString(), passwordEditText.getText().toString());
+        } else if (id == R.id.buttonLoginGoogle) {
+            loginGoogle();
+        } else if (id == R.id.goButtonCreateAccount) {
+            goCreateAccount();
+        } else {
+            throw new IllegalStateException("Unexpected value: " + v.getId());
         }
     }
 

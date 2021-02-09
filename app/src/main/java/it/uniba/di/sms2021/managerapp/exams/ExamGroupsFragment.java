@@ -1,7 +1,6 @@
 package it.uniba.di.sms2021.managerapp.exams;
 
-import android.app.Activity;
-import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,9 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -34,7 +30,10 @@ import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
+import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.lists.GroupRecyclerAdapter;
+import it.uniba.di.sms2021.managerapp.projects.ProjectDetailActivity;
 
 public class ExamGroupsFragment extends Fragment {
 
@@ -62,13 +61,40 @@ public class ExamGroupsFragment extends Fragment {
         adapter = new GroupRecyclerAdapter(new GroupRecyclerAdapter.OnActionListener() {
             @Override
             public void onClick(Group group) {
-                doGroupAction(group);
+                // Se l'utente partecipa già al progetto, apre la schermata del progetto
+                if (group.getMembri().contains(LoginHelper.getCurrentUser().getAccountId())) {
+                    new Project.Initialiser() {
+                        @Override
+                        public void onProjectInitialised(Project project) {
+                            Intent intent = new Intent(getContext(), ProjectDetailActivity.class);
+                            intent.putExtra(Project.KEY, project);
+                            startActivity(intent);
+                        }
+                    }.initialiseProject(group);
+                } // Se l'utente non partecipa al progetto ed il progetto è visualizzabile da tutti,
+                // apre la schermata del progetto in modalità visitatore
+                else if (group.getPermissions().isAccessible()) {
+                    //TODO creare una modalità visitatore per la visualizzazione del gruppo
+                    new Project.Initialiser() {
+                        @Override
+                        public void onProjectInitialised(Project project) {
+                            Intent intent = new Intent(getContext(), ProjectDetailActivity.class);
+                            intent.putExtra(Project.KEY, project);
+                            startActivity(intent);
+                        }
+                    }.initialiseProject(group);
+                } // Se il progetto non è accessibile, chiede all'utente se vuole unirsi al progetto
+                else {
+                    openDialog(group, true);
+                }
             }
 
             @Override
-            public void onInfo(Group group) {showGruoupsInfo(group);
-
+            public void onJoin(Group group) {
+                doJoinGroupAction(group);
             }
+
+
         });
         groupRecyclerView.setAdapter(adapter);
         groupRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(),DividerItemDecoration.VERTICAL));
@@ -89,12 +115,13 @@ public class ExamGroupsFragment extends Fragment {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             List<Group> groups = new ArrayList<>();
+
                             for (DataSnapshot child: snapshot.getChildren()) {
                                 Group currentGroup = child.getValue(Group.class);
                                 if (currentGroup.getExam().equals(selectedExam.getId())) {
                                     for(StudyCase item : studyCases){
                                         if(item.getId().equals(currentGroup.getStudyCase())){
-                                            currentGroup.setStudyCase(item.getNome());
+                                            currentGroup.setStudyCaseName(item.getNome());
                                         }
                                     }
                                     groups.add(currentGroup);
@@ -148,13 +175,22 @@ public class ExamGroupsFragment extends Fragment {
         toast.show();
     }
 
-    private void doGroupAction(Group group) {
-        openDialog(group);
+    private void doJoinGroupAction(Group group) {
+        openDialog(group, false);
     }
 
-    private void openDialog(Group group) {
-        ConfirmGroupDialog dialog = new ConfirmGroupDialog(group);
+    /**
+     * Apre il dialogo in cui si chiede all'utente se vuole unirsi al gruppo.
+     * Se forced è true, l'utente sarà anche informato che non è possibile visualizzare il gruppo
+     * senza esserne un partecipante.
+     */
+    private void openDialog(Group group, boolean forced) {
+        ConfirmGroupDialog dialog = new ConfirmGroupDialog(group, forced);
         dialog.show(getFragmentManager(),"groupDialog");
+    }
+
+    private void previewProject () {
+
     }
 
 }

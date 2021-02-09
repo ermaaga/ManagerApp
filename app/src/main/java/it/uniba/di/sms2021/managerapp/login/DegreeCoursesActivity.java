@@ -3,6 +3,7 @@ package it.uniba.di.sms2021.managerapp.login;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -12,8 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +25,7 @@ import java.util.List;
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.home.HomeActivity;
 import it.uniba.di.sms2021.managerapp.lists.RecyclerViewArrayAdapter;
 
@@ -96,6 +101,20 @@ public class DegreeCoursesActivity extends AppCompatActivity {
 
             usersReference.child(id).updateChildren(childUpdates);
 
+            FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS).child(id)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            // Setta l'utente attuale in una variabile accessibile nel resto dell'applicazione
+                            LoginHelper.setCurrentUser(snapshot.getValue(User.class));
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
         }else{
             /*se ha effettuato l'accesso con Google l'utente è presente solo in Authentication
             * quindi salva l'utente in Realtime Database
@@ -105,10 +124,10 @@ public class DegreeCoursesActivity extends AppCompatActivity {
                         accountGoogle.getEmail(), userRole, userDepartments, course);
                 usersReference.child(id).setValue(user);
 
+                // Setta l'utente attuale in una variabile accessibile nel resto dell'applicazione
+                LoginHelper.setCurrentUser(user);
             }
         }
-
-
     }
 
     private int getUserCourseFromString (String course) {

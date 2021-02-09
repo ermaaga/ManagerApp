@@ -44,16 +44,24 @@ public class ConfirmGroupDialog  extends AppCompatDialogFragment {
     private Group group;
     private String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-    public ConfirmGroupDialog(Group group) {
+    // Se è true informerà l'utente che è necessario unirsi al gruppo per visualizzarlo
+    private boolean joinNecessary;
+
+    public ConfirmGroupDialog(Group group, boolean joinNecessary) {
         this.group = group;
+        this.joinNecessary = joinNecessary;
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        // Mostra un messaggio aggiuntivo qualora sia necessario unirsi al gruppo per visualizzarlo
+        int messageRes = joinNecessary ? R.string.label_Dialog_confimation_message_join_necessary
+                : R.string.label_Dialog_confimation_message;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.label_Dialog_Header))
-                .setMessage(R.string.label_Dialog_confimation_message)
+                .setMessage(messageRes)
                 .setNegativeButton(R.string.label_Dialog_declination, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -78,6 +86,7 @@ public class ConfirmGroupDialog  extends AppCompatDialogFragment {
 
                     }
                 });
+
         return builder.create();
     }
 

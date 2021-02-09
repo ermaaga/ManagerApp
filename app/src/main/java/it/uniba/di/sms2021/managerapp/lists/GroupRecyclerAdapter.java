@@ -3,7 +3,7 @@ package it.uniba.di.sms2021.managerapp.lists;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +15,7 @@ import com.google.android.material.card.MaterialCardView;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
+import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 
 public class GroupRecyclerAdapter extends ListAdapter<Group, RecyclerView.ViewHolder> {
 
@@ -48,14 +49,19 @@ public class GroupRecyclerAdapter extends ListAdapter<Group, RecyclerView.ViewHo
         TextView titleTextViewGroupName = itemView.findViewById(R.id.exam_group_title_text_view);
         TextView groupStudyCaseTextView = itemView.findViewById(R.id.exam_group_study_case_text_view);
         titleTextViewGroupName.setText(group.getName());
-        groupStudyCaseTextView.setText(group.getStudyCase());
+        groupStudyCaseTextView.setText(group.getStudyCaseName());
 
-
+        ImageView joinActionImageView = itemView.findViewById(R.id.exam_group_join_action);
+        if (group.getMembri().contains(LoginHelper.getCurrentUser().getAccountId())) {
+            joinActionImageView.setVisibility(View.GONE);
+        } else {
+            joinActionImageView.setOnClickListener(v -> listener.onJoin(group));
+        }
     }
 
     public interface OnActionListener {
         void onClick (Group group);
-        void onInfo (Group group);
+        void onJoin (Group group);
     }
 
 

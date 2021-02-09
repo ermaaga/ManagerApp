@@ -3,6 +3,8 @@ package it.uniba.di.sms2021.managerapp.enitities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -10,11 +12,26 @@ import java.util.Objects;
 public class Group implements Parcelable {
     private String id;
     private String name;
+
+    /**
+     * L'id del caso di studio a cui è associato
+     */
     private String studyCase;
+
+    /**
+     * L'id dell'esame a cui è associato
+     */
     private String exam;
+
     private List<String> membri;
+    private ProjectPermissions permissions;
+
+    // Campo duplicato per usarlo in ExamGroupsFragment senza rompere il resto del programma
+    // TODO usare project al posto di questo campo
+    private String studyCaseName;
 
     public Group(String id, String name, String studyCase, String exam, List<String> membri) {
+        this();
         this.id = id;
         this.name = name;
         this.studyCase = studyCase;
@@ -23,6 +40,7 @@ public class Group implements Parcelable {
     }
 
     public Group() {
+        setPermissions(null);
     }
 
     public String getId() {
@@ -65,6 +83,28 @@ public class Group implements Parcelable {
         this.membri = membri;
     }
 
+    @Exclude
+    public String getStudyCaseName() {
+        return studyCaseName;
+    }
+
+    @Exclude
+    public void setStudyCaseName(String studyCaseName) {
+        this.studyCaseName = studyCaseName;
+    }
+
+    public ProjectPermissions getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(ProjectPermissions permissions) {
+        if (permissions == null) {
+            this.permissions = new ProjectPermissions();
+        } else {
+            this.permissions = permissions;
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -74,12 +114,13 @@ public class Group implements Parcelable {
                 Objects.equals(name, group.name) &&
                 Objects.equals(studyCase, group.studyCase) &&
                 Objects.equals(exam, group.exam) &&
-                Objects.equals(membri, group.membri);
+                Objects.equals(membri, group.membri) &&
+                Objects.equals(permissions, group.permissions);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, studyCase, exam, membri);
+        return Objects.hash(id, name, studyCase, exam, membri, permissions);
     }
 
     @Override
@@ -90,6 +131,7 @@ public class Group implements Parcelable {
                 ", studyCase='" + studyCase + '\'' +
                 ", exam='" + exam + '\'' +
                 ", membri=" + membri +
+                ", permissions=" + permissions +
                 '}';
     }
 
@@ -105,6 +147,7 @@ public class Group implements Parcelable {
         dest.writeString(studyCase);
         dest.writeString(exam);
         dest.writeList(membri);
+        dest.writeParcelable(permissions, 0);
     }
 
     public static final Parcelable.Creator<Group> CREATOR
@@ -114,11 +157,13 @@ public class Group implements Parcelable {
             group.setId(in.readString());
             group.setName(in.readString());
             group.setStudyCase(in.readString());
-            group.setStudyCase(in.readString());
+            group.setExam(in.readString());
 
             List<String> membri = new ArrayList<>();
             in.readList(membri, String.class.getClassLoader());
             group.setMembri(membri);
+
+            group.setPermissions(in.readParcelable(ProjectPermissions.class.getClassLoader()));
 
             return group;
         }
@@ -128,6 +173,7 @@ public class Group implements Parcelable {
         }
     };
     public interface Keys{
+        String GROUP = "group";
         String EXAM = "exam";
         String ID = "id";
         String NAME = "name";
