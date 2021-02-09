@@ -132,13 +132,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/label_email_account" />
 
             <TextView
-                android:id="@+id/label_department"
+                android:id="@+id/label_departments"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
-                android:text="TextView"
                 app:layout_constraintStart_toStartOf="@+id/value_email_account_text_view"
-                app:layout_constraintTop_toBottomOf="@+id/value_email_account_text_view" />
+                app:layout_constraintTop_toBottomOf="@+id/value_email_account_text_view"
+                tools:text="TextView"/>
 
             <TextView
                 android:id="@+id/value_department"
@@ -147,26 +147,29 @@
                 android:layout_marginTop="5dp"
                 android:inputType="textMultiLine"
                 android:lines="4"
-                app:layout_constraintStart_toStartOf="@+id/label_department"
-                app:layout_constraintTop_toBottomOf="@+id/label_department"
+                app:layout_constraintStart_toStartOf="@+id/label_departments"
+                app:layout_constraintTop_toBottomOf="@+id/label_departments"
                 tools:text="TextView" />
 
             <TextView
-                android:id="@+id/label_course"
+                android:id="@+id/label_courses"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
                 android:text="@string/text_label_corso_account"
                 app:layout_constraintStart_toStartOf="@+id/value_department"
-                app:layout_constraintTop_toBottomOf="@+id/value_department" />
+                app:layout_constraintTop_toBottomOf="@+id/value_department"
+                tools:text="TextView"/>
 
             <TextView
                 android:id="@+id/value_course"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                app:layout_constraintStart_toStartOf="@+id/label_course"
-                app:layout_constraintTop_toBottomOf="@+id/label_course"
+                android:inputType="textMultiLine"
+                android:lines="4"
+                app:layout_constraintStart_toStartOf="@+id/label_courses"
+                app:layout_constraintTop_toBottomOf="@+id/label_courses"
                 tools:text="TextView" />
 
             <Button
@@ -203,8 +206,19 @@
                 android:backgroundTint="@color/white"
                 android:tint="@color/purple_500"
                 android:visibility="gone"
-                app:layout_constraintStart_toEndOf="@+id/label_department"
-                app:layout_constraintTop_toTopOf="@+id/label_department"
+                app:layout_constraintStart_toEndOf="@+id/label_departments"
+                app:layout_constraintTop_toTopOf="@+id/label_departments"
+                app:srcCompat="@drawable/ic_baseline_expand_more_24" />
+
+            <ImageButton
+                android:id="@+id/courses_button"
+                android:layout_width="39dp"
+                android:layout_height="24dp"
+                android:backgroundTint="@color/white"
+                android:tint="@color/purple_500"
+                android:visibility="gone"
+                app:layout_constraintStart_toEndOf="@+id/label_courses"
+                app:layout_constraintTop_toTopOf="@+id/label_courses"
                 app:srcCompat="@drawable/ic_baseline_expand_more_24" />
 
 

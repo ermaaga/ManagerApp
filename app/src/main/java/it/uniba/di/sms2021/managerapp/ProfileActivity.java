@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import it.uniba.di.sms2021.managerapp.enitities.Course;
 import it.uniba.di.sms2021.managerapp.enitities.Department;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
@@ -37,6 +38,7 @@ public class ProfileActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference usersReference;
     private DatabaseReference departmentsReference;
+    private DatabaseReference coursesReference;
 
     User user;
 
@@ -48,15 +50,21 @@ public class ProfileActivity extends AppCompatActivity {
     Button editButton;
     Button saveButton;
     ImageButton editDepartments;
+    ImageButton editCourses;
     TextView textDepartments;
     TextView textCourses;
 
     List<String> departmentsChecked;
+    List<String> coursesChecked;
     String[] departmentList;
+    String[] courseList;
     String[] departmentListId;
+    String[] courseListId;
     boolean[] depIsChecked;
+    boolean[] courseIsChecked;
     private ValueEventListener userListener;
     private ValueEventListener departmentsListener;
+    private ValueEventListener coursesListener;
     private DatabaseReference currentUserReference;
 
     @Override
@@ -72,6 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
         editButton = (Button) findViewById(R.id.button_edit_profile);
         saveButton = (Button) findViewById(R.id.button_save_profile);
         editDepartments = (ImageButton) findViewById(R.id.departments_button);
+        editCourses = (ImageButton) findViewById(R.id.courses_button);
         textDepartments = (TextView) findViewById(R.id.value_department);
         textCourses = (TextView) findViewById(R.id.value_course);
 
@@ -79,8 +88,10 @@ public class ProfileActivity extends AppCompatActivity {
         database = FirebaseDbHelper.getDBInstance();
         usersReference = database.getReference(FirebaseDbHelper.TABLE_USERS);
         departmentsReference = database.getReference(FirebaseDbHelper.TABLE_DEPARTMENTS);
+        coursesReference = database.getReference(FirebaseDbHelper.TABLE_COURSES);
 
         departmentsChecked = new ArrayList<String>();
+        coursesChecked = new ArrayList<String>();
     }
 
     @Override
@@ -101,16 +112,13 @@ public class ProfileActivity extends AppCompatActivity {
                 textSurname.setText(user.getCognome());
                 textEmail.setText(user.getEmail());
 
-                int size = user.getDipartimenti().size();
-                TextView labelDepartments = (TextView) findViewById(R.id.label_department);
-                labelDepartments.setText(getResources().getQuantityString(R.plurals.numberOfDepartments, size));
+                int sizeDepartments = user.getDipartimenti().size();
+                TextView labelDepartments = (TextView) findViewById(R.id.label_departments);
+                labelDepartments.setText(getResources().getQuantityString(R.plurals.numberOfDepartments, sizeDepartments));
 
-                //TODO fare plurale corsi
-                        /*int size = user.getDipartimenti().size();
-                        TextView labelDepartments = (TextView) findViewById(R.id.label_department);
-                        labelDepartments.setText(getResources().getQuantityString(R.plurals.numberOfDepartments, size));*/
-
-                        textCourses.setText("" + user.getCorsi());
+                int sizeCourses = user.getDipartimenti().size();
+                TextView labelCourses = (TextView) findViewById(R.id.label_courses);
+                labelCourses.setText(getResources().getQuantityString(R.plurals.numberOfCourses, sizeCourses));
             }
 
             @Override
@@ -140,9 +148,6 @@ public class ProfileActivity extends AppCompatActivity {
                         }
                     }
                 }
-
-                Log.d(TAG, departmentsChecked.toString());
-
             }
 
             @Override
@@ -153,10 +158,45 @@ public class ProfileActivity extends AppCompatActivity {
         };
         departmentsReference.addValueEventListener(departmentsListener);
 
+        coursesListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                // Iterazione tra i vari elementi appartenenti al nodo "courses"
+                for (String c : user.getCorsi()) {
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        if (child.getKey().equals(c)) {
+                            Log.d(TAG, "Id of child: " + child.getKey());
+                            Course course = child.getValue(Course.class);
+
+                            textCourses.append(course.getName() + "\n");
+
+                            //Lista dei corsi dell'utente
+                            coursesChecked.add(course.getId());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+
+        };
+        coursesReference.addValueEventListener(coursesListener);
+
         editDepartments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 editDepartments();
+            }
+        });
+
+        editCourses.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editCourses();
             }
         });
     }
@@ -166,6 +206,7 @@ public class ProfileActivity extends AppCompatActivity {
         super.onStop();
         currentUserReference.removeEventListener(userListener);
         departmentsReference.removeEventListener(departmentsListener);
+        coursesReference.removeEventListener(coursesListener);
     }
 
     //metodo usato per modificare le TextView in EditText
@@ -178,13 +219,13 @@ public class ProfileActivity extends AppCompatActivity {
         editSurname.setVisibility(View.VISIBLE);
         saveButton.setVisibility(View.VISIBLE);
         editDepartments.setVisibility(View.VISIBLE);
+        editCourses.setVisibility(View.VISIBLE);
 
         editName.setText(textName.getText());
         editSurname.setText(textSurname.getText());
     }
 
     public void saveProfile(View view) {
-
         HashMap childUpdates = new HashMap();
         childUpdates.put("/nome/", editName.getText().toString());
         childUpdates.put("/cognome/", editSurname.getText().toString());
@@ -234,6 +275,44 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    public void editCourses() {
+        coursesReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                courseList = new String[(int) dataSnapshot.getChildrenCount()];
+                courseIsChecked= new boolean[(int) dataSnapshot.getChildrenCount()];
+                courseListId = new String[(int) dataSnapshot.getChildrenCount()];
+                int i = 0;
+
+                for (DataSnapshot course : dataSnapshot.getChildren()) {
+                    courseList[i]=course.getValue(Course.class).getName();
+                    courseListId[i]=course.getValue(Course.class).getId();
+
+                    boolean found = false;
+                    for(String courseChecked: coursesChecked){
+                        if(found==false) {
+                            if (course.getKey().equals(courseChecked)) {
+                                courseIsChecked[i] = true;
+                                found=true;
+                            } else {
+                                courseIsChecked[i] = false;
+                            }
+                        }
+                    }
+                    i++;
+                }
+
+                showCourseChooserDialog();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
     private void showDeparmentChooserDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
 
@@ -262,8 +341,6 @@ public class ProfileActivity extends AppCompatActivity {
                         if (checked) {
                             currentList.add(departmentListId[i]);
                             textDepartments.append(departmentList[i] + "\n");
-                            Log.d(TAG, departmentList[i]);
-                            Log.d(TAG, departmentListId[i]);
                         }
                     }
                     departmentsChecked = currentList;
@@ -274,6 +351,49 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         builder.setTitle(R.string.text_label_dialog_title_departments);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void showCourseChooserDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+
+        builder.setMultiChoiceItems(courseList, courseIsChecked, new DialogInterface.OnMultiChoiceClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                courseIsChecked[which] = isChecked;
+                if (((AlertDialog) dialog).getListView().getCheckedItemCount() == 0) {
+                    ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+                    Toast.makeText(ProfileActivity.this, R.string.text_message_alert_dialog_course, Toast.LENGTH_SHORT).show();
+                }else{
+                    ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(true);
+                }
+            }
+        });
+
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                HashMap childUpdates = new HashMap();
+                List<String> currentList = new ArrayList<String>();
+                textCourses.setText("");
+                for (int i = 0; i < courseIsChecked.length; i++) {
+                    boolean checked = courseIsChecked[i];
+                    if (checked) {
+                        currentList.add(courseListId[i]);
+                        textCourses.append(courseList[i] + "\n");
+                    }
+                }
+                coursesChecked = currentList;
+
+                childUpdates.put("/corsi/", currentList);
+                usersReference.child(user.getAccountId()).updateChildren(childUpdates);
+            }
+        });
+
+        builder.setTitle(R.string.text_label_dialog_title_courses);
 
         AlertDialog dialog = builder.create();
         dialog.show();

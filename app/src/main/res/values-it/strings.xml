@@ -46,6 +46,7 @@
     <string name="text_label_search">Ricerca</string>
     <string name="text_label_year">Anno</string>
     <string name="text_label_dialog_title_departments">Seleziona i dipartimenti</string>
+    <string name="text_label_dialog_title_courses">Seleziona i corsi</string>
     <string name="text_label_upload_file">Carica file</string>
     <string name="text_label_permissions">Permessi</string>
 
@@ -98,6 +99,7 @@
     <string name="text_message_file_downloaded_successfully">File scaricato con successo</string>
     <string name="text_message_file_download_message">Stai per scaricare il file nella memoria esterna, rendendolo accessibile ad altre app.</string>
     <string name="text_message_alert_dialog_department">Per favore, selezionare almeno un dipartimento.</string>
+    <string name="text_message_alert_dialog_course">Per favore, selezionare almeno un corso.</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -131,8 +133,14 @@
     <string name="text_send_subject">Condivisione File</string>
     <string name="text_send_content">Date un\'occhiata al mio nuovo file %s che ho creato nel mio progetto %s!</string>
 
+
     <plurals name="numberOfDepartments">
         <item quantity="one">Dipartimento</item>
         <item quantity="other">Dipartimenti</item>
+    </plurals>
+
+    <plurals name="numberOfCourses">
+        <item quantity="one">Corso</item>
+        <item quantity="other">Corsi</item>
     </plurals>
 </resources>
