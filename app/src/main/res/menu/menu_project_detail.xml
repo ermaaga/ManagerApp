@@ -20,6 +20,11 @@
         app:showAsAction="never"
         android:title="@string/text_label_permissions" />
     <item
+        android:id="@+id/action_rate_project"
+        android:enabled="true"
+        app:showAsAction="never"
+        android:title="@string/text_label_rate" />
+    <item
         android:id="@+id/action_settings"
         android:enabled="true"
         app:showAsAction="never"

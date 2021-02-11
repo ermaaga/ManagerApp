@@ -11,13 +11,12 @@ import com.google.android.material.textfield.TextInputLayout;
 import it.uniba.di.sms2021.managerapp.R;
 
 public class FormUtil {
+    private static final String TAG ="FormUtil" ;
 
     //TODO migliorare questa classe per gestire la validazione dei campi in maniera più elegante
 
-    public static boolean validateEmailPassword(String email, String password, Context context, TextInputLayout  emailInputLayout, TextInputLayout  passwordInputLayout ) {
+    public static boolean validateEmailPassword(String email, String password, Context context, TextInputLayout  emailInputLayout, TextInputLayout  passwordInputLayout) {
         boolean valid = true;
-
-   //    emailInputLayout = (TextInputLayout) ((Activity) context).findViewById(R.id.emailInputLayout);
 
         if (!isEmailValid(email,emailInputLayout, context)) {
             valid = false;

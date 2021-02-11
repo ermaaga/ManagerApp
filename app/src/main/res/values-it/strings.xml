@@ -15,6 +15,7 @@
     <string name="activity_label_user_profile">Profilo</string>
     <string name="activity_label_department">Scegli</string>
     <string name="activity_label_project_permissions">Permessi</string>
+    <string name="activity_label_rate_project">Valuta progetto</string>
     <string name="activity_label_exam_partecipants">Partecipanti</string>
     <string name="creation_exam_failed">Errore durante la creazione</string>
     <string name="text_error_validation">Il nome del gruppo non può essere maggiore di 20 caratteri</string>
@@ -49,6 +50,7 @@
     <string name="text_label_dialog_title_courses">Seleziona i corsi</string>
     <string name="text_label_upload_file">Carica file</string>
     <string name="text_label_permissions">Permessi</string>
+    <string name="text_label_rate">Valuta progetto</string>
 
     <string name="text_label_project_preference_visibility">Chiunque può accedere al progetto</string>
 
@@ -118,6 +120,7 @@
     <string name="text_button_save_profile">Salva</string>
     <string name="text_button_retry">Riprova</string>
     <string name="text_button_show_file">Apri</string>
+    <string name="text_buttom_rate_project">Vota</string>
 
     <string name="text_hint_name_studycase">Nome</string>
     <string name="text_hint_name_group">Nome</string>
@@ -125,6 +128,8 @@
     <string name="text_hint_surname_user">Cognome</string>
     <string name="text_hint_desc_study_case">Descrizione</string>
     <string name="text_hint_search_file">Cerca File (ex. video, rilascio, etc.)</string>
+    <string name="text_hint_comment_project">Commento</string>
+    <string name="text_hint_rate_project">Voto</string>
 
     <string name="text_action_delete_file">Elimina</string>
     <string name="text_action_share_file">Condividi</string>

@@ -23,6 +23,10 @@
             android:label="Gruppo 1 (rendere dinamico)" >
         </activity>
         <activity
+            android:name=".projects.ProjectRateActivity"
+            android:label="@string/activity_label_rate_project" >
+        </activity>
+        <activity
             android:name=".projects.ProjectPermissionsActivity"
             android:label="@string/activity_label_project_permissions" >
         </activity>

@@ -102,17 +102,16 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
         storageRef = FirebaseStorage.getInstance().getReference();
 
     }
-
-
-   private boolean validate(EditText name, EditText desc){
+    
+   private boolean validate(String textname, String textdesc){
         boolean valid = true;
 
-        if(name.getText().toString().length()==0) {
+        if(textname.length()==0) {
             valid=false;
             name.setError(getString(R.string.required_field));
 
         }
-        if(desc.getText().toString().length()==0) {
+        if(textdesc.length()==0) {
             valid=false;
             desc.setError(getString(R.string.required_field));
         }
@@ -138,7 +137,7 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
 
 
     private void createNewStudyCase(){
-        if(validate(name,desc)){
+        if(validate(name.getText().toString(),desc.getText().toString())){
             //Ho modificato questa parte per inizializzare il caso di studio con un id.
             DatabaseReference newElement=studycasesReference.push();
 

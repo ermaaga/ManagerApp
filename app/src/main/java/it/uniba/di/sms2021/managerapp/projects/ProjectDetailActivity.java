@@ -144,8 +144,10 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
             Intent intent = new Intent(this, ProjectPermissionsActivity.class);
             intent.putExtra(Group.Keys.GROUP, project.getGroup());
             startActivity(intent);
+        }else if (menuId == R.id.action_rate_project) {
+            Intent intent = new Intent(this, ProjectRateActivity.class);
+            startActivity(intent);
         }
-
         return super.onOptionsItemSelected(item);
     }
 

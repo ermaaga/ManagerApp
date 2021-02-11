@@ -13,7 +13,7 @@
     <string name="activity_label_detail_study_case">Detail Study Case</string>
     <string name="activity_label_user_profile">Profile</string>
     <string name="activity_label_project_permissions">Permissions</string>
-
+    <string name="activity_label_rate_project">Rate Project</string>
     <string name="activity_label_sign_in">Sign In</string>
     <string name="activity_label_department">Choose the department</string>
     <string name="activity_label_exam_partecipants">Partecipants</string>
@@ -58,6 +58,7 @@
     <string name="text_label_search">Search</string>
     <string name="text_label_year">Year</string>
     <string name="text_label_permissions">Permissions</string>
+    <string name="text_label_rate">Rate project</string>
 
     <string name="text_label_project_preference_visibility">Everyone can access the project</string>
 
@@ -130,6 +131,7 @@
     <string name="text_button_save_profile">Save</string>
     <string name="text_button_retry">Retry</string>
     <string name="text_button_show_file">Open</string>
+    <string name="text_buttom_rate_project">Rate</string>
 
     <string name="text_hint_email_user" translatable="false">Email</string>
     <string name="text_hint_password_user" translatable="false">Password</string>
@@ -139,6 +141,8 @@
     <string name="text_hint_surname_user">Surname</string>
     <string name="text_hint_desc_study_case">Description</string>
     <string name="text_hint_search_file">Search File (ex. video, release, etc.)</string>
+    <string name="text_hint_comment_project">Comment</string>
+    <string name="text_hint_rate_project">Rate</string>
 
     <string name="text_action_delete_file">Delete</string>
     <string name="text_action_share_file">Share</string>
