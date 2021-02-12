@@ -60,7 +60,9 @@
     <string name="text_label_permissions">Permissions</string>
     <string name="text_label_rate">Rate project</string>
 
-    <string name="text_label_project_preference_visibility">Everyone can access the project</string>
+    <string name="text_label_project_preference_visibility">Anyone can view the project</string>
+    <string name="text_label_project_preference_free_join">Anyone can join the project</string>
+    <string name="text_label_project_preference_max_members">Set max number of partecipants</string>
 
     <string name="text_label_dialog_title_departments">Select departments</string>
     <string name="text_label_dialog_title_courses">Select courses</string>
@@ -113,6 +115,7 @@
     <string name="text_message_file_download_message">You are about to download the file in the external storage, making it accessible to other apps.</string>
     <string name="text_message_alert_dialog_department">Please, select at least one department.</string>
     <string name="text_message_alert_dialog_course">Please, select at least one course.</string>
+    <string name="text_message_group_not_joinable">The selected group is either full or doesn\'t accept new members</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -150,6 +153,7 @@
 
     <string name="text_send_subject">File Sharing</string>
     <string name="text_send_content">Check out my new file %s that i created in my project %s!</string>
+    <string name="text_message_max_members_exceeds_actual">The value entered exceeds the current number of members.</string>
 
     <plurals name="numberOfDepartments">
         <item quantity="one">Department</item>

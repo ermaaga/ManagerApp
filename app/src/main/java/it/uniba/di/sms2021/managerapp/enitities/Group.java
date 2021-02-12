@@ -105,6 +105,11 @@ public class Group implements Parcelable {
         }
     }
 
+    @Exclude
+    public boolean isGroupFull () {
+        return permissions.getMaxMembers() != 0 && permissions.getMaxMembers() - membri.size() <= 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

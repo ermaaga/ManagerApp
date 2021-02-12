@@ -139,9 +139,10 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
     private void chooseExam (Exam exam) {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        //Se lu studente partecipa già all'esame, lo fa entrare. Altrimenti manda una richiesta
-        //per partecipare.
-        if (exam.getStudents() != null && exam.getStudents().contains(uid)) {
+        //Se l'utente è uno studente che partecipa già all'esame, o è il professore dell'esame,
+        // lo fa entrare. Altrimenti manda una richiesta per partecipare.
+        if ((exam.getStudents() != null && exam.getStudents().contains(uid)) ||
+                exam.getProfessors().contains(uid)) {
             Intent intent = new Intent(ExamsActivity.this, ExamDetailActivity.class);
             intent.putExtra(Exam.Keys.EXAM, exam);
             startActivity(intent);

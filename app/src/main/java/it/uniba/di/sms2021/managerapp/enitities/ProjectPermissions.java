@@ -5,9 +5,14 @@ import android.os.Parcelable;
 
 public class ProjectPermissions implements Parcelable {
     private boolean accessible;
+    private boolean joinable;
+    private int maxMembers;
 
     public ProjectPermissions() {
+        // Setta i valori di default
         this.accessible = false;
+        this.joinable = true;
+        this.maxMembers = 0;
     }
 
     public boolean isAccessible() {
@@ -18,6 +23,25 @@ public class ProjectPermissions implements Parcelable {
         this.accessible = accessible;
     }
 
+    public boolean isJoinable() {
+        return joinable;
+    }
+
+    public void setJoinable(boolean joinable) {
+        this.joinable = joinable;
+    }
+
+    /**
+     * Ritorna il numero massimo dei membri o 0 se illimitato.
+     */
+    public int getMaxMembers() {
+        return maxMembers;
+    }
+
+    public void setMaxMembers(int maxMembers) {
+        this.maxMembers = maxMembers;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -25,7 +49,9 @@ public class ProjectPermissions implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        // Uso writeInt perchè writeBoolean è disponibile solo dall'api 29
         dest.writeInt(accessible ? 1 : 0);
+        dest.writeInt(joinable ? 1 : 0);
     }
 
     public static final Parcelable.Creator<ProjectPermissions> CREATOR
@@ -33,6 +59,7 @@ public class ProjectPermissions implements Parcelable {
         public ProjectPermissions createFromParcel(Parcel in) {
             ProjectPermissions permissions = new ProjectPermissions();
             permissions.setAccessible(in.readInt() == 1);
+            permissions.setJoinable(in.readInt() == 1);
 
             return permissions;
         }

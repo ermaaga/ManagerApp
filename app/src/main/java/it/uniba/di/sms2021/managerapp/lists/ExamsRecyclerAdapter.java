@@ -74,7 +74,6 @@ public class ExamsRecyclerAdapter extends ListAdapter<Exam, RecyclerView.ViewHol
         }
     }
 
-    //TODO Crere una classe utility che incapsuli l'esame insieme al nome del professore
     public void setFirstProfessorName(TextView textView, Exam exam) {
         DatabaseReference ref = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {

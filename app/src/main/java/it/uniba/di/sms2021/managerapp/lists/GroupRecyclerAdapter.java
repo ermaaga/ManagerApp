@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 
+import java.util.Locale;
+
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
@@ -48,8 +50,17 @@ public class GroupRecyclerAdapter extends ListAdapter<Group, RecyclerView.ViewHo
 
         TextView titleTextViewGroupName = itemView.findViewById(R.id.exam_group_title_text_view);
         TextView groupStudyCaseTextView = itemView.findViewById(R.id.exam_group_study_case_text_view);
+        TextView membersCountTextView = itemView.findViewById(R.id.exam_group_study_case_members_text_view);
         titleTextViewGroupName.setText(group.getName());
         groupStudyCaseTextView.setText(group.getStudyCaseName());
+
+        // Mostra il numero di partecipanti attualmente presenti ed il massimo se presente
+        if (group.getPermissions().getMaxMembers() == 0) {
+            membersCountTextView.setText(String.valueOf(group.getMembri().size()));
+        } else {
+            membersCountTextView.setText(String.format(Locale.getDefault(), "%d/%d",
+                    group.getMembri().size(), group.getPermissions().getMaxMembers()));
+        }
 
         ImageView joinActionImageView = itemView.findViewById(R.id.exam_group_join_action);
         if (group.getMembri().contains(LoginHelper.getCurrentUser().getAccountId())) {

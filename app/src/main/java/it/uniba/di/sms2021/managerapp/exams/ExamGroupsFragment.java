@@ -1,5 +1,7 @@
 package it.uniba.di.sms2021.managerapp.exams;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -41,6 +43,8 @@ public class ExamGroupsFragment extends Fragment {
     private GroupRecyclerAdapter adapter;
     private DatabaseReference mDatabase;
 
+    private Exam exam;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,11 +62,14 @@ public class ExamGroupsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        exam = ((ExamDetailActivity)getActivity()).getSelectedExam();
         adapter = new GroupRecyclerAdapter(new GroupRecyclerAdapter.OnActionListener() {
             @Override
             public void onClick(Group group) {
+                String uid = LoginHelper.getCurrentUser().getAccountId();
+
                 // Se l'utente partecipa già al progetto, apre la schermata del progetto
-                if (group.getMembri().contains(LoginHelper.getCurrentUser().getAccountId())) {
+                if (group.getMembri().contains(uid)) {
                     new Project.Initialiser() {
                         @Override
                         public void onProjectInitialised(Project project) {
@@ -74,7 +81,7 @@ public class ExamGroupsFragment extends Fragment {
                 } // Se l'utente non partecipa al progetto ed il progetto è visualizzabile da tutti,
                 // apre la schermata del progetto in modalità visitatore
                 else if (group.getPermissions().isAccessible()) {
-                    //TODO creare una modalità visitatore per la visualizzazione del gruppo
+                    //TODO creare una modalità visitatore per la visualizzazione del progetto
                     new Project.Initialiser() {
                         @Override
                         public void onProjectInitialised(Project project) {
@@ -83,15 +90,50 @@ public class ExamGroupsFragment extends Fragment {
                             startActivity(intent);
                         }
                     }.initialiseProject(group);
-                } // Se il progetto non è accessibile, chiede all'utente se vuole unirsi al progetto
-                else {
+                } // Se l'utente è il professore dell'esame in cui è presente il progetto, apre la
+                // schermata del progetto in modalità professore
+                else if (exam.getProfessors().contains(uid)) {
+                    //TODO creare una modalità professore per la visualizzazione del progetto
+                    new Project.Initialiser() {
+                        @Override
+                        public void onProjectInitialised(Project project) {
+                            Intent intent = new Intent(getContext(), ProjectDetailActivity.class);
+                            intent.putExtra(Project.KEY, project);
+                            startActivity(intent);
+                        }
+                    }.initialiseProject(group);
+                }
+                // Se il progetto non è visualizzabile, chiede all'utente se vuole unirsi al progetto
+                else if (group.getPermissions().isJoinable() && !group.isGroupFull()) {
                     openDialog(group, true);
+                } else {
+                    new AlertDialog.Builder(getContext())
+                            .setMessage(R.string.text_message_group_not_joinable)
+                            .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .show();
                 }
             }
 
             @Override
             public void onJoin(Group group) {
-                doJoinGroupAction(group);
+                if (group.getPermissions().isJoinable() && !group.isGroupFull()) {
+                    doJoinGroupAction(group);
+                } else {
+                    new AlertDialog.Builder(getContext())
+                            .setMessage(R.string.text_message_group_not_joinable)
+                            .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .show();
+                }
             }
 
 

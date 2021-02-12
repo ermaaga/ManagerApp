@@ -4,4 +4,16 @@
         android:defaultValue="false"
         android:key="visibility"
         android:title="@string/text_label_project_preference_visibility" />
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="free_join"
+        android:title="@string/text_label_project_preference_free_join" />
+    <EditTextPreference
+        android:defaultValue="0"
+        android:key="max_members"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:inputType="number"
+        android:digits="0123456789"
+        android:title="@string/text_label_project_preference_max_members" />
 </PreferenceScreen>

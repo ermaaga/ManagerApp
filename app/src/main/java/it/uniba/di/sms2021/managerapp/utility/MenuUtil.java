@@ -23,11 +23,7 @@ public class MenuUtil {
             Intent intent = new Intent(context, ProfileActivity.class);
             context.startActivity(intent);
         } else if (menuItemId == R.id.action_logout) {
-            FirebaseAuth.getInstance().signOut();
-            GoogleSignIn.getClient(context, LoginHelper.getOptions(context)).signOut();
-            Intent intent = new Intent(context, LoginActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            context.startActivity(intent);
+            LoginHelper.logout(context);
         }
     }
 }

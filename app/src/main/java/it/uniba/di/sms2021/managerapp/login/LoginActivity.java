@@ -264,6 +264,25 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                 Log.d(TAG, getString(R.string.login_success));
                                 Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_LONG).show();
 
+
+                                // Setta l'utente attuale in una variabile accessibile nel resto dell'applicazione
+                                usersReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                      @Override
+                                      public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                          for (DataSnapshot child : snapshot.getChildren()) {
+                                              if (child.getKey().equals(task.getResult().getUser().getUid())) {
+                                                  LoginHelper.setCurrentUser(child.getValue(User.class));
+                                                  break;
+                                              }
+                                          }
+                                      }
+
+                                      @Override
+                                      public void onCancelled(@NonNull DatabaseError error) {
+
+                                      }
+                                });
+
                                 Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
                                 startActivity(intent);
                             }
