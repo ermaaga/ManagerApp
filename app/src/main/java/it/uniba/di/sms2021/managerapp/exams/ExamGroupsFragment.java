@@ -69,39 +69,13 @@ public class ExamGroupsFragment extends Fragment {
                 String uid = LoginHelper.getCurrentUser().getAccountId();
 
                 // Se l'utente partecipa già al progetto, apre la schermata del progetto
-                if (group.getMembri().contains(uid)) {
-                    new Project.Initialiser() {
-                        @Override
-                        public void onProjectInitialised(Project project) {
-                            Intent intent = new Intent(getContext(), ProjectDetailActivity.class);
-                            intent.putExtra(Project.KEY, project);
-                            startActivity(intent);
-                        }
-                    }.initialiseProject(group);
-                } // Se l'utente non partecipa al progetto ed il progetto è visualizzabile da tutti,
+                // Se l'utente non partecipa al progetto ed il progetto è visualizzabile da tutti,
                 // apre la schermata del progetto in modalità visitatore
-                else if (group.getPermissions().isAccessible()) {
-                    //TODO creare una modalità visitatore per la visualizzazione del progetto
-                    new Project.Initialiser() {
-                        @Override
-                        public void onProjectInitialised(Project project) {
-                            Intent intent = new Intent(getContext(), ProjectDetailActivity.class);
-                            intent.putExtra(Project.KEY, project);
-                            startActivity(intent);
-                        }
-                    }.initialiseProject(group);
-                } // Se l'utente è il professore dell'esame in cui è presente il progetto, apre la
+                // Se l'utente è il professore dell'esame in cui è presente il progetto, apre la
                 // schermata del progetto in modalità professore
-                else if (exam.getProfessors().contains(uid)) {
-                    //TODO creare una modalità professore per la visualizzazione del progetto
-                    new Project.Initialiser() {
-                        @Override
-                        public void onProjectInitialised(Project project) {
-                            Intent intent = new Intent(getContext(), ProjectDetailActivity.class);
-                            intent.putExtra(Project.KEY, project);
-                            startActivity(intent);
-                        }
-                    }.initialiseProject(group);
+                if (group.getMembri().contains(uid) || group.getPermissions().isAccessible() ||
+                        exam.getProfessors().contains(uid)) {
+                    openProject(group);
                 }
                 // Se il progetto non è visualizzabile, chiede all'utente se vuole unirsi al progetto
                 else if (group.getPermissions().isJoinable() && !group.isGroupFull()) {
@@ -231,8 +205,15 @@ public class ExamGroupsFragment extends Fragment {
         dialog.show(getFragmentManager(),"groupDialog");
     }
 
-    private void previewProject () {
-
+    private void openProject(Group group) {
+        new Project.Initialiser() {
+            @Override
+            public void onProjectInitialised(Project project) {
+                Intent intent = new Intent(getContext(), ProjectDetailActivity.class);
+                intent.putExtra(Project.KEY, project);
+                startActivity(intent);
+            }
+        }.initialiseProject(group);
     }
 
 }

@@ -16,4 +16,8 @@
         android:inputType="number"
         android:digits="0123456789"
         android:title="@string/text_label_project_preference_max_members" />
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="file_accessibility"
+        android:title="@string/text_label_project_preference_file_accessibility" />
 </PreferenceScreen>

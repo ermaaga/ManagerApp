@@ -22,16 +22,19 @@ import com.google.android.material.card.MaterialCardView;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
+import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 
 public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView.ViewHolder> {
     private Context context;
     private OnActionListener listener;
+    private Project project;
 
-    public FilesRecyclerAdapter(Context context, OnActionListener listener) {
+    public FilesRecyclerAdapter(Context context, Project project, OnActionListener listener) {
         super(new DiffCallback());
         this.listener = listener;
         this.context = context;
+        this.project = project;
     }
 
     @NonNull
@@ -80,6 +83,11 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
     private void showMenu(View view, ManagerFile file) {
         PopupMenu popup = new PopupMenu(context, view);
         popup.getMenuInflater().inflate(R.menu.file_action_popup_menu, popup.getMenu());
+
+        //Nasconde l'azione elimina nel caso l'utente non sia un un membro del gruppo
+        if (!project.isMember()) {
+            popup.getMenu().findItem(R.id.file_delete_action).setVisible(false);
+        }
 
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override

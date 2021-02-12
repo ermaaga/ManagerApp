@@ -18,6 +18,7 @@ public class ProjectPermissionsPreferencesFragment extends PreferenceFragment
     public static final String VISIBILITY_KEY = "visibility";
     private static final String JOINABLE_KEY = "free_join";
     private static final String MAX_MEMBERS_KEY = "max_members";
+    private static final String FILE_ACCESSIBILITY_KEY = "file_accessibility";
 
     private Group group;
 
@@ -41,6 +42,7 @@ public class ProjectPermissionsPreferencesFragment extends PreferenceFragment
                     .putBoolean(VISIBILITY_KEY, group.getPermissions().isAccessible())
                     .putBoolean(JOINABLE_KEY, group.getPermissions().isJoinable())
                     .putString(MAX_MEMBERS_KEY, String.valueOf(group.getPermissions().getMaxMembers()))
+                    .putBoolean(FILE_ACCESSIBILITY_KEY, group.getPermissions().isFileAccessible())
                     .apply();
         }
 
@@ -49,6 +51,7 @@ public class ProjectPermissionsPreferencesFragment extends PreferenceFragment
             getPreferenceScreen().findPreference(VISIBILITY_KEY).setEnabled(false);
             getPreferenceScreen().findPreference(JOINABLE_KEY).setEnabled(false);
             getPreferenceScreen().findPreference(MAX_MEMBERS_KEY).setEnabled(false);
+            getPreferenceScreen().findPreference(FILE_ACCESSIBILITY_KEY).setEnabled(false);
         }
     }
 
@@ -75,6 +78,9 @@ public class ProjectPermissionsPreferencesFragment extends PreferenceFragment
             }
 
             group.getPermissions().setMaxMembers(value);
+        } else if (key.equals(FILE_ACCESSIBILITY_KEY)) {
+            boolean value = sharedPreferences.getBoolean(key, false);
+            group.getPermissions().setFileAccessible(value);
         } else {
             throw new RuntimeException("Preference key not found");
         }

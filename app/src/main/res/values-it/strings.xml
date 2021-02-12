@@ -55,6 +55,7 @@
     <string name="text_label_project_preference_visibility">Chiunque può accedere al progetto</string>
     <string name="text_label_project_preference_free_join">Chiunque può unirsi al progetto</string>
     <string name="text_label_project_preference_max_members">Imposta il numero massimo di partecipanti</string>
+    <string name="text_label_project_preference_file_accessibility">Chiunque può accedere ai file del progetto</string>
 
     <string name="label_Dialog_Header">Informazione</string>
     <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>
@@ -105,6 +106,8 @@
     <string name="text_message_alert_dialog_department">Per favore, selezionare almeno un dipartimento.</string>
     <string name="text_message_alert_dialog_course">Per favore, selezionare almeno un corso.</string>
     <string name="text_message_group_not_joinable">Il gruppo selezionato è pieno o non accetta nuovi membri</string>
+    <string name="text_message_max_members_exceeds_actual">Il valore inserito eccede il numero attuale di membri</string>
+    <string name="text_message_files_are_private">I file del progetto sono stati impostati come privati</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 

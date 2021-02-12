@@ -7,13 +7,16 @@ import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
+import it.uniba.di.sms2021.managerapp.enitities.ProjectPermissions;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 
 /**
@@ -24,6 +27,7 @@ public class Project implements Parcelable {
     private Group group;
     private String studyCaseName;
     private String examName;
+    private List<String> professorsId;
 
     public static final String KEY = "project";
 
@@ -52,6 +56,7 @@ public class Project implements Parcelable {
                                 if (child.getKey().equals(group.getExam())) {
                                     Exam exam = child.getValue(Exam.class);
                                     project.examName = exam.getName();
+                                    project.professorsId = exam.getProfessors();
                                     found = true;
                                     break;
                                 }
@@ -170,11 +175,46 @@ public class Project implements Parcelable {
         return group;
     }
 
+    public List<String> getProfessorsId() {
+        return professorsId;
+    }
+
+    public void setProfessorsId(List<String> professorsId) {
+        this.professorsId = professorsId;
+    }
+
+    public ProjectPermissions getPermissions() {
+        return group.getPermissions();
+    }
+
+    public void setPermissions(ProjectPermissions permissions) {
+        group.setPermissions(permissions);
+    }
+
+    @Exclude
+    public boolean isGroupFull() {
+        return group.isGroupFull();
+    }
+
+    /**
+     * Ritorna true se l'utente corrente è il professore dell'esame che contiene il progetto
+     */
+    public boolean isProfessor () {
+        return getProfessorsId().contains(LoginHelper.getCurrentUser().getAccountId());
+    }
+
+    /**
+     * Ritorna true se l'utente corrente è un membro del progetto
+     */
+    public boolean isMember () {
+        return getMembri().contains(LoginHelper.getCurrentUser().getAccountId());
+    }
+
     /**
      * Ritorna true se tutti i campi sono stati inizializzati, false altrimenti
      */
     private boolean isInitialisationDone () {
-        return studyCaseName != null && examName != null;
+        return studyCaseName != null && examName != null && professorsId != null;
     }
 
     @Override
@@ -184,20 +224,22 @@ public class Project implements Parcelable {
         Project project = (Project) o;
         return Objects.equals(group, project.group) &&
                 Objects.equals(studyCaseName, project.studyCaseName) &&
-                Objects.equals(examName, project.examName);
+                Objects.equals(examName, project.examName) &&
+                Objects.equals(professorsId, project.professorsId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(group, studyCaseName, examName);
+        return Objects.hash(group, studyCaseName, examName, professorsId);
     }
 
     @Override
     public String toString() {
         return "Project{" +
                 "group=" + group +
-                ", caseStudyName='" + studyCaseName + '\'' +
+                ", studyCaseName='" + studyCaseName + '\'' +
                 ", examName='" + examName + '\'' +
+                ", professorsId=" + professorsId +
                 '}';
     }
 
@@ -211,6 +253,7 @@ public class Project implements Parcelable {
         dest.writeParcelable((Parcelable) group, 0);
         dest.writeString(studyCaseName);
         dest.writeString(examName);
+        dest.writeList(professorsId);
     }
 
     public static final Parcelable.Creator<Project> CREATOR
@@ -219,6 +262,10 @@ public class Project implements Parcelable {
             Project project = new Project(in.readParcelable(Group.class.getClassLoader()));
             project.setStudyCaseName(in.readString());
             project.setExamName(in.readString());
+
+            List<String> professorsId = new ArrayList<>();
+            in.readList(professorsId, String.class.getClassLoader());
+            project.setProfessorsId(professorsId);
 
             return project;
         }

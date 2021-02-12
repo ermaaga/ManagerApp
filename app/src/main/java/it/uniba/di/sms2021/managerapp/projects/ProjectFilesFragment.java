@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
@@ -85,8 +86,8 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                     boolean toAdd = true;
                     for (String string: keyWords) {
                         if (toAdd) {
-                            //Se il file non include una delle parole chiavi, non verrà mostrato
-                            //Verrà sempre mostrato se la query è vuota
+                            //Se il file non include una delle parole chiavi, non verrà mostrato.
+                            //Verrà sempre mostrato sempre invece se la query è vuota
                             toAdd = query.equals("") ||
                                     file.getName().toLowerCase().contains(string.toLowerCase()) ||
                                     file.getType().toLowerCase().contains(string.toLowerCase());
@@ -111,6 +112,14 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_project_files, container, false);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
         FloatingActionButton addFileFloatingActionButton =
                 view.findViewById(R.id.files_add_file_floating_action_button);
         addFileFloatingActionButton.setOnClickListener(this);
@@ -121,7 +130,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         RecyclerView filesRecyclerView = view.findViewById(R.id.files_recyclerView);
 
         //Nel listener dichiaro tutte le azioni eseguibili su un file della lista
-        adapter = new FilesRecyclerAdapter(getContext(), new FilesRecyclerAdapter.OnActionListener() {
+        adapter = new FilesRecyclerAdapter(getContext(), project, new FilesRecyclerAdapter.OnActionListener() {
             @Override
             public void onClick(ManagerFile file) {
                 //Scarica il file temporaneo e lo visualizza usando un app esterna
@@ -193,7 +202,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                                     R.string.text_send_subject);
                             intentShareFile.putExtra(Intent.EXTRA_TEXT,
                                     getString(R.string.text_send_content,
-                                    file.getName(), project.getName()));
+                                            file.getName(), project.getName()));
 
                             startActivity(Intent.createChooser(intentShareFile, "Share File"));
                         }
@@ -213,8 +222,17 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                 DividerItemDecoration.VERTICAL));
         filesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        getFiles();
-        return view;
+        if (project.isMember() || project.isProfessor() ||
+                project.getPermissions().isFileAccessible()) {
+            getFiles();
+        } else {
+            Snackbar.make(requireView(), R.string.text_message_files_are_private, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.text_button_dismiss, v -> {}).show();
+        }
+
+        if (project.isProfessor() || !project.isMember()) {
+            addFileFloatingActionButton.setVisibility(View.GONE);
+        }
     }
 
     private void getFiles() {
@@ -240,9 +258,6 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                 .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                     @Override
                     public void onSuccess(ListResult listResult) {
-                        List<StorageReference> prefixes = listResult.getPrefixes();
-                        List<StorageReference> items = listResult.getItems();
-
                         for (StorageReference item : listResult.getItems()) {
                             elaboratingReferences.add(item);
                             item.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
