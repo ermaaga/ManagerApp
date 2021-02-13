@@ -12,7 +12,6 @@ import java.util.Objects;
 public class Group implements Parcelable {
     private String id;
     private String name;
-
     /**
      * L'id del caso di studio a cui è associato
      */
@@ -29,6 +28,7 @@ public class Group implements Parcelable {
     // Campo duplicato per usarlo in ExamGroupsFragment senza rompere il resto del programma
     // TODO usare project al posto di questo campo
     private String studyCaseName;
+    private Vote vote;
 
     public Group(String id, String name, String studyCase, String exam, List<String> membri) {
         this();
@@ -103,6 +103,14 @@ public class Group implements Parcelable {
         } else {
             this.permissions = permissions;
         }
+    }
+
+    public Vote getVote() {
+        return vote;
+    }
+
+    public void setVote(Vote vote) {
+        this.vote = vote;
     }
 
     @Exclude

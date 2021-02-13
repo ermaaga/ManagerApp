@@ -18,7 +18,6 @@ import com.google.android.material.tabs.TabLayout;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
-import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
@@ -145,8 +144,9 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
             Intent intent = new Intent(this, ProjectPermissionsActivity.class);
             intent.putExtra(Group.Keys.GROUP, project.getGroup());
             startActivity(intent);
-        }else if (menuId == R.id.action_rate_project) {
-            Intent intent = new Intent(this, ProjectRateActivity.class);
+        }else if (menuId == R.id.action_evaluate_project) {
+            Intent intent = new Intent(this, ProjectVoteActivity.class);
+            intent.putExtra(Group.Keys.GROUP, project.getGroup().getId());
             startActivity(intent);
         }
         return super.onOptionsItemSelected(item);

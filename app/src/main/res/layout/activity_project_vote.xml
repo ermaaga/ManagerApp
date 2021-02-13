@@ -21,15 +21,15 @@
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:id="@+id/rate_input_layout"
+        android:id="@+id/vote_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
-        android:hint="@string/text_hint_rate_project"
+        android:hint="@string/text_hint_vote_project"
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/rate_edit_text"
+            android:id="@+id/vote_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="numberDecimal"
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:hint="@string/text_hint_comment_project"
-        app:layout_constraintTop_toBottomOf="@+id/rate_input_layout">
+        app:layout_constraintTop_toBottomOf="@+id/vote_input_layout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/comment_edit_text"
@@ -57,13 +57,13 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
-        android:id="@+id/button_rate_project"
+        android:id="@+id/button_evaluate_project"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="144dp"
         android:layout_marginBottom="152dp"
-        android:onClick="rateProject"
-        android:text="@string/text_buttom_rate_project"
+        android:onClick="evaluateProject"
+        android:text="@string/text_button_evaluate_project"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
