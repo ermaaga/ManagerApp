@@ -142,7 +142,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         MenuUtil.performMainActions(this, menuId);
         if (menuId == R.id.action_project_permissions) {
             Intent intent = new Intent(this, ProjectPermissionsActivity.class);
-            intent.putExtra(Group.Keys.GROUP, project.getGroup());
+            intent.putExtra(Project.KEY, project);
             startActivity(intent);
         }else if (menuId == R.id.action_evaluate_project) {
             Intent intent = new Intent(this, ProjectVoteActivity.class);

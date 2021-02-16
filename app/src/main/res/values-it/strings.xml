@@ -56,6 +56,11 @@
     <string name="text_label_project_preference_free_join">Chiunque può unirsi al progetto</string>
     <string name="text_label_project_preference_max_members">Imposta il numero massimo di partecipanti</string>
     <string name="text_label_project_preference_file_accessibility">Chiunque può accedere ai file del progetto</string>
+    <string name="text_label_project_preference_can_add_file">Imposta chi può aggiungere files nel progetto</string>
+
+    <string name="text_label_project_preference_category_partecipation">Partecipazione</string>
+    <string name="text_label_project_preference_category_project_files">File di Progetto</string>
+    <string name="text_label_project_preference_category_visibility">Visibilità</string>
 
     <string name="label_Dialog_Header">Informazione</string>
     <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>

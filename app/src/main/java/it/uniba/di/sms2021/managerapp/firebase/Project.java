@@ -2,6 +2,7 @@ package it.uniba.di.sms2021.managerapp.firebase;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -18,6 +19,7 @@ import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.ProjectPermissions;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
+import it.uniba.di.sms2021.managerapp.enitities.User;
 
 /**
  * Classe di utility che popolerà tutte le informazioni utili per un progetto a partire da query
@@ -64,7 +66,7 @@ public class Project implements Parcelable {
                             if (!found) {
                                 //TODO testare per fare in modo che questa eccezione non venga mai lanciata
                                 throw new RuntimeException("Impossibile trovare l'esame con l'id "
-                                        + group.getExam());
+                                        + group.getExam() + " nel progetto di id " + project.getId());
                             }
 
                             if (project.isInitialisationDone()) {
@@ -95,7 +97,7 @@ public class Project implements Parcelable {
                             if (!found) {
                                 //TODO testare per fare in modo che questa eccezione non venga mai lanciata
                                 throw new RuntimeException("Impossibile trovare il caso di studio con l'id "
-                                        + group.getStudyCase());
+                                        + group.getStudyCase() + " nel progetto di id " + project.getId());
                             }
 
                             if (project.isInitialisationDone()) {
@@ -208,6 +210,13 @@ public class Project implements Parcelable {
      */
     public boolean isMember () {
         return getMembri().contains(LoginHelper.getCurrentUser().getAccountId());
+    }
+
+    /**
+     * Ritorna true se l'utente corrente può aggiungere file al progetto
+     */
+    public boolean canAddFiles () {
+        return getPermissions().getCanAddFiles().contains(LoginHelper.getCurrentUser().getAccountId());
     }
 
     /**

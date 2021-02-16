@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,11 +28,20 @@ public class UserSelectionRecyclerAdapter extends ListAdapter<User, RecyclerView
     private final OnActionListener listener;
     private final Set<Integer> itemsSelected;
 
+    @Nullable
+    private Set<String> initiallySelectedUsersIds;
+
     public UserSelectionRecyclerAdapter(Context context, OnActionListener listener) {
         super(new UserDiffCallback());
         this.context = context;
         this.listener = listener;
         itemsSelected = new HashSet<>();
+    }
+
+    public UserSelectionRecyclerAdapter(Context context, OnActionListener listener,
+                                        Collection<String> initiallySelectedUsersIds) {
+        this (context, listener);
+        this.initiallySelectedUsersIds = new HashSet<>(initiallySelectedUsersIds);
     }
 
     @NonNull
@@ -55,6 +65,12 @@ public class UserSelectionRecyclerAdapter extends ListAdapter<User, RecyclerView
         User user = getItem(position);
 
         MaterialCardView cardView = itemView.findViewById(R.id.user_item_card);
+        // Se ci sono elementi che devono essere selezionati alla prima visualizzazione, li seleziona
+        if (initiallySelectedUsersIds != null && initiallySelectedUsersIds.contains(user.getAccountId())) {
+            cardView.setCardBackgroundColor(context.getResources().getColor(R.color.lightGrey, context.getTheme()));
+            itemsSelected.add(position);
+        }
+        // Logica di selezione al tocco
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

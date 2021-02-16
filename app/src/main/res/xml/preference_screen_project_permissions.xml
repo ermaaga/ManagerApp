@@ -1,23 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="visibility"
-        android:title="@string/text_label_project_preference_visibility" />
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="free_join"
-        android:title="@string/text_label_project_preference_free_join" />
-    <EditTextPreference
-        android:defaultValue="0"
-        android:key="max_members"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:inputType="number"
-        android:digits="0123456789"
-        android:title="@string/text_label_project_preference_max_members" />
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="file_accessibility"
-        android:title="@string/text_label_project_preference_file_accessibility" />
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        android:title="@string/text_label_project_preference_category_visibility">
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            android:defaultValue="false"
+            android:key="visibility"
+            android:title="@string/text_label_project_preference_visibility" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        android:title="@string/text_label_project_preference_category_partecipation">
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            android:defaultValue="true"
+            android:key="free_join"
+            android:title="@string/text_label_project_preference_free_join" />
+        <EditTextPreference
+            app:iconSpaceReserved="false"
+            android:defaultValue="0"
+            android:key="max_members"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:inputType="number"
+            android:digits="0123456789"
+            android:title="@string/text_label_project_preference_max_members" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:iconSpaceReserved="false"
+        android:title="@string/text_label_project_preference_category_project_files">
+        <SwitchPreference
+            app:iconSpaceReserved="false"
+            android:defaultValue="false"
+            android:key="file_accessibility"
+            android:title="@string/text_label_project_preference_file_accessibility" />
+        <Preference
+            app:iconSpaceReserved="false"
+            android:id="@+id/can_add_files"
+            android:key="can_add_files"
+            android:title="@string/text_label_project_preference_can_add_file" />
+    </PreferenceCategory>
 </PreferenceScreen>

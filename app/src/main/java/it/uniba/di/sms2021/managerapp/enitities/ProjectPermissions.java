@@ -3,19 +3,26 @@ package it.uniba.di.sms2021.managerapp.enitities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class ProjectPermissions implements Parcelable {
     private boolean accessible;
     private boolean joinable;
     private int maxMembers;
     private boolean fileAccessible;
+    // Insieme dei membri che possono aggiungere file
+    private List<String> canAddFiles;
 
     public ProjectPermissions() {
         // Setta i valori di default
         this.accessible = false;
         this.joinable = true;
         this.maxMembers = 0;
+        canAddFiles = new ArrayList<>();
     }
 
     public boolean isAccessible() {
@@ -51,6 +58,14 @@ public class ProjectPermissions implements Parcelable {
 
     public void setFileAccessible(boolean fileAccessible) {
         this.fileAccessible = fileAccessible;
+    }
+
+    public List<String> getCanAddFiles() {
+        return canAddFiles;
+    }
+
+    public void setCanAddFiles(List<String> canAddFiles) {
+        this.canAddFiles = canAddFiles;
     }
 
     @Override
@@ -91,6 +106,7 @@ public class ProjectPermissions implements Parcelable {
         dest.writeInt(joinable ? 1 : 0);
         dest.writeInt(maxMembers);
         dest.writeInt(fileAccessible ? 1 : 0);
+        dest.writeList(canAddFiles);
     }
 
     public static final Parcelable.Creator<ProjectPermissions> CREATOR
@@ -101,6 +117,10 @@ public class ProjectPermissions implements Parcelable {
             permissions.setJoinable(in.readInt() == 1);
             permissions.setMaxMembers(in.readInt());
             permissions.setFileAccessible(in.readInt() == 1);
+
+            List<String> canAddFiles = new ArrayList<>();
+            in.readList(canAddFiles, String.class.getClassLoader());
+            permissions.setCanAddFiles(canAddFiles);
 
             return permissions;
         }

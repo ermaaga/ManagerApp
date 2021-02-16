@@ -230,7 +230,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                     .setAction(R.string.text_button_dismiss, v -> {}).show();
         }
 
-        if (project.isProfessor() || !project.isMember()) {
+        if (project.isProfessor() || !project.isMember() || !project.canAddFiles()) {
             addFileFloatingActionButton.setVisibility(View.GONE);
         }
     }

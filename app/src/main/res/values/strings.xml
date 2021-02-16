@@ -64,6 +64,11 @@
     <string name="text_label_project_preference_free_join">Anyone can join the project</string>
     <string name="text_label_project_preference_max_members">Set max number of partecipants</string>
     <string name="text_label_project_preference_file_accessibility">Anyone can access to the files of the project</string>
+    <string name="text_label_project_preference_can_add_file">Set who can add files to the project</string>
+
+    <string name="text_label_project_preference_category_partecipation">Partecipation</string>
+    <string name="text_label_project_preference_category_project_files">Project Files</string>
+    <string name="text_label_project_preference_category_visibility">Visibility</string>
 
     <string name="text_label_dialog_title_departments">Select departments</string>
     <string name="text_label_dialog_title_courses">Select courses</string>
