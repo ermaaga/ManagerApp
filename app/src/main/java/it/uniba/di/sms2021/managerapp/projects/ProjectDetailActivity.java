@@ -26,6 +26,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     private static final int NOTICES_TAB_POSITION = 0;
     private static final int FILES_TAB_POSITION = 1;
     private static final int MEMBERS_TAB_POSITION = 2;
+    private static final int REQUEST_EVALUATION = 1;
 
     private static final String TAG = "ProjectDetailActivity";
 
@@ -50,18 +51,21 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         super.onCreate(savedInstanceState);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        project = getIntent().getParcelableExtra(Project.KEY);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
-        project = getIntent().getParcelableExtra(Project.KEY);
+        Log.d(TAG, "onStart");
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(project.getName() + " - " + project.getStudyCaseName());
         actionBar.setSubtitle(project.getExamName());
+
         Log.i(TAG, project.toString());
+        Log.i(TAG, "voto: "+project.getVote());
     }
 
     @Override
@@ -128,6 +132,17 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
             searchView.setOnQueryTextListener(queryTextListener);
         }
 
+        MenuItem  evaluateMenuItem = menu.findItem(R.id.action_evaluate_project);
+        if(project.isProfessor() && project.getVote()==null){
+            evaluateMenuItem.setVisible(true);
+
+        }else{
+            if(project.isProfessor() && project.getVote()!=null){
+                evaluateMenuItem.setTitle(R.string.text_label_update_evaluate);
+                evaluateMenuItem.setVisible(true);
+            }
+
+        }
         return true;
     }
 
@@ -146,10 +161,20 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
             startActivity(intent);
         }else if (menuId == R.id.action_evaluate_project) {
             Intent intent = new Intent(this, ProjectVoteActivity.class);
-            intent.putExtra(Group.Keys.GROUP, project.getGroup().getId());
-            startActivity(intent);
+            intent.putExtra(Project.KEY, project);
+            startActivityForResult(intent, REQUEST_EVALUATION);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == REQUEST_EVALUATION && resultCode == RESULT_OK){
+            project = data.getParcelableExtra(Project.KEY);
+            invalidateOptionsMenu();
+        }
     }
 
     @Override

@@ -128,12 +128,14 @@ public class Group implements Parcelable {
                 Objects.equals(studyCase, group.studyCase) &&
                 Objects.equals(exam, group.exam) &&
                 Objects.equals(membri, group.membri) &&
-                Objects.equals(permissions, group.permissions);
+                Objects.equals(permissions, group.permissions) &&
+                Objects.equals(studyCaseName, group.studyCaseName) &&
+                Objects.equals(vote, group.vote);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, studyCase, exam, membri, permissions);
+        return Objects.hash(id, name, studyCase, exam, membri, permissions, studyCaseName, vote);
     }
 
     @Override
@@ -145,6 +147,8 @@ public class Group implements Parcelable {
                 ", exam='" + exam + '\'' +
                 ", membri=" + membri +
                 ", permissions=" + permissions +
+                ", studyCaseName='" + studyCaseName + '\'' +
+                ", vote=" + vote +
                 '}';
     }
 
@@ -161,6 +165,7 @@ public class Group implements Parcelable {
         dest.writeString(exam);
         dest.writeList(membri);
         dest.writeParcelable(permissions, 0);
+        dest.writeParcelable(vote,0);
     }
 
     public static final Parcelable.Creator<Group> CREATOR
@@ -177,6 +182,8 @@ public class Group implements Parcelable {
             group.setMembri(membri);
 
             group.setPermissions(in.readParcelable(ProjectPermissions.class.getClassLoader()));
+
+            group.setVote(in.readParcelable(Vote.class.getClassLoader()));
 
             return group;
         }

@@ -1,8 +1,14 @@
 package it.uniba.di.sms2021.managerapp.enitities;
 
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class Vote {
+public class Vote implements Parcelable {
     private float vote;
     private String comment;
 
@@ -15,11 +21,11 @@ public class Vote {
         this.comment = comment;
     }
 
-    public float getRate() {
+    public float getVote() {
         return vote;
     }
 
-    public void setRate(float vote) {
+    public void setVote(float vote) {
         this.vote = vote;
     }
 
@@ -44,4 +50,31 @@ public class Vote {
     public int hashCode() {
         return Objects.hash(vote, comment);
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeFloat(vote);
+        dest.writeString(comment);
+    }
+
+    public static final Parcelable.Creator<Vote> CREATOR
+            = new Parcelable.Creator<Vote>() {
+        public Vote createFromParcel(Parcel in) {
+            Vote vote = new Vote();
+            vote.setVote(in.readFloat());
+            vote.setComment(in.readString());
+
+            return vote;
+        }
+
+        public Vote[] newArray(int size) {
+            return new Vote[size];
+        }
+    };
 }

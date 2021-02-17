@@ -1,9 +1,13 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.core.app.NotificationCompat;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -12,13 +16,14 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.HashMap;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.Vote;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.utility.AbstractFormActivity;
 
 public class ProjectVoteActivity extends AbstractFormActivity {
 
+    private static final String TAG = "ProjectVoteActivity";
     Button buttonEvaluate;
     private TextInputEditText voteEditText;
     private TextInputEditText commentEditText;
@@ -27,7 +32,7 @@ public class ProjectVoteActivity extends AbstractFormActivity {
     private  TextInputLayout commentInputLayout;
 
     private String idgroup;
-
+    Project project;
     private DatabaseReference groupsReference;
 
     @Override
@@ -52,40 +57,51 @@ public class ProjectVoteActivity extends AbstractFormActivity {
         voteInputLayout = (TextInputLayout) findViewById(R.id.vote_input_layout);
         commentInputLayout = (TextInputLayout) findViewById(R.id.comment_input_layout);
 
-       idgroup = getIntent().getStringExtra(Group.Keys.GROUP);
+        project = getIntent().getParcelableExtra(Project.KEY);
 
        groupsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS);
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(project.getVote()!=null){
+            voteEditText.setText(""+project.getVote().getVote());
+            commentEditText.setText(""+project.getVote().getComment());
+        }
+    }
+
     public void evaluateProject(View v){
-        if(validate(voteEditText.getText().toString(),commentEditText.getText().toString())){
+        if(validate(voteEditText.getText().toString())){
             float votefloat = Float.parseFloat(voteEditText.getText().toString());
 
             Vote vote = new Vote(votefloat, commentEditText.getText().toString());
+
+            idgroup = project.getGroup().getId();
 
             HashMap childUpdates = new HashMap();
             childUpdates.put("/vote/", vote);
 
             groupsReference.child(idgroup).updateChildren(childUpdates);
 
-            Toast.makeText(getApplicationContext(), "The project has been evaluated", Toast.LENGTH_SHORT).show();
-            ProjectVoteActivity.super.onBackPressed();
+            Toast.makeText(getApplicationContext(), R.string.text_message_project_evaluated, Toast.LENGTH_SHORT).show();
+
+            project.setVote(vote);
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra(Project.KEY, project);
+            setResult(RESULT_OK, resultIntent);
+            finish();
 
         }
     }
 
-    private boolean validate(String textRate, String textComment){
+    private boolean validate(String textRate){
         boolean valid = true;
 
         if(textRate.length()==0) {
             valid=false;
             voteInputLayout.setError(getString(R.string.required_field));
-
-        }
-        if(textComment.length()==0) {
-            valid=false;
-            commentInputLayout.setError(getString(R.string.required_field));
         }
 
         return valid;

@@ -50,7 +50,8 @@
     <string name="text_label_dialog_title_courses">Seleziona i corsi</string>
     <string name="text_label_upload_file">Carica file</string>
     <string name="text_label_permissions">Permessi</string>
-    <string name="text_label_rate">Valuta progetto</string>
+    <string name="text_label_evaluate">Valuta progetto</string>
+    <string name="text_label_update_evaluate">Aggiorna valutazione</string>
 
     <string name="text_label_project_preference_visibility">Chiunque può accedere al progetto</string>
     <string name="text_label_project_preference_free_join">Chiunque può unirsi al progetto</string>
@@ -113,6 +114,7 @@
     <string name="text_message_group_not_joinable">Il gruppo selezionato è pieno o non accetta nuovi membri</string>
     <string name="text_message_max_members_exceeds_actual">Il valore inserito eccede il numero attuale di membri</string>
     <string name="text_message_files_are_private">I file del progetto sono stati impostati come privati</string>
+    <string name="text_message_project_evaluated">Il progetto è stato valutato</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -148,6 +150,7 @@
 
     <string name="text_send_subject">Condivisione File</string>
     <string name="text_send_content">Date un\'occhiata al mio nuovo file %s che ho creato nel mio progetto %s!</string>
+
 
 
     <plurals name="numberOfDepartments">

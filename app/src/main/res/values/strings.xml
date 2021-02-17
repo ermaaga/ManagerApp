@@ -59,6 +59,7 @@
     <string name="text_label_year">Year</string>
     <string name="text_label_permissions">Permissions</string>
     <string name="text_label_evaluate">Evaluate project</string>
+    <string name="text_label_update_evaluate">Update evaluation</string>
 
     <string name="text_label_project_preference_visibility">Anyone can view the project</string>
     <string name="text_label_project_preference_free_join">Anyone can join the project</string>
@@ -124,6 +125,7 @@
     <string name="text_message_group_not_joinable">The selected group is either full or doesn\'t accept new members</string>
     <string name="text_message_max_members_exceeds_actual">The value entered exceeds the current number of members.</string>
     <string name="text_message_files_are_private">The files in the project are set to private</string>
+    <string name="text_message_project_evaluated">The project has been evaluated</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -161,6 +163,8 @@
 
     <string name="text_send_subject">File Sharing</string>
     <string name="text_send_content">Check out my new file %s that i created in my project %s!</string>
+
+
 
     <plurals name="numberOfDepartments">
         <item quantity="one">Department</item>

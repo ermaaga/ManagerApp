@@ -23,6 +23,7 @@
         android:id="@+id/action_evaluate_project"
         android:enabled="true"
         app:showAsAction="never"
+        android:visible="false"
         android:title="@string/text_label_evaluate" />
     <item
         android:id="@+id/action_settings"

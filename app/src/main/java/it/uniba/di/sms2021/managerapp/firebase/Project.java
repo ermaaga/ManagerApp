@@ -20,6 +20,7 @@ import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.ProjectPermissions;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.enitities.Vote;
 
 /**
  * Classe di utility che popolerà tutte le informazioni utili per un progetto a partire da query
@@ -191,6 +192,14 @@ public class Project implements Parcelable {
 
     public void setPermissions(ProjectPermissions permissions) {
         group.setPermissions(permissions);
+    }
+
+    public Vote getVote(){
+        return group.getVote();
+    }
+
+    public void  setVote(Vote v){
+        group.setVote(v);
     }
 
     @Exclude
