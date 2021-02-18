@@ -1,7 +1,6 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,6 +10,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,11 +26,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
-import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
@@ -48,6 +47,7 @@ import it.uniba.di.sms2021.managerapp.firebase.TemporaryFileDownloader;
 import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
 import it.uniba.di.sms2021.managerapp.lists.FilesRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
+import it.uniba.di.sms2021.managerapp.utility.NotificationUtil;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -354,45 +354,60 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                 .setContentType(FileUtil.getMimeTypeFromUri(getContext(), file))
                 .build();
 
-        // Upload file and metadata to the path 'images/mountains.jpg'
+        // Crea la task di upload
         UploadTask uploadTask = storageRef.child(FileUtil.getFileNameFromURI(getContext(), file))
                 .putFile(file, metadata);
 
-        // Listen for state changes, errors, and completion of the upload.
-        final ProgressDialog dialog = new ProgressDialog(getContext());
-        dialog.setTitle(R.string.text_label_upload_dialog_title);
-        dialog.show();
+        // Crea la notifica dell'upload
+        NotificationUtil.createNotificationChannel(getContext());
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getContext());
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(),
+                NotificationUtil.DEFAULT_CHANNEL_ID);
+        builder.setContentTitle(getString(R.string.text_notification_title_file_upload))
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .setOnlyAlertOnce(true);
 
+        // Issue the initial notification with zero progress
+        int PROGRESS_MAX = 100;
+        builder.setProgress(PROGRESS_MAX, 0, false);
+        notificationManager.notify(NotificationUtil.UPLOAD_NOTIFICATION_ID, builder.build());
+
+        // Listen for state changes, errors, and completion of the upload.
         uploadTask.addOnProgressListener(requireActivity(), new OnProgressListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                double progress =  Math.round((100.0 *
+                int progress = (int) Math.round((100.0 *
                         taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount()
-                        * 100.0) / 100.0;
+                        * 100.0) / 100;
 
-                dialog.setMessage(getString(R.string.text_message_upload_progress, progress));
-                Log.d(TAG, getString(R.string.text_message_upload_progress, progress));
-            }
-        }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-            @Override
-            public void onPaused(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                Log.d(TAG, "Upload is paused");
+                builder.setProgress(PROGRESS_MAX, progress, false)
+                .setContentText(getString(R.string.text_message_upload_progress,
+                        FileUtil.getFormattedSize(getContext(), taskSnapshot.getBytesTransferred()),
+                        FileUtil.getFormattedSize(getContext(), taskSnapshot.getTotalByteCount())));
+                notificationManager.notify(NotificationUtil.UPLOAD_NOTIFICATION_ID, builder.build());
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                // TODO Handle unsuccessful uploads
-                dialog.dismiss();
+                builder.setProgress(0, 0, false)
+                        .setContentText(getString(R.string.text_message_upload_failed));
+                notificationManager.notify(NotificationUtil.UPLOAD_NOTIFICATION_ID, builder.build());
             }
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                // When done, update the notification one more time to remove the progress bar
+                builder.setContentText(getString(R.string.text_message_upload_complete))
+                        .setProgress(0,0,false);
+                notificationManager.notify(NotificationUtil.UPLOAD_NOTIFICATION_ID, builder.build());
                 getFiles(); // Aggiorna la lista di files
-                dialog.dismiss();
-                // TODO Handle successful uploads on complete
-                // ...
             }
         });
+    }
+
+    private void showUploadNotification() {
+
     }
 
     /**

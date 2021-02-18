@@ -224,9 +224,11 @@ public class Project implements Parcelable {
 
     /**
      * Ritorna true se l'utente corrente può aggiungere file al progetto
+     * Il leader del gruppo può sempre aggiungere files
      */
     public boolean canAddFiles () {
-        return getPermissions().getCanAddFiles().contains(LoginHelper.getCurrentUser().getAccountId());
+        return LoginHelper.getCurrentUser().getAccountId().equals(getMembri().get(0)) ||
+                getPermissions().getCanAddFiles().contains(LoginHelper.getCurrentUser().getAccountId());
     }
 
     /**

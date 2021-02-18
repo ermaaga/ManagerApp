@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.OnProgressListener;
 
 import java.io.File;
 
@@ -65,7 +66,12 @@ public abstract class FileDownloader {
         }
 
         File localFile = new File(path, file.getName());
-        file.getReference().getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+        file.getReference().getFile(localFile).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
+            @Override
+            public void onProgress(@NonNull FileDownloadTask.TaskSnapshot snapshot) {
+
+            }
+        }).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                 onSuccessAction(localFile);
