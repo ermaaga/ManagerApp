@@ -79,8 +79,10 @@ public class ExamGroupsFragment extends Fragment {
                 }
                 // Se il progetto non è visualizzabile, chiede all'utente se vuole unirsi al progetto
                 else if (group.getPermissions().isJoinable() && !group.isGroupFull()) {
-                    openDialog(group, true);
-                } else {
+                    openJoinGroupDialog(group, true);
+                }
+                // Altrimenti viene visualizzato un messaggio informativo all'utente
+                else {
                     new AlertDialog.Builder(getContext())
                             .setMessage(R.string.text_message_group_not_joinable)
                             .setNeutralButton("Ok", new DialogInterface.OnClickListener() {
@@ -192,7 +194,7 @@ public class ExamGroupsFragment extends Fragment {
     }
 
     private void doJoinGroupAction(Group group) {
-        openDialog(group, false);
+        openJoinGroupDialog(group, false);
     }
 
     /**
@@ -200,8 +202,8 @@ public class ExamGroupsFragment extends Fragment {
      * Se forced è true, l'utente sarà anche informato che non è possibile visualizzare il gruppo
      * senza esserne un partecipante.
      */
-    private void openDialog(Group group, boolean forced) {
-        ConfirmGroupDialog dialog = new ConfirmGroupDialog(group, forced);
+    private void openJoinGroupDialog(Group group, boolean forced) {
+        ConfirmGroupDialog dialog = new ConfirmGroupDialog(getContext(), group, forced);
         dialog.show(getFragmentManager(),"groupDialog");
     }
 

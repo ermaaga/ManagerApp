@@ -126,6 +126,9 @@
     <string name="text_message_max_members_exceeds_actual">The value entered exceeds the current number of members.</string>
     <string name="text_message_files_are_private">The files in the project are set to private</string>
     <string name="text_message_project_evaluated">The project has been evaluated</string>
+    <string name="text_message_group_request_sent">The request to join the group has been sent</string>
+    <string name="text_message_group_request_failed">The request to join the group couldn\'t be sent, try again later</string>
+    <string name="text_message_group_request_accepted">User accepted in the group</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -145,6 +148,8 @@
     <string name="text_button_retry">Retry</string>
     <string name="text_button_show_file">Open</string>
     <string name="text_button_evaluate_project">Evaluate</string>
+    <string name="text_button_request_accept">Accept</string>
+    <string name="text_button_request_refuse">Refuse</string>
 
     <string name="text_hint_email_user" translatable="false">Email</string>
     <string name="text_hint_password_user" translatable="false">Password</string>
@@ -164,7 +169,8 @@
     <string name="text_send_subject">File Sharing</string>
     <string name="text_send_content">Check out my new file %s that i created in my project %s!</string>
 
-
+    <string name="text_notification_title_group_join_request">Group Join Request</string>
+    <string name="text_notification_message_group_join_request">%s asked to join your group %s</string>
 
     <plurals name="numberOfDepartments">
         <item quantity="one">Department</item>

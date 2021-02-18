@@ -115,6 +115,9 @@
     <string name="text_message_max_members_exceeds_actual">Il valore inserito eccede il numero attuale di membri</string>
     <string name="text_message_files_are_private">I file del progetto sono stati impostati come privati</string>
     <string name="text_message_project_evaluated">Il progetto è stato valutato</string>
+    <string name="text_message_group_request_sent">La richiesta di partecipazione al gruppo è stata inviata</string>
+    <string name="text_message_group_request_failed">Non è stato possibile inviare la richiesta di partecipazione, riprova in seguito</string>
+    <string name="text_message_group_request_accepted">Utente accettato nel gruppo</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -134,6 +137,8 @@
     <string name="text_button_retry">Riprova</string>
     <string name="text_button_show_file">Apri</string>
     <string name="text_button_evaluate_project">Valuta</string>
+    <string name="text_button_request_accept">Accetta</string>
+    <string name="text_button_request_refuse">Rifiuta</string>
 
     <string name="text_hint_name_studycase">Nome</string>
     <string name="text_hint_name_group">Nome</string>
@@ -151,7 +156,8 @@
     <string name="text_send_subject">Condivisione File</string>
     <string name="text_send_content">Date un\'occhiata al mio nuovo file %s che ho creato nel mio progetto %s!</string>
 
-
+    <string name="text_notification_title_group_join_request">Richiesta di Partecipazione ad un Gruppo</string>
+    <string name="text_notification_message_group_join_request">%s ha chiesto di unirsi al tuo gruppo %s</string>
 
     <plurals name="numberOfDepartments">
         <item quantity="one">Dipartimento</item>

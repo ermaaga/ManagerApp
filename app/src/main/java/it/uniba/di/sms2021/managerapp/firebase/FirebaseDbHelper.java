@@ -9,6 +9,7 @@ public class FirebaseDbHelper {
     public static final String TABLE_GROUPS = "groups";
     public static final String TABLE_DEPARTMENTS = "departments";
     public static final String TABLE_COURSES = "courses";
+    public static final String TABLE_GROUP_REQUESTS = "group_requests";
 
     private static FirebaseDatabase INSTANCE;
     public static FirebaseDatabase getDBInstance() {

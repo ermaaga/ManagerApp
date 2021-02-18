@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,6 +30,7 @@ import java.util.List;
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
+import it.uniba.di.sms2021.managerapp.enitities.GroupJoinRequest;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 import it.uniba.di.sms2021.managerapp.exams.ExamDetailActivity;
 import it.uniba.di.sms2021.managerapp.exams.ExamGroupsFragment;
@@ -40,6 +42,7 @@ public class ConfirmGroupDialog  extends AppCompatDialogFragment {
 
     private FirebaseDatabase database;
     private DatabaseReference groupsRef;
+    private Context context;
 
     private Group group;
     private String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -47,7 +50,8 @@ public class ConfirmGroupDialog  extends AppCompatDialogFragment {
     // Se è true informerà l'utente che è necessario unirsi al gruppo per visualizzarlo
     private boolean joinNecessary;
 
-    public ConfirmGroupDialog(Group group, boolean joinNecessary) {
+    public ConfirmGroupDialog(Context context, Group group, boolean joinNecessary) {
+        this.context = context;
         this.group = group;
         this.joinNecessary = joinNecessary;
     }
@@ -70,8 +74,9 @@ public class ConfirmGroupDialog  extends AppCompatDialogFragment {
                 .setPositiveButton(R.string.label_Dialog_confimation, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //TODO implementare sistema di richiesta di accesso
+                        sendRequest();
 
+                        /*
                         if (updateMembers()){
                             CharSequence text = R.string.label_Dialog_success + group.getName();
                             int duration = Toast.LENGTH_SHORT;
@@ -83,11 +88,33 @@ public class ConfirmGroupDialog  extends AppCompatDialogFragment {
                             Toast toast = Toast.makeText(getContext(), text, duration);
                             toast.show();
                         }
+                         */
 
                     }
                 });
 
         return builder.create();
+    }
+
+    private void sendRequest() {
+        DatabaseReference requestReference = FirebaseDbHelper.getDBInstance()
+                .getReference(FirebaseDbHelper.TABLE_GROUP_REQUESTS).push();
+
+        requestReference.setValue(new GroupJoinRequest(requestReference.getKey(), currentUserId,
+                group.getId(), group.getMembri().get(0)))
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Toast.makeText(context, R.string.text_message_group_request_sent,
+                            Toast.LENGTH_LONG).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(context, R.string.text_message_group_request_failed,
+                            Toast.LENGTH_LONG).show();
+                }
+            });
     }
 
     private boolean updateMembers(){
@@ -113,6 +140,7 @@ public class ConfirmGroupDialog  extends AppCompatDialogFragment {
         }
         return result;
     }
+
     private List<String> getMembers(String groupId) {
         List<Group> lstGroups = new ArrayList<>();
         List<String> lstGroupMembers = new ArrayList<>();

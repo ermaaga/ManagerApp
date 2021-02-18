@@ -162,6 +162,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                     @Override
                     public void onSuccess(Void aVoid) {
                         // File deleted successfully
+                        //TODO gestire undo nello snackbar
                         files.remove(file);
                         adapter.submitList(files);
                         adapter.notifyDataSetChanged();
