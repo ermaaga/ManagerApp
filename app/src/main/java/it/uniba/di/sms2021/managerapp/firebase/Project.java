@@ -51,7 +51,6 @@ public class Project implements Parcelable {
 
             //Inizializza il campo del nome dell'esame a cui appartiene il progetto
             FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_EXAMS)
-                    .child(group.getExam())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
