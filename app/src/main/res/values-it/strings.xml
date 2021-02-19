@@ -162,6 +162,7 @@
     <string name="text_notification_message_group_join_request">%s ha chiesto di unirsi al tuo gruppo %s</string>
     <string name="text_notification_title_file_upload">Caricamento File</string>
     <string name="text_notification_content_file_upload">Caricamento in corso</string>
+    <string name="text_notification_title_feed">Nuove notifiche trovate</string>
 
     <plurals name="numberOfDepartments">
         <item quantity="one">Dipartimento</item>
@@ -171,5 +172,10 @@
     <plurals name="numberOfCourses">
         <item quantity="one">Corso</item>
         <item quantity="other">Corsi</item>
+    </plurals>
+
+    <plurals name="numberOfNotifications">
+        <item quantity="one">Hai %d notifica</item>
+        <item quantity="other">Hai %d notifiche</item>
     </plurals>
 </resources>

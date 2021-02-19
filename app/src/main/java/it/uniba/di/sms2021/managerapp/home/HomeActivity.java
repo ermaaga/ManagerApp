@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.tabs.TabLayout;
 
+import it.uniba.di.sms2021.managerapp.notifications.NotificationChecker;
 import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivity;
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
@@ -28,6 +29,8 @@ public class HomeActivity extends AbstractTabbedNavigationHubActivity {
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
         });
+
+        NotificationChecker.subscribeCheckForNotifications(this);
     }
 
     @Override

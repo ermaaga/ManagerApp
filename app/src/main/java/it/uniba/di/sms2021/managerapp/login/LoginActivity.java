@@ -1,5 +1,8 @@
 package it.uniba.di.sms2021.managerapp.login;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,6 +41,8 @@ import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.home.HomeActivity;
+import it.uniba.di.sms2021.managerapp.notifications.NotificationChecker;
+import it.uniba.di.sms2021.managerapp.notifications.NotificationService;
 import it.uniba.di.sms2021.managerapp.utility.FormUtil;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {

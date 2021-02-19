@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.uniba.di.sms2021.managerapp">
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -8,6 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ManagerApp">
+        <receiver
+            android:name=".notifications.NotificationChecker"
+            android:exported="false"/>
+
+        <service
+            android:name=".notifications.NotificationService"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity android:name=".login.UserRoleActivity" />
         <activity
             android:name=".exams.NewGroupActivity"
@@ -20,16 +30,13 @@
             android:label="@string/activity_label_notifications" />
         <activity
             android:name=".projects.ProjectDetailActivity"
-            android:label="Gruppo 1 (rendere dinamico)" >
-        </activity>
+            android:label="Gruppo 1 (rendere dinamico)" />
         <activity
             android:name=".projects.ProjectVoteActivity"
-            android:label="@string/activity_label_rate_project" >
-        </activity>
+            android:label="@string/activity_label_rate_project" />
         <activity
             android:name=".projects.ProjectPermissionsActivity"
-            android:label="@string/activity_label_project_permissions" >
-        </activity>
+            android:label="@string/activity_label_project_permissions" />
         <activity
             android:name=".login.DepartmentActivity"
             android:label="@string/activity_label_department" />
@@ -72,9 +79,10 @@
         <activity
             android:name=".ProfileActivity"
             android:label="@string/activity_label_user_profile" />
-
-        <!-- Provider che gestisce le richieste di acquisizione di Uri per file presenti nella
-             cartella interna dell'app. -->
+        <!--
+ Provider che gestisce le richieste di acquisizione di Uri per file presenti nella
+             cartella interna dell'app.
+        -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -84,6 +92,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-     </application>
+    </application>
 
 </manifest>
