@@ -15,33 +15,67 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/image_account"
-        android:layout_width="132dp"
-        android:layout_height="133dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
         android:layout_marginTop="30dp"
+        app:cardCornerRadius="60dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:srcCompat="@drawable/ic_baseline_account_circle_24"
-        app:tint="@color/purple_500" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+            <androidx.cardview.widget.CardView
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            app:cardCornerRadius="60dp">
+
+                <ImageView
+                    android:id="@+id/image_account"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:foregroundGravity="center"
+                    app:srcCompat="@drawable/ic_baseline_account_circle_24" />
+
+            </androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/button_uplod_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:layout_marginStart="90dp"
+        android:layout_marginTop="90dp"
+        android:backgroundTint="@color/purple_500"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_baseline_add_a_photo_24"
+        app:maxImageSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/card_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/card_image"/>
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:background="?android:attr/listDivider"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_account" />
+        app:layout_constraintTop_toBottomOf="@+id/card_image" />
 
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="250dp"
+        android:layout_marginTop="300dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider">
 
@@ -56,6 +90,7 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:text="@string/text_label_name_account"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -83,6 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
                 android:text="@string/text_label_surname_account"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/value_name_account_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/value_name_account_edit_text" />
 
@@ -110,6 +146,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
                 android:text="@string/text_label_email_account"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/value_surname_account_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/value_surname_account_edit_text" />
 
@@ -136,9 +173,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/value_email_account_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/value_email_account_text_view"
-                tools:text="TextView"/>
+                tools:text="TextView" />
 
             <TextView
                 android:id="@+id/value_department"
@@ -157,9 +195,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
                 android:text="@string/text_label_corso_account"
+                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="@+id/value_department"
                 app:layout_constraintTop_toBottomOf="@+id/value_department"
-                tools:text="TextView"/>
+                tools:text="TextView" />
 
             <TextView
                 android:id="@+id/value_course"
@@ -179,7 +218,6 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="80dp"
                 android:layout_marginEnd="20dp"
-                android:onClick="editProfile"
                 android:text="@string/text_button_edit_profile"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -192,7 +230,6 @@
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="80dp"
                 android:layout_marginEnd="20dp"
-                android:onClick="saveProfile"
                 android:text="@string/text_button_save_profile"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"

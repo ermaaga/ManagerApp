@@ -111,6 +111,7 @@
     <string name="text_message_group_created">The group was created</string>
     <string name="text_message_exam_created">The Exam was created</string>
     <string name="text_message_file_study_case_failure">Upload failed</string>
+    <string name="text_message_photo_profile_failure">Upload failed</string>
     <string name="text_message_upload_progress">%s / %s</string>
     <string name="text_message_file_preview_message">To preview the file, an external app will be used</string>
     <string name="text_message_file_deletion_failed">File couldn\'t be deleted, try again later</string>

@@ -100,6 +100,7 @@
     <string name="text_message_preview_open_failed">Si è verificato un errore mentre si tentava di aprire il file</string>
     <string name="text_message_temp_file_not_supported">Il file selezionato non è supportato. Prova a scaricarlo</string>
     <string name="text_message_file_study_case_failure">Caricamento fallito</string>
+    <string name="text_message_photo_profile_failure">Caricamento fallito</string>
     <string name="text_message_upload_progress">%s / %s</string>
     <string name="text_message_file_preview_message">Per visualizzare il file, sarà utilizzata una app esterna</string>
     <string name="text_message_file_deletion_failed">Non è stato possibile eliminare il file, riprova successivamente</string>

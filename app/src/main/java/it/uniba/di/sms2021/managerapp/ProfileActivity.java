@@ -3,12 +3,16 @@ package it.uniba.di.sms2021.managerapp;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,13 +20,26 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.OnPausedListener;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,41 +48,57 @@ import it.uniba.di.sms2021.managerapp.enitities.Course;
 import it.uniba.di.sms2021.managerapp.enitities.Department;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 
-public class ProfileActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "ProfileActivityTag";
+    static final int REQUEST_IMAGE_GET = 1;
 
     private FirebaseDatabase database;
     private DatabaseReference usersReference;
     private DatabaseReference departmentsReference;
     private DatabaseReference coursesReference;
+    private DatabaseReference currentUserReference;
+    private StorageReference storageReference;
 
     User user;
+    String userid;
 
     TextView textName;
     TextView textSurname;
     TextView textEmail;
+    TextView textDepartments;
+    TextView textCourses;
+
     EditText editName;
     EditText editSurname;
+
     Button editButton;
     Button saveButton;
     ImageButton editDepartments;
     ImageButton editCourses;
-    TextView textDepartments;
-    TextView textCourses;
+    FloatingActionButton editPhotoButton;
+
+    ImageView photoProfile;
+
+    Uri fullFileUri;
+    Bitmap bitmap;
 
     List<String> departmentsChecked;
     List<String> coursesChecked;
+    List<String> currentListDepartment;
+    List<String> currentListCourse;
     String[] departmentList;
     String[] courseList;
     String[] departmentListId;
     String[] courseListId;
     boolean[] depIsChecked;
     boolean[] courseIsChecked;
+
     private ValueEventListener userListener;
+    private ValueEventListener userListenerCreate;
     private ValueEventListener departmentsListener;
     private ValueEventListener coursesListener;
-    private DatabaseReference currentUserReference;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,33 +108,75 @@ public class ProfileActivity extends AppCompatActivity {
         textName = (TextView) findViewById(R.id.value_name_account_text_view);
         textSurname = (TextView) findViewById(R.id.value_surname_account_text_view);
         textEmail = (TextView) findViewById(R.id.value_email_account_text_view);
+        textDepartments = (TextView) findViewById(R.id.value_department);
+        textCourses = (TextView) findViewById(R.id.value_course);
+
         editName = (EditText) findViewById(R.id.value_name_account_edit_text);
         editSurname = (EditText) findViewById(R.id.value_surname_account_edit_text);
+
+        photoProfile = (ImageView) findViewById(R.id.image_account);
+
         editButton = (Button) findViewById(R.id.button_edit_profile);
         saveButton = (Button) findViewById(R.id.button_save_profile);
         editDepartments = (ImageButton) findViewById(R.id.departments_button);
         editCourses = (ImageButton) findViewById(R.id.courses_button);
-        textDepartments = (TextView) findViewById(R.id.value_department);
-        textCourses = (TextView) findViewById(R.id.value_course);
+        editPhotoButton = (FloatingActionButton) findViewById(R.id.button_uplod_photo);
 
+        editButton.setOnClickListener(this);
+        saveButton.setOnClickListener(this);
+        editPhotoButton.setOnClickListener(this);
 
         database = FirebaseDbHelper.getDBInstance();
         usersReference = database.getReference(FirebaseDbHelper.TABLE_USERS);
         departmentsReference = database.getReference(FirebaseDbHelper.TABLE_DEPARTMENTS);
         coursesReference = database.getReference(FirebaseDbHelper.TABLE_COURSES);
+        storageReference = FirebaseStorage.getInstance().getReference();
 
         departmentsChecked = new ArrayList<String>();
         coursesChecked = new ArrayList<String>();
+
+        //TODO considerare l'utilizzo di LoginHelper.getCurrentUser()
+        userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        currentUserReference = usersReference.child(userid);
+
+        userListenerCreate = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                user = snapshot.getValue(User.class);
+                //Se il nodo "profileImage" è popolato nel database
+                if(user.getProfileImage()!= null){
+                    //Acquisizione dell'Url dell'immagine dell'utente presente nello Storage
+                    storageReference.child("profileimages/"+userid).child(user.getProfileImage()).getDownloadUrl()
+                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    //Set ImageView foto profilo
+                                    Glide.with(ProfileActivity.this)
+                                            .load(uri)
+                                            .into(photoProfile);
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            Log.d(TAG," Failed setImageView");
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        currentUserReference.addListenerForSingleValueEvent(userListenerCreate);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        currentUserReference = usersReference.child(userid);
-
-        //TODO considerare l'utilizzo di LoginHelper.getCurrentUser()
         userListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -112,6 +187,8 @@ public class ProfileActivity extends AppCompatActivity {
                 textSurname.setText(user.getCognome());
                 textEmail.setText(user.getEmail());
 
+                /*Set testo etichette dei dipartimenti e dei corsi in base
+                al numero dei dipartimenti e dei corsi*/
                 int sizeDepartments = user.getDipartimenti().size();
                 TextView labelDepartments = (TextView) findViewById(R.id.label_departments);
                 labelDepartments.setText(getResources().getQuantityString(R.plurals.numberOfDepartments, sizeDepartments));
@@ -133,18 +210,34 @@ public class ProfileActivity extends AppCompatActivity {
         departmentsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                textDepartments.setText("");
+                //Se non è stata modificata la lista dei dipartimenti
+                if(currentListDepartment==null) {
+                    // Iterazione tra i vari elementi appartenenti al nodo "departments"
+                    for (String dep : user.getDipartimenti()) {
+                        for (DataSnapshot child : snapshot.getChildren()) {
+                            if (child.getKey().equals(dep)) {
+                                Log.d(TAG, "Id of child: " + child.getKey());
+                                Department department = child.getValue(Department.class);
 
-                // Iterazione tra i vari elementi appartenenti al nodo "departments"
-                for (String dep : user.getDipartimenti()) {
-                    for (DataSnapshot child : snapshot.getChildren()) {
-                        if (child.getKey().equals(dep)) {
-                            Log.d(TAG, "Id of child: " + child.getKey());
-                            Department department = child.getValue(Department.class);
+                                textDepartments.append(department.getName() + "\n");
 
-                            textDepartments.append(department.getName() + "\n");
+                                //Lista dei dipartimenti dell'utente
+                                departmentsChecked.add(department.getId());
+                            }
+                        }
+                    }
+                }else{
+                    //Iterazione tra i vari elementi presenti nella lista dei dipartimenti correnti
+                    for (String depart: currentListDepartment){
+                        for (DataSnapshot child : snapshot.getChildren()) {
+                            if (child.getKey().equals(depart)) {
+                                Log.d(TAG, "Id of child: " + child.getKey());
+                                Department department = child.getValue(Department.class);
 
-                            //Lista dei dipartimenti dell'utente
-                            departmentsChecked.add(department.getId());
+                                textDepartments.append(department.getName() + "\n");
+
+                            }
                         }
                     }
                 }
@@ -161,18 +254,33 @@ public class ProfileActivity extends AppCompatActivity {
         coursesListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                textCourses.setText("");
+                //se non è stata modificata la lista dei corsi
+                if(currentListCourse==null) {
+                    // Iterazione tra i vari elementi presenti nel nodo "courses" dell'utente
+                    for (String c : user.getCorsi()) {
+                        for (DataSnapshot child : snapshot.getChildren()) {
+                            if (child.getKey().equals(c)) {
+                                Log.d(TAG, "Id of child: " + child.getKey());
+                                Course course = child.getValue(Course.class);
 
-                // Iterazione tra i vari elementi appartenenti al nodo "courses"
-                for (String c : user.getCorsi()) {
-                    for (DataSnapshot child : snapshot.getChildren()) {
-                        if (child.getKey().equals(c)) {
-                            Log.d(TAG, "Id of child: " + child.getKey());
-                            Course course = child.getValue(Course.class);
+                                textCourses.append(course.getName() + "\n");
 
-                            textCourses.append(course.getName() + "\n");
+                                //Lista dei corsi dell'utente
+                                coursesChecked.add(course.getId());
+                            }
+                        }
+                    }
+                }else{
+                    //Iterazione tra i vari elementi presenti nella lista dei corsi correnti
+                    for (String c: currentListCourse){
+                        for (DataSnapshot child : snapshot.getChildren()) {
+                            if (child.getKey().equals(c)) {
+                                Log.d(TAG, "Id of child: " + child.getKey());
+                                Course course = child.getValue(Course.class);
 
-                            //Lista dei corsi dell'utente
-                            coursesChecked.add(course.getId());
+                                textCourses.append(course.getName() + "\n");
+                            }
                         }
                     }
                 }
@@ -209,8 +317,48 @@ public class ProfileActivity extends AppCompatActivity {
         coursesReference.removeEventListener(coursesListener);
     }
 
-    //metodo usato per modificare le TextView in EditText
-    public void editProfile(View view) {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.button_edit_profile:
+                editProfile();
+                break;
+            case R.id.button_save_profile:
+                saveProfile();
+                break;
+            case R.id.button_uplod_photo:
+                selectImage();
+                break;
+        }
+    }
+
+    private void selectImage() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        startActivityForResult(intent, REQUEST_IMAGE_GET);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK) {
+            Bitmap thumbnail = data.getParcelableExtra("data"); /*TODO farci qualcosa come mostrare una finestra di dialogo
+                                                                         che mostri il progresso dell'upload e che usi il thumbnail*/
+            fullFileUri = data.getData();
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(fullFileUri);
+                bitmap = BitmapFactory.decodeStream(inputStream);
+                photoProfile.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                //TODO vedere cosa fare
+                Toast.makeText(ProfileActivity.this, "Failed", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    //Metodo usato per modificare le TextView in EditText
+    public void editProfile() {
         textName.setVisibility(View.GONE);
         textSurname.setVisibility(View.GONE);
         editButton.setVisibility(View.GONE);
@@ -220,21 +368,87 @@ public class ProfileActivity extends AppCompatActivity {
         saveButton.setVisibility(View.VISIBLE);
         editDepartments.setVisibility(View.VISIBLE);
         editCourses.setVisibility(View.VISIBLE);
+        editPhotoButton.setVisibility(View.VISIBLE);
 
         editName.setText(textName.getText());
         editSurname.setText(textSurname.getText());
     }
 
-    public void saveProfile(View view) {
-        HashMap childUpdates = new HashMap();
-        childUpdates.put("/nome/", editName.getText().toString());
-        childUpdates.put("/cognome/", editSurname.getText().toString());
+    public void saveProfile() {
+        if(fullFileUri!= null) {
 
-        usersReference.child(user.getAccountId()).updateChildren(childUpdates);
+            //Eliminazione della foto profilo eventualmente già presente
+            storageReference.child("profileimages/"+userid).listAll()
+                    .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                        @Override
+                        public void onSuccess(ListResult listResult) {
+                            for (StorageReference item : listResult.getItems()) {
+                                item.delete();
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            //TODO vedere cosa fare
+                        }
+                    });
 
-        Intent refresh = new Intent(this, ProfileActivity.class);
-        startActivity(refresh);
-        finish();
+            //Creazione dei metadati del file
+            StorageMetadata metadata = new StorageMetadata.Builder()
+                    .setContentType(FileUtil.getMimeTypeFromUri(ProfileActivity.this, fullFileUri))
+                    .build();
+
+
+            //Caricamento dell'immagine nello Storage
+            UploadTask uploadTask = storageReference.child("profileimages/"+userid)
+                    .child(FileUtil.getFileNameFromURI(ProfileActivity.this, fullFileUri))
+                    .putFile(fullFileUri, metadata);
+
+            //Listener per i cambiamenti di stato, gli errori e il completamento del caricamento.
+            uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                    // TODO implementare schermata di dialogo con progresso
+                    double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    Log.d(TAG, "Upload is " + progress + "% done");
+                }
+            }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onPaused(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.d(TAG, "Upload is paused");
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    Log.d(TAG, "File non caricato");
+                    Toast.makeText(getApplicationContext(), R.string.text_message_photo_profile_failure, Toast.LENGTH_SHORT).show();
+                    // TODO Handle unsuccessful uploads
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.d(TAG, "File caricato con successo");
+                    HashMap childUpdates = new HashMap();
+                    childUpdates.put("/profileImage/", FileUtil.getFileNameFromURI(ProfileActivity.this, fullFileUri));
+                    childUpdates.put("/nome/", editName.getText().toString());
+                    childUpdates.put("/cognome/", editSurname.getText().toString());
+                    if(currentListDepartment!=null){
+                        childUpdates.put("/dipartimenti/", currentListDepartment);
+                    }
+                    if(currentListCourse!=null){
+                        childUpdates.put("/corsi/", currentListCourse);
+                    }
+
+                    usersReference.child(user.getAccountId()).updateChildren(childUpdates);
+
+                    Intent refresh = new Intent(ProfileActivity.this, ProfileActivity.class);
+                    startActivity(refresh);
+                    finish();
+                }
+            });
+        }
+
     }
 
     public void editDepartments() {
@@ -333,20 +547,16 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                    HashMap childUpdates = new HashMap();
-                    List<String> currentList = new ArrayList<String>();
+                    currentListDepartment = new ArrayList<String>();
                     textDepartments.setText("");
                     for (int i = 0; i < depIsChecked.length; i++) {
                         boolean checked = depIsChecked[i];
                         if (checked) {
-                            currentList.add(departmentListId[i]);
+                            currentListDepartment.add(departmentListId[i]);
                             textDepartments.append(departmentList[i] + "\n");
                         }
                     }
-                    departmentsChecked = currentList;
-
-                    childUpdates.put("/dipartimenti/", currentList);
-                    usersReference.child(user.getAccountId()).updateChildren(childUpdates);
+                    departmentsChecked = currentListDepartment;
             }
         });
 
@@ -376,20 +586,16 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                HashMap childUpdates = new HashMap();
-                List<String> currentList = new ArrayList<String>();
+                currentListCourse = new ArrayList<String>();
                 textCourses.setText("");
                 for (int i = 0; i < courseIsChecked.length; i++) {
                     boolean checked = courseIsChecked[i];
                     if (checked) {
-                        currentList.add(courseListId[i]);
+                        currentListCourse.add(courseListId[i]);
                         textCourses.append(courseList[i] + "\n");
                     }
                 }
-                coursesChecked = currentList;
-
-                childUpdates.put("/corsi/", currentList);
-                usersReference.child(user.getAccountId()).updateChildren(childUpdates);
+                coursesChecked = currentListCourse;
             }
         });
 

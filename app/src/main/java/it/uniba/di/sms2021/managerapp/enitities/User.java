@@ -19,6 +19,7 @@ public class User {
     private int ruolo;
     private List<String> dipartimenti;
     private List<String> corsi;
+    private String profileImage;
 
     public User() {
     }
@@ -38,6 +39,17 @@ public class User {
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
+    }
+
+    public User(String accountId, String nome, String cognome, String email, int ruolo, List<String> dipartimenti, List<String> corsi, String profileImage) {
+        this.accountId = accountId;
+        this.nome = nome;
+        this.cognome = cognome;
+        this.email = email;
+        this.ruolo = ruolo;
+        this.corsi = corsi;
+        this.dipartimenti = dipartimenti;
+        this.profileImage=profileImage;
     }
 
     public String getAccountId() {
@@ -96,6 +108,14 @@ public class User {
         this.dipartimenti = dipartimenti;
     }
 
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -106,6 +126,7 @@ public class User {
                 ", ruolo=" + ruolo +
                 ", dipartimenti=" + dipartimenti +
                 ", corsi=" + corsi +
+                ", profileImage=" + profileImage +
                 '}';
     }
 
@@ -136,11 +157,12 @@ public class User {
                 Objects.equals(cognome, user.cognome) &&
                 Objects.equals(email, user.email) &&
                 Objects.equals(dipartimenti, user.dipartimenti) &&
-                Objects.equals(corsi, user.corsi);
+                Objects.equals(corsi, user.corsi) &&
+                Objects.equals(profileImage, user.profileImage);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountId, nome, cognome, email, ruolo, dipartimenti, corsi);
+        return Objects.hash(accountId, nome, cognome, email, ruolo, dipartimenti, corsi, profileImage);
     }
 }
