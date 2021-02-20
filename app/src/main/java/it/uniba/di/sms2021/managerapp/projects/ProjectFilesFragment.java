@@ -1,6 +1,7 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -68,6 +70,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private boolean downloadWarning = true;
 
     private Project project;
+    private UploadTask uploadTask;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -219,6 +222,8 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                 downloadWithWarning(file);
             }
         });
+
+
         filesRecyclerView.setAdapter(adapter);
         filesRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(),
                 DividerItemDecoration.VERTICAL));
@@ -322,6 +327,11 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.files_add_file_floating_action_button) {
+            if (uploadTask != null && uploadTask.isInProgress()) {
+                Toast.makeText(getContext(), R.string.text_message_already_uploading,
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
             selectDocument();
         }
     }
@@ -356,7 +366,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                 .build();
 
         // Crea la task di upload
-        UploadTask uploadTask = storageRef.child(FileUtil.getFileNameFromURI(getContext(), file))
+        uploadTask = storageRef.child(FileUtil.getFileNameFromURI(getContext(), file))
                 .putFile(file, metadata);
 
         // Crea la notifica dell'upload
@@ -398,6 +408,15 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                Intent intent = new Intent(getContext(), ProjectDetailActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.putExtra(Project.KEY, project);
+                intent.putExtra(ProjectDetailActivity.INITIAL_TAB_POSITION_KEY,
+                        ProjectDetailActivity.FILES_TAB_POSITION);
+                int uniqueRequestCode = file.hashCode(); // Se il request code è uguale ad un'activity già
+                                                         // aperta la riusa.
+                PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), uniqueRequestCode, intent, 0);
+
                 // Aggiorna la notifica dopo 500ms per non avere problemi con aggiornamenti troppo frequenti
                 // come specificato in https://developer.android.com/training/notify-user/build-notification#Updating
                 new Handler(getContext().getMainLooper()).postDelayed(new Runnable() {
@@ -405,7 +424,9 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                     public void run() {
                         // When done, update the notification one more time to remove the progress bar
                         builder.setContentText(getString(R.string.text_message_upload_complete))
-                                .setProgress(0,0,false);
+                                .setProgress(0,0,false)
+                                .setContentIntent(pendingIntent)
+                                .setAutoCancel(true);
                         notificationManager.notify(NotificationUtil.UPLOAD_NOTIFICATION_ID, builder.build());
                     }
                 }, 500);
@@ -413,10 +434,6 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                 getFiles(); // Aggiorna la lista di files
             }
         });
-    }
-
-    private void showUploadNotification() {
-
     }
 
     /**

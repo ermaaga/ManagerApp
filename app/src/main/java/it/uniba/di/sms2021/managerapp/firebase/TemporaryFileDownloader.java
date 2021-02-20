@@ -2,6 +2,7 @@ package it.uniba.di.sms2021.managerapp.firebase;
 
 import android.content.Context;
 import android.os.Environment;
+import android.os.Handler;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -77,7 +78,8 @@ public abstract class TemporaryFileDownloader {
         if (localFile.exists()) {
             onSuccessAction(localFile);
         } else {
-            file.getReference().getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+            FileDownloadTask fileDownloadTask = file.getReference().getFile(localFile);
+            fileDownloadTask.addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     onSuccessAction(localFile);
@@ -89,6 +91,17 @@ public abstract class TemporaryFileDownloader {
                             Toast.LENGTH_LONG).show();
                 }
             });
+
+            // Se dopo 5 secondi il file non è stato aperto, cancella l'operazione di download
+            new Handler(context.getMainLooper()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!fileDownloadTask.isComplete()) {
+                        fileDownloadTask.cancel();
+                        showDownloadSuggestion(R.string.text_message_preview_taking_too_long);
+                    }
+                }
+            }, 5000);
         }
     }
 }

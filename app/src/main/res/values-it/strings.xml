@@ -126,6 +126,8 @@
     <string name="text_message_download_progress">%s / %s</string>
     <string name="text_message_download_complete">Scaricamento Completato</string>
     <string name="text_message_download_failed">Lo scaricamento è fallito</string>
+    <string name="text_message_preview_taking_too_long">Il file seleziona sta impiegando troppo tempo ad aprirsi</string>
+    <string name="text_message_already_uploading">Stai già caricando un file, aspetta che finisca</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 

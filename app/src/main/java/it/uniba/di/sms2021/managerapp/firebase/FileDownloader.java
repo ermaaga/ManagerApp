@@ -29,8 +29,6 @@ import it.uniba.di.sms2021.managerapp.utility.NotificationUtil;
  * il file scaricato.
  */
 public abstract class FileDownloader {
-    private static int incrementalItentRequestCode = (int) (Math.random() * Integer.MAX_VALUE);
-
     /**
      * Specifica l'azione da compiere quando il file è stato scaricato.
      */
@@ -118,7 +116,8 @@ public abstract class FileDownloader {
                     public void run() {
                         builder.setContentText(context.getString(R.string.text_message_download_complete))
                                 .setProgress(0,0,false)
-                                .setContentIntent(pendingIntent);
+                                .setContentIntent(pendingIntent)
+                                .setAutoCancel(true);
                         notificationManager.notify(NotificationUtil.DOWNLOAD_NOTIFICATION_ID, builder.build());
                     }
                 }, 500);

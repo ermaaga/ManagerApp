@@ -23,9 +23,11 @@ import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivit
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
 public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
-    private static final int NOTICES_TAB_POSITION = 0;
-    private static final int FILES_TAB_POSITION = 1;
-    private static final int MEMBERS_TAB_POSITION = 2;
+    static final int NOTICES_TAB_POSITION = 0;
+    static final int FILES_TAB_POSITION = 1;
+    static final int MEMBERS_TAB_POSITION = 2;
+    static final String INITIAL_TAB_POSITION_KEY = "initial_position";
+
     private static final int REQUEST_EVALUATION = 1;
 
     private static final String TAG = "ProjectDetailActivity";
@@ -53,6 +55,11 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         project = getIntent().getParcelableExtra(Project.KEY);
+        int initialTab = getIntent().getIntExtra(INITIAL_TAB_POSITION_KEY, -1);
+
+        if (initialTab != -1) {
+            navigateToTabByPosition(initialTab);
+        }
     }
 
     @Override
@@ -81,6 +88,10 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         int tabPosition = tab.getPosition();
+        navigateToTabByPosition(tabPosition);
+    }
+
+    private void navigateToTabByPosition (int tabPosition) {
         if (tabPosition == NOTICES_TAB_POSITION) {
             navigateTo(new ProjectNoticesFragment(), false);
         } else if (tabPosition == FILES_TAB_POSITION) {
