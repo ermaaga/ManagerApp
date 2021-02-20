@@ -37,16 +37,27 @@
             android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <TextView
+        android:id="@+id/text_view_select_members"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/text_label_select_members"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/name_input_layout"
+        app:layout_constraintTop_toBottomOf="@+id/name_input_layout" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/group_members_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="2dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/button_create_new_group"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_input_layout"
+        app:layout_constraintTop_toBottomOf="@+id/text_view_select_members"
         tools:listitem="@layout/list_item_user" />
 
     <Button
@@ -58,7 +69,6 @@
         android:text="@string/text_button_save_new_group"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent" />
-
 
     <include
         android:id="@+id/bottom_navigation"

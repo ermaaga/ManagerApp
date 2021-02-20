@@ -12,6 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,7 +31,9 @@ import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
+import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.lists.UserSelectionRecyclerAdapter;
+import it.uniba.di.sms2021.managerapp.projects.ProjectPermissionsActivity;
 import it.uniba.di.sms2021.managerapp.utility.AbstractFormActivity;
 
 public class NewGroupActivity extends AbstractFormActivity {
@@ -38,12 +43,15 @@ public class NewGroupActivity extends AbstractFormActivity {
     private Exam exam;
 
     private EditText name;
+    private TextInputLayout nameInputLayout;
     private Button button;
 
     private RecyclerView userRecyclerView;
     private UserSelectionRecyclerAdapter adapter;
     private DatabaseReference userReference;
     private ValueEventListener examMembersListener;
+
+    Group group;
 
     @Override
     protected int getLayoutId() { return R.layout.activity_new_group; }
@@ -55,6 +63,8 @@ public class NewGroupActivity extends AbstractFormActivity {
         super.onCreate(savedInstanceState);
 
         name = findViewById(R.id.name_edit_text);
+        nameInputLayout = findViewById(R.id.name_input_layout);
+
         button = findViewById(R.id.button_create_new_group);
         userRecyclerView = findViewById(R.id.group_members_recycler_view);
 
@@ -72,6 +82,7 @@ public class NewGroupActivity extends AbstractFormActivity {
                 //Do nothing
             }
         });
+
         userRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         userRecyclerView.setAdapter(adapter);
 
@@ -101,7 +112,7 @@ public class NewGroupActivity extends AbstractFormActivity {
         userReference.addValueEventListener(examMembersListener);
 
 
-        button.setOnClickListener(new View.OnClickListener() {
+       button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!TextUtils.isEmpty(name.getText().toString())) {
@@ -120,12 +131,29 @@ public class NewGroupActivity extends AbstractFormActivity {
                         }
                     }
 
-                    Group group = new Group(newElement.getKey(), name.getText().toString(), intent.getStringExtra(StudyCase.Keys.ID),
+                    group = new Group(newElement.getKey(), name.getText().toString(), intent.getStringExtra(StudyCase.Keys.ID),
                             exam.getId(), membri);
-                    newElement.setValue(group);
 
-                    Toast.makeText(getApplicationContext(), R.string.text_message_group_created , Toast.LENGTH_SHORT).show();
-                    NewGroupActivity.super.onBackPressed();
+                    newElement.setValue(group).addOnSuccessListener(new OnSuccessListener(){
+                      @Override
+                      public void onSuccess(Object o) {
+                          Toast.makeText(getApplicationContext(), R.string.text_message_group_created , Toast.LENGTH_LONG).show();
+                          NewGroupActivity.super.onBackPressed();
+
+                          new Project.Initialiser() {
+                              @Override
+                              public void onProjectInitialised(Project project) {
+                                  Intent intent = new Intent(getApplicationContext(), ProjectPermissionsActivity.class);
+                                  intent.putExtra(Project.KEY, project);
+                                  startActivity(intent);
+                              }
+                          }.initialiseProject(group);
+
+                      }
+                  });
+
+                }else{
+                    nameInputLayout.setError(getString(R.string.required_field));
                 }
 
             }

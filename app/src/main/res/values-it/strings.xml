@@ -15,7 +15,7 @@
     <string name="activity_label_user_profile">Profilo</string>
     <string name="activity_label_department">Scegli</string>
     <string name="activity_label_project_permissions">Permessi</string>
-    <string name="activity_label_rate_project">Valuta progetto</string>
+    <string name="activity_label_evaluate_project">Valuta progetto</string>
     <string name="activity_label_exam_partecipants">Partecipanti</string>
     <string name="creation_exam_failed">Errore durante la creazione</string>
     <string name="text_error_validation">Il nome del gruppo non può essere maggiore di 20 caratteri</string>
@@ -52,6 +52,7 @@
     <string name="text_label_permissions">Permessi</string>
     <string name="text_label_evaluate">Valuta progetto</string>
     <string name="text_label_update_evaluate">Aggiorna valutazione</string>
+    <string name="text_label_select_members">Seleziona membri</string>
 
     <string name="text_label_project_preference_visibility">Chiunque può accedere al progetto</string>
     <string name="text_label_project_preference_free_join">Chiunque può unirsi al progetto</string>
@@ -72,6 +73,7 @@
     <string name="label_Dialog_title_departments">Seleziona Dipartimenti</string>
     <string name="label_Dialog_confimation_message_join_necessary">A causa di impostazioni sui permessi, questo gruppo può
          essere aperto solo dai propri membri. Vuoi far parte di questo gruppo studio?</string>
+    <string name="label_dialog_group_creation">Creazione gruppo</string>
 
     <string name="registration_success">Registrazione avvenuta con successo</string>
     <string name="send_verification_email_success">Email di verifica inviata a </string>
@@ -164,6 +166,7 @@
     <string name="text_notification_title_file_upload">Caricamento File</string>
     <string name="text_notification_content_file_upload">Caricamento in corso</string>
     <string name="text_notification_title_feed">Nuove notifiche trovate</string>
+
 
     <plurals name="numberOfDepartments">
         <item quantity="one">Dipartimento</item>

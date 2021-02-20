@@ -33,7 +33,8 @@
             android:label="Gruppo 1 (rendere dinamico)" />
         <activity
             android:name=".projects.ProjectVoteActivity"
-            android:label="@string/activity_label_rate_project" />
+            android:label="@string/activity_label_evaluate_project" >
+        </activity>
         <activity
             android:name=".projects.ProjectPermissionsActivity"
             android:label="@string/activity_label_project_permissions" />
