@@ -2,6 +2,7 @@ package it.uniba.di.sms2021.managerapp.utility;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.OpenableColumns;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
@@ -97,6 +99,46 @@ public class FileUtil {
     public static Uri getUriFromFile (Context context, File localFile) {
         return FileProvider.getUriForFile(context,
                 BuildConfig.APPLICATION_ID + ".provider", localFile);
+    }
+
+    /**
+     * Apre un file usando una della applicazioni installate.
+     * @param uri l'uri del file in memoria da aprire
+     * @param mimeType il tipo mime del file
+     * @return true se il file è apribile, false altrimenti
+     */
+    public static boolean openFileWithViewIntent(Context context, Uri uri, String mimeType) {
+        // I file apk devono prima essere scaricati
+        if (mimeType.equals(("application/vnd.android.package-archive"))) {
+            return false;
+        }
+
+        Intent intent = getFileViewIntent(context, uri, mimeType);
+
+        if (intent != null) {
+            context.startActivity(intent);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Nullable
+    public static Intent getFileViewIntent (Context context, Uri uri, String mimeType) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setDataAndType(uri, mimeType);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        //Crea un intent chooser per permettere all'utente di scegliere l'app per visualizzare il file
+        String title = context.getString(R.string.chooser_title_preview);
+        Intent chooser = Intent.createChooser(intent, title);
+
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            return chooser;
+        } else {
+            return null;
+        }
     }
 
 }

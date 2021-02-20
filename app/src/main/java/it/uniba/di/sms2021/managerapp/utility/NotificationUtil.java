@@ -10,6 +10,7 @@ import it.uniba.di.sms2021.managerapp.R;
 public class NotificationUtil {
     public static final String DEFAULT_CHANNEL_ID = "default_channel";
     public static final int UPLOAD_NOTIFICATION_ID = 1;
+    public static final int DOWNLOAD_NOTIFICATION_ID = 2;
     public static final int FEED_NOTIFICATION_ID = 3;
 
     public static void createNotificationChannel(Context context) {

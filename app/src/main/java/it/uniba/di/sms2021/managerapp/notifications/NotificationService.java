@@ -35,7 +35,7 @@ import it.uniba.di.sms2021.managerapp.utility.NotificationUtil;
 
 /**
  * Servizio che cerca notifiche e le mostra nella barra delle notifiche.
- * Operando in un thread in background per non bloccare l'applicazione
+ * Opera in un thread in background per non bloccare l'applicazione
  *
  * NOTA: per far sì che il servizio funzioni, l'utente in LoginHelper deve essere inizializzato
  * Codice preso e modificato da: https://developer.android.com/guide/components/services#ExtendingService

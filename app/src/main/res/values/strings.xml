@@ -134,6 +134,9 @@
     <string name="text_message_group_request_accepted">User accepted in the group</string>
     <string name="text_message_upload_complete">Upload Complete</string>
     <string name="text_message_upload_failed">The upload has failed.</string>
+    <string name="text_message_download_progress">%s / %s</string>
+    <string name="text_message_download_complete">Download Completed</string>
+    <string name="text_message_download_failed">The download has failed</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -179,10 +182,10 @@
     <string name="text_notification_title_file_upload">File Upload</string>
     <string name="text_notification_content_file_upload">Upload in progress</string>
     <string name="text_notification_title_feed">New Notifications Found</string>
+    <string name="text_notification_title_file_download">File Download</string>
 
     <string name="notification_channel_name" translatable="false">Default Channel</string>
     <string name="notification_channel_description" translatable="false">The default notification channel for the app</string>
-
 
     <plurals name="numberOfDepartments">
         <item quantity="one">Department</item>

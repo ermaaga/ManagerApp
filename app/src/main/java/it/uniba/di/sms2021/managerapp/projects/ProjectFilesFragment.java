@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -397,10 +398,18 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                // When done, update the notification one more time to remove the progress bar
-                builder.setContentText(getString(R.string.text_message_upload_complete))
-                        .setProgress(0,0,false);
-                notificationManager.notify(NotificationUtil.UPLOAD_NOTIFICATION_ID, builder.build());
+                // Aggiorna la notifica dopo 500ms per non avere problemi con aggiornamenti troppo frequenti
+                // come specificato in https://developer.android.com/training/notify-user/build-notification#Updating
+                new Handler(getContext().getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // When done, update the notification one more time to remove the progress bar
+                        builder.setContentText(getString(R.string.text_message_upload_complete))
+                                .setProgress(0,0,false);
+                        notificationManager.notify(NotificationUtil.UPLOAD_NOTIFICATION_ID, builder.build());
+                    }
+                }, 500);
+
                 getFiles(); // Aggiorna la lista di files
             }
         });
@@ -423,7 +432,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                             public void onClick(DialogInterface dialog, int which) {
                                 previewWarning = false;
                                 //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
-                                if (!openFileWithViewIntent(uri, file.getType())) {
+                                if (!FileUtil.openFileWithViewIntent(getContext(), uri, file.getType())) {
                                     showDownloadSuggestion(
                                             R.string.text_message_temp_file_not_supported, file);
                                 }
@@ -437,41 +446,13 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
             }).create().show();
         } else {
             //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
-            if (!openFileWithViewIntent(uri, file.getType())) {
+            if (!FileUtil.openFileWithViewIntent(getContext(), uri, file.getType())) {
                 showDownloadSuggestion(R.string.text_message_temp_file_not_supported, file);
             }
         }
     }
 
-    /**
-     * Apre un file usando una della applicazioni installate.
-     * @param uri l'uri del file in memoria da aprire
-     * @param mimeType il tipo mime del file
-     * @return true se il file è apribile, false altrimenti
-     */
-    private boolean openFileWithViewIntent(Uri uri, String mimeType) {
-        // I file apk devono prima essere scaricati
-        if (mimeType.equals(("application/vnd.android.package-archive"))) {
-            return false;
-        }
 
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(uri, mimeType);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-        //Crea un intent chooser per permettere all'utente di scegliere l'app per visualizzare il file
-        String title = getString(R.string.chooser_title_preview);
-        Intent chooser = Intent.createChooser(intent, title);
-
-        //TODO controllare warning dato dal lint
-        if (intent.resolveActivity(getContext().getPackageManager()) != null) {
-            startActivity(chooser);
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     /**
      * Avvisa l'utente che il file sarà accessibile anche ad altre applicazioni.

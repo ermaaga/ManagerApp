@@ -29,7 +29,6 @@ public class NotificationChecker extends BroadcastReceiver {
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,System.currentTimeMillis(),
                 MINUTE_CHECKED * 60 * 1000,
                 pendingIntent);
-        // 600000
     }
 
     public static void unsubscribeCheckForNotifications (Context context) {
