@@ -10,11 +10,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +22,7 @@ import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.GroupJoinRequest;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.enitities.project.GroupJoinNotice;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 
 /**
@@ -159,9 +159,10 @@ public class GroupJoinRequestNotification implements Notifiable {
     public void onNotificationAction1Click(Context context, @Nullable OnActionDoneListener listener) {
         List<String> members = group.getMembri();
         if (members == null) {
-            members = new ArrayList<>();
+            throw new RuntimeException("Questo non dovrebbe mai accadere");
         }
         members.add(sender.getAccountId());
+
         FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS)
                 .child(group.getId()).child(Group.Keys.MEMBERS).setValue(members)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -170,6 +171,7 @@ public class GroupJoinRequestNotification implements Notifiable {
                         Toast.makeText(context, R.string.text_message_group_request_accepted,
                                 Toast.LENGTH_LONG).show();
                         removeNotification();
+                        notifyMembers(group, sender);
 
                         // Usato per aggiornare ui in seguito all'aggiornamento
                         if (listener != null) {
@@ -203,6 +205,24 @@ public class GroupJoinRequestNotification implements Notifiable {
     private void removeNotification () {
         FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUP_REQUESTS)
                 .child(request.getRequestId()).removeValue();
+    }
+
+    /**
+     * Notifica gli altri membri del gruppo che si è unito un nuovo membro
+     * Per fare ciò aggiunge l'oggetto GroupJoinNotice nel database così che il gestore delle
+     * notifiche possa prelevarne i valori.
+     * @param group il gruppo da notificare
+     * @param sender il membro che si è unito
+     */
+    private void notifyMembers(Group group, User sender) {
+        for (String user: group.getMembri()) {
+            if (!user.equals(group.getMembri().get(0))) {
+                DatabaseReference pushReference = FirebaseDbHelper.getUserJoinNoticeReference(user).push();
+                pushReference.setValue(
+                        new GroupJoinNotice(user, pushReference.getKey(), sender, group,
+                                user.equals(sender.getAccountId()), System.currentTimeMillis()));
+            }
+        }
     }
 
     public static abstract class Initialiser {

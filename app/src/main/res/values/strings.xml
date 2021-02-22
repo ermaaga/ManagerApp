@@ -185,6 +185,10 @@
     <string name="text_notification_content_file_upload">Upload in progress</string>
     <string name="text_notification_title_feed">New Notifications Found</string>
     <string name="text_notification_title_file_download">File Download</string>
+    <string name="text_notification_title_group_join_notice">New Member</string>
+    <string name="text_notification_message_group_join_notice">The user %s joined your group %s</string>
+    <string name="text_notification_message_group_join_notice_requester">You have been accepted in the group %s</string>
+    <string name="text_notification_action_dismiss">Dismiss</string>
 
     <string name="notification_channel_name" translatable="false">Default Channel</string>
     <string name="notification_channel_description" translatable="false">The default notification channel for the app</string>

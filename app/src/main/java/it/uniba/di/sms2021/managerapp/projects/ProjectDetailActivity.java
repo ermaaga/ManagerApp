@@ -23,10 +23,10 @@ import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivit
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
 public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
-    static final int NOTICES_TAB_POSITION = 0;
-    static final int FILES_TAB_POSITION = 1;
-    static final int MEMBERS_TAB_POSITION = 2;
-    static final String INITIAL_TAB_POSITION_KEY = "initial_position";
+    public static final int NOTICES_TAB_POSITION = 0;
+    public static final int FILES_TAB_POSITION = 1;
+    public static final int MEMBERS_TAB_POSITION = 2;
+    public static final String INITIAL_TAB_POSITION_KEY = "initial_position";
 
     private static final int REQUEST_EVALUATION = 1;
 

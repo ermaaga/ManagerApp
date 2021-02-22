@@ -27,10 +27,12 @@ import it.uniba.di.sms2021.managerapp.notifications.NotifiableComparator;
 
 public class NotificationRecyclerAdapter extends ListAdapter<Notifiable, RecyclerView.ViewHolder> {
     Context context;
+    OnUpdateDataListener listener;
 
-    public NotificationRecyclerAdapter(Context context) {
+    public NotificationRecyclerAdapter(Context context, OnUpdateDataListener listener) {
         super(new DiffCallback());
         this.context = context;
+        this.listener = listener;
     }
 
     @NonNull
@@ -76,7 +78,7 @@ public class NotificationRecyclerAdapter extends ListAdapter<Notifiable, Recycle
             action1Button.setText(label);
             action1Button.setOnClickListener(v ->
                     notification.onNotificationAction1Click(context, () -> {
-                        removeItem(position);
+                        listener.onUpdateData();
                     }));
         } else {
             action1Button.setVisibility(View.GONE);
@@ -88,23 +90,12 @@ public class NotificationRecyclerAdapter extends ListAdapter<Notifiable, Recycle
             action2Button.setText(label);
             action2Button.setOnClickListener(v ->
                     notification.onNotificationAction2Click(context, () -> {
-                        removeItem(position);
+                        listener.onUpdateData();
                     }));
         } else {
             action2Button.setVisibility(View.GONE);
         }
 
-    }
-
-    // Questo metodo è necessario al momento perchè ho scoperto che Firebase supporta una sola
-    // connessione per volta, di conseguenza il listener nell'attività delle notifiche non funzionava
-    // più dopo aver aggiunto altri listeners.
-    // TODO ristrutturare completamente il db sfruttando le potenzialità del noSQL?
-    private void removeItem (int position) {
-        List<Notifiable> notifiables = new ArrayList<>(getCurrentList());
-        notifiables.remove(position);
-        submitList(notifiables);
-        notifyDataSetChanged();
     }
 
     static class DiffCallback extends DiffUtil.ItemCallback<Notifiable> {
@@ -118,5 +109,9 @@ public class NotificationRecyclerAdapter extends ListAdapter<Notifiable, Recycle
         public boolean areContentsTheSame(@NonNull Notifiable oldItem, @NonNull Notifiable newItem) {
             return oldItem.equals(newItem);
         }
+    }
+
+    public interface OnUpdateDataListener {
+        void onUpdateData ();
     }
 }

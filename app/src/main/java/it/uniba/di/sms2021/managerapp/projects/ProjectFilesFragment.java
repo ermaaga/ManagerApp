@@ -409,7 +409,6 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                 Intent intent = new Intent(getContext(), ProjectDetailActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.putExtra(Project.KEY, project);
                 intent.putExtra(ProjectDetailActivity.INITIAL_TAB_POSITION_KEY,
                         ProjectDetailActivity.FILES_TAB_POSITION);

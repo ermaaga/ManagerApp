@@ -131,6 +131,23 @@ public class NotificationService extends Service {
 
             }
         });
+
+        DatabaseReference userJoinNoticeReference = FirebaseDbHelper.getUserJoinNoticeReference(LoginHelper.getCurrentUser().getAccountId());
+        workingReferences.add(userJoinNoticeReference);
+
+        userJoinNoticeReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        notificationsFound += snapshot.getChildrenCount();
+                        workingReferences.remove(userJoinNoticeReference);
+                        showNotification(msg);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 
     private void showNotification (Message msg) {
