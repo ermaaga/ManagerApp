@@ -10,7 +10,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -21,14 +20,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import it.uniba.di.sms2021.managerapp.NotificationsActivity;
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.GroupJoinRequest;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.utility.NotificationUtil;
@@ -109,7 +106,8 @@ public class NotificationService extends Service {
         workingReferences = new HashSet<>();
         notificationsFound = 0;
 
-        groupRequestReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUP_REQUESTS);
+        groupRequestReference =
+                FirebaseDbHelper.getGroupJoinRequestReference(LoginHelper.getCurrentUser().getAccountId());
         workingReferences.add(groupRequestReference);
 
         groupRequestReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -156,7 +154,7 @@ public class NotificationService extends Service {
                 NotificationUtil.createNotificationChannel(this);
 
                 Intent intent = new Intent(this, NotificationsActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NotificationUtil.DEFAULT_CHANNEL_ID)

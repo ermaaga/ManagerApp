@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,7 +15,6 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,18 +22,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
-import it.uniba.di.sms2021.managerapp.enitities.GroupJoinRequest;
-import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
-import it.uniba.di.sms2021.managerapp.exams.ExamDetailActivity;
-import it.uniba.di.sms2021.managerapp.exams.ExamGroupsFragment;
-import it.uniba.di.sms2021.managerapp.exams.ExamsActivity;
-import it.uniba.di.sms2021.managerapp.exams.NewExamActivity;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 
 public class ConfirmGroupDialog  extends AppCompatDialogFragment {
@@ -97,8 +88,8 @@ public class ConfirmGroupDialog  extends AppCompatDialogFragment {
     }
 
     private void sendRequest() {
-        DatabaseReference requestReference = FirebaseDbHelper.getDBInstance()
-                .getReference(FirebaseDbHelper.TABLE_GROUP_REQUESTS).push();
+        DatabaseReference requestReference =
+                FirebaseDbHelper.getGroupJoinRequestReference(group.getMembri().get(0)).push();
 
         requestReference.setValue(new GroupJoinRequest(requestReference.getKey(), currentUserId,
                 group.getId(), group.getMembri().get(0)))

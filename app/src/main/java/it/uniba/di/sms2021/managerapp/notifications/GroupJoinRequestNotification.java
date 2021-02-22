@@ -20,10 +20,11 @@ import java.util.Objects;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
-import it.uniba.di.sms2021.managerapp.enitities.GroupJoinRequest;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
 import it.uniba.di.sms2021.managerapp.enitities.User;
-import it.uniba.di.sms2021.managerapp.enitities.project.GroupJoinNotice;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinNotice;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 
 /**
  * Classe wrapper di una richiesta di partecipazione ad un gruppo che inizializza tutti i campi
@@ -203,7 +204,7 @@ public class GroupJoinRequestNotification implements Notifiable {
     }
 
     private void removeNotification () {
-        FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUP_REQUESTS)
+        FirebaseDbHelper.getGroupJoinRequestReference(LoginHelper.getCurrentUser().getAccountId())
                 .child(request.getRequestId()).removeValue();
     }
 

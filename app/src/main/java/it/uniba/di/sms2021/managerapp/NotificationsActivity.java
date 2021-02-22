@@ -20,8 +20,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import it.uniba.di.sms2021.managerapp.enitities.GroupJoinRequest;
-import it.uniba.di.sms2021.managerapp.enitities.project.GroupJoinNotice;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinNotice;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.lists.NotificationRecyclerAdapter;
@@ -87,8 +87,8 @@ public class NotificationsActivity extends AppCompatActivity {
     private void updateNotifications() {
         workingReferences = new HashSet<>();
 
-        DatabaseReference groupRequestsReference = FirebaseDbHelper.getDBInstance()
-                .getReference(FirebaseDbHelper.TABLE_GROUP_REQUESTS);
+        DatabaseReference groupRequestsReference =
+                FirebaseDbHelper.getGroupJoinRequestReference(LoginHelper.getCurrentUser().getAccountId());
         workingReferences.add(groupRequestsReference);
         ValueEventListener groupRequestsListener = new ValueEventListener() {
             @Override

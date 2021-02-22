@@ -1,4 +1,4 @@
-package it.uniba.di.sms2021.managerapp.enitities;
+package it.uniba.di.sms2021.managerapp.enitities.notifications;
 
 import java.util.Objects;
 

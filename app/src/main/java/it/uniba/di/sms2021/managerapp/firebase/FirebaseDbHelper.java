@@ -10,7 +10,9 @@ public class FirebaseDbHelper {
     public static final String TABLE_GROUPS = "groups";
     public static final String TABLE_DEPARTMENTS = "departments";
     public static final String TABLE_COURSES = "courses";
-    public static final String TABLE_GROUP_REQUESTS = "group_requests";
+
+    private static final String TABLE_GROUP_REQUESTS = "group_requests";
+    private static final String TABLE_GROUP_JOIN_NOTICE = "group_join_notice";
 
     private static FirebaseDatabase INSTANCE;
     public static FirebaseDatabase getDBInstance() {
@@ -21,7 +23,11 @@ public class FirebaseDbHelper {
         return INSTANCE;
     }
 
+    public static DatabaseReference getGroupJoinRequestReference (String uid) {
+        return getDBInstance().getReference(TABLE_GROUP_REQUESTS).child(uid);
+    }
+
     public static DatabaseReference getUserJoinNoticeReference (String uid) {
-        return getDBInstance().getReference("group_join_notice").child(uid);
+        return getDBInstance().getReference(TABLE_GROUP_JOIN_NOTICE).child(uid);
     }
 }

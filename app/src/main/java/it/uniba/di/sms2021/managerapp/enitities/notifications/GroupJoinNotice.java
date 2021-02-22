@@ -1,4 +1,4 @@
-package it.uniba.di.sms2021.managerapp.enitities.project;
+package it.uniba.di.sms2021.managerapp.enitities.notifications;
 
 import android.content.Context;
 import android.content.Intent;
