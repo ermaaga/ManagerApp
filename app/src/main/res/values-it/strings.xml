@@ -149,6 +149,7 @@
     <string name="text_button_evaluate_project">Valuta</string>
     <string name="text_button_request_accept">Accetta</string>
     <string name="text_button_request_refuse">Rifiuta</string>
+    <string name="text_button_permissions_done">Finito</string>
 
     <string name="text_hint_name_studycase">Nome</string>
     <string name="text_hint_name_group">Nome</string>

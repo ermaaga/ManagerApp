@@ -160,6 +160,7 @@
     <string name="text_button_evaluate_project">Evaluate</string>
     <string name="text_button_request_accept">Accept</string>
     <string name="text_button_request_refuse">Refuse</string>
+    <string name="text_button_permissions_done">Done</string>
 
     <string name="text_hint_email_user" translatable="false">Email</string>
     <string name="text_hint_password_user" translatable="false">Password</string>

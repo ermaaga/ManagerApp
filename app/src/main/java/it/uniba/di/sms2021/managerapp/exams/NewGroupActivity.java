@@ -145,6 +145,7 @@ public class NewGroupActivity extends AbstractFormActivity {
                               public void onProjectInitialised(Project project) {
                                   Intent intent = new Intent(getApplicationContext(), ProjectPermissionsActivity.class);
                                   intent.putExtra(Project.KEY, project);
+                                  intent.putExtra(ProjectPermissionsActivity.CREATION_BOOLEAN_KEY, true);
                                   startActivity(intent);
                               }
                           }.initialiseProject(group);

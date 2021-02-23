@@ -1,25 +1,24 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.FragmentManager;
 
-import com.google.android.material.tabs.TabLayout;
-
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
-public class ProjectPermissionsActivity extends AbstractBottomNavigationActivity {
+public class ProjectPermissionsActivity extends AbstractBottomNavigationActivity implements View.OnClickListener {
+    public static final String CREATION_BOOLEAN_KEY = "creation";
 
     private Project project;
+    private Button doneButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +30,8 @@ public class ProjectPermissionsActivity extends AbstractBottomNavigationActivity
                 .beginTransaction()
                 .replace(R.id.settingsFragment, new ProjectPermissionsPreferencesFragment())
                 .commit();
+
+        doneButton = findViewById(R.id.done_button);
     }
 
     @Override
@@ -38,6 +39,12 @@ public class ProjectPermissionsActivity extends AbstractBottomNavigationActivity
         super.onStart();
 
         project = getIntent().getParcelableExtra(Project.KEY);
+        if (getIntent().getBooleanExtra(CREATION_BOOLEAN_KEY, false)) {
+            doneButton.setOnClickListener(this);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        } else {
+            doneButton.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -79,5 +86,13 @@ public class ProjectPermissionsActivity extends AbstractBottomNavigationActivity
 
     public Project getProject() {
         return project;
+    }
+
+    @Override
+    public void onClick(View v) {
+        int viewId = v.getId();
+        if (viewId == R.id.done_button) {
+            finish();
+        }
     }
 }
