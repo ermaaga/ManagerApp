@@ -17,6 +17,8 @@
     <string name="activity_label_sign_in">Sign In</string>
     <string name="activity_label_department">Choose the department</string>
     <string name="activity_label_exam_partecipants">Partecipants</string>
+    <string name="activity_label_project_new_review">Submit a review</string>
+    <string name="activity_label_project_new_report">Submit a report</string>
 
     <string name="label_Dialog_Header">Infromation</string>
     <string name="label_Dialog_confimation_message">Do you want to be part of this study group?</string>
@@ -37,7 +39,7 @@
     <string name="text_label_notifications">Notifications</string>
     <string name="text_label_home_social_ideas">Social Ideas</string>
     <string name="text_label_home_projects">Projects</string>
-    <string name="text_label_project_notices">Notices</string>
+    <string name="text_label_project_about" translatable="false">About</string>
     <string name="text_label_project_files">Files</string>
     <string name="text_label_project_members">Members</string>
     <string name="text_label_exam_study_cases">Study Cases</string>
@@ -62,6 +64,8 @@
     <string name="text_label_evaluate">Evaluate project</string>
     <string name="text_label_update_evaluate">Update evaluation</string>
     <string name="text_label_select_members">Select members</string>
+    <string name="text_label_project_reviews">Reviews</string>
+    <string name="text_label_project_reports">Reports</string>
 
     <string name="text_label_project_preference_visibility">Anyone can view the project</string>
     <string name="text_label_project_preference_free_join">Anyone can join the project</string>
@@ -76,6 +80,9 @@
     <string name="text_label_dialog_title_departments">Select departments</string>
     <string name="text_label_dialog_title_courses">Select courses</string>
     <string name="text_label_upload_file">Upload file</string>
+
+    <string name="text_label_submit_review">Enter your review</string>
+    <string name="text_label_submit_report">Enter your report</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
@@ -139,6 +146,9 @@
     <string name="text_message_download_failed">The download has failed</string>
     <string name="text_message_preview_taking_too_long">The selected file is taking too long to open</string>
     <string name="text_message_already_uploading">You are already uploading a file, wait for it to finish</string>
+    <string name="text_message_star_rating_required">Star rating required</string>
+    <string name="text_message_project_review_submitted">Review submitted</string>
+    <string name="text_message_project_report_submitted">Report submitted</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -160,6 +170,8 @@
     <string name="text_button_evaluate_project">Evaluate</string>
     <string name="text_button_request_accept">Accept</string>
     <string name="text_button_request_refuse">Refuse</string>
+    <string name="text_button_see_more"><![CDATA[See more >]]></string>
+    <string name="text_button_submit">Submit</string>
     <string name="text_button_permissions_done">Done</string>
 
     <string name="text_hint_email_user" translatable="false">Email</string>
@@ -172,10 +184,13 @@
     <string name="text_hint_search_file">Search File (ex. video, release, etc.)</string>
     <string name="text_hint_comment_project">Comment</string>
     <string name="text_hint_vote_project">Vote</string>
+    <string name="text_hint_review_project">Cosa ne pensi di questo progetto?</string>
+    <string name="text_hint_report_project">Cosa vorresti segnalare al gruppo?</string>
 
     <string name="text_action_delete_file">Delete</string>
     <string name="text_action_share_file">Share</string>
     <string name="text_action_download_file">Download</string>
+    <string name="text_action_report_from_review">Clicca qui per segnalare un problema al gruppo.</string>
 
     <string name="text_send_subject">File Sharing</string>
     <string name="text_send_content">Check out my new file %s that i created in my project %s!</string>

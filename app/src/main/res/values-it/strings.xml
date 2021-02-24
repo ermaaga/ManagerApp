@@ -17,6 +17,9 @@
     <string name="activity_label_project_permissions">Permessi</string>
     <string name="activity_label_evaluate_project">Valuta progetto</string>
     <string name="activity_label_exam_partecipants">Partecipanti</string>
+    <string name="activity_label_project_new_review">Invia una recensione</string>
+    <string name="activity_label_project_new_report">Invia una segnalazione</string>
+
     <string name="creation_exam_failed">Errore durante la creazione</string>
     <string name="text_error_validation">Il nome del gruppo non può essere maggiore di 20 caratteri</string>
 
@@ -26,7 +29,6 @@
     <string name="text_label_notifications">Notifiche</string>
     <string name="text_label_home_social_ideas">Idee Sociali</string>
     <string name="text_label_home_projects">Progetti</string>
-    <string name="text_label_project_notices">Bacheca</string>
     <string name="text_label_project_files">Files</string>
     <string name="text_label_project_members">Membri</string>
     <string name="text_label_exam_study_cases">Casi di Studio</string>
@@ -53,6 +55,8 @@
     <string name="text_label_evaluate">Valuta progetto</string>
     <string name="text_label_update_evaluate">Aggiorna valutazione</string>
     <string name="text_label_select_members">Seleziona membri</string>
+    <string name="text_label_project_reviews">Recensioni</string>
+    <string name="text_label_project_reports">Segnalazioni</string>
 
     <string name="text_label_project_preference_visibility">Chiunque può accedere al progetto</string>
     <string name="text_label_project_preference_free_join">Chiunque può unirsi al progetto</string>
@@ -63,6 +67,9 @@
     <string name="text_label_project_preference_category_partecipation">Partecipazione</string>
     <string name="text_label_project_preference_category_project_files">File di Progetto</string>
     <string name="text_label_project_preference_category_visibility">Visibilità</string>
+
+    <string name="text_label_submit_review">Inserisci la tua recensione</string>
+    <string name="text_label_submit_report">Inserisci la tua segnalazione</string>
 
     <string name="label_Dialog_Header">Informazione</string>
     <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>
@@ -128,6 +135,9 @@
     <string name="text_message_download_failed">Lo scaricamento è fallito</string>
     <string name="text_message_preview_taking_too_long">Il file seleziona sta impiegando troppo tempo ad aprirsi</string>
     <string name="text_message_already_uploading">Stai già caricando un file, aspetta che finisca</string>
+    <string name="text_message_star_rating_required">Valutazione a stelle richiesta</string>
+    <string name="text_message_project_review_submitted">Recensione inviata</string>
+    <string name="text_message_project_report_submitted">Segnalazione inviata</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -149,6 +159,8 @@
     <string name="text_button_evaluate_project">Valuta</string>
     <string name="text_button_request_accept">Accetta</string>
     <string name="text_button_request_refuse">Rifiuta</string>
+    <string name="text_button_see_more"><![CDATA[Vedi altro >]]></string>
+    <string name="text_button_submit">Invia</string>
     <string name="text_button_permissions_done">Finito</string>
 
     <string name="text_hint_name_studycase">Nome</string>
@@ -159,10 +171,13 @@
     <string name="text_hint_search_file">Cerca File (ex. video, rilascio, etc.)</string>
     <string name="text_hint_comment_project">Commento</string>
     <string name="text_hint_vote_project">Voto</string>
+    <string name="text_hint_review_project">What do you think of this project?</string>
+    <string name="text_hint_report_project">What would you like to report to the group?</string>
 
     <string name="text_action_delete_file">Elimina</string>
     <string name="text_action_share_file">Condividi</string>
     <string name="text_action_download_file">Scarica</string>
+    <string name="text_action_report_from_review">Click here to report a problem to the group.</string>
 
     <string name="text_send_subject">Condivisione File</string>
     <string name="text_send_content">Date un\'occhiata al mio nuovo file %s che ho creato nel mio progetto %s!</string>

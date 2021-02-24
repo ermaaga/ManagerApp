@@ -1,12 +1,5 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.SearchView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
@@ -14,16 +7,22 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.google.android.material.tabs.TabLayout;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
 public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
-    public static final int NOTICES_TAB_POSITION = 0;
+    public static final int ABOUT_TAB_POSITION = 0;
     public static final int FILES_TAB_POSITION = 1;
     public static final int MEMBERS_TAB_POSITION = 2;
     public static final String INITIAL_TAB_POSITION_KEY = "initial_position";
@@ -45,7 +44,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
 
     @Override
     protected Fragment getInitialFragment() {
-        return new ProjectNoticesFragment();
+        return new ProjectAboutFragment();
     }
 
     @Override
@@ -92,8 +91,8 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     }
 
     private void navigateToTabByPosition (int tabPosition) {
-        if (tabPosition == NOTICES_TAB_POSITION) {
-            navigateTo(new ProjectNoticesFragment(), false);
+        if (tabPosition == ABOUT_TAB_POSITION) {
+            navigateTo(new ProjectAboutFragment(), false);
         } else if (tabPosition == FILES_TAB_POSITION) {
             navigateTo(new ProjectFilesFragment(), false);
         } else if (tabPosition == MEMBERS_TAB_POSITION) {

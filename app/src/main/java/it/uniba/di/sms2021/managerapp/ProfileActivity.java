@@ -319,16 +319,12 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button_edit_profile:
-                editProfile();
-                break;
-            case R.id.button_save_profile:
-                saveProfile();
-                break;
-            case R.id.button_uplod_photo:
-                selectImage();
-                break;
+        if(v.getId()== R.id.button_edit_profile) {
+            editProfile();
+        }else if(v.getId()== R.id.button_save_profile){
+            saveProfile();
+        }else if(v.getId()== R.id.button_uplod_photo){
+            selectImage();
         }
     }
 

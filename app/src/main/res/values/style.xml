@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="LargeText" parent="TextAppearance.AppCompat.Large">
-
+    </style>
+    <style name="LargeText_clickable" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textColor">@color/grey</item>
     </style>
     <style name="ToolbarTitle" parent="TextAppearance.MaterialComponents.Headline6">
         <item name="android:textSize">16sp</item>
@@ -13,5 +15,9 @@
         <item name="colorPrimary">@color/purple_700</item>
         <item name="colorPrimaryDark">@color/purple_500</item>
         <item name="colorAccent">@color/purple_200</item>
+    </style>
+    <style name="RatingBar" parent="android:style/Widget.Material.RatingBar.Small">
+        <item name="colorControlNormal">@color/lightGrey</item>
+        <item name="colorControlActivated">@color/yellow_rating</item>
     </style>
 </resources>
