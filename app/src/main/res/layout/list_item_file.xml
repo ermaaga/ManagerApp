@@ -57,6 +57,18 @@
                 app:layout_constraintTop_toBottomOf="@+id/file_name_text_view"
                 tools:text="16MB" />
 
+            <TextView
+                android:id="@+id/file_release_text_view"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@+id/file_size_text_view"
+                app:layout_constraintTop_toBottomOf="@+id/file_name_text_view"
+                tools:text="Rilascio N.25" />
+
             <ImageView
                 android:id="@+id/file_action_overflow_image_view"
                 android:layout_width="wrap_content"

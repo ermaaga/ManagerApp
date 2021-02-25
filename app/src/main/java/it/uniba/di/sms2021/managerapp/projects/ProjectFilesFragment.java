@@ -115,9 +115,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_project_files, container, false);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_project_files, container, false);
     }
 
     @Override
@@ -154,6 +152,18 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                 }.downloadTempFile(file, project.getId());
             }
 
+            @Override
+            public void onSetRelease(ManagerFile file, boolean addRelease) {
+                if (addRelease) {
+                    project.addReleaseName(file.getName());
+                    Toast.makeText(getContext(), R.string.text_message_release_add, Toast.LENGTH_LONG).show();
+                } else {
+                    project.removeReleaseName(file.getName());
+                    Toast.makeText(getContext(), R.string.text_message_release_removed, Toast.LENGTH_LONG).show();
+                }
+                getFiles();
+            }
+
             /**
              * Codice preso e modificato da:
              * https://firebase.google.com/docs/storage/android/delete-files
@@ -168,6 +178,10 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                         // File deleted successfully
                         //TODO gestire undo nello snackbar
                         files.remove(file);
+                        if (project.getReleaseNames().contains(file.getName())) {
+                            project.removeReleaseName(file.getName());
+                        }
+
                         adapter.submitList(files);
                         adapter.notifyDataSetChanged();
                         Snackbar.make(requireView(), R.string.text_message_file_deleted_successfully,

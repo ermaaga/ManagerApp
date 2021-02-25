@@ -93,8 +93,9 @@ public class FileUtil {
     }
 
     /**
-     * Ritorna l'uri del file se presente nella memoria interna dell'app.
-     * Per far sì che accetti altre locazioni, modificare il provider nel manifest.
+     * Ritorna l'uri del file se presente nella memoria interna dell'app o esterna.
+     * Per far sì che accetti altre locazioni, modificare il file provider_paths.xml passato al
+     * provider nel manifest.
      */
     public static Uri getUriFromFile (Context context, File localFile) {
         return FileProvider.getUriForFile(context,

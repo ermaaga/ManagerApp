@@ -5,30 +5,31 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.MenuRes;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 
+import java.util.Collections;
+import java.util.List;
+
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
+import it.uniba.di.sms2021.managerapp.projects.FileComparator;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 
 public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView.ViewHolder> {
-    private Context context;
-    private OnActionListener listener;
-    private Project project;
+    private final Context context;
+    private final OnActionListener listener;
+    private final Project project;
 
     public FilesRecyclerAdapter(Context context, Project project, OnActionListener listener) {
         super(new DiffCallback());
@@ -62,15 +63,37 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
         TextView nameTextView = itemView.findViewById(R.id.file_name_text_view);
         TextView sizeTextView = itemView.findViewById(R.id.file_size_text_view);
         ImageView actionsImageView = itemView.findViewById(R.id.file_action_overflow_image_view);
+        TextView releaseTextView = itemView.findViewById(R.id.file_release_text_view);
 
         nameTextView.setText(file.getName());
         sizeTextView.setText(FileUtil.getFormattedSize(context, file.getSize()));
         FileUtil.setTypeImageView(context, typeImageView, file.getType());
         actionsImageView.setOnClickListener(view -> showMenu(view, file));
+
+        int release = project.getReleaseNumber(file.getName());
+        if (release != 0) {
+            releaseTextView.setText(context.getString(R.string.text_label_file_release_number,
+                    release));
+        } else {
+            releaseTextView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void submitList(@Nullable List<ManagerFile> list) {
+        Collections.sort(list, new FileComparator(project.getCurrentReleaseName()));
+        super.submitList(list);
     }
 
     public interface OnActionListener {
         void onClick (ManagerFile file);
+
+        /**
+         * Setta il file come release del progetto
+         * @param file il file da settare
+         * @param addRelease true se bisogna settare il file come release, false se bisogna rimuoverlo
+         */
+        void onSetRelease(ManagerFile file, boolean addRelease);
         void onDelete (ManagerFile file);
         void onShare (ManagerFile file);
         void onDownload (ManagerFile file);
@@ -89,10 +112,18 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
             popup.getMenu().findItem(R.id.file_delete_action).setVisible(false);
         }
 
+        boolean isRelease = project.getReleaseNumber(file.getName()) != 0;
+        if (isRelease) {
+            popup.getMenu().findItem(R.id.file_set_release_action)
+                    .setTitle(R.string.text_action_remove_release_action);
+        }
+
         popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if (item.getItemId() == R.id.file_delete_action) {
+                if (item.getItemId() == R.id.file_set_release_action) {
+                    listener.onSetRelease(file, !isRelease);
+                } else if (item.getItemId() == R.id.file_delete_action) {
                     listener.onDelete(file);
                 } else if (item.getItemId() == R.id.file_share_action) {
                     listener.onShare(file);

@@ -203,6 +203,59 @@ public class Project implements Parcelable {
         group.setVote(v);
     }
 
+    public List<String> getReleaseNames() {
+        return group.getReleaseNames();
+    }
+
+    public void setReleaseNames(List<String> releaseNames) {
+        group.setReleaseNames(releaseNames);
+    }
+
+    /**
+     * Aggiunge un file marcato come rilascio ed aggiorna l'informazione sul db
+     * @param releaseName nome del file
+     */
+    public void addReleaseName (String releaseName) {
+        group.getReleaseNames().add(releaseName);
+        updateReleaseNames(group.getReleaseNames());
+    }
+
+    /**
+     * Rimuove un file marcato come rilascio ed aggiorna l'informazione sul db
+     * @param releaseName nome del file
+     */
+    public void removeReleaseName (String releaseName) {
+        group.getReleaseNames().remove(releaseName);
+        updateReleaseNames(group.getReleaseNames());
+    }
+
+    /**
+     * Ritorna il numero di rilascio del file
+     * @param releaseName il nome del file
+     * @return il numero di rilascio o 0 se non esiste
+     */
+    public int getReleaseNumber (String releaseName) {
+        return group.getReleaseNames().indexOf(releaseName) + 1;
+    }
+
+    /**
+     * Ritorna il nome dell'ultimo file marcato come release o una stringa vuota se non ci sono file
+     * marcati come release.
+     */
+    public String getCurrentReleaseName () {
+        if (!group.getReleaseNames().isEmpty()) {
+            return group.getReleaseNames().get(group.getReleaseNames().size() - 1);
+        } else {
+            return "";
+        }
+
+    }
+
+    private void updateReleaseNames (List<String> releaseNames) {
+        FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS).child(group.getId())
+                .child(Group.Keys.RELEASE_NAMES).setValue(releaseNames);
+    }
+
     @Exclude
     public boolean isGroupFull() {
         return group.isGroupFull();
@@ -271,7 +324,7 @@ public class Project implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable((Parcelable) group, 0);
+        dest.writeParcelable(group, 0);
         dest.writeString(studyCaseName);
         dest.writeString(examName);
         dest.writeList(professorsId);

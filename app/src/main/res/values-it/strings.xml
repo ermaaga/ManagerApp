@@ -57,6 +57,7 @@
     <string name="text_label_select_members">Seleziona membri</string>
     <string name="text_label_project_reviews">Recensioni</string>
     <string name="text_label_project_reports">Segnalazioni</string>
+    <string name="text_label_file_release_number">Rilascio N°%d</string>
 
     <string name="text_label_project_preference_visibility">Chiunque può accedere al progetto</string>
     <string name="text_label_project_preference_free_join">Chiunque può unirsi al progetto</string>
@@ -138,6 +139,8 @@
     <string name="text_message_star_rating_required">Valutazione a stelle richiesta</string>
     <string name="text_message_project_review_submitted">Recensione inviata</string>
     <string name="text_message_project_report_submitted">Segnalazione inviata</string>
+    <string name="text_message_release_add">Il file è stato aggiunto ai rilasci</string>
+    <string name="text_message_release_removed">Il file è stato rimosso dai rilasci</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -177,6 +180,8 @@
     <string name="text_action_delete_file">Elimina</string>
     <string name="text_action_share_file">Condividi</string>
     <string name="text_action_download_file">Scarica</string>
+    <string name="text_action_add_release_action">Aggiungi ai Rilasci</string>
+    <string name="text_action_remove_release_action">Rimuovi dai Rilasci</string>
     <string name="text_action_report_from_review">Click here to report a problem to the group.</string>
 
     <string name="text_send_subject">Condivisione File</string>

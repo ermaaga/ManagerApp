@@ -28,7 +28,9 @@ public class Group implements Parcelable {
     // Campo duplicato per usarlo in ExamGroupsFragment senza rompere il resto del programma
     // TODO usare project al posto di questo campo
     private String studyCaseName;
+
     private Vote vote;
+    private List<String> releaseNames;
 
     public Group(String id, String name, String studyCase, String exam, List<String> membri) {
         this();
@@ -41,6 +43,7 @@ public class Group implements Parcelable {
 
     public Group() {
         setPermissions(null);
+        releaseNames = new ArrayList<>();
     }
 
     public String getId() {
@@ -113,6 +116,14 @@ public class Group implements Parcelable {
         this.vote = vote;
     }
 
+    public List<String> getReleaseNames() {
+        return releaseNames;
+    }
+
+    public void setReleaseNames(List<String> releaseNames) {
+        this.releaseNames = releaseNames;
+    }
+
     @Exclude
     public boolean isGroupFull () {
         return permissions.getMaxMembers() != 0 && permissions.getMaxMembers() - membri.size() <= 0;
@@ -129,13 +140,13 @@ public class Group implements Parcelable {
                 Objects.equals(exam, group.exam) &&
                 Objects.equals(membri, group.membri) &&
                 Objects.equals(permissions, group.permissions) &&
-                Objects.equals(studyCaseName, group.studyCaseName) &&
-                Objects.equals(vote, group.vote);
+                Objects.equals(vote, group.vote) &&
+                Objects.equals(releaseNames, group.releaseNames);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, studyCase, exam, membri, permissions, studyCaseName, vote);
+        return Objects.hash(id, name, studyCase, exam, membri, permissions, vote, releaseNames);
     }
 
     @Override
@@ -149,6 +160,7 @@ public class Group implements Parcelable {
                 ", permissions=" + permissions +
                 ", studyCaseName='" + studyCaseName + '\'' +
                 ", vote=" + vote +
+                ", releaseNames=" + releaseNames +
                 '}';
     }
 
@@ -166,6 +178,7 @@ public class Group implements Parcelable {
         dest.writeList(membri);
         dest.writeParcelable(permissions, 0);
         dest.writeParcelable(vote,0);
+        dest.writeList(releaseNames);
     }
 
     public static final Parcelable.Creator<Group> CREATOR
@@ -185,6 +198,10 @@ public class Group implements Parcelable {
 
             group.setVote(in.readParcelable(Vote.class.getClassLoader()));
 
+            List<String> releases = new ArrayList<>();
+            in.readList(releases, String.class.getClassLoader());
+            group.setReleaseNames(releases);
+
             return group;
         }
 
@@ -199,5 +216,6 @@ public class Group implements Parcelable {
         String NAME = "name";
         String STUDYCASE = "studyCase";
         String MEMBERS = "membri";
+        String RELEASE_NAMES = "releaseNames";
     }
 }
