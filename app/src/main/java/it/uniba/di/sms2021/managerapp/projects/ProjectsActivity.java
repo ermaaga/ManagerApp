@@ -80,8 +80,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
                         new Project.Initialiser() {
                             @Override
                             public void onProjectInitialised(Project project) {
-                                Log.d(TAG, currentUserId + " " + group.getName() + " " +
-                                        group.getMembri());
                                 projects.add(project);
                                 adapter.submitList(projects);
                                 adapter.notifyDataSetChanged();

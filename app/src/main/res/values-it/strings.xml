@@ -198,6 +198,11 @@
     <string name="text_notification_message_group_join_notice_requester">Sei stato accettato nel gruppo %s</string>
     <string name="text_notification_action_dismiss">Capito</string>
 
+    <string name="text_filter_file_release">Rilasci</string>
+    <string name="text_filter_file_image">Immagini</string>
+    <string name="text_filter_file_video">Video</string>
+    <string name="text_filter_file_audio">Audio</string>
+
     <plurals name="numberOfDepartments">
         <item quantity="one">Dipartimento</item>
         <item quantity="other">Dipartimenti</item>

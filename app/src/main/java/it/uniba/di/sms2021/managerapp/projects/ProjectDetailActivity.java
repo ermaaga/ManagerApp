@@ -6,14 +6,18 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.HorizontalScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.chip.Chip;
 import com.google.android.material.tabs.TabLayout;
 
 import it.uniba.di.sms2021.managerapp.R;
@@ -40,6 +44,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
 
     // Elementi della seach view presente nell'action bar
     private SearchView searchView;
+    private HorizontalScrollView searchFilters;
     private SearchView.OnQueryTextListener queryTextListener;
 
     @Override
@@ -123,6 +128,24 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
             searchView.setQueryHint(getString(R.string.text_hint_search_file));
             searchView.setInputType(InputType.TYPE_CLASS_TEXT);
 
+            // Fa apparire i filtri per la ricerca
+            searchFilters = findViewById(R.id.searchFilterScrollView);
+            searchView.setOnSearchClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    searchFilters.setVisibility(View.VISIBLE);
+                }
+            });
+
+            // Fa scomparire i filtri per la ricerca
+            searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    searchFilters.setVisibility(View.GONE);
+                    return false;
+                }
+            });
+
             //Quando un utente digita qualcosa nella barra, il fragment decide che azioni prendere.
             queryTextListener = new SearchView.OnQueryTextListener() {
                 @Override
@@ -140,6 +163,32 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
                 }
             };
             searchView.setOnQueryTextListener(queryTextListener);
+
+            // Al click di qualunque dei filtri, viene aggiunta alla query il filtro corrispondente
+            ConstraintLayout searchFilterLayout = findViewById(R.id.search_filter_layout);
+            for (int i = 0; i < searchFilterLayout.getChildCount(); i++) {
+                Chip chip = (Chip) searchFilterLayout.getChildAt(i);
+                chip.setOnClickListener(v -> {
+                    appendToSearchQuery(chip.getText().toString());
+                });
+            }
+
+            /*
+            Chip releasesChip = findViewById(R.id.file_release_chip);
+            releasesChip.setOnClickListener(v -> {
+                appendToSearchQuery(releasesChip.getText().toString());
+            });
+
+            Chip imagesChip = findViewById(R.id.file_images_chip);
+            imagesChip.setOnClickListener(v -> {
+                appendToSearchQuery(imagesChip.getText().toString());
+            });
+
+            Chip videoChip = findViewById(R.id.file_video_chip);
+            imagesChip.setOnClickListener(v -> {
+                appendToSearchQuery(videoChip.getText().toString());
+            });
+            */
         }
 
         MenuItem  evaluateMenuItem = menu.findItem(R.id.action_evaluate_project);
@@ -213,6 +262,19 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         this.searchActivated = activated;
         this.onSearchListener = listener;
         invalidateOptionsMenu();
+    }
+
+    private void appendToSearchQuery (String string) {
+        String query = searchView.getQuery().toString();
+
+        // Aggiunge uno spazio alla query se già non finisce con uno
+        if (!query.matches(" $")) {
+            query += " ";
+        }
+
+        query += string;
+
+        searchView.setQuery(query, true);
     }
 
     public interface OnSearchListener {

@@ -214,6 +214,13 @@
     <string name="notification_channel_name" translatable="false">Default Channel</string>
     <string name="notification_channel_description" translatable="false">The default notification channel for the app</string>
 
+    <string name="text_filter_file_release">Releases</string>
+    <string name="text_filter_file_image">Images</string>
+    <string name="text_filter_file_video">Video</string>
+    <string name="text_filter_file_pdf" translatable="false">PDF</string>
+    <string name="text_filter_file_doc" translatable="false">.doc</string>
+    <string name="text_filter_file_audio">Audio</string>
+
     <plurals name="numberOfDepartments">
         <item quantity="one">Department</item>
         <item quantity="other">Departments</item>
