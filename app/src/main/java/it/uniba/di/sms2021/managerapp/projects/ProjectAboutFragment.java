@@ -3,6 +3,7 @@ package it.uniba.di.sms2021.managerapp.projects;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
 
     ImageButton addReviewButton;
     ImageButton addReportButton;
+    TextView textVote;
+    TextView textComment;
     TextView seeReviewButton;
     TextView seeReportButton;
 
@@ -46,6 +49,8 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        textVote = (TextView) view.findViewById(R.id.about_subtitle_value_vote);
+        textComment = (TextView) view.findViewById(R.id.about_subtitle_value_comment);
 
         addReviewButton = (ImageButton) view.findViewById(R.id.add_review_button);
         addReportButton = (ImageButton) view.findViewById(R.id.add_report_button);
@@ -57,6 +62,11 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
         seeReviewButton.setOnClickListener(this);
         seeReportButton.setOnClickListener(this);
 
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
         project = ((ProjectDetailActivity)getActivity()).getSelectedProject();
 
         if(!project.getGroup().getMembri().contains(LoginHelper.getCurrentUser().getAccountId())){
@@ -64,7 +74,11 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
             addReportButton.setVisibility(View.VISIBLE);
         }
 
-
+        if(project.getEvaluation()!=null){
+            textVote.setText(""+project.getEvaluation().getVote());
+            if(project.getEvaluation().getComment()!=null)
+                textComment.setText(project.getEvaluation().getComment());
+        }
     }
 
     @Override

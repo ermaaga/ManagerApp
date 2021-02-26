@@ -2,7 +2,6 @@ package it.uniba.di.sms2021.managerapp.firebase;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -15,12 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import it.uniba.di.sms2021.managerapp.enitities.Evaluation;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.ProjectPermissions;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
-import it.uniba.di.sms2021.managerapp.enitities.User;
-import it.uniba.di.sms2021.managerapp.enitities.Vote;
 
 /**
  * Classe di utility che popolerà tutte le informazioni utili per un progetto a partire da query
@@ -195,12 +193,12 @@ public class Project implements Parcelable {
         group.setPermissions(permissions);
     }
 
-    public Vote getVote(){
-        return group.getVote();
+    public Evaluation getEvaluation(){
+        return group.getEvaluation();
     }
 
-    public void  setVote(Vote v){
-        group.setVote(v);
+    public void setEvaluation(Evaluation v){
+        group.setEvaluation(v);
     }
 
     public List<String> getReleaseNames() {

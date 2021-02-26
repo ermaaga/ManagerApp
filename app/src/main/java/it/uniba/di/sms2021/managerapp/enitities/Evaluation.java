@@ -4,19 +4,17 @@ package it.uniba.di.sms2021.managerapp.enitities;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-public class Vote implements Parcelable {
+public class Evaluation implements Parcelable {
     private float vote;
     private String comment;
 
-    public Vote() {
+    public Evaluation() {
 
     }
 
-    public Vote(float vote, String comment) {
+    public Evaluation(float vote, String comment) {
         this.vote = vote;
         this.comment = comment;
     }
@@ -41,9 +39,9 @@ public class Vote implements Parcelable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Vote vote1 = (Vote) o;
-        return Float.compare(vote1.vote, vote) == 0 &&
-                Objects.equals(comment, vote1.comment);
+        Evaluation evaluation1 = (Evaluation) o;
+        return Float.compare(evaluation1.vote, vote) == 0 &&
+                Objects.equals(comment, evaluation1.comment);
     }
 
     @Override
@@ -63,18 +61,18 @@ public class Vote implements Parcelable {
         dest.writeString(comment);
     }
 
-    public static final Parcelable.Creator<Vote> CREATOR
-            = new Parcelable.Creator<Vote>() {
-        public Vote createFromParcel(Parcel in) {
-            Vote vote = new Vote();
-            vote.setVote(in.readFloat());
-            vote.setComment(in.readString());
+    public static final Parcelable.Creator<Evaluation> CREATOR
+            = new Parcelable.Creator<Evaluation>() {
+        public Evaluation createFromParcel(Parcel in) {
+            Evaluation evaluation = new Evaluation();
+            evaluation.setVote(in.readFloat());
+            evaluation.setComment(in.readString());
 
-            return vote;
+            return evaluation;
         }
 
-        public Vote[] newArray(int size) {
-            return new Vote[size];
+        public Evaluation[] newArray(int size) {
+            return new Evaluation[size];
         }
     };
 }

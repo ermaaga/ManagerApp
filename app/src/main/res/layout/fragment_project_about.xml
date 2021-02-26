@@ -50,14 +50,60 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
-                        android:id="@+id/about_subtitle_text_view"
+                        android:id="@+id/about_subtitle_label_evaluation"
                         style="@style/TextAppearance.AppCompat.Medium"
-                        android:layout_width="359dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:text="Scrivere qualcosa su progetto o gruppo. (Rendere risorsa)"
+                        android:text="@string/text_label_evaluation"
                         app:layout_constraintStart_toStartOf="@+id/about_title_text_view"
                         app:layout_constraintTop_toBottomOf="@id/about_title_text_view" />
+
+                    <TextView
+                        android:id="@+id/about_subtitle_label_vote"
+                        style="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/text_hint_vote_project"
+                        app:layout_constraintStart_toStartOf="@+id/about_subtitle_label_evaluation"
+                        app:layout_constraintTop_toBottomOf="@id/about_subtitle_label_evaluation" />
+
+                    <TextView
+                        android:id="@+id/about_subtitle_value_vote"
+                        style="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/about_subtitle_label_vote"
+                        app:layout_constraintTop_toTopOf="@+id/about_subtitle_label_vote"
+                        tools:text="value vote" />
+
+                    <TextView
+                        android:id="@+id/about_subtitle_label_comment"
+                        style="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/text_hint_comment_project"
+                        app:layout_constraintStart_toStartOf="@+id/about_subtitle_label_vote"
+                        app:layout_constraintTop_toBottomOf="@id/about_subtitle_value_vote" />
+
+                    <TextView
+                        android:id="@+id/about_subtitle_value_comment"
+                        style="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:inputType="textMultiLine"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/about_subtitle_label_comment"
+                        app:layout_constraintTop_toTopOf="@+id/about_subtitle_label_comment"
+                        tools:text="value comment" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>

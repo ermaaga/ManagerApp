@@ -29,7 +29,7 @@ public class Group implements Parcelable {
     // TODO usare project al posto di questo campo
     private String studyCaseName;
 
-    private Vote vote;
+    private Evaluation evaluation;
     private List<String> releaseNames;
 
     public Group(String id, String name, String studyCase, String exam, List<String> membri) {
@@ -108,12 +108,12 @@ public class Group implements Parcelable {
         }
     }
 
-    public Vote getVote() {
-        return vote;
+    public Evaluation getEvaluation() {
+        return evaluation;
     }
 
-    public void setVote(Vote vote) {
-        this.vote = vote;
+    public void setEvaluation(Evaluation evaluation) {
+        this.evaluation = evaluation;
     }
 
     public List<String> getReleaseNames() {
@@ -140,13 +140,13 @@ public class Group implements Parcelable {
                 Objects.equals(exam, group.exam) &&
                 Objects.equals(membri, group.membri) &&
                 Objects.equals(permissions, group.permissions) &&
-                Objects.equals(vote, group.vote) &&
-                Objects.equals(releaseNames, group.releaseNames);
+                Objects.equals(releaseNames, group.releaseNames)&&
+                Objects.equals(evaluation, group.evaluation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, studyCase, exam, membri, permissions, vote, releaseNames);
+        return Objects.hash(id, name, studyCase, exam, membri, permissions, evaluation, releaseNames);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class Group implements Parcelable {
                 ", membri=" + membri +
                 ", permissions=" + permissions +
                 ", studyCaseName='" + studyCaseName + '\'' +
-                ", vote=" + vote +
+                ", evaluation=" + evaluation +
                 ", releaseNames=" + releaseNames +
                 '}';
     }
@@ -177,7 +177,7 @@ public class Group implements Parcelable {
         dest.writeString(exam);
         dest.writeList(membri);
         dest.writeParcelable(permissions, 0);
-        dest.writeParcelable(vote,0);
+        dest.writeParcelable(evaluation,0);
         dest.writeList(releaseNames);
     }
 
@@ -196,7 +196,7 @@ public class Group implements Parcelable {
 
             group.setPermissions(in.readParcelable(ProjectPermissions.class.getClassLoader()));
 
-            group.setVote(in.readParcelable(Vote.class.getClassLoader()));
+            group.setEvaluation(in.readParcelable(Evaluation.class.getClassLoader()));
 
             List<String> releases = new ArrayList<>();
             in.readList(releases, String.class.getClassLoader());

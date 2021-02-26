@@ -67,6 +67,7 @@
     <string name="text_label_project_reviews">Reviews</string>
     <string name="text_label_project_reports">Reports</string>
     <string name="text_label_file_release_number">Release N.%d</string>
+    <string name="text_label_evaluation">Evaluation:</string>
 
     <string name="text_label_project_preference_visibility">Anyone can view the project</string>
     <string name="text_label_project_preference_free_join">Anyone can join the project</string>
@@ -152,6 +153,7 @@
     <string name="text_message_project_report_submitted">Report submitted</string>
     <string name="text_message_release_add">The file has been added to the releases</string>
     <string name="text_message_release_removed">The file has been removed from releases</string>
+    <string name="text_message_evaluation_failed">The project evaluation failed, please try again later</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -213,6 +215,8 @@
 
     <string name="notification_channel_name" translatable="false">Default Channel</string>
     <string name="notification_channel_description" translatable="false">The default notification channel for the app</string>
+    <string name="text_notification_title_new_evaluation">Evaluation of a project</string>
+    <string name="text_notification_message_new_evaluation">%s has evaluated the project of your group: %s </string>
 
     <string name="text_filter_file_release">Releases</string>
     <string name="text_filter_file_image">Images</string>

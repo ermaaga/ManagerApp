@@ -58,6 +58,7 @@
     <string name="text_label_project_reviews">Recensioni</string>
     <string name="text_label_project_reports">Segnalazioni</string>
     <string name="text_label_file_release_number">Rilascio N°%d</string>
+    <string name="text_label_evaluation">Valutazione:</string>
 
     <string name="text_label_project_preference_visibility">Chiunque può accedere al progetto</string>
     <string name="text_label_project_preference_free_join">Chiunque può unirsi al progetto</string>
@@ -141,6 +142,7 @@
     <string name="text_message_project_report_submitted">Segnalazione inviata</string>
     <string name="text_message_release_add">Il file è stato aggiunto ai rilasci</string>
     <string name="text_message_release_removed">Il file è stato rimosso dai rilasci</string>
+    <string name="text_message_evaluation_failed">La valutazione del progetto è fallita, riprova in seguito</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -197,6 +199,9 @@
     <string name="text_notification_message_group_join_notice">L\'utente %s si è unito al tuo gruppo %s</string>
     <string name="text_notification_message_group_join_notice_requester">Sei stato accettato nel gruppo %s</string>
     <string name="text_notification_action_dismiss">Capito</string>
+    <string name="text_notification_title_new_evaluation">Valutazione di un progetto</string>
+    <string name="text_notification_message_new_evaluation">%s ha valutato il progetto del tuo gruppo: %s </string>
+
 
     <string name="text_filter_file_release">Rilasci</string>
     <string name="text_filter_file_image">Immagini</string>

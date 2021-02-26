@@ -43,7 +43,6 @@ public class NotificationService extends Service {
     private Looper serviceLooper;
     private ServiceHandler serviceHandler;
 
-    private DatabaseReference groupRequestReference;
     private Set<DatabaseReference> workingReferences;
     private int notificationsFound;
 
@@ -106,7 +105,7 @@ public class NotificationService extends Service {
         workingReferences = new HashSet<>();
         notificationsFound = 0;
 
-        groupRequestReference =
+        DatabaseReference  groupRequestReference =
                 FirebaseDbHelper.getGroupJoinRequestReference(LoginHelper.getCurrentUser().getAccountId());
         workingReferences.add(groupRequestReference);
 
@@ -146,6 +145,26 @@ public class NotificationService extends Service {
 
                     }
                 });
+
+        DatabaseReference newEvaluationReference = FirebaseDbHelper.getNewEvaluationReference(LoginHelper.getCurrentUser().getAccountId());
+        workingReferences.add(newEvaluationReference);
+
+        newEvaluationReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot child: snapshot.getChildren()) {
+                    notificationsFound += snapshot.getChildrenCount();
+                    workingReferences.remove(newEvaluationReference);
+                    showNotification(msg);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
     private void showNotification (Message msg) {
@@ -157,6 +176,7 @@ public class NotificationService extends Service {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
+                //TODO RENDERE IL TITOLO PLURALS
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NotificationUtil.DEFAULT_CHANNEL_ID)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(getString(R.string.text_notification_title_feed))

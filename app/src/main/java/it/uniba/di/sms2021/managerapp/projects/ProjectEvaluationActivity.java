@@ -2,13 +2,14 @@ package it.uniba.di.sms2021.managerapp.projects;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.core.app.NotificationCompat;
+import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
@@ -16,12 +17,16 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.HashMap;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.Vote;
+import it.uniba.di.sms2021.managerapp.enitities.Group;
+import it.uniba.di.sms2021.managerapp.enitities.Evaluation;
+import it.uniba.di.sms2021.managerapp.enitities.NewEvaluation;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinNotice;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.utility.AbstractFormActivity;
 
-public class ProjectVoteActivity extends AbstractFormActivity {
+public class ProjectEvaluationActivity extends AbstractFormActivity {
 
     private static final String TAG = "ProjectVoteActivity";
     Button buttonEvaluate;
@@ -29,9 +34,7 @@ public class ProjectVoteActivity extends AbstractFormActivity {
     private TextInputEditText commentEditText;
 
     private  TextInputLayout voteInputLayout;
-    private  TextInputLayout commentInputLayout;
 
-    private String idgroup;
     Project project;
     private DatabaseReference groupsReference;
 
@@ -55,7 +58,6 @@ public class ProjectVoteActivity extends AbstractFormActivity {
         commentEditText = (TextInputEditText) findViewById(R.id.comment_edit_text);
 
         voteInputLayout = (TextInputLayout) findViewById(R.id.vote_input_layout);
-        commentInputLayout = (TextInputLayout) findViewById(R.id.comment_input_layout);
 
         project = getIntent().getParcelableExtra(Project.KEY);
 
@@ -66,9 +68,9 @@ public class ProjectVoteActivity extends AbstractFormActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(project.getVote()!=null){
-            voteEditText.setText(""+project.getVote().getVote());
-            commentEditText.setText(""+project.getVote().getComment());
+        if(project.getEvaluation()!=null){
+            voteEditText.setText(""+project.getEvaluation().getVote());
+            commentEditText.setText(""+project.getEvaluation().getComment());
         }
     }
 
@@ -76,18 +78,29 @@ public class ProjectVoteActivity extends AbstractFormActivity {
         if(validate(voteEditText.getText().toString())){
             float votefloat = Float.parseFloat(voteEditText.getText().toString());
 
-            Vote vote = new Vote(votefloat, commentEditText.getText().toString());
+            Evaluation evaluation = new Evaluation(votefloat, commentEditText.getText().toString());
 
-            idgroup = project.getGroup().getId();
+            String idgroup = project.getGroup().getId();
 
             HashMap childUpdates = new HashMap();
-            childUpdates.put("/vote/", vote);
+            childUpdates.put("/evaluation/", evaluation);
 
-            groupsReference.child(idgroup).updateChildren(childUpdates);
+            groupsReference.child(idgroup).updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener() {
+                @Override
+                public void onSuccess(Object o) {
+                    Toast.makeText(getApplicationContext(), R.string.text_message_project_evaluated, Toast.LENGTH_SHORT).show();
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(getApplicationContext(), R.string.text_message_evaluation_failed,
+                            Toast.LENGTH_LONG).show();
+                }
+            });
 
-            Toast.makeText(getApplicationContext(), R.string.text_message_project_evaluated, Toast.LENGTH_SHORT).show();
+            project.setEvaluation(evaluation);
+            sendEvaluation();
 
-            project.setVote(vote);
             Intent resultIntent = new Intent();
             resultIntent.putExtra(Project.KEY, project);
             setResult(RESULT_OK, resultIntent);
@@ -105,5 +118,19 @@ public class ProjectVoteActivity extends AbstractFormActivity {
         }
 
         return valid;
+    }
+
+    private void sendEvaluation() {
+        Group group = project.getGroup();
+        String currentUserId = LoginHelper.getCurrentUser().getAccountId();
+
+        for(String user: group.getMembri()){
+            DatabaseReference pushReference = FirebaseDbHelper.getNewEvaluationReference(user).push();
+            pushReference.setValue(
+                    new NewEvaluation(pushReference.getKey(), currentUserId,
+                            group.getId()));
+
+        }
+
     }
 }

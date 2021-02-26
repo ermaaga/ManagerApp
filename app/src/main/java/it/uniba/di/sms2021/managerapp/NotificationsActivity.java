@@ -22,9 +22,11 @@ import java.util.Set;
 
 import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
 import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinNotice;
+import it.uniba.di.sms2021.managerapp.enitities.NewEvaluation;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.lists.NotificationRecyclerAdapter;
+import it.uniba.di.sms2021.managerapp.notifications.EvaluationNotification;
 import it.uniba.di.sms2021.managerapp.notifications.GroupJoinRequestNotification;
 import it.uniba.di.sms2021.managerapp.notifications.Notifiable;
 
@@ -40,6 +42,8 @@ public class NotificationsActivity extends AppCompatActivity {
     private List<GroupJoinRequestNotification> groupJoinRequests;
     private List<GroupJoinNotice> groupJoinNotices;
     private Set<DatabaseReference> workingReferences;
+
+    private List<EvaluationNotification> newEvaluations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,12 +94,13 @@ public class NotificationsActivity extends AppCompatActivity {
         DatabaseReference groupRequestsReference =
                 FirebaseDbHelper.getGroupJoinRequestReference(LoginHelper.getCurrentUser().getAccountId());
         workingReferences.add(groupRequestsReference);
+
         ValueEventListener groupRequestsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 groupJoinRequests = new ArrayList<>();
 
-                Log.d(TAG, snapshot.getChildrenCount() + "");
+                Log.d(TAG,  "groupJoinRequests: "+snapshot.getChildrenCount() );
 
                 // Se non ci sono figli aggiorna subito la ui
                 if (snapshot.getChildrenCount() == 0) {
@@ -135,10 +140,13 @@ public class NotificationsActivity extends AppCompatActivity {
 
         DatabaseReference userJoinNoticeReference = FirebaseDbHelper.getUserJoinNoticeReference(LoginHelper.getCurrentUser().getAccountId());
         workingReferences.add(userJoinNoticeReference);
+
         ValueEventListener userJoinNoticeListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 groupJoinNotices = new ArrayList<>();
+
+                Log.d(TAG,  "userJoinNotice: "+snapshot.getChildrenCount() );
 
                 for (DataSnapshot child : snapshot.getChildren()) {
                     GroupJoinNotice notice = child.getValue(GroupJoinNotice.class);
@@ -155,6 +163,53 @@ public class NotificationsActivity extends AppCompatActivity {
             }
         };
         userJoinNoticeReference.addListenerForSingleValueEvent(userJoinNoticeListener);
+
+        DatabaseReference newEvaluationReference = FirebaseDbHelper.getNewEvaluationReference(LoginHelper.getCurrentUser().getAccountId());
+        workingReferences.add(newEvaluationReference);
+
+        ValueEventListener newEvaluationListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                newEvaluations = new ArrayList<>();
+
+                Log.d(TAG,  "newEvaluation: "+snapshot.getChildrenCount() );
+
+                if (snapshot.getChildrenCount() == 0) {
+                    workingReferences.remove(newEvaluationReference);
+                    executeUpdate();
+                    return;
+                }
+
+                Set<DataSnapshot> elaboratingChildren = new HashSet<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+
+                    elaboratingChildren.add(child);
+                    NewEvaluation evaluation = child.getValue(NewEvaluation.class);
+                        new EvaluationNotification.Initialiser() {
+                            @Override
+                            public void onNotificationInitialised(EvaluationNotification notification) {
+                                newEvaluations.add(notification);
+                                elaboratingChildren.remove(child);
+
+                                if (elaboratingChildren.isEmpty()) {
+                                    workingReferences.remove(newEvaluationReference);
+                                    executeUpdate();
+                                }
+                                Log.d(TAG,"size listener" + newEvaluations.size());
+                            }
+                        }.initialiseNotification(evaluation);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, error.getMessage());
+            }
+        };
+        newEvaluationReference.addListenerForSingleValueEvent(newEvaluationListener);
+
+
     }
 
     /**
@@ -167,6 +222,7 @@ public class NotificationsActivity extends AppCompatActivity {
 
             notifications.addAll(groupJoinRequests);
             notifications.addAll(groupJoinNotices);
+            notifications.addAll(newEvaluations);
 
             adapter.submitList(notifications);
             adapter.notifyDataSetChanged();

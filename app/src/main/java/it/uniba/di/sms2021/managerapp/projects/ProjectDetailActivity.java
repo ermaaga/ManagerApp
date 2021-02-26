@@ -76,7 +76,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         actionBar.setSubtitle(project.getExamName());
 
         Log.i(TAG, project.toString());
-        Log.i(TAG, "voto: "+project.getVote());
+        Log.i(TAG, "valutazione: "+project.getEvaluation());
     }
 
     @Override
@@ -192,11 +192,11 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         }
 
         MenuItem  evaluateMenuItem = menu.findItem(R.id.action_evaluate_project);
-        if(project.isProfessor() && project.getVote()==null){
+        if(project.isProfessor() && project.getEvaluation()==null){
             evaluateMenuItem.setVisible(true);
 
         }else{
-            if(project.isProfessor() && project.getVote()!=null){
+            if(project.isProfessor() && project.getEvaluation()!=null){
                 evaluateMenuItem.setTitle(R.string.text_label_update_evaluate);
                 evaluateMenuItem.setVisible(true);
             }
@@ -219,7 +219,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
             intent.putExtra(Project.KEY, project);
             startActivity(intent);
         }else if (menuId == R.id.action_evaluate_project) {
-            Intent intent = new Intent(this, ProjectVoteActivity.class);
+            Intent intent = new Intent(this, ProjectEvaluationActivity.class);
             intent.putExtra(Project.KEY, project);
             startActivityForResult(intent, REQUEST_EVALUATION);
         }
