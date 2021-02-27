@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -118,7 +119,6 @@ public class NotificationService extends Service {
                         notificationsFound += 1;
                     }
                 }
-
                 workingReferences.remove(groupRequestReference);
                 showNotification(msg);
             }
@@ -152,12 +152,9 @@ public class NotificationService extends Service {
         newEvaluationReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot child: snapshot.getChildren()) {
                     notificationsFound += snapshot.getChildrenCount();
                     workingReferences.remove(newEvaluationReference);
                     showNotification(msg);
-                }
-
             }
 
             @Override
@@ -176,7 +173,6 @@ public class NotificationService extends Service {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-                //TODO RENDERE IL TITOLO PLURALS
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NotificationUtil.DEFAULT_CHANNEL_ID)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(getString(R.string.text_notification_title_feed))

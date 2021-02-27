@@ -106,6 +106,7 @@
     <string name="login_failed">Login failed! Please try again later</string>
     <string name="creation_exam_failed">Error during exam creation</string>
     <string name="label_error_fields">The Exam name and yeare are necessary</string>
+    <string name="error_characters_evaluation_comment">The comment cannot be greater than 125 characters</string>
 
     <string name="description_case_study_info">Open Info</string>
     <string name="description_add_study_case">Add Study Case</string>
@@ -224,6 +225,7 @@
     <string name="text_filter_file_pdf" translatable="false">PDF</string>
     <string name="text_filter_file_doc" translatable="false">.doc</string>
     <string name="text_filter_file_audio">Audio</string>
+
 
     <plurals name="numberOfDepartments">
         <item quantity="one">Department</item>

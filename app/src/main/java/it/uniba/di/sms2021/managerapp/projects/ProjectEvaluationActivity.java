@@ -20,7 +20,6 @@ import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.Evaluation;
 import it.uniba.di.sms2021.managerapp.enitities.NewEvaluation;
-import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinNotice;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
@@ -34,13 +33,14 @@ public class ProjectEvaluationActivity extends AbstractFormActivity {
     private TextInputEditText commentEditText;
 
     private  TextInputLayout voteInputLayout;
+    private  TextInputLayout commentInputLayout;
 
     Project project;
     private DatabaseReference groupsReference;
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_project_vote;
+        return R.layout.activity_project_evaluation;
     }
 
     @Override
@@ -58,6 +58,7 @@ public class ProjectEvaluationActivity extends AbstractFormActivity {
         commentEditText = (TextInputEditText) findViewById(R.id.comment_edit_text);
 
         voteInputLayout = (TextInputLayout) findViewById(R.id.vote_input_layout);
+        commentInputLayout = (TextInputLayout) findViewById(R.id.comment_input_layout);
 
         project = getIntent().getParcelableExtra(Project.KEY);
 
@@ -75,7 +76,7 @@ public class ProjectEvaluationActivity extends AbstractFormActivity {
     }
 
     public void evaluateProject(View v){
-        if(validate(voteEditText.getText().toString())){
+        if(validate(voteEditText.getText().toString(), commentEditText.getText().toString())){
             float votefloat = Float.parseFloat(voteEditText.getText().toString());
 
             Evaluation evaluation = new Evaluation(votefloat, commentEditText.getText().toString());
@@ -109,12 +110,17 @@ public class ProjectEvaluationActivity extends AbstractFormActivity {
         }
     }
 
-    private boolean validate(String textRate){
+    private boolean validate(String textRate, String textComment){
         boolean valid = true;
 
         if(textRate.length()==0) {
             valid=false;
             voteInputLayout.setError(getString(R.string.required_field));
+        }
+
+        if(textComment.length()>125) {
+            valid=false;
+           commentInputLayout.setError(getString(R.string.error_characters_evaluation_comment));
         }
 
         return valid;

@@ -97,6 +97,7 @@
     <string name="registration_failed">Registrazione fallita</string>
     <string name="login_failed">Login fallito! Per favore riprova più tardi</string>
     <string name="label_error_fields">Per poter proseguire è necessario inserire il nome e anno</string>
+    <string name="error_characters_evaluation_comment">Il commento non può contenere più di 125 caratteri</string>
 
     <string name="description_case_study_info">Apri Info</string>
     <string name="description_add_study_case">Aggiungi un Caso di Studio</string>
@@ -207,6 +208,7 @@
     <string name="text_filter_file_image">Immagini</string>
     <string name="text_filter_file_video">Video</string>
     <string name="text_filter_file_audio">Audio</string>
+
 
     <plurals name="numberOfDepartments">
         <item quantity="one">Dipartimento</item>

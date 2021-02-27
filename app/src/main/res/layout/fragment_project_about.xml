@@ -95,10 +95,11 @@
                     <TextView
                         android:id="@+id/about_subtitle_value_comment"
                         style="@style/TextAppearance.AppCompat.Medium"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:inputType="textMultiLine"
+                        android:layout_marginEnd="16dp"
+                        android:maxLines="5"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/about_subtitle_label_comment"
