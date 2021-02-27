@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -51,6 +52,9 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
 
     TextInputEditText name;
     TextInputEditText desc;
+
+    TextInputLayout nameInputlayout;
+    TextInputLayout descInputlayout;
 
     MaterialCardView cardView;
     ImageView typeImageView;
@@ -87,6 +91,9 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
         name = (TextInputEditText) findViewById(R.id.name_edit_text);
         desc = (TextInputEditText) findViewById(R.id.desc_edit_text);
 
+        nameInputlayout = (TextInputLayout) findViewById(R.id.name_input_layout);
+        descInputlayout = (TextInputLayout) findViewById(R.id.desc_input_layout);
+
         cardView = (MaterialCardView) findViewById(R.id.file_card);
         typeImageView = (ImageView) findViewById(R.id.file_type_image_view);
         nameTextView = (TextView) findViewById(R.id.file_name_text_view);
@@ -108,12 +115,12 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
 
         if(textname.length()==0) {
             valid=false;
-            name.setError(getString(R.string.required_field));
+            nameInputlayout.setError(getString(R.string.required_field));
 
         }
         if(textdesc.length()==0) {
             valid=false;
-            desc.setError(getString(R.string.required_field));
+            descInputlayout.setError(getString(R.string.required_field));
         }
 
         return valid;
@@ -121,16 +128,13 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button_select_file:
-                selectDocument();
-                break;
-            case R.id.button_create_study_case:
-               createNewStudyCase();
-                break;
-            case R.id.button_delete:
-                deleteFile();
-                break;
+        int id = v.getId();
+        if (id == R.id.button_select_file) {
+            selectDocument();
+        } else if (id == R.id.button_create_study_case) {
+            createNewStudyCase();
+        } else if (id == R.id.button_delete) {
+            deleteFile();
         }
     }
 

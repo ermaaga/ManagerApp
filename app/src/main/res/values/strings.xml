@@ -20,7 +20,7 @@
     <string name="activity_label_project_new_review">Submit a review</string>
     <string name="activity_label_project_new_report">Submit a report</string>
 
-    <string name="label_Dialog_Header">Infromation</string>
+    <string name="label_Dialog_Header">Information</string>
     <string name="label_Dialog_confimation_message">Do you want to be part of this study group?</string>
     <string name="label_Dialog_confimation">Yes</string>
     <string name="label_Dialog_declination">No</string>

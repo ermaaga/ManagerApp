@@ -62,6 +62,9 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         int initialTab = getIntent().getIntExtra(INITIAL_TAB_POSITION_KEY, -1);
 
         if (initialTab != -1) {
+            TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+            TabLayout.Tab tab = tabLayout.getTabAt(initialTab);
+            tabLayout.selectTab(tab);
             navigateToTabByPosition(initialTab);
         }
     }
