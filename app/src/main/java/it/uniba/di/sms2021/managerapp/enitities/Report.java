@@ -9,6 +9,9 @@ public class Report {
     String groupId;
     private String comment;
 
+    public Report() {
+    }
+
     public Report(String reviewId, String userId, String date, String groupId, String comment) {
         this.reviewId = reviewId;
         this.userId = userId;

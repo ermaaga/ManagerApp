@@ -2,6 +2,9 @@
 <resources>
     <style name="LargeText" parent="TextAppearance.AppCompat.Large">
     </style>
+    <style name="MaxiText" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textSize">50sp</item>
+    </style>
     <style name="LargeText_clickable" parent="TextAppearance.AppCompat.Large">
         <item name="android:textColor">@color/grey</item>
     </style>

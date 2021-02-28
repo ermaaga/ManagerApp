@@ -41,6 +41,12 @@
             android:name=".projects.ProjectNewReportActivity"
             android:label="@string/activity_label_project_new_report"/>
         <activity
+            android:name=".projects.ProjectReviewsActivity"
+            android:label="@string/activity_label_project_reviews"/>
+        <activity
+            android:name=".projects.ProjectReportsActivity"
+            android:label="@string/activity_label_project_reports"/>
+        <activity
             android:name=".projects.ProjectPermissionsActivity"
             android:label="@string/activity_label_project_permissions" />
         <activity

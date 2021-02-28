@@ -14,6 +14,9 @@ public class Review {
     @Nullable
     private String comment;
 
+    public Review() {
+    }
+
     public Review(String reviewId, String userId, String date, int rating, String groupId, @Nullable String comment) {
         this.reviewId = reviewId;
         this.userId = userId;

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -29,6 +30,7 @@ public class ProjectNewReviewActivity extends AbstractFormActivity implements Vi
 
     RatingBar reviewRatingBar;
     TextInputEditText reviewEditText;
+    TextInputLayout reviewInputLayout;
     Button buttonSubmitReview;
     ImageView ratingRequiredImageView;
     TextView ratingRequiredTextView;
@@ -58,6 +60,7 @@ public class ProjectNewReviewActivity extends AbstractFormActivity implements Vi
 
         reviewRatingBar = (RatingBar) findViewById(R.id.ratingBar_new_review);
         reviewEditText = (TextInputEditText) findViewById(R.id.review_edit_text);
+        reviewInputLayout = (TextInputLayout) findViewById(R.id.review_input_layout);
         buttonSubmitReview = (Button) findViewById(R.id.button_submit_review);
         ratingRequiredImageView = (ImageView) findViewById(R.id.rating_required_imageView);
         ratingRequiredTextView = (TextView) findViewById(R.id.rating_required_textView);
@@ -88,7 +91,7 @@ public class ProjectNewReviewActivity extends AbstractFormActivity implements Vi
     }
 
     private void subtimReview() {
-        if(isRatingValid((int) reviewRatingBar.getRating())){
+        if(isReviewValid((int) reviewRatingBar.getRating())){
 
             user = LoginHelper.getCurrentUser().getAccountId();
             int rating = (int) reviewRatingBar.getRating();
@@ -105,12 +108,16 @@ public class ProjectNewReviewActivity extends AbstractFormActivity implements Vi
         }
     }
 
-    private boolean isRatingValid(int rating){
+    private boolean isReviewValid(int rating){
         boolean valid = true;
         if(rating==0) {
             valid=false;
             ratingRequiredImageView.setVisibility(View.VISIBLE);
             ratingRequiredTextView.setText(R.string.text_message_star_rating_required);
+        }
+        if(reviewEditText.length()>800){
+            valid=false;
+            reviewInputLayout.setError(getString(R.string.text_error_max_review_report));
         }
         return valid;
     }

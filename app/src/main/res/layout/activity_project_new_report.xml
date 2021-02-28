@@ -41,7 +41,9 @@
         android:hint="@string/text_hint_report_project"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_submit_report">
+        app:layout_constraintTop_toBottomOf="@+id/text_submit_report"
+        app:counterEnabled="true"
+        app:counterMaxLength="800">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/report_edit_text"

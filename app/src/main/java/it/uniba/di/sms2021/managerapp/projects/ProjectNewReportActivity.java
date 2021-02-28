@@ -84,9 +84,10 @@ public class ProjectNewReportActivity extends AbstractFormActivity implements Vi
             idgroup = project.getGroup().getId();
             String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
 
-            DatabaseReference newElement=reportReference.push();
+            DatabaseReference newElement=reportReference.child("reportsList").push();
             Report report  = new Report(newElement.getKey(), user, date, idgroup, reportComment);
             newElement.setValue(report);
+            reportReference.child("latestReports").child(idgroup).setValue(newElement.getKey());
 
             Toast.makeText(getApplicationContext(), R.string.text_message_project_report_submitted, Toast.LENGTH_SHORT).show();
 
@@ -101,6 +102,10 @@ public class ProjectNewReportActivity extends AbstractFormActivity implements Vi
         if(reportEditText.length()==0) {
             valid=false;
             reportInputLayout.setError(getString(R.string.required_field));
+        }
+        if(reportEditText.length()>800){
+            valid=false;
+            reportInputLayout.setError(getString(R.string.text_error_max_review_report));
         }
         return valid;
     }
