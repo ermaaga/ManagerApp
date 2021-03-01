@@ -3,11 +3,8 @@ package it.uniba.di.sms2021.managerapp.notifications;
 import android.content.Context;
 
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Date;
-
-import it.uniba.di.sms2021.managerapp.enitities.User;
 
 /**
  * Interfaccia che indica che un oggetto può essere visualizzato come notifica nel centro notifiche
@@ -21,7 +18,6 @@ public interface Notifiable {
     /**
      * Ritorna il contenuto della notifica
      * @param context il contesto attuale
-     * @return
      */
     String getNotificationMessage(Context context);
 

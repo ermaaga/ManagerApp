@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import it.uniba.di.sms2021.managerapp.enitities.notifications.ExamJoinRequest;
 import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
 import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinNotice;
 import it.uniba.di.sms2021.managerapp.enitities.NewEvaluation;
@@ -41,6 +42,7 @@ public class NotificationsActivity extends AppCompatActivity {
 
     private List<GroupJoinRequestNotification> groupJoinRequests;
     private List<GroupJoinNotice> groupJoinNotices;
+    private List<ExamJoinRequest> examJoinRequests;
     private Set<DatabaseReference> workingReferences;
 
     private List<EvaluationNotification> newEvaluations;
@@ -88,6 +90,7 @@ public class NotificationsActivity extends AppCompatActivity {
         return super.onSupportNavigateUp();
     }
 
+    //TODO ristrutturare db e fare un solo valueEventListener
     private void updateNotifications() {
         workingReferences = new HashSet<>();
 
@@ -209,7 +212,31 @@ public class NotificationsActivity extends AppCompatActivity {
         };
         newEvaluationReference.addListenerForSingleValueEvent(newEvaluationListener);
 
+        DatabaseReference examJoinRequestsReference = FirebaseDbHelper.getExamJoinRequestReference(LoginHelper.getCurrentUser().getAccountId());
+        workingReferences.add(examJoinRequestsReference);
 
+        ValueEventListener examJoinRequestListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                examJoinRequests = new ArrayList<>();
+
+                Log.d(TAG,  "examJoinRequests: "+snapshot.getChildrenCount() );
+
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    ExamJoinRequest request = child.getValue(ExamJoinRequest.class);
+                    examJoinRequests.add(request);
+                }
+
+                workingReferences.remove(examJoinRequestsReference);
+                executeUpdate();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        examJoinRequestsReference.addListenerForSingleValueEvent(examJoinRequestListener);
     }
 
     /**
@@ -223,6 +250,7 @@ public class NotificationsActivity extends AppCompatActivity {
             notifications.addAll(groupJoinRequests);
             notifications.addAll(groupJoinNotices);
             notifications.addAll(newEvaluations);
+            notifications.addAll(examJoinRequests);
 
             adapter.submitList(notifications);
             adapter.notifyDataSetChanged();

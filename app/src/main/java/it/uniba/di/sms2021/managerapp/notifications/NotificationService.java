@@ -175,7 +175,8 @@ public class NotificationService extends Service {
 
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NotificationUtil.DEFAULT_CHANNEL_ID)
                         .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle(getString(R.string.text_notification_title_feed))
+                        .setContentTitle(getResources().getQuantityString(R.plurals.text_notification_title_feed,
+                                notificationsFound))
                         .setContentText(getResources().getQuantityString(R.plurals.numberOfNotifications,
                                 notificationsFound, notificationsFound))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
