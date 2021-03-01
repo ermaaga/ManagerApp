@@ -225,6 +225,8 @@
     <string name="notification_channel_description" translatable="false">The default notification channel for the app</string>
     <string name="text_notification_title_new_evaluation">Evaluation of a project</string>
     <string name="text_notification_message_new_evaluation">%s has evaluated the project of your group: %s </string>
+    <string name="text_notification_title_update_evaluation">Update evaluation of a project</string>
+    <string name="text_notification_message_update_evaluation">%s has updated the evaluation of the project of your group: %s</string>
 
     <string name="text_filter_file_release">Releases</string>
     <string name="text_filter_file_image">Images</string>
@@ -232,6 +234,7 @@
     <string name="text_filter_file_pdf" translatable="false">PDF</string>
     <string name="text_filter_file_doc" translatable="false">.doc</string>
     <string name="text_filter_file_audio">Audio</string>
+
 
 
     <plurals name="numberOfDepartments">

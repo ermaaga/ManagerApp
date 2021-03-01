@@ -28,14 +28,13 @@ import it.uniba.di.sms2021.managerapp.utility.AbstractFormActivity;
 public class ProjectEvaluationActivity extends AbstractFormActivity {
 
     private static final String TAG = "ProjectVoteActivity";
-    Button buttonEvaluate;
     private TextInputEditText voteEditText;
     private TextInputEditText commentEditText;
 
     private  TextInputLayout voteInputLayout;
     private  TextInputLayout commentInputLayout;
 
-    Project project;
+    private Project project;
     private DatabaseReference groupsReference;
 
     @Override
@@ -52,7 +51,6 @@ public class ProjectEvaluationActivity extends AbstractFormActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        buttonEvaluate = (Button) findViewById(R.id.button_evaluate_project);
 
         voteEditText = (TextInputEditText) findViewById(R.id.vote_edit_text);
         commentEditText = (TextInputEditText) findViewById(R.id.comment_edit_text);
@@ -99,8 +97,9 @@ public class ProjectEvaluationActivity extends AbstractFormActivity {
                 }
             });
 
-            project.setEvaluation(evaluation);
             sendEvaluation();
+
+            project.setEvaluation(evaluation);
 
             Intent resultIntent = new Intent();
             resultIntent.putExtra(Project.KEY, project);
@@ -130,11 +129,13 @@ public class ProjectEvaluationActivity extends AbstractFormActivity {
         Group group = project.getGroup();
         String currentUserId = LoginHelper.getCurrentUser().getAccountId();
 
+      Boolean isUpdate=project.getEvaluation()!=null ? true : false;
+
         for(String user: group.getMembri()){
             DatabaseReference pushReference = FirebaseDbHelper.getNewEvaluationReference(user).push();
             pushReference.setValue(
                     new NewEvaluation(pushReference.getKey(), currentUserId,
-                            group.getId()));
+                            group.getId(), isUpdate));
 
         }
 

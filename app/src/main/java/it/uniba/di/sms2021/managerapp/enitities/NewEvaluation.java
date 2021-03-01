@@ -9,16 +9,18 @@ public class NewEvaluation {
     private String evaluationSenderId;
     private String groupId;
     private Long sentTime;
+    private Boolean isUpdate;
 
     public NewEvaluation(){
 
     }
 
-    public NewEvaluation(String evaluationId, String evaluationSenderId, String groupId) {
+    public NewEvaluation(String evaluationId, String evaluationSenderId, String groupId, Boolean isUpdate) {
         this.evaluationId = evaluationId;
         this.evaluationSenderId = evaluationSenderId;
         this.groupId = groupId;
         this.sentTime = System.currentTimeMillis();
+        this.isUpdate = isUpdate;
     }
 
     public String getEvaluationId() {
@@ -53,6 +55,14 @@ public class NewEvaluation {
         this.sentTime = sentTime;
     }
 
+    public Boolean isUpdate() {
+        return isUpdate;
+    }
+
+    public void setUpdate(Boolean update) {
+        isUpdate = update;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,12 +71,13 @@ public class NewEvaluation {
         return Objects.equals(evaluationId, that.evaluationId) &&
                 Objects.equals(evaluationSenderId, that.evaluationSenderId) &&
                 Objects.equals(groupId, that.groupId) &&
-                Objects.equals(sentTime, that.sentTime);
+                Objects.equals(sentTime, that.sentTime) &&
+                Objects.equals(isUpdate, that.isUpdate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(evaluationId, evaluationSenderId, groupId, sentTime);
+        return Objects.hash(evaluationId, evaluationSenderId, groupId, sentTime, isUpdate);
     }
 
     @Override
@@ -76,6 +87,7 @@ public class NewEvaluation {
                 ", evaluationSenderId='" + evaluationSenderId + '\'' +
                 ", groupId='" + groupId + '\'' +
                 ", sentTime=" + sentTime +
+                ", isUpdate=" + isUpdate +
                 '}';
     }
 }

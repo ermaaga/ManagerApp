@@ -88,6 +88,14 @@ public class EvaluationNotification  implements Notifiable {
         this.group = group;
     }
 
+    public Boolean isUpdate() {
+       return evaluation.isUpdate();
+    }
+
+    public void setUpdate(Boolean update) {
+        evaluation.setUpdate(update);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -116,17 +124,26 @@ public class EvaluationNotification  implements Notifiable {
     @Exclude
     @Override
     public String getNotificationTitle(Context context) {
-        return context.getString(R.string.text_notification_title_new_evaluation);
+
+        if (evaluation.isUpdate()) {
+            return context.getString(R.string.text_notification_title_update_evaluation);
+        } else {
+            return context.getString(R.string.text_notification_title_new_evaluation);
+        }
     }
 
     //metodo dell'interfaccia Notifiable da implementare
     @Exclude
     @Override
     public String getNotificationMessage(Context context) {
-        Log.d(TAG, "getNotificationMessage");
 
-        return context.getString(R.string.text_notification_message_new_evaluation,
-                sender.getFullName(), group.getName());
+        if (evaluation.isUpdate()) {
+            return context.getString(R.string.text_notification_message_update_evaluation,
+                    sender.getFullName(), group.getName());
+        } else {
+            return context.getString(R.string.text_notification_message_new_evaluation,
+                    sender.getFullName(), group.getName());
+        }
     }
 
     //metodo dell'interfaccia Notifiable da implementare
@@ -189,6 +206,7 @@ public class EvaluationNotification  implements Notifiable {
             notification = new EvaluationNotification(evaluation);
 
             notification.sentTime = new Date(evaluation.getSentTime());
+
 
             FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS)
                     .child(evaluation.getEvaluationSenderId())

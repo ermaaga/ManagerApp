@@ -209,12 +209,14 @@
     <string name="text_notification_action_dismiss">Capito</string>
     <string name="text_notification_title_new_evaluation">Valutazione di un progetto</string>
     <string name="text_notification_message_new_evaluation">%s ha valutato il progetto del tuo gruppo: %s </string>
-
+    <string name="text_notification_title_update_evaluation">Aggiornamento valutazione di un progetto</string>
+    <string name="text_notification_message_update_evaluation">%s ha aggiornato la valutazione del progetto del tuo gruppo: %s </string>
 
     <string name="text_filter_file_release">Rilasci</string>
     <string name="text_filter_file_image">Immagini</string>
     <string name="text_filter_file_video">Video</string>
     <string name="text_filter_file_audio">Audio</string>
+
 
 
     <plurals name="numberOfDepartments">
