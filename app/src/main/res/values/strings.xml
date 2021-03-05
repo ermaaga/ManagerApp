@@ -90,6 +90,7 @@
     <string name="text_label_submit_report">Enter your report</string>
     <string name="text_label_none_reviews">There are no reviews</string>
     <string name="text_label_none_reports">There are no reports</string>
+    <string name="text_lable_reply_project">Write a reply</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
@@ -163,6 +164,7 @@
     <string name="text_message_release_add">The file has been added to the releases</string>
     <string name="text_message_release_removed">The file has been removed from releases</string>
     <string name="text_message_evaluation_failed">The project evaluation failed, please try again later</string>
+    <string name="text_message_review_reply_submitted">Reply sent</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 

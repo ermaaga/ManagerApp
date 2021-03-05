@@ -1,9 +1,9 @@
 package it.uniba.di.sms2021.managerapp.lists;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,59 +16,95 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.enitities.Reply;
 import it.uniba.di.sms2021.managerapp.enitities.Report;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 
-public class ReportsRecyclerAdapter extends ListAdapter<Report, RecyclerView.ViewHolder> {
+public class ReportsRecyclerAdapter extends ListAdapter<Report, ReportsRecyclerAdapter.ViewHolder> {
     private static final String TAG = "ReportsRecyclerAdapter";
 
-    //private ReviewsRecyclerAdapter.OnActionListener listener;
+    OnActionListener listener;
 
-    public ReportsRecyclerAdapter() {
+    Report report;
+
+    public ReportsRecyclerAdapter(OnActionListener listener) {
         super(new ReportDiffCallback());
-        //this.listener = listener;
+        this.listener = listener;
     }
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_report, parent, false);
-
-        return new RecyclerView.ViewHolder(view) {
-            @Override
-            public String toString() {
-                return super.toString();
-            }
-        };
+        List<Report> reports = new ArrayList<>();
+        reports = getCurrentList();
+        return new ViewHolder(view, reports, listener);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         View itemView = holder.itemView;
-
+        report = getItem(position);
         TextView userTextView = itemView.findViewById(R.id.user_TextView);
         TextView dateTextView = itemView.findViewById(R.id.date_TextView);
         TextView messageTextView = itemView.findViewById(R.id.message_TextView);
 
-        //TODO se ci sono risposte alla recensione far visualizzare "repliesTextView"
-        //TextView repliesTextView = itemView.findViewById(R.id.replies_TextView);
-        //TODO fare un intent che porta alla schermata per inviare una risposta
-        //Button replyButton = itemView.findViewById(R.id.reply_button);
+        setUserName(userTextView, report);
+        dateTextView.setText(report.getDate());
 
-        Report report = getItem(position);
+        if(!report.getComment().equals("")) {
+            messageTextView.setVisibility(View.VISIBLE);
+            messageTextView.setText(report.getComment());
+        }
 
-        if (report != null) {
-            setUserName(userTextView, report);
-            dateTextView.setText(report.getDate());
-            if(report.getComment() == null) {
-                messageTextView.setVisibility(View.GONE);
-            }else{
-                messageTextView.setVisibility(View.VISIBLE);
-                messageTextView.setText(report.getComment());
-            }
+    }
 
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView repliesTextView;
+        Button replyButton;
+        public ViewHolder(View itemView, List<Report> list, ReportsRecyclerAdapter.OnActionListener listener) {
+            super(itemView);
+            replyButton = itemView.findViewById(R.id.reply_button);
+            replyButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onReply(list.get(getAdapterPosition()));
+                }
+            });
+            repliesTextView = itemView.findViewById(R.id.replies_TextView);
+            repliesTextView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onClick(list.get(getAdapterPosition()));
+                }
+            });
+            setViewReplies(repliesTextView, list);
+        }
+
+        private void setViewReplies(TextView repliesTextView, List<Report> list){
+            DatabaseReference reportRepliesReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_REPLIES_REPORT);
+            reportRepliesReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    for (DataSnapshot child: snapshot.getChildren()) {
+                        Reply reply= child.getValue(Reply.class);
+                        if (reply.getOriginId().equals(list.get(getAdapterPosition()).getReportId())) {
+                            repliesTextView.setVisibility(View.VISIBLE);
+                            break;
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
         }
     }
 
@@ -106,6 +142,8 @@ public class ReportsRecyclerAdapter extends ListAdapter<Report, RecyclerView.Vie
         });
     }
 
-    /*public class OnActionListener {
-    }*/
+    public interface OnActionListener {
+        void onReply(Report report);
+        void onClick(Report report);
+    }
 }

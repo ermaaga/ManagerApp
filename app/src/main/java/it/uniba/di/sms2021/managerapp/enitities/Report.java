@@ -1,9 +1,12 @@
 package it.uniba.di.sms2021.managerapp.enitities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Objects;
 
-public class Report {
-    private String reviewId;
+public class Report implements Parcelable {
+    private String reportId;
     private String userId;
     private String date;
     String groupId;
@@ -13,11 +16,19 @@ public class Report {
     }
 
     public Report(String reviewId, String userId, String date, String groupId, String comment) {
-        this.reviewId = reviewId;
+        this.reportId = reviewId;
         this.userId = userId;
         this.date = date;
         this.groupId = groupId;
         this.comment = comment;
+    }
+
+    protected Report(Parcel in) {
+        reportId = in.readString();
+        userId = in.readString();
+        date = in.readString();
+        groupId = in.readString();
+        comment = in.readString();
     }
 
     public String getDate() {
@@ -28,12 +39,12 @@ public class Report {
         this.date = date;
     }
 
-    public String getReviewId() {
-        return reviewId;
+    public String getReportId() {
+        return reportId;
     }
 
-    public void setReviewId(String reviewId) {
-        this.reviewId = reviewId;
+    public void setReportId(String reviewId) {
+        this.reportId = reviewId;
     }
 
     public String getUserId() {
@@ -65,7 +76,7 @@ public class Report {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Report report = (Report) o;
-        return Objects.equals(reviewId, report.reviewId) &&
+        return Objects.equals(reportId, report.reportId) &&
                 Objects.equals(userId, report.userId) &&
                 Objects.equals(date, report.date) &&
                 Objects.equals(groupId, report.groupId) &&
@@ -74,6 +85,32 @@ public class Report {
 
     @Override
     public int hashCode() {
-        return Objects.hash(reviewId, userId, date, groupId, comment);
+        return Objects.hash(reportId, userId, date, groupId, comment);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(reportId);
+        dest.writeString(userId);
+        dest.writeString(date);
+        dest.writeString(groupId);
+        dest.writeString(comment);
+    }
+
+    public static final Creator<Report> CREATOR = new Creator<Report>() {
+        @Override
+        public Report createFromParcel(Parcel in) {
+            return new Report(in);
+        }
+
+        @Override
+        public Report[] newArray(int size) {
+            return new Report[size];
+        }
+    };
 }

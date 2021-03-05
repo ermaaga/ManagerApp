@@ -80,14 +80,6 @@
                 app:layout_constraintBottom_toBottomOf="@+id/reply_button"
                 app:layout_constraintStart_toStartOf="@+id/user_TextView" />
 
-            <View
-                android:id="@+id/reviews_divider"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?android:attr/listDivider"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>

@@ -109,8 +109,10 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
 
         if(project.getEvaluation()!=null){
             textVote.setText(""+project.getEvaluation().getVote());
-            if(project.getEvaluation().getComment()!=null)
+            if(project.getEvaluation().getComment()!=null){
                 textComment.setText(project.getEvaluation().getComment());
+            }
+
         }
 
         setAvarage();

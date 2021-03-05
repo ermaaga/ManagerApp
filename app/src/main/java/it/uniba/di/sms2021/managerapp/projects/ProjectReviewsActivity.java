@@ -1,11 +1,14 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -64,8 +67,29 @@ public class ProjectReviewsActivity extends AbstractBottomNavigationActivity {
         super.onStart();
 
         //Creo l'adapter che crea gli elementi con i relativi dati.
-        adapter = new ReviewsRecyclerAdapter();
+        adapter = new ReviewsRecyclerAdapter(new ReviewsRecyclerAdapter.OnActionListener(){
+            @Override
+            public void onReply(Review review) {
+                ReplyFragment bottomSheetFragment = new ReplyFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("originReply", review);
+                bottomSheetFragment.setArguments(bundle);
+                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+            }
+
+            @Override
+            public void onClick(Review review) {
+                ViewRepliesFragment bottomSheetFragment = new ViewRepliesFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("originView", review);
+                bottomSheetFragment.setArguments(bundle);
+                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+            }
+        });
         recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //Ottengo i dati con cui riempire la lista.
         reviewsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_REVIEWS);
@@ -77,8 +101,9 @@ public class ProjectReviewsActivity extends AbstractBottomNavigationActivity {
                 //Ottengo solo i dati delle recensioni che ri riferiscono al progetto corrente
                 idgroup = project.getGroup().getId();
                 for (DataSnapshot child : snapshot.getChildren()) {
-                    if(child.getValue(Review.class).getGroupId().equals(idgroup)){
-                        reviews.add(child.getValue(Review.class));
+                    Review review =child.getValue(Review.class);
+                    if(review.getGroupId().equals(idgroup)){
+                        reviews.add(review);
                     }
 
                 }
@@ -91,14 +116,13 @@ public class ProjectReviewsActivity extends AbstractBottomNavigationActivity {
 
             }
         };
-        reviewsReference.addValueEventListener(reviewsListener);
+        reviewsReference.addListenerForSingleValueEvent(reviewsListener);
 
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        reviewsReference.removeEventListener(reviewsListener);
     }
 
     @Override

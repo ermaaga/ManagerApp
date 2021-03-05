@@ -77,6 +77,7 @@
     <string name="text_label_submit_report">Inserisci la tua segnalazione</string>
     <string name="text_label_none_reviews">Non ci sono recensioni</string>
     <string name="text_label_none_reports">Non ci sono segnalazioni</string>
+    <string name="text_lable_reply_project">Scrivi una risposta</string>
 
     <string name="label_Dialog_Header">Informazione</string>
     <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>
@@ -152,6 +153,7 @@
     <string name="text_message_release_add">Il file è stato aggiunto ai rilasci</string>
     <string name="text_message_release_removed">Il file è stato rimosso dai rilasci</string>
     <string name="text_message_evaluation_failed">La valutazione del progetto è fallita, riprova in seguito</string>
+    <string name="text_message_review_reply_submitted">Risposta inviata</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 

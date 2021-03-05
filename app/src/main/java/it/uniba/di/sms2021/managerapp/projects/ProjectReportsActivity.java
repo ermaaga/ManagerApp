@@ -6,6 +6,8 @@ import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -64,8 +66,29 @@ public class ProjectReportsActivity extends AbstractBottomNavigationActivity {
         super.onStart();
 
         //Creo l'adapter che crea gli elementi con i relativi dati.
-        adapter = new ReportsRecyclerAdapter();
+        adapter = new ReportsRecyclerAdapter(new ReportsRecyclerAdapter.OnActionListener(){
+            @Override
+            public void onReply(Report report) {
+                ReplyFragment bottomSheetFragment = new ReplyFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("originReply", report);
+                bottomSheetFragment.setArguments(bundle);
+                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+            }
+
+            @Override
+            public void onClick(Report report) {
+                ViewRepliesFragment bottomSheetFragment = new ViewRepliesFragment();
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("originView", report);
+                bottomSheetFragment.setArguments(bundle);
+                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+            }
+        });
         recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //Ottengo i dati con cui riempire la lista.
         reportsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_REPORTS).child("reportsList");
