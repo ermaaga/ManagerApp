@@ -62,6 +62,7 @@
     <string name="text_label_project_reports">Segnalazioni</string>
     <string name="text_label_file_release_number">Rilascio N°%d</string>
     <string name="text_label_evaluation">Valutazione:</string>
+    <string name="text_label_my_projects_title">I Miei Progetti</string>
 
     <string name="text_label_project_preference_visibility">Chiunque può accedere al progetto</string>
     <string name="text_label_project_preference_free_join">Chiunque può unirsi al progetto</string>
@@ -111,6 +112,7 @@
     <string name="description_default_file_type">Tipo di file non trovato</string>
     <string name="description_file_actions">Azioni File</string>
     <string name="description_preview_action">Preview</string>
+    <string name="description_share_list">Share List</string>
 
     <string name="text_message_not_yet_implemented">Funzionalità non ancora implementata</string>
     <string name="text_message_study_case_created">Il caso di studio è stato creato</string>

@@ -71,6 +71,7 @@
     <string name="text_label_project_reports">Reports</string>
     <string name="text_label_file_release_number">Release N.%d</string>
     <string name="text_label_evaluation">Evaluation:</string>
+    <string name="text_label_my_projects_title">My Projects</string>
 
     <string name="text_label_project_preference_visibility">Anyone can view the project</string>
     <string name="text_label_project_preference_free_join">Anyone can join the project</string>
@@ -120,6 +121,7 @@
     <string name="description_default_file_type">File type not found</string>
     <string name="description_file_actions">File Actions</string>
     <string name="description_preview_action">Preview</string>
+    <string name="description_share_list">Share List</string>
 
     <string name="text_message_not_yet_implemented">Feature not yet implemented</string>
     <string name="text_message_study_case_created">The study case was created</string>
