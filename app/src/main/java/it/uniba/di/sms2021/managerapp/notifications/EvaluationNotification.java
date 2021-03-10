@@ -2,26 +2,21 @@ package it.uniba.di.sms2021.managerapp.notifications;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
-import it.uniba.di.sms2021.managerapp.enitities.NewEvaluation;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewEvaluation;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;

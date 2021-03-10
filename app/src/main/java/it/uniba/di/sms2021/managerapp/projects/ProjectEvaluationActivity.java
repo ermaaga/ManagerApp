@@ -3,7 +3,6 @@ package it.uniba.di.sms2021.managerapp.projects;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,7 +18,7 @@ import java.util.HashMap;
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.Evaluation;
-import it.uniba.di.sms2021.managerapp.enitities.NewEvaluation;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewEvaluation;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;

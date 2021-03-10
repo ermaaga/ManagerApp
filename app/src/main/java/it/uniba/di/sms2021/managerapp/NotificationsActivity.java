@@ -23,7 +23,7 @@ import java.util.Set;
 import it.uniba.di.sms2021.managerapp.enitities.notifications.ExamJoinRequest;
 import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
 import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinNotice;
-import it.uniba.di.sms2021.managerapp.enitities.NewEvaluation;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewEvaluation;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.lists.NotificationRecyclerAdapter;
