@@ -1,10 +1,15 @@
 package it.uniba.di.sms2021.managerapp.utility;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 import it.uniba.di.sms2021.managerapp.NotificationsActivity;
@@ -25,5 +30,14 @@ public class MenuUtil {
         } else if (menuItemId == R.id.action_logout) {
             LoginHelper.logout(context);
         }
+    }
+
+    /**
+     * Inizializza la toolbar a partire dall'inclusione di un layout di una toolbar
+     * @param activity l'activity in cui inizializzare la toolbar
+     */
+    public static void setIncludedToolbar (AppCompatActivity activity) {
+        Toolbar toolbar = (Toolbar) ((AppBarLayout)activity.findViewById(R.id.toolbar)).getChildAt(0);
+        activity.setSupportActionBar(toolbar);
     }
 }

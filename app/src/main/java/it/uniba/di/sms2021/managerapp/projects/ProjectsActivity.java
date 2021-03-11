@@ -42,9 +42,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         recyclerView = findViewById(R.id.projects_recycler_view);
     }
 

@@ -1,17 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/toolbar"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?attr/colorPrimary"
-    android:minHeight="?attr/actionBarSize"
-    android:theme="?attr/actionBarTheme"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:menu="@menu/menu_main"
-    app:subtitleTextAppearance="@style/ToolbarSubtitle"
-    app:subtitleTextColor="?android:attr/textColorSecondaryInverse"
-    app:titleTextAppearance="@style/ToolbarTitle"
-    app:titleTextColor="@color/white" />
+    android:layout_height="wrap_content">
+
+    <!-->Elevazione standard di 4dp dettata dal material design:
+     https://material.io/design/environment/elevation.html#elevation-hierarchy<-->
+    <androidx.appcompat.widget.Toolbar
+        android:elevation="4dp"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/menu_main"
+        app:subtitleTextAppearance="@style/ToolbarSubtitle"
+        app:subtitleTextColor="?android:attr/textColorSecondaryInverse"
+        app:titleTextAppearance="@style/ToolbarTitle"
+        app:titleTextColor="@color/white" />
+</com.google.android.material.appbar.AppBarLayout>

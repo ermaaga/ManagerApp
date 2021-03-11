@@ -58,9 +58,6 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
 
         initialize();
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
         recyclerView = findViewById(R.id.exams_recyclerView);
 
 

@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import it.uniba.di.sms2021.managerapp.exams.ExamsActivity;
@@ -39,8 +40,7 @@ public abstract class AbstractBottomNavigationActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        MenuUtil.setIncludedToolbar(this);
 
         navigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         navigationView.setOnNavigationItemSelectedListener(this);

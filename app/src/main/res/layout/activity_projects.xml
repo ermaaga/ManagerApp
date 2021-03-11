@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:elevation="8dp"
-    tools:context=".projects.ProjectsActivity">
+    tools:context=".projects.ProjectsActivity"
+    android:clipChildren="false">
 
     <include
         android:id="@+id/toolbar"

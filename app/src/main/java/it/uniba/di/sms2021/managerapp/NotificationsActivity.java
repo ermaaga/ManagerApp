@@ -30,6 +30,7 @@ import it.uniba.di.sms2021.managerapp.lists.NotificationRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.notifications.EvaluationNotification;
 import it.uniba.di.sms2021.managerapp.notifications.GroupJoinRequestNotification;
 import it.uniba.di.sms2021.managerapp.notifications.Notifiable;
+import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
 public class NotificationsActivity extends AppCompatActivity {
 
@@ -52,8 +53,7 @@ public class NotificationsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifications);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        MenuUtil.setIncludedToolbar(this);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
