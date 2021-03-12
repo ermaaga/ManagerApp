@@ -16,9 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
@@ -69,8 +74,28 @@ public class NotificationRecyclerAdapter extends ListAdapter<Notifiable, Recycle
 
         TextView titleTextView = itemView.findViewById(R.id.title_TextView);
         TextView messageTextView = itemView.findViewById(R.id.message_TextView);
+        TextView dateTextView = itemView.findViewById(R.id.date_text_view);
+
         titleTextView.setText(notification.getNotificationTitle(context));
         messageTextView.setText(notification.getNotificationMessage(context));
+
+        String dateString;
+        Calendar sentTime = Calendar.getInstance();
+        sentTime.setTime(notification.getNotificationSentTime());
+        Calendar currentTime = Calendar.getInstance();
+        currentTime.setTime (new Date(System.currentTimeMillis()));
+
+        if (sentTime.get(Calendar.DAY_OF_MONTH) == currentTime.get(Calendar.DAY_OF_MONTH) &&
+            sentTime.get(Calendar.MONTH) == currentTime.get(Calendar.MONTH) &&
+            sentTime.get(Calendar.YEAR) == currentTime.get(Calendar.YEAR)) {
+            SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            dateString = format.format(sentTime.getTime());
+        } else {
+            SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+            dateString = format.format(sentTime.getTime());
+        }
+
+        dateTextView.setText(dateString);
 
         Button action1Button = itemView.findViewById(R.id.action1_button);
         String label = notification.getAction1Label(context);

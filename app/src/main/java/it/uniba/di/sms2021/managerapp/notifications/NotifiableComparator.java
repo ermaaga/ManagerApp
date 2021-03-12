@@ -5,17 +5,17 @@ import android.content.Context;
 import java.util.Comparator;
 
 /**
- * Ordina le notifiche per data di invio
+ * Ordina le notifiche per data di invio in ordine decrescente
  */
 public class NotifiableComparator implements Comparator<Notifiable> {
     /**
-     * Ordina le notifiche per data di invio
+     * Ordina le notifiche per data di invio in ordine decrescente
      */
     public NotifiableComparator() {
     }
 
     @Override
     public int compare(Notifiable o1, Notifiable o2) {
-        return (int) (o1.getNotificationSentTime().getTime() - o2.getNotificationSentTime().getTime());
+        return (int) (o2.getNotificationSentTime().getTime() - o1.getNotificationSentTime().getTime());
     }
 }
