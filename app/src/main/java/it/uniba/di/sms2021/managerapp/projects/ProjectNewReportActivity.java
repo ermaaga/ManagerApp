@@ -16,14 +16,16 @@ import java.util.Date;
 import java.util.Locale;
 
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.Report;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewReportNotice;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.utility.AbstractFormActivity;
 
 public class ProjectNewReportActivity extends AbstractFormActivity implements View.OnClickListener{
-    private static final String TAG = "ProjectNewReportActivity";
+    private static final String TAG = "ProjectNewReportActivit";
 
     TextInputEditText reportEditText;
     TextInputLayout reportInputLayout;
@@ -89,6 +91,7 @@ public class ProjectNewReportActivity extends AbstractFormActivity implements Vi
             newElement.setValue(report);
             reportReference.child("latestReports").child(idgroup).setValue(newElement.getKey());
 
+            sendReport();
             Toast.makeText(getApplicationContext(), R.string.text_message_project_report_submitted, Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(this, ProjectDetailActivity.class);
@@ -110,4 +113,14 @@ public class ProjectNewReportActivity extends AbstractFormActivity implements Vi
         return valid;
     }
 
+    private void sendReport() {
+        Group group = project.getGroup();
+        for(String u: group.getMembri()){
+            DatabaseReference pushReference = FirebaseDbHelper.getNewReportReference(u).push();
+            pushReference.setValue(
+                    new NewReportNotice(pushReference.getKey(), user,
+                            group.getId()));
+
+        }
+    }
 }

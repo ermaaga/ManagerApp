@@ -16,55 +16,55 @@ import java.util.Objects;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
-import it.uniba.di.sms2021.managerapp.enitities.notifications.NewEvaluation;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewReportNotice;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
-import it.uniba.di.sms2021.managerapp.projects.ProjectDetailActivity;
+import it.uniba.di.sms2021.managerapp.projects.ProjectReportsActivity;
 
 
-public class EvaluationNotification  implements Notifiable {
-    private static final String TAG = "EvaluationNotification";
-    private NewEvaluation evaluation;
+public class ReportNotification  implements Notifiable {
+    private static final String TAG = "ReportNotification";
+    private NewReportNotice report;
     private User sender;
     private Group group;
     private Date sentTime;
 
-    public EvaluationNotification(NewEvaluation evaluation) {
-        this.evaluation = evaluation;
+    public ReportNotification(NewReportNotice report) {
+        this.report = report;
     }
 
     public String getEvaluationId() {
-        return evaluation.getEvaluationId();
+        return report.getReportId();
     }
 
     public void setEvaluationId(String requestId) {
-        evaluation.setEvaluationId(requestId);
+        report.setReportId(requestId);
     }
 
     public String getEvaluationSenderId() {
-        return evaluation.getEvaluationSenderId();
+        return report.getReportSenderId();
     }
 
     public void setEvaluationSenderId(String requestSenderId) {
-        evaluation.setEvaluationSenderId(requestSenderId);
+        report.setReportSenderId(requestSenderId);
     }
 
     public String getGroupId() {
-        return evaluation.getGroupId();
+        return report.getGroupId();
     }
 
     public void setGroupId(String groupId) {
-        evaluation.setGroupId(groupId);
+        report.setGroupId(groupId);
     }
 
     public Long getSentTime() {
-        return evaluation.getSentTime();
+        return report.getSentTime();
     }
 
     public void setSentTime(Long sentTime) {
-        evaluation.setSentTime(sentTime);
+        report.setSentTime(sentTime);
     }
 
     public User getSender() {
@@ -83,19 +83,11 @@ public class EvaluationNotification  implements Notifiable {
         this.group = group;
     }
 
-    public Boolean isUpdate() {
-       return evaluation.isUpdate();
-    }
-
-    public void setUpdate(Boolean update) {
-        evaluation.setUpdate(update);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EvaluationNotification that = (EvaluationNotification) o;
+        ReportNotification that = (ReportNotification) o;
         return Objects.equals(sender, that.sender) &&
                 Objects.equals(group, that.group);
     }
@@ -119,26 +111,15 @@ public class EvaluationNotification  implements Notifiable {
     @Exclude
     @Override
     public String getNotificationTitle(Context context) {
-
-        if (evaluation.isUpdate()) {
-            return context.getString(R.string.text_notification_title_update_evaluation);
-        } else {
-            return context.getString(R.string.text_notification_title_new_evaluation);
-        }
+        return context.getString(R.string.text_notification_title_report);
     }
 
     //metodo dell'interfaccia Notifiable da implementare
     @Exclude
     @Override
     public String getNotificationMessage(Context context) {
-
-        if (evaluation.isUpdate()) {
-            return context.getString(R.string.text_notification_message_update_evaluation,
+        return context.getString(R.string.text_notification_message_report,
                     sender.getFullName(), group.getName());
-        } else {
-            return context.getString(R.string.text_notification_message_new_evaluation,
-                    sender.getFullName(), group.getName());
-        }
     }
 
     //metodo dell'interfaccia Notifiable da implementare
@@ -149,9 +130,9 @@ public class EvaluationNotification  implements Notifiable {
             public void onProjectInitialised(Project project) {
                 String uid=LoginHelper.getCurrentUser().getAccountId();
 
-                FirebaseDbHelper.getNewEvaluationReference(uid).child(evaluation.getEvaluationId()).removeValue();
+                FirebaseDbHelper.getNewReportReference(uid).child(report.getReportId()).removeValue();
 
-                Intent intent = new Intent(context, ProjectDetailActivity.class);
+                Intent intent = new Intent(context, ProjectReportsActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(Project.KEY, project);
                 context.startActivity(intent);
@@ -168,11 +149,11 @@ public class EvaluationNotification  implements Notifiable {
     //metodo dell'interfaccia Notifiable da implementare
     @Override
     public void onNotificationAction1Click(Context context, @Nullable OnActionDoneListener listener) {
-       String uid=LoginHelper.getCurrentUser().getAccountId();
+        String uid=LoginHelper.getCurrentUser().getAccountId();
 
-       FirebaseDbHelper.getNewEvaluationReference(uid).child(evaluation.getEvaluationId()).removeValue();
+        FirebaseDbHelper.getNewReportReference(uid).child(report.getReportId()).removeValue();
 
-       if (listener != null) {
+        if (listener != null) {
             listener.onActionDone();
         }
     }
@@ -190,34 +171,34 @@ public class EvaluationNotification  implements Notifiable {
     }
 
     public static abstract class Initialiser {
-        private EvaluationNotification notification;
+        private ReportNotification notification;
 
         /**
          * Definire cosa fare una volta che la notifica è stata inizializzata
          */
-        public abstract void onNotificationInitialised (EvaluationNotification notification);
+        public abstract void onNotificationInitialised (ReportNotification notification);
 
         /**
          * Initializza la notifica con tutti i campi necessari a partire dalla richiesta
-         * @param evaluation la valutazione da cui creare la notifica
+         * @param report la segnalazione da cui creare la notifica
          */
-        public void initialiseNotification (NewEvaluation evaluation) {
-            notification = new EvaluationNotification(evaluation);
+        public void initialiseNotification (NewReportNotice report) {
+            notification = new ReportNotification(report);
 
-            notification.sentTime = new Date(evaluation.getSentTime());
+            notification.sentTime = new Date(report.getSentTime());
 
 
             FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS)
-                    .child(evaluation.getEvaluationSenderId())
+                    .child(report.getReportSenderId())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             notification.sender = snapshot.getValue(User.class);
                             if (notification.sender == null) {
                                 throw new RuntimeException("Impossibile trovare l'utente con l'id "
-                                        + evaluation.getEvaluationSenderId() +
-                                        " nella richiesta di partecipazione gruppo di id " +
-                                        evaluation.getEvaluationId());
+                                        + report.getReportSenderId() +
+                                        " nella nuova segnalazione per il gruppo di id " +
+                                        report.getReportId());
                             }
 
                             if (notification.isInitialised()) {
@@ -232,16 +213,16 @@ public class EvaluationNotification  implements Notifiable {
                     });
 
             FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS)
-                    .child(evaluation.getGroupId())
+                    .child(report.getGroupId())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             notification.group = snapshot.getValue(Group.class);
                             if (notification.group == null) {
                                 throw new RuntimeException("Impossibile trovare il gruppo con l'id "
-                                        + evaluation.getGroupId() +
-                                        " nella richiesta di partecipazione gruppo di id " +
-                                        evaluation.getEvaluationId());
+                                        + report.getGroupId() +
+                                        " nella nuova segnalazione per il gruppo di id " +
+                                        report.getReportId());
                             }
 
                             if (notification.isInitialised()) {
@@ -256,10 +237,4 @@ public class EvaluationNotification  implements Notifiable {
                     });
         }
     }
-
-
-
-
-
-
 }

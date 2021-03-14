@@ -232,6 +232,8 @@
     <string name="text_notification_message_exam_join_request">%s asked to join your exam %s</string>
     <string name="text_notification_title_update_evaluation">Update evaluation of a project</string>
     <string name="text_notification_message_update_evaluation">%s has updated the evaluation of the project of your group: %s</string>
+    <string name="text_notification_title_report">New report</string>
+    <string name="text_notification_message_report">%s has submitted a report for your group\'s project: %s</string>
 
     <string name="notification_channel_name" translatable="false">Default Channel</string>
     <string name="notification_channel_description" translatable="false">The default notification channel for the app</string>

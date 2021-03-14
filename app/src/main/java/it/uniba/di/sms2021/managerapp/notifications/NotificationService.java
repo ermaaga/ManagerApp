@@ -10,7 +10,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.util.Log;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -155,6 +154,23 @@ public class NotificationService extends Service {
                     notificationsFound += snapshot.getChildrenCount();
                     workingReferences.remove(newEvaluationReference);
                     showNotification(msg);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        DatabaseReference newReportReference = FirebaseDbHelper.getNewReportReference(LoginHelper.getCurrentUser().getAccountId());
+        workingReferences.add(newReportReference);
+
+        newReportReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                notificationsFound += snapshot.getChildrenCount();
+                workingReferences.remove(newReportReference);
+                showNotification(msg);
             }
 
             @Override

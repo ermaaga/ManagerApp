@@ -1,14 +1,13 @@
 package it.uniba.di.sms2021.managerapp;
 
+import android.os.Bundle;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Bundle;
-import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,15 +20,17 @@ import java.util.List;
 import java.util.Set;
 
 import it.uniba.di.sms2021.managerapp.enitities.notifications.ExamJoinRequest;
-import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
 import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinNotice;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
 import it.uniba.di.sms2021.managerapp.enitities.notifications.NewEvaluation;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewReportNotice;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.lists.NotificationRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.notifications.EvaluationNotification;
 import it.uniba.di.sms2021.managerapp.notifications.GroupJoinRequestNotification;
 import it.uniba.di.sms2021.managerapp.notifications.Notifiable;
+import it.uniba.di.sms2021.managerapp.notifications.ReportNotification;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
 public class NotificationsActivity extends AppCompatActivity {
@@ -47,6 +48,9 @@ public class NotificationsActivity extends AppCompatActivity {
     private Set<DatabaseReference> workingReferences;
 
     private List<EvaluationNotification> newEvaluations;
+
+    private List<ReportNotification> newReports;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,6 +216,48 @@ public class NotificationsActivity extends AppCompatActivity {
         };
         newEvaluationReference.addListenerForSingleValueEvent(newEvaluationListener);
 
+        DatabaseReference newReportReference = FirebaseDbHelper.getNewReportReference(LoginHelper.getCurrentUser().getAccountId());
+        workingReferences.add(newReportReference);
+
+        ValueEventListener newReportListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                newReports = new ArrayList<>();
+
+                if (snapshot.getChildrenCount() == 0) {
+                    workingReferences.remove(newReportReference);
+                    executeUpdate();
+                    return;
+                }
+
+                Set<DataSnapshot> elaboratingChildren = new HashSet<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+
+                    elaboratingChildren.add(child);
+                    NewReportNotice reportNotice = child.getValue(NewReportNotice.class);
+                    new ReportNotification.Initialiser() {
+                        @Override
+                        public void onNotificationInitialised(ReportNotification notification) {
+                            newReports.add(notification);
+                            elaboratingChildren.remove(child);
+
+                            if (elaboratingChildren.isEmpty()) {
+                                workingReferences.remove(newReportReference);
+                                executeUpdate();
+                            }
+                        }
+                    }.initialiseNotification(reportNotice);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, error.getMessage());
+            }
+        };
+        newReportReference.addListenerForSingleValueEvent(newReportListener);
+
         DatabaseReference examJoinRequestsReference = FirebaseDbHelper.getExamJoinRequestReference(LoginHelper.getCurrentUser().getAccountId());
         workingReferences.add(examJoinRequestsReference);
 
@@ -251,6 +297,7 @@ public class NotificationsActivity extends AppCompatActivity {
             notifications.addAll(groupJoinNotices);
             notifications.addAll(newEvaluations);
             notifications.addAll(examJoinRequests);
+            notifications.addAll(newReports);
 
             adapter.submitList(notifications);
             adapter.notifyDataSetChanged();
