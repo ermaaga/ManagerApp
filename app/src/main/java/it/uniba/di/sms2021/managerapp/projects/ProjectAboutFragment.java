@@ -42,7 +42,7 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
     TextView lastReportTextView;
 
     View reviewDivider;
-
+    View reportDivider;
 
     RatingBar avarageRatingBar;
 
@@ -87,6 +87,7 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
         lastReportTextView = (TextView) view.findViewById(R.id.last_report_text_view);
 
         reviewDivider = (View) view.findViewById(R.id.reviews_divider);
+        reportDivider = (View) view.findViewById(R.id.report_divider);
 
         avarageRatingBar = (RatingBar) view.findViewById(R.id.stars_average);
 
@@ -164,11 +165,23 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //Ottengo la chiave dell'ultima segnalazione del progetto
-                for (DataSnapshot child: snapshot.getChildren()) {
-                    if (child.getKey().equals(idgroup)) {
-                        lastReview = (String) child.getValue();
+                if(snapshot.getChildrenCount()!=0){
+                    //Ottengo la chiave dell'ultima segnalazione del progetto
+                    for (DataSnapshot child: snapshot.getChildren()) {
+                        if (child.getKey().equals(idgroup)) {
+                            lastReview = (String) child.getValue();
+                            break;
+                        }
                     }
+
+                    if(lastReview!=null){
+                        setCommentLastReport();
+                    }else{
+                        noneReportsTextView.setVisibility(View.VISIBLE);
+                        seeReportButton.setVisibility(View.INVISIBLE);
+                        reportDivider.setVisibility(View.INVISIBLE);
+                    }
+
                 }
             }
             @Override
@@ -176,23 +189,20 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
 
             }
         });
+    }
 
+    private void setCommentLastReport(){
         DatabaseReference refList = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_REPORTS).child("reportsList");
         refList.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    //Ottengo il commento dell'ultima segnalazione e imposto il testo della relativa TextView
-                    for (DataSnapshot child: snapshot.getChildren()) {
-                        if (child.getKey().equals(lastReview)) {
-                            commentReport = child.getValue(Report.class).getComment();
-                        }
+                //Ottengo il commento dell'ultima segnalazione e imposto il testo della relativa TextView
+                for (DataSnapshot child: snapshot.getChildren()) {
+                    if (child.getKey().equals(lastReview)) {
+                        commentReport = child.getValue(Report.class).getComment();
                     }
-                    if(commentReport==null){
-                        noneReportsTextView.setVisibility(View.VISIBLE);
-                    }else{
-                        lastReportTextView.setText(commentReport);
-                    }
-
+                }
+                lastReportTextView.setText(commentReport);
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {

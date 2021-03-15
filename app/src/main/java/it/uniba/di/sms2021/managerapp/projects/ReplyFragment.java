@@ -57,7 +57,7 @@ public class ReplyFragment extends BottomSheetDialogFragment implements View.OnC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_review_reply, container, false);
+        return inflater.inflate(R.layout.fragment_reply, container, false);
     }
 
     @Override
@@ -93,6 +93,8 @@ public class ReplyFragment extends BottomSheetDialogFragment implements View.OnC
     public void onClick(View v) {
         if(reply_edit_text.length()>800) {
             reply_text_input.setError(getString(R.string.text_error_max_review_report));
+        }else if(reply_edit_text.length()==0){
+            reply_text_input.setError(getString(R.string.required_field));
         }else{
             Parcelable origin = this.getArguments().getParcelable("originReply");
             if(origin instanceof Review){
