@@ -8,6 +8,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,7 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -48,9 +50,11 @@ import it.uniba.di.sms2021.managerapp.enitities.Course;
 import it.uniba.di.sms2021.managerapp.enitities.Department;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
+import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
-public class ProfileActivity extends AppCompatActivity implements View.OnClickListener {
+public class ProfileActivity extends AbstractBottomNavigationActivity implements View.OnClickListener {
     private static final String TAG = "ProfileActivityTag";
     static final int REQUEST_IMAGE_GET = 1;
 
@@ -101,9 +105,46 @@ public class ProfileActivity extends AppCompatActivity implements View.OnClickLi
     private ValueEventListener coursesListener;
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int menuId = item.getItemId();
+        MenuUtil.performMainActions(this, menuId);
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (fragmentManager.getBackStackEntryCount() == 0) {
+            finish();
+        } else {
+            fragmentManager.popBackStack();
+        }
+
+        return super.onSupportNavigateUp();
+    }
+
+    @Override
+    protected int getLayoutId()  {
+        return R.layout.activity_profile;
+    }
+
+    @Override
+    protected int getBottomNavigationMenuItemId() {
+        return R.id.nav_home;
+    }
+
+    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         textName = (TextView) findViewById(R.id.value_name_account_text_view);
         textSurname = (TextView) findViewById(R.id.value_surname_account_text_view);

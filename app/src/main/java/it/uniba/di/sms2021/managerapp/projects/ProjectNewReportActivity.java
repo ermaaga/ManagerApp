@@ -96,6 +96,7 @@ public class ProjectNewReportActivity extends AbstractFormActivity implements Vi
 
             Intent intent = new Intent(this, ProjectDetailActivity.class);
             intent.putExtra(Project.KEY, project);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
     }
