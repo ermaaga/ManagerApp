@@ -68,6 +68,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:clickable="true"
+                android:onClick="share_list_project"
                 android:contentDescription="@string/description_share_list"
                 android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"

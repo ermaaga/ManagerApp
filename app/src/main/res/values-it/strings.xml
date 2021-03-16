@@ -21,6 +21,7 @@
     <string name="activity_label_project_new_report">Invia una segnalazione</string>
     <string name="activity_label_project_reports">Segnalazioni</string>
     <string name="activity_label_project_reviews">Recensioni</string>
+    <string name="activity_label_projects_sharing">Share your projects list</string>
 
     <string name="creation_exam_failed">Errore durante la creazione</string>
     <string name="text_error_validation">Il nome del gruppo non può essere maggiore di 20 caratteri</string>
@@ -63,6 +64,7 @@
     <string name="text_label_file_release_number">Rilascio N°%d</string>
     <string name="text_label_evaluation">Valutazione:</string>
     <string name="text_label_my_projects_title">I Miei Progetti</string>
+    <string name="text_label_available_devices">Dispositivi disponibili:</string>
 
     <string name="text_label_project_preference_visibility">Chiunque può accedere al progetto</string>
     <string name="text_label_project_preference_free_join">Chiunque può unirsi al progetto</string>
@@ -227,6 +229,7 @@
     <string name="text_filter_file_image">Immagini</string>
     <string name="text_filter_file_video">Video</string>
     <string name="text_filter_file_audio">Audio</string>
+
 
     <plurals name="text_notification_title_feed">
         <item quantity="one">Nuova notifica trovata</item>

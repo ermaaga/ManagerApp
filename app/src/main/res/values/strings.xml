@@ -21,6 +21,7 @@
     <string name="activity_label_project_new_report">Submit a report</string>
     <string name="activity_label_project_reports">Reports</string>
     <string name="activity_label_project_reviews">Reviews</string>
+    <string name="activity_label_projects_sharing">Share your projects list</string>
 
     <string name="label_Dialog_Header">Information</string>
     <string name="label_Dialog_confimation_message">Do you want to be part of this study group?</string>
@@ -72,6 +73,7 @@
     <string name="text_label_file_release_number">Release N.%d</string>
     <string name="text_label_evaluation">Evaluation:</string>
     <string name="text_label_my_projects_title">My Projects</string>
+    <string name="text_label_available_devices">Available devices:</string>
 
     <string name="text_label_project_preference_visibility">Anyone can view the project</string>
     <string name="text_label_project_preference_free_join">Anyone can join the project</string>
@@ -245,6 +247,8 @@
     <string name="text_filter_file_pdf" translatable="false">PDF</string>
     <string name="text_filter_file_doc" translatable="false">.doc</string>
     <string name="text_filter_file_audio">Audio</string>
+
+
 
     <plurals name="text_notification_title_feed">
         <item quantity="one">New notification Found</item>

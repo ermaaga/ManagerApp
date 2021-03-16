@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.uniba.di.sms2021.managerapp">
 
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -70,6 +74,9 @@
         <activity
             android:name=".projects.ProjectsActivity"
             android:label="@string/activity_label_projects" />
+        <activity
+            android:name=".projects.ProjectsSharingActivity"
+            android:label="@string/activity_label_projects_sharing" />
         <activity
             android:name=".exams.ExamsActivity"
             android:label="@string/activity_label_exams" />
