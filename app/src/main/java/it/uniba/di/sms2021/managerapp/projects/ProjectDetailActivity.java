@@ -24,6 +24,7 @@ import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
+import it.uniba.di.sms2021.managerapp.utility.SearchUtil;
 
 public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     public static final int ABOUT_TAB_POSITION = 0;
@@ -40,7 +41,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     private MenuItem searchMenuItem;
     private boolean searchActivated;
     // Listener custom implementato nei fragment al momento della loro creazione
-    private OnSearchListener onSearchListener;
+    private SearchUtil.OnSearchListener onSearchListener;
 
     // Elementi della seach view presente nell'action bar
     private SearchView searchView;
@@ -124,74 +125,11 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         searchMenuItem = menu.findItem(R.id.action_search);
         searchMenuItem.setVisible(searchActivated);
 
-        //Impostazioni per la barra di ricerca. La barra è solo attivata nei fragment che la richiedono.
+        //Inizializzazione della barra di ricerca. La barra è solo attivata nei fragment che la richiedono.
         if (searchActivated) {
             searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
-            searchView.setIconifiedByDefault(true);
-            searchView.setQueryHint(getString(R.string.text_hint_search_file));
-            searchView.setInputType(InputType.TYPE_CLASS_TEXT);
-
-            // Fa apparire i filtri per la ricerca
             searchFilters = findViewById(R.id.searchFilterScrollView);
-            searchView.setOnSearchClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    searchFilters.setVisibility(View.VISIBLE);
-                }
-            });
-
-            // Fa scomparire i filtri per la ricerca
-            searchView.setOnCloseListener(new SearchView.OnCloseListener() {
-                @Override
-                public boolean onClose() {
-                    searchFilters.setVisibility(View.GONE);
-                    return false;
-                }
-            });
-
-            //Quando un utente digita qualcosa nella barra, il fragment decide che azioni prendere.
-            queryTextListener = new SearchView.OnQueryTextListener() {
-                @Override
-                public boolean onQueryTextSubmit(String query) {
-                    onSearchListener.onSearchAction(query);
-
-                    return false;
-                }
-
-                @Override
-                public boolean onQueryTextChange(String newText) {
-                    onSearchListener.onSearchAction(newText);
-
-                    return false;
-                }
-            };
-            searchView.setOnQueryTextListener(queryTextListener);
-
-            // Al click di qualunque dei filtri, viene aggiunta alla query il filtro corrispondente
-            ConstraintLayout searchFilterLayout = findViewById(R.id.search_filter_layout);
-            for (int i = 0; i < searchFilterLayout.getChildCount(); i++) {
-                Chip chip = (Chip) searchFilterLayout.getChildAt(i);
-                chip.setOnClickListener(v -> {
-                    appendToSearchQuery(chip.getText().toString());
-                });
-            }
-
-            /*
-            Chip releasesChip = findViewById(R.id.file_release_chip);
-            releasesChip.setOnClickListener(v -> {
-                appendToSearchQuery(releasesChip.getText().toString());
-            });
-
-            Chip imagesChip = findViewById(R.id.file_images_chip);
-            imagesChip.setOnClickListener(v -> {
-                appendToSearchQuery(imagesChip.getText().toString());
-            });
-
-            Chip videoChip = findViewById(R.id.file_video_chip);
-            imagesChip.setOnClickListener(v -> {
-                appendToSearchQuery(videoChip.getText().toString());
-            });
-            */
+            setUpSearchBar();
         }
 
         MenuItem  evaluateMenuItem = menu.findItem(R.id.action_evaluate_project);
@@ -261,26 +199,15 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
      * @param activated se l'azione di ricerca è attivata nel fragment corrente
      * @param listener cosa fà l'azione di ricerca nel fragment corrente
      */
-    public void setUpSearchAction (boolean activated, @Nullable OnSearchListener listener) {
+    public void setUpSearchAction (boolean activated, @Nullable SearchUtil.OnSearchListener listener) {
         this.searchActivated = activated;
         this.onSearchListener = listener;
         invalidateOptionsMenu();
     }
 
-    private void appendToSearchQuery (String string) {
-        String query = searchView.getQuery().toString();
-
-        // Aggiunge uno spazio alla query se già non finisce con uno
-        if (!query.matches(" $")) {
-            query += " ";
-        }
-
-        query += string;
-
-        searchView.setQuery(query, true);
-    }
-
-    public interface OnSearchListener {
-        void onSearchAction(String query);
+    public void setUpSearchBar() {
+        //Inizializza la barra di ricerca ed i filtri
+        SearchUtil.setUpSearchBar(this, searchView, searchFilters,
+                R.string.text_hint_search_file, onSearchListener);
     }
 }

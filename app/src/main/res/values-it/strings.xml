@@ -188,7 +188,8 @@
     <string name="text_hint_name_user">Nome</string>
     <string name="text_hint_surname_user">Cognome</string>
     <string name="text_hint_desc_study_case">Descrizione</string>
-    <string name="text_hint_search_file">Cerca File (ex. video, rilascio, etc.)</string>
+    <string name="text_hint_search_file">Cerca File</string>
+    <string name="text_hint_search_project">Cerca Progetto</string>
     <string name="text_hint_comment_project">Commento</string>
     <string name="text_hint_vote_project">Voto</string>
     <string name="text_hint_review_project">Cosa ne pensi di questo progetto?</string>

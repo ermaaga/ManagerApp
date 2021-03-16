@@ -201,7 +201,8 @@
     <string name="text_hint_name_user">Name</string>
     <string name="text_hint_surname_user">Surname</string>
     <string name="text_hint_desc_study_case">Description</string>
-    <string name="text_hint_search_file">Search File (ex. video, release, etc.)</string>
+    <string name="text_hint_search_file">Search File</string>
+    <string name="text_hint_search_project">Search Project</string>
     <string name="text_hint_comment_project">Comment</string>
     <string name="text_hint_vote_project">Vote</string>
     <string name="text_hint_review_project">What do you think of this project?</string>
