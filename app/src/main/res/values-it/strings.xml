@@ -158,6 +158,7 @@
     <string name="text_message_release_removed">Il file è stato rimosso dai rilasci</string>
     <string name="text_message_evaluation_failed">La valutazione del progetto è fallita, riprova in seguito</string>
     <string name="text_message_review_reply_submitted">Risposta inviata</string>
+    <string name="text_message_connection_down">L\'app richiede una connessione internet</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -184,6 +185,7 @@
     <string name="text_button_permissions_done">Finito</string>
     <string name="text_button_view_answers">Visualizza le risposte</string>
     <string name="text_button_reply_review">Rispondi</string>
+    <string name="text_button_check_connection">Apri Impostazioni</string>
 
     <string name="text_hint_name_studycase">Nome</string>
     <string name="text_hint_name_group">Nome</string>

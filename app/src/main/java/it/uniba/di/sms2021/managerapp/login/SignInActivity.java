@@ -59,7 +59,7 @@ public class SignInActivity extends AbstractFormActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
+        findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
 
         mAuth = FirebaseAuth.getInstance();
 

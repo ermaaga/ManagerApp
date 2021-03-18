@@ -33,8 +33,9 @@ import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.home.HomeActivity;
 import it.uniba.di.sms2021.managerapp.lists.CourseRecyclerAdapter;
+import it.uniba.di.sms2021.managerapp.utility.AbstractBaseActivity;
 
-public class DegreeCoursesActivity extends AppCompatActivity {
+public class DegreeCoursesActivity extends AbstractBaseActivity {
     private static final String TAG = "DegreeCoursesActivity";
     private RecyclerView recyclerView;
     private CourseRecyclerAdapter adapter;

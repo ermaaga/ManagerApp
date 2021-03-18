@@ -169,6 +169,7 @@
     <string name="text_message_release_removed">The file has been removed from releases</string>
     <string name="text_message_evaluation_failed">The project evaluation failed, please try again later</string>
     <string name="text_message_review_reply_submitted">Reply sent</string>
+    <string name="text_message_connection_down">The app requires an internet connection</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -195,6 +196,7 @@
     <string name="text_button_permissions_done">Done</string>
     <string name="text_button_view_answers">View answers</string>
     <string name="text_button_reply_review">Reply</string>
+    <string name="text_button_check_connection">Open Settings</string>
 
     <string name="text_hint_email_user" translatable="false">Email</string>
     <string name="text_hint_password_user" translatable="false">Password</string>
@@ -247,8 +249,6 @@
     <string name="text_filter_file_pdf" translatable="false">PDF</string>
     <string name="text_filter_file_doc" translatable="false">.doc</string>
     <string name="text_filter_file_audio">Audio</string>
-
-
 
     <plurals name="text_notification_title_feed">
         <item quantity="one">New notification Found</item>

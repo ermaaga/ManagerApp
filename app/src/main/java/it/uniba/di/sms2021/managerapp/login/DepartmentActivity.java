@@ -34,8 +34,9 @@ import it.uniba.di.sms2021.managerapp.enitities.Department;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.lists.DepartmentRecyclerAdapter;
+import it.uniba.di.sms2021.managerapp.utility.AbstractBaseActivity;
 
-public class DepartmentActivity extends AppCompatActivity {
+public class DepartmentActivity extends AbstractBaseActivity {
     private static final String TAG = "DepartmentActivity";
 
     public static final String USER_DEPARTMENTS = "Department";

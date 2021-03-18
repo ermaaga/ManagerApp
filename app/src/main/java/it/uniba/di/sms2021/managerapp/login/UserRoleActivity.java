@@ -7,8 +7,9 @@ import android.os.Bundle;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.utility.AbstractBaseActivity;
 
-public class UserRoleActivity extends AppCompatActivity {
+public class UserRoleActivity extends AbstractBaseActivity {
     private static final String TAG = "UserRoleActivity";
 
     public static final String USER_ROLE = "UserRole";

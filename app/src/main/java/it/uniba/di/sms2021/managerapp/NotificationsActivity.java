@@ -2,6 +2,7 @@ package it.uniba.di.sms2021.managerapp;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.BaseAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,9 +32,10 @@ import it.uniba.di.sms2021.managerapp.notifications.EvaluationNotification;
 import it.uniba.di.sms2021.managerapp.notifications.GroupJoinRequestNotification;
 import it.uniba.di.sms2021.managerapp.notifications.Notifiable;
 import it.uniba.di.sms2021.managerapp.notifications.ReportNotification;
+import it.uniba.di.sms2021.managerapp.utility.AbstractBaseActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
-public class NotificationsActivity extends AppCompatActivity {
+public class NotificationsActivity extends AbstractBaseActivity {
 
     private static final String TAG = "NotificationsActivity";
 

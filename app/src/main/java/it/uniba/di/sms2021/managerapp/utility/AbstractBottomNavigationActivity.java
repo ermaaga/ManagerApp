@@ -2,6 +2,7 @@ package it.uniba.di.sms2021.managerapp.utility;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
@@ -20,7 +21,7 @@ import it.uniba.di.sms2021.managerapp.home.HomeActivity;
  * Activity con bottom navigation bar. Il file layout dell'activity deve necessariamente
  * includere il layout bottom_navigation con medesimo id.
  */
-public abstract class AbstractBottomNavigationActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
+public abstract class AbstractBottomNavigationActivity extends AbstractBaseActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     /**
      * Ritorna l'id del layout da associare all'activity
@@ -53,11 +54,6 @@ public abstract class AbstractBottomNavigationActivity extends AppCompatActivity
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.nav_home) {
@@ -71,7 +67,7 @@ public abstract class AbstractBottomNavigationActivity extends AppCompatActivity
     }
 
     /**
-     * Aggiorna l'item selezionato nel bottom navigation menù
+     * Aggiorna l'item selezionato nel bottom navigation menu
      */
     private void updateNavigationBarState() {
         int actionId = getBottomNavigationMenuItemId();

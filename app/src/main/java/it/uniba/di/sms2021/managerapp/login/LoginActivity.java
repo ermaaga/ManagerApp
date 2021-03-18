@@ -43,9 +43,10 @@ import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.home.HomeActivity;
 import it.uniba.di.sms2021.managerapp.notifications.NotificationChecker;
 import it.uniba.di.sms2021.managerapp.notifications.NotificationService;
+import it.uniba.di.sms2021.managerapp.utility.AbstractBaseActivity;
 import it.uniba.di.sms2021.managerapp.utility.FormUtil;
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends AbstractBaseActivity implements View.OnClickListener {
     private static final int RC_SIGN_IN = 1;
     private static final String TAG = "LoginActivityTag";
 

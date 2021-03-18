@@ -197,6 +197,7 @@ public class NotificationService extends Service {
                                 notificationsFound, notificationsFound))
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setContentIntent(pendingIntent)
+                        .setOnlyAlertOnce(true)
                         .setAutoCancel(true);
 
                 NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
