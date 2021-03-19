@@ -16,11 +16,15 @@ public class AbstractBaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        receiver = new ConnectionCheckBroadcastReceiver(new ConnectionCheckBroadcastReceiver.OnConnectionDownListener() {
+        receiver = new ConnectionCheckBroadcastReceiver(new ConnectionCheckBroadcastReceiver.OnConnectionChangeListener() {
+            @Override
+            public void onConnectionUp() {
+                AbstractBaseActivity.this.onConnectionUp();
+            }
+
             @Override
             public void onConnectionDown() {
-                ConnectionCheckBroadcastReceiver.showConnectivitySnackbar(
-                        AbstractBaseActivity.this, getWindow());
+                AbstractBaseActivity.this.onConnectionDown();
             }
         });
     }
@@ -35,5 +39,14 @@ public class AbstractBaseActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         ConnectionCheckBroadcastReceiver.removeReceiver(this, receiver);
+    }
+
+    protected void onConnectionUp () {
+        // Metodo vuoto che lascio per override nelle altre classi
+    }
+
+    protected void onConnectionDown () {
+        ConnectionCheckBroadcastReceiver.showConnectivitySnackbar(
+                AbstractBaseActivity.this, getWindow());
     }
 }

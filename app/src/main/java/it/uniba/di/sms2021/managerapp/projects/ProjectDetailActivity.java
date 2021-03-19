@@ -23,6 +23,7 @@ import com.google.android.material.tabs.TabLayout;
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivity;
+import it.uniba.di.sms2021.managerapp.utility.ConnectionCheckBroadcastReceiver;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 import it.uniba.di.sms2021.managerapp.utility.SearchUtil;
 
@@ -47,6 +48,9 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     private SearchView searchView;
     private HorizontalScrollView searchFilters;
     private SearchView.OnQueryTextListener queryTextListener;
+
+    //Listener implementato nei fragment al momento della loro creazione
+    private ConnectionCheckBroadcastReceiver.OnConnectionChangeListener connectionChangeListener;
 
     @Override
     protected Fragment getInitialFragment() {
@@ -205,7 +209,31 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         invalidateOptionsMenu();
     }
 
-    public void setUpSearchBar() {
+    @Override
+    protected void onConnectionUp() {
+        super.onConnectionUp();
+        if (connectionChangeListener != null) {
+            connectionChangeListener.onConnectionUp();
+        }
+    }
+
+    @Override
+    protected void onConnectionDown() {
+        super.onConnectionDown();
+        if (connectionChangeListener != null) {
+            connectionChangeListener.onConnectionDown();
+        }
+    }
+
+    /**
+     * Imposta le azioni da prendere nei singoli fragment qualora cambiasse lo stato della connessione.
+     * Deve essere chiamato in ogni fragment di questa activity.
+     */
+    public void setUpConnectionChangeListener (@Nullable ConnectionCheckBroadcastReceiver.OnConnectionChangeListener listener) {
+        connectionChangeListener = listener;
+    }
+
+    private void setUpSearchBar() {
         //Inizializza la barra di ricerca ed i filtri
         SearchUtil.setUpSearchBar(this, searchView, searchFilters,
                 R.string.text_hint_search_file, onSearchListener);

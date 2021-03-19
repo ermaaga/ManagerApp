@@ -170,6 +170,8 @@
     <string name="text_message_evaluation_failed">The project evaluation failed, please try again later</string>
     <string name="text_message_review_reply_submitted">Reply sent</string>
     <string name="text_message_connection_down">The app requires an internet connection</string>
+    <string name="text_message_files_connection_down">You need a working internet connection to view the files of this project</string>
+    <string name="text_message_files_empty">There are no files in this project</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 

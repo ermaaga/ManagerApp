@@ -5,12 +5,12 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
@@ -19,10 +19,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -49,6 +49,7 @@ import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.firebase.TemporaryFileDownloader;
 import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
 import it.uniba.di.sms2021.managerapp.lists.FilesRecyclerAdapter;
+import it.uniba.di.sms2021.managerapp.utility.ConnectionCheckBroadcastReceiver;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 import it.uniba.di.sms2021.managerapp.utility.NotificationUtil;
 import it.uniba.di.sms2021.managerapp.utility.SearchUtil;
@@ -73,20 +74,26 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private Project project;
     private UploadTask uploadTask;
 
+    private ConstraintLayout filesLayout;
+    private ConstraintLayout emptyLayout;
+    private TextView emptyMessageTextView;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        ProjectDetailActivity activity = (ProjectDetailActivity) getActivity();
+        ProjectDetailActivity activity = (ProjectDetailActivity) requireActivity();
 
         //Quando l'utente digita qualcosa nella barra di ricerca, la lista dei file verrà aggiornata
         //con i file che abbiano o nome o tipo corrispondenti alla query.
-        activity.setUpSearchAction(true, onSearchListener);
+        activity.setUpSearchAction(true, searchListener);
+        //Mostra la lista o un messaggio informativo qualora la connessione mancasse
+        activity.setUpConnectionChangeListener(connectionChangeListener);
     }
 
     /**
      * Azione da eseguire quando viene effettuata una ricerca
      */
-    private SearchUtil.OnSearchListener onSearchListener = new SearchUtil.OnSearchListener() {
+    private final SearchUtil.OnSearchListener searchListener = new SearchUtil.OnSearchListener() {
         @Override
         public void onSearchAction(String query) {
             String[] keyWords = query.toLowerCase().split(" ");
@@ -123,6 +130,23 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         }
     };
 
+    /**
+     * Azioni da eseguire quando cambia lo stato della connessione
+     */
+    private final ConnectionCheckBroadcastReceiver.OnConnectionChangeListener connectionChangeListener =
+            new ConnectionCheckBroadcastReceiver.OnConnectionChangeListener() {
+                @Override
+                public void onConnectionUp() {
+                    getFiles();
+                }
+
+                @Override
+                public void onConnectionDown() {
+                    showMessageLayout();
+                    emptyMessageTextView.setText(R.string.text_message_files_connection_down);
+                }
+            };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,6 +161,10 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        filesLayout = view.findViewById(R.id.file_layout);
+        emptyLayout = view.findViewById(R.id.empty_state_layout);
+        emptyMessageTextView = view.findViewById(R.id.files_empty_state_message_text_view);
 
         FloatingActionButton addFileFloatingActionButton =
                 view.findViewById(R.id.files_add_file_floating_action_button);
@@ -192,7 +220,6 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                     @Override
                     public void onSuccess(Void aVoid) {
                         // File deleted successfully
-                        //TODO gestire undo nello snackbar
                         files.remove(file);
                         if (project.getReleaseNames().contains(file.getName())) {
                             project.removeReleaseName(file.getName());
@@ -272,6 +299,10 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         }
     }
 
+    /**
+     * Ottiene la lista dei files e la visualizza a schermo
+     * Se la lista è vuota mostra un messaggio informativo all'utente
+     */
     private void getFiles() {
         files = new ArrayList<>();
         elaboratingReferences = new HashSet<>();    // Usato per avvisare il programma che i file
@@ -339,9 +370,15 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
      * Mostra la lista dei file trovati
      */
     private void showFiles () {
-        Log.i(TAG, files.toString());
-        adapter.submitList(files);
-        adapter.notifyDataSetChanged();
+        if (files.isEmpty()) {
+            showMessageLayout();
+            emptyMessageTextView.setText(R.string.text_message_files_empty);
+        } else {
+            showFileLayout();
+
+            adapter.submitList(files);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
@@ -377,8 +414,6 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_DOCUMENT_GET && resultCode == RESULT_OK) {
-            Bitmap thumbnail = data.getParcelableExtra("data"); /*TODO farci qualcosa come mostrare una finestra di dialogo
-                                                                         che mostri il progresso dell'upload e che usi il thumbnail*/
             Uri fullPhotoUri = data.getData();
 
             upload(fullPhotoUri);
@@ -570,5 +605,15 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                         downloadWithWarning(file);
                     }
                 }).show();
+    }
+
+    private void showFileLayout () {
+        filesLayout.setVisibility(View.VISIBLE);
+        emptyLayout.setVisibility(View.GONE);
+    }
+
+    private void showMessageLayout () {
+        filesLayout.setVisibility(View.GONE);
+        emptyLayout.setVisibility(View.VISIBLE);
     }
 }

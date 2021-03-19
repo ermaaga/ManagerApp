@@ -18,9 +18,9 @@ import com.google.android.material.snackbar.Snackbar;
 import it.uniba.di.sms2021.managerapp.R;
 
 public class ConnectionCheckBroadcastReceiver extends BroadcastReceiver {
-    private OnConnectionDownListener listener;
+    private OnConnectionChangeListener listener;
 
-    public ConnectionCheckBroadcastReceiver(OnConnectionDownListener listener) {
+    public ConnectionCheckBroadcastReceiver(OnConnectionChangeListener listener) {
         this.listener = listener;
     }
 
@@ -36,7 +36,7 @@ public class ConnectionCheckBroadcastReceiver extends BroadcastReceiver {
                 + state.toString());
 
         if (state == NetworkInfo.State.CONNECTED) {
-            // Connection up
+            listener.onConnectionUp();
         } else {
             listener.onConnectionDown();
         }
@@ -53,8 +53,8 @@ public class ConnectionCheckBroadcastReceiver extends BroadcastReceiver {
     }
 
     public static void showConnectivitySnackbar (Context context, Window activityWindow) {
-        Snackbar.make(activityWindow.getDecorView().findViewById(android.R.id.content),
-                R.string.text_message_connection_down, Snackbar.LENGTH_LONG)
+        Snackbar snackbar = Snackbar.make(activityWindow.getDecorView().findViewById(android.R.id.content),
+                R.string.text_message_connection_down, Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.text_button_check_connection, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -65,11 +65,13 @@ public class ConnectionCheckBroadcastReceiver extends BroadcastReceiver {
                             context.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                         }
                     }
-                })
-                .show();
+                });
+        snackbar.getView().setOnClickListener(v -> snackbar.dismiss());
+        snackbar.show();
     }
 
-    public interface OnConnectionDownListener {
+    public interface OnConnectionChangeListener {
+        void onConnectionUp();
         void onConnectionDown();
     }
 }

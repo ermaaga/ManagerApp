@@ -58,8 +58,9 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        ProjectDetailActivity activity = (ProjectDetailActivity) getActivity();
+        ProjectDetailActivity activity = (ProjectDetailActivity) requireActivity();
         activity.setUpSearchAction(false, null);
+        activity.setUpConnectionChangeListener(null);
     }
 
     @Override

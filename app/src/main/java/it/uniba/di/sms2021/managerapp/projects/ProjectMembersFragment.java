@@ -43,8 +43,9 @@ public class ProjectMembersFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        ProjectDetailActivity activity = (ProjectDetailActivity) getActivity();
+        ProjectDetailActivity activity = (ProjectDetailActivity) requireActivity();
         activity.setUpSearchAction(false, null);
+        activity.setUpConnectionChangeListener(null);
     }
 
     @Override
