@@ -3,8 +3,8 @@ package it.uniba.di.sms2021.managerapp.enitities.notifications;
 import java.util.Objects;
 
 public class NewReportNotice {
-    private String ReportId;
-    private String ReportSenderId;
+    private String reportId;
+    private String reportSenderId;
     private String groupId;
     private Long sentTime;
 
@@ -12,26 +12,26 @@ public class NewReportNotice {
     }
 
     public NewReportNotice(String reportId, String reportSenderId, String groupId) {
-        ReportId = reportId;
-        ReportSenderId = reportSenderId;
+        this.reportId = reportId;
+        this.reportSenderId = reportSenderId;
         this.groupId = groupId;
         this.sentTime = System.currentTimeMillis();
     }
 
     public String getReportId() {
-        return ReportId;
+        return reportId;
     }
 
     public void setReportId(String reportId) {
-        ReportId = reportId;
+        this.reportId = reportId;
     }
 
     public String getReportSenderId() {
-        return ReportSenderId;
+        return reportSenderId;
     }
 
     public void setReportSenderId(String reportSenderId) {
-        ReportSenderId = reportSenderId;
+        this.reportSenderId = reportSenderId;
     }
 
     public String getGroupId() {
@@ -55,22 +55,22 @@ public class NewReportNotice {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         NewReportNotice that = (NewReportNotice) o;
-        return Objects.equals(ReportId, that.ReportId) &&
-                Objects.equals(ReportSenderId, that.ReportSenderId) &&
+        return Objects.equals(reportId, that.reportId) &&
+                Objects.equals(reportSenderId, that.reportSenderId) &&
                 Objects.equals(groupId, that.groupId) &&
                 Objects.equals(sentTime, that.sentTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ReportId, ReportSenderId, groupId, sentTime);
+        return Objects.hash(reportId, reportSenderId, groupId, sentTime);
     }
 
     @Override
     public String toString() {
         return "NewReportNotice{" +
-                "ReportId='" + ReportId + '\'' +
-                ", ReportSenderId='" + ReportSenderId + '\'' +
+                "reportId='" + reportId + '\'' +
+                ", reportSenderId='" + reportSenderId + '\'' +
                 ", groupId='" + groupId + '\'' +
                 ", sentTime=" + sentTime +
                 '}';

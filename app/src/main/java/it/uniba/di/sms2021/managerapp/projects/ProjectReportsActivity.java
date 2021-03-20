@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.enitities.Reply;
 import it.uniba.di.sms2021.managerapp.enitities.Report;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
@@ -59,6 +60,16 @@ public class ProjectReportsActivity extends AbstractBottomNavigationActivity {
         recyclerView = findViewById(R.id.reports_recyclerView);
 
         project = getIntent().getParcelableExtra(Project.KEY);
+        boolean needReply = getIntent().getBooleanExtra(Reply.KEY, false);
+        Report replyReport = getIntent().getParcelableExtra(Report.KEY);
+
+        if(needReply){
+            ViewRepliesFragment bottomSheetFragment = new ViewRepliesFragment();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("originView", replyReport);
+            bottomSheetFragment.setArguments(bundle);
+            bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+        }
     }
 
     @Override
@@ -72,6 +83,7 @@ public class ProjectReportsActivity extends AbstractBottomNavigationActivity {
                 ReplyFragment bottomSheetFragment = new ReplyFragment();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable("originReply", report);
+                bundle.putParcelable("project", project);
                 bottomSheetFragment.setArguments(bundle);
                 bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
             }

@@ -10,6 +10,8 @@ public class Reply {
     private String comment;
     private String originId;
 
+    public static final String KEY = "reply";
+
     public Reply() {
     }
 

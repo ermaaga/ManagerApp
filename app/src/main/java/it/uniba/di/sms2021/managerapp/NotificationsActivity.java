@@ -2,10 +2,8 @@ package it.uniba.di.sms2021.managerapp;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.BaseAdapter;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -24,6 +22,7 @@ import it.uniba.di.sms2021.managerapp.enitities.notifications.ExamJoinRequest;
 import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinNotice;
 import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
 import it.uniba.di.sms2021.managerapp.enitities.notifications.NewEvaluation;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewReplyReportNotice;
 import it.uniba.di.sms2021.managerapp.enitities.notifications.NewReportNotice;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
@@ -31,6 +30,7 @@ import it.uniba.di.sms2021.managerapp.lists.NotificationRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.notifications.EvaluationNotification;
 import it.uniba.di.sms2021.managerapp.notifications.GroupJoinRequestNotification;
 import it.uniba.di.sms2021.managerapp.notifications.Notifiable;
+import it.uniba.di.sms2021.managerapp.notifications.ReplyNotification;
 import it.uniba.di.sms2021.managerapp.notifications.ReportNotification;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBaseActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
@@ -52,6 +52,8 @@ public class NotificationsActivity extends AbstractBaseActivity {
     private List<EvaluationNotification> newEvaluations;
 
     private List<ReportNotification> newReports;
+    private List<ReplyNotification> newReplies;
+
 
 
     @Override
@@ -260,6 +262,48 @@ public class NotificationsActivity extends AbstractBaseActivity {
         };
         newReportReference.addListenerForSingleValueEvent(newReportListener);
 
+        DatabaseReference newReplyReportReference = FirebaseDbHelper.getNewReplyReportReference(LoginHelper.getCurrentUser().getAccountId());
+        workingReferences.add(newReplyReportReference);
+
+        ValueEventListener newReplyReportListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                newReplies = new ArrayList<>();
+
+                if (snapshot.getChildrenCount() == 0) {
+                    workingReferences.remove(newReplyReportReference);
+                    executeUpdate();
+                    return;
+                }
+
+                Set<DataSnapshot> elaboratingChildren = new HashSet<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+
+                    elaboratingChildren.add(child);
+                    NewReplyReportNotice replyReportNotice = child.getValue(NewReplyReportNotice.class);
+                    new ReplyNotification.Initialiser() {
+                        @Override
+                        public void onNotificationInitialised(ReplyNotification notification) {
+                            newReplies.add(notification);
+                            elaboratingChildren.remove(child);
+
+                            if (elaboratingChildren.isEmpty()) {
+                                workingReferences.remove(newReplyReportReference);
+                                executeUpdate();
+                            }
+                        }
+                    }.initialiseNotification(replyReportNotice);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, error.getMessage());
+            }
+        };
+        newReplyReportReference.addListenerForSingleValueEvent(newReplyReportListener);
+
         DatabaseReference examJoinRequestsReference = FirebaseDbHelper.getExamJoinRequestReference(LoginHelper.getCurrentUser().getAccountId());
         workingReferences.add(examJoinRequestsReference);
 
@@ -300,6 +344,7 @@ public class NotificationsActivity extends AbstractBaseActivity {
             notifications.addAll(newEvaluations);
             notifications.addAll(examJoinRequests);
             notifications.addAll(newReports);
+            notifications.addAll(newReplies);
 
             adapter.submitList(notifications);
             adapter.notifyDataSetChanged();

@@ -228,6 +228,9 @@
     <string name="text_notification_message_update_evaluation">%s ha aggiornato la valutazione del progetto del tuo gruppo: %s </string>
     <string name="text_notification_title_report">Nuova segnalazione</string>
     <string name="text_notification_message_report">%s ha inviato una segnalazione per il progetto del tuo gruppo: %s </string>
+    <string name="text_notification_title_reply">Nuova risposta alla segnalazione</string>
+    <string name="text_notification_message_reply">%s ha risposto alla segnalazione \"%s%s\" relativa al progetto del tuo gruppo: %s </string>
+
 
     <string name="text_filter_file_release">Rilasci</string>
     <string name="text_filter_file_image">Immagini</string>

@@ -35,19 +35,19 @@ public class ReportNotification  implements Notifiable {
         this.report = report;
     }
 
-    public String getEvaluationId() {
+    public String getReportId() {
         return report.getReportId();
     }
 
-    public void setEvaluationId(String requestId) {
+    public void setReportId(String requestId) {
         report.setReportId(requestId);
     }
 
-    public String getEvaluationSenderId() {
+    public String getReportSenderId() {
         return report.getReportSenderId();
     }
 
-    public void setEvaluationSenderId(String requestSenderId) {
+    public void setReportSenderId(String requestSenderId) {
         report.setReportSenderId(requestSenderId);
     }
 
@@ -197,7 +197,7 @@ public class ReportNotification  implements Notifiable {
                             if (notification.sender == null) {
                                 throw new RuntimeException("Impossibile trovare l'utente con l'id "
                                         + report.getReportSenderId() +
-                                        " nella nuova segnalazione per il gruppo di id " +
+                                        " nella nuova segnalazione di id " +
                                         report.getReportId());
                             }
 
@@ -221,7 +221,7 @@ public class ReportNotification  implements Notifiable {
                             if (notification.group == null) {
                                 throw new RuntimeException("Impossibile trovare il gruppo con l'id "
                                         + report.getGroupId() +
-                                        " nella nuova segnalazione per il gruppo di id " +
+                                        " nella nuova segnalazione di id " +
                                         report.getReportId());
                             }
 

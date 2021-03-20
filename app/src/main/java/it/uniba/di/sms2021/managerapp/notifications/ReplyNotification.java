@@ -16,55 +16,59 @@ import java.util.Objects;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
-import it.uniba.di.sms2021.managerapp.enitities.notifications.NewEvaluation;
+import it.uniba.di.sms2021.managerapp.enitities.Reply;
+import it.uniba.di.sms2021.managerapp.enitities.Report;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewReplyReportNotice;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
-import it.uniba.di.sms2021.managerapp.projects.ProjectDetailActivity;
+import it.uniba.di.sms2021.managerapp.projects.ProjectReportsActivity;
 
 
-public class EvaluationNotification  implements Notifiable {
-    private static final String TAG = "EvaluationNotification";
-    private NewEvaluation evaluation;
+public class ReplyNotification implements Notifiable {
+    private static final String TAG = "ReplyNotification";
+
+    private NewReplyReportNotice reply;
     private User sender;
     private Group group;
+    private Report report;
     private Date sentTime;
 
-    public EvaluationNotification(NewEvaluation evaluation) {
-        this.evaluation = evaluation;
+    public ReplyNotification(NewReplyReportNotice reply) {
+        this.reply = reply;
     }
 
-    public String getEvaluationId() {
-        return evaluation.getEvaluationId();
+    public String getReplyId() {
+        return reply.getReplyId();
     }
 
-    public void setEvaluationId(String requestId) {
-        evaluation.setEvaluationId(requestId);
+    public void setReplyId(String requestId) {
+        reply.setReplyId(requestId);
     }
 
-    public String getEvaluationSenderId() {
-        return evaluation.getEvaluationSenderId();
+    public String getReplySenderId() {
+        return reply.getReplySenderId();
     }
 
-    public void setEvaluationSenderId(String requestSenderId) {
-        evaluation.setEvaluationSenderId(requestSenderId);
+    public void setReplySenderId(String requestSenderId) {
+        reply.setReplySenderId(requestSenderId);
     }
 
     public String getGroupId() {
-        return evaluation.getGroupId();
+        return reply.getGroupId();
     }
 
     public void setGroupId(String groupId) {
-        evaluation.setGroupId(groupId);
+        reply.setGroupId(groupId);
     }
 
     public Long getSentTime() {
-        return evaluation.getSentTime();
+        return reply.getSentTime();
     }
 
     public void setSentTime(Long sentTime) {
-        evaluation.setSentTime(sentTime);
+        reply.setSentTime(sentTime);
     }
 
     public User getSender() {
@@ -83,30 +87,31 @@ public class EvaluationNotification  implements Notifiable {
         this.group = group;
     }
 
-    public Boolean isUpdate() {
-       return evaluation.isUpdate();
+    public Report getReport() {
+        return report;
     }
 
-    public void setUpdate(Boolean update) {
-        evaluation.setUpdate(update);
+    public void setReport(Report report) {
+        this.report = report;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EvaluationNotification that = (EvaluationNotification) o;
+        ReplyNotification that = (ReplyNotification) o;
         return Objects.equals(sender, that.sender) &&
-                Objects.equals(group, that.group);
+                Objects.equals(group, that.group) &&
+                Objects.equals(report, that.report);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sender, group);
+        return Objects.hash(sender, group, report);
     }
 
     public boolean isInitialised () {
-        return sender != null && group != null;
+        return sender != null && group != null && report!= null;
     }
 
     //metodo dell'interfaccia Notifiable da implementare
@@ -119,26 +124,21 @@ public class EvaluationNotification  implements Notifiable {
     @Exclude
     @Override
     public String getNotificationTitle(Context context) {
-
-        if (evaluation.isUpdate()) {
-            return context.getString(R.string.text_notification_title_update_evaluation);
-        } else {
-            return context.getString(R.string.text_notification_title_new_evaluation);
-        }
+        return context.getString(R.string.text_notification_title_reply);
     }
 
     //metodo dell'interfaccia Notifiable da implementare
     @Exclude
     @Override
     public String getNotificationMessage(Context context) {
-
-        if (evaluation.isUpdate()) {
-            return context.getString(R.string.text_notification_message_update_evaluation,
-                    sender.getFullName(), group.getName());
-        } else {
-            return context.getString(R.string.text_notification_message_new_evaluation,
-                    sender.getFullName(), group.getName());
+        String ellipsis;
+        if(report.getComment().length()>30){
+            ellipsis="...";
+        }else{
+            ellipsis="";
         }
+        return context.getString(R.string.text_notification_message_reply,
+                    sender.getFullName(), report.getComment().substring(0,29), ellipsis, group.getName());
     }
 
     //metodo dell'interfaccia Notifiable da implementare
@@ -149,11 +149,14 @@ public class EvaluationNotification  implements Notifiable {
             public void onProjectInitialised(Project project) {
                 String uid=LoginHelper.getCurrentUser().getAccountId();
 
-                FirebaseDbHelper.getNewEvaluationReference(uid).child(evaluation.getEvaluationId()).removeValue();
+                FirebaseDbHelper.getNewReplyReportReference(uid).child(reply.getReplyId()).removeValue();
 
-                Intent intent = new Intent(context, ProjectDetailActivity.class);
+                Intent intent = new Intent(context, ProjectReportsActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra(Project.KEY, project);
+                intent.putExtra(Report.KEY, report);
+                boolean needReeply = true;
+                intent.putExtra(Reply.KEY, needReeply);
                 context.startActivity(intent);
             }
         }.initialiseProject(group);
@@ -168,11 +171,11 @@ public class EvaluationNotification  implements Notifiable {
     //metodo dell'interfaccia Notifiable da implementare
     @Override
     public void onNotificationAction1Click(Context context, @Nullable OnActionDoneListener listener) {
-       String uid=LoginHelper.getCurrentUser().getAccountId();
+        String uid=LoginHelper.getCurrentUser().getAccountId();
 
-       FirebaseDbHelper.getNewEvaluationReference(uid).child(evaluation.getEvaluationId()).removeValue();
+        FirebaseDbHelper.getNewReplyReportReference(uid).child(reply.getReplyId()).removeValue();
 
-       if (listener != null) {
+        if (listener != null) {
             listener.onActionDone();
         }
     }
@@ -190,34 +193,34 @@ public class EvaluationNotification  implements Notifiable {
     }
 
     public static abstract class Initialiser {
-        private EvaluationNotification notification;
+        private ReplyNotification notification;
 
         /**
          * Definire cosa fare una volta che la notifica è stata inizializzata
          */
-        public abstract void onNotificationInitialised (EvaluationNotification notification);
+        public abstract void onNotificationInitialised (ReplyNotification notification);
 
         /**
          * Initializza la notifica con tutti i campi necessari a partire dalla richiesta
-         * @param evaluation la valutazione da cui creare la notifica
+         * @param reply la risposta da cui creare la notifica
          */
-        public void initialiseNotification (NewEvaluation evaluation) {
-            notification = new EvaluationNotification(evaluation);
+        public void initialiseNotification (NewReplyReportNotice reply) {
+            notification = new ReplyNotification(reply);
 
-            notification.sentTime = new Date(evaluation.getSentTime());
+            notification.sentTime = new Date(reply.getSentTime());
 
 
             FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS)
-                    .child(evaluation.getEvaluationSenderId())
+                    .child(reply.getReplySenderId())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             notification.sender = snapshot.getValue(User.class);
                             if (notification.sender == null) {
                                 throw new RuntimeException("Impossibile trovare l'utente con l'id "
-                                        + evaluation.getEvaluationSenderId() +
-                                        " nella valutazione di id " +
-                                        evaluation.getEvaluationId());
+                                        + reply.getReplySenderId() +
+                                        " nella nuova risposta di id " +
+                                        reply.getReplyId());
                             }
 
                             if (notification.isInitialised()) {
@@ -232,16 +235,41 @@ public class EvaluationNotification  implements Notifiable {
                     });
 
             FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS)
-                    .child(evaluation.getGroupId())
+                    .child(reply.getGroupId())
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             notification.group = snapshot.getValue(Group.class);
                             if (notification.group == null) {
                                 throw new RuntimeException("Impossibile trovare il gruppo con l'id "
-                                        + evaluation.getGroupId() +
-                                        " nella valutazione di id " +
-                                        evaluation.getEvaluationId());
+                                        + reply.getGroupId() +
+                                        " nella nuova risposta di id " +
+                                        reply.getReplyId());
+                            }
+
+                            if (notification.isInitialised()) {
+                                onNotificationInitialised(notification);
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+            FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_REPORTS)
+                    .child("reportsList")
+                    .child(reply.getReportId())
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            notification.report = snapshot.getValue(Report.class);
+                            if (notification.report == null) {
+                                throw new RuntimeException("Impossibile trovare la segnalazione con l'id "
+                                        + reply.getReportId() +
+                                        " nella nuova risposta di id " +
+                                        reply.getReplyId());
                             }
 
                             if (notification.isInitialised()) {
@@ -256,10 +284,4 @@ public class EvaluationNotification  implements Notifiable {
                     });
         }
     }
-
-
-
-
-
-
 }

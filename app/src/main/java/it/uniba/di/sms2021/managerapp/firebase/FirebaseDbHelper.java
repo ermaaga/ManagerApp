@@ -22,6 +22,8 @@ public class FirebaseDbHelper {
     public static final String TABLE_REPLIES_REVIEW = "replies_review";
     public static final String TABLE_REPLIES_REPORT = "replies_report";
     public static final String TABLE_NEW_REPORT = "new_report";
+    public static final String TABLE_NEW_REPLY_REPORT = "new_reply_report";
+
 
     private static final String TABLE_PENDING_REQUESTS = "pending_requests";
 
@@ -48,6 +50,10 @@ public class FirebaseDbHelper {
 
     public static DatabaseReference getNewReportReference (String uid) {
         return getDBInstance().getReference(TABLE_NOTIFICATIONS + "/" +  TABLE_NEW_REPORT).child(uid);
+    }
+
+    public static DatabaseReference getNewReplyReportReference (String uid) {
+        return getDBInstance().getReference(TABLE_NOTIFICATIONS + "/" +  TABLE_NEW_REPLY_REPORT).child(uid);
     }
 
     public static DatabaseReference getExamJoinRequestReference (String uid) {

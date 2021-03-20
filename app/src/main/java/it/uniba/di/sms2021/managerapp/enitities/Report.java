@@ -11,12 +11,13 @@ public class Report implements Parcelable {
     private String date;
     String groupId;
     private String comment;
+    public static final String KEY = "report";
 
     public Report() {
     }
 
-    public Report(String reviewId, String userId, String date, String groupId, String comment) {
-        this.reportId = reviewId;
+    public Report(String reportId, String userId, String date, String groupId, String comment) {
+        this.reportId = reportId;
         this.userId = userId;
         this.date = date;
         this.groupId = groupId;

@@ -28,8 +28,10 @@ import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Reply;
 import it.uniba.di.sms2021.managerapp.enitities.Report;
 import it.uniba.di.sms2021.managerapp.enitities.Review;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewReplyReportNotice;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
+import it.uniba.di.sms2021.managerapp.firebase.Project;
 
 public class ReplyFragment extends BottomSheetDialogFragment implements View.OnClickListener {
     DatabaseReference replyReviewReference;
@@ -42,6 +44,8 @@ public class ReplyFragment extends BottomSheetDialogFragment implements View.OnC
 
     String idgroup;
     String user;
+    String idReport;
+    String idReply;
 
     ProjectReviewsActivity activity;
 
@@ -111,18 +115,32 @@ public class ReplyFragment extends BottomSheetDialogFragment implements View.OnC
                 String replyComment = reply_edit_text.getText().toString();
                 String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
 
-                DatabaseReference newElement=replyReportReference.push();
-                Reply replyreport = new Reply(newElement.getKey(), user, date, replyComment, ((Report) origin).getReportId());
-                newElement.setValue(replyreport);
-            }
+                idReport = ((Report) origin).getReportId();
 
+                DatabaseReference newElement=replyReportReference.push();
+                idReply= newElement.getKey();
+                Reply replyreport = new Reply(idReply, user, date, replyComment, idReport);
+                newElement.setValue(replyreport);
+
+                sendReply();
+            }
 
             Toast.makeText(requireContext(), R.string.text_message_review_reply_submitted, Toast.LENGTH_SHORT).show();
             //TODO inserire progress bar mentre ricarica la pagina?
             getActivity().recreate();
             dismiss();
         }
+    }
+
+    private void sendReply() {
+        Project group = this.getArguments().getParcelable("project");
 
 
+        for(String u: group.getMembri()){
+            DatabaseReference pushReference = FirebaseDbHelper.getNewReplyReportReference(u).push();
+            pushReference.setValue(
+                    new NewReplyReportNotice(pushReference.getKey(), user, idReport,
+                            group.getId()));
+        }
     }
 }
