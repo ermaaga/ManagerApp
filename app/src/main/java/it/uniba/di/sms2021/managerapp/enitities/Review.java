@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 
 import java.util.Objects;
 
-public class Review implements Parcelable {
+public class Review implements Parcelable, Opinion {
 
     private String reviewId;
     private String userId;
@@ -142,5 +142,10 @@ public class Review implements Parcelable {
         dest.writeInt(rating);
         dest.writeString(groupId);
         dest.writeString(comment);
+    }
+
+    @Override
+    public String getDateOpinion() {
+        return date;
     }
 }

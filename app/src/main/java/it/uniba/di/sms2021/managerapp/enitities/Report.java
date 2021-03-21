@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.util.Objects;
 
-public class Report implements Parcelable {
+public class Report implements Parcelable, Opinion {
     private String reportId;
     private String userId;
     private String date;
@@ -114,4 +114,9 @@ public class Report implements Parcelable {
             return new Report[size];
         }
     };
+
+    @Override
+    public String getDateOpinion() {
+        return date;
+    }
 }

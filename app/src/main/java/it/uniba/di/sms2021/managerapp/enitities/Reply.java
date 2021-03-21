@@ -2,7 +2,7 @@ package it.uniba.di.sms2021.managerapp.enitities;
 
 import java.util.Objects;
 
-public class Reply {
+public class Reply implements Opinion{
 
     private String replyId;
     private String userId;
@@ -89,5 +89,10 @@ public class Reply {
                 ", comment='" + comment + '\'' +
                 ", originId='" + originId + '\'' +
                 '}';
+    }
+
+    @Override
+    public String getDateOpinion() {
+        return date;
     }
 }

@@ -8,6 +8,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
@@ -25,6 +27,7 @@ import it.uniba.di.sms2021.managerapp.enitities.Reply;
 import it.uniba.di.sms2021.managerapp.enitities.Review;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.projects.OpinionComparator;
 
 public class ReviewsRecyclerAdapter extends ListAdapter<Review, ReviewsRecyclerAdapter.ViewHolder>{
     private static final String TAG= "ReviewsRecyclerAdapter";
@@ -56,13 +59,6 @@ public class ReviewsRecyclerAdapter extends ListAdapter<Review, ReviewsRecyclerA
         TextView userTextView = itemView.findViewById(R.id.user_TextView);
         TextView dateTextView = itemView.findViewById(R.id.date_TextView);
         TextView messageTextView= itemView.findViewById(R.id.message_TextView);
-        //Button replyButton = itemView.findViewById(R.id.reply_button);
-
-        /*replyButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                listener.onReply(review);
-            }} );*/
 
         setUserName(userTextView, review);
         userRatingBar.setRating(review.getRating());
@@ -73,11 +69,18 @@ public class ReviewsRecyclerAdapter extends ListAdapter<Review, ReviewsRecyclerA
             messageTextView.setText(review.getComment());
         }
 
-        //TODO VEDERE: Prima la chiamata al metodo stava qui
-        //setViewReplies(repliesTextView);
     }
 
-    //TODO vedere se i listener vanno bene in questa classe e non nel metodo onBindViewHolder
+    /**
+     * Prima di mostrare la lista viene ordinata per data di invio
+     */
+    @Override
+    public void submitList(@Nullable List<Review> list) {
+        Collections.sort(list, new OpinionComparator());
+
+        super.submitList(list);
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView repliesTextView;
         Button replyButton;
@@ -103,7 +106,7 @@ public class ReviewsRecyclerAdapter extends ListAdapter<Review, ReviewsRecyclerA
 
             setViewReplies(repliesTextView, list);
         }
-        //TODO vedere se va bene. Prima questo metodo stava al di fuori della classe ViewHolder senza il parametro list
+
         private void setViewReplies(TextView repliesTextView, List<Review> list){
             DatabaseReference reviewRepliesReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_REPLIES_REVIEW);
             reviewRepliesReference.addListenerForSingleValueEvent(new ValueEventListener() {

@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
@@ -24,6 +26,7 @@ import it.uniba.di.sms2021.managerapp.enitities.Reply;
 import it.uniba.di.sms2021.managerapp.enitities.Report;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.projects.OpinionComparator;
 
 public class ReportsRecyclerAdapter extends ListAdapter<Report, ReportsRecyclerAdapter.ViewHolder> {
     private static final String TAG = "ReportsRecyclerAdapter";
@@ -62,6 +65,16 @@ public class ReportsRecyclerAdapter extends ListAdapter<Report, ReportsRecyclerA
             messageTextView.setText(report.getComment());
         }
 
+    }
+
+    /**
+     * Prima di mostrare la lista viene ordinata per data di invio
+     */
+    @Override
+    public void submitList(@Nullable List<Report> list) {
+        Collections.sort(list, new OpinionComparator());
+
+        super.submitList(list);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
