@@ -70,13 +70,16 @@
         </activity>
         <activity
             android:name=".login.SignInActivity"
-            android:label="@string/activity_label_projects" />
+            android:label="@string/activity_label_sign_in" />
         <activity
             android:name=".projects.ProjectsActivity"
             android:label="@string/activity_label_projects" />
         <activity
             android:name=".projects.ProjectsSharingActivity"
             android:label="@string/activity_label_projects_sharing" />
+        <activity
+            android:name=".projects.ProjectsListDetailActivity"
+            android:label="@string/activity_label_projects" />
         <activity
             android:name=".exams.ExamsActivity"
             android:label="@string/activity_label_exams" />

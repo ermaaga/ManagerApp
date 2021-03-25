@@ -1,13 +1,5 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
@@ -25,56 +17,67 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.lists.ProjectsRecyclerAdapter;
-import it.uniba.di.sms2021.managerapp.lists.StringRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 import it.uniba.di.sms2021.managerapp.utility.SearchUtil;
 
-public class ProjectsActivity extends AbstractBottomNavigationActivity {
+public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity {
 
     private static final int REQUEST_ENABLE_BT = 1;
     private static final int REQUEST_LOCATION_PERMISSIONS = 2;
     private static final int REQUEST_CODE_GPS = 3;
 
-    private RecyclerView myProjectsRecyclerView;
-    private ProjectsRecyclerAdapter myProjectsAdapter;
-    private RecyclerView listProjectsRecyclerView;
-    private StringRecyclerAdapter listProjectsAdapter;
+    private RecyclerView projectsRecyclerView;
+    private ProjectsRecyclerAdapter projectsAdapter;
     private BluetoothAdapter bluetoothAdapter;
 
     private static final String TAG = "ProjectsActivity";
     private DatabaseReference groupsReference;
     private DatabaseReference listIdReference;
-    private ValueEventListener projectListener;
     private ValueEventListener listIdProjectsListener;
+    private ValueEventListener projectsListener;
 
     private MenuItem searchMenuItem;
-    private List<Project> projects;
     private List<String> listIdProjects;
+    private List<Project> projects;
+    private String nameList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        nameList  = getIntent().getStringExtra("namelist");
+        TextView project_list_title = findViewById(R.id.project_list_title_text_view);
+        project_list_title.setText(nameList);
+
         ImageView shareProjects = findViewById(R.id.share_list_image_view);
-        myProjectsRecyclerView = findViewById(R.id.my_projects_recycler_view);
-        listProjectsRecyclerView = findViewById(R.id.list_projects_recycler_view);
+        projectsRecyclerView = findViewById(R.id.projects_recycler_view);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         //controlla se il bluetooth è supportato dal device
@@ -93,16 +96,19 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
     protected void onStart() {
         super.onStart();
 
-        listProjectsAdapter = new StringRecyclerAdapter(new StringRecyclerAdapter.OnActionListener() {
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle(nameList);
+
+        projectsAdapter = new ProjectsRecyclerAdapter(new ProjectsRecyclerAdapter.OnActionListener() {
             @Override
-            public void onItemClicked(String namelist) {
-                chooseList(namelist);
+            public void onClick(Project project) {
+                chooseProject(project);
             }
         });
-        listProjectsRecyclerView.setAdapter(listProjectsAdapter);
-        listProjectsRecyclerView.addItemDecoration(new DividerItemDecoration(this,
+        projectsRecyclerView.setAdapter(projectsAdapter);
+        projectsRecyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
-        listProjectsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        projectsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         listIdReference = FirebaseDbHelper.getListsProjectsReference(LoginHelper.getCurrentUser().getAccountId());
 
@@ -110,12 +116,14 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 listIdProjects = new ArrayList<>();
-                if(snapshot.getChildrenCount() != 0) {
+                if(snapshot.getChildrenCount()!=0) {
                     for (DataSnapshot child : snapshot.getChildren()) {
-                        listIdProjects.add(( String ) child.getKey());
-                    }
-                    listProjectsAdapter.submitList(listIdProjects);
+                        GenericTypeIndicator<List<String>> type = new GenericTypeIndicator<List<String>>() {};
+
+                        listIdProjects = child.getValue(type);
+
                     Log.d(TAG, "listId: "+ listIdProjects.toString());
+                    }
                 }
             }
 
@@ -126,39 +134,32 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
         };
         listIdReference.addValueEventListener(listIdProjectsListener);
 
-        //Creo l'adapter che crea gli elementi con i relativi dati.
-        myProjectsAdapter = new ProjectsRecyclerAdapter(new ProjectsRecyclerAdapter.OnActionListener() {
-            @Override
-            public void onClick(Project project) {
-                chooseProject(project);
-            }
-        });
-        myProjectsRecyclerView.setAdapter(myProjectsAdapter);
-        myProjectsRecyclerView.addItemDecoration(new DividerItemDecoration(this,
-                DividerItemDecoration.VERTICAL));
-        myProjectsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         //Ottengo i dati con cui riempire la lista.
         groupsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS);
-        projectListener = new ValueEventListener() {
+
+        projectsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 projects = new ArrayList<>();
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    Group group = child.getValue(Group.class);
-                    String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    if (group.getMembri().contains(currentUserId)) {
-                        //Uso l'inizializzatore di progetti per ottenere tutti i dati utili
-                        //e quando è inizializzato, lo visualizzo nella lista
-                        new Project.Initialiser() {
-                            @Override
-                            public void onProjectInitialised(Project project) {
-                                projects.add(project);
-                                myProjectsAdapter.submitList(projects);
-                                myProjectsAdapter.notifyDataSetChanged();
+                if(listIdProjects != null){
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        Group group = child.getValue(Group.class);
+                            for(String id: listIdProjects){
+                                if (group.getId().equals(id)) {
+                                    //Uso l'inizializzatore di progetti per ottenere tutti i dati utili
+                                    //e quando è inizializzato, lo visualizzo nella lista
+                                    new Project.Initialiser() {
+                                        @Override
+                                        public void onProjectInitialised(Project project) {
+                                            projects.add(project);
+                                            Log.d(TAG, "list project ricevuti: "+projects.toString());
+                                            projectsAdapter.submitList(projects);
+                                            projectsAdapter.notifyDataSetChanged();
+                                        }
+                                    }.initialiseProject(group);
+                                }
                             }
-                        }.initialiseProject(group);
-                    }
+                        }
                 }
             }
 
@@ -167,19 +168,20 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
 
             }
         };
-        groupsReference.addValueEventListener(projectListener);
+        groupsReference.addValueEventListener(projectsListener);
+
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        groupsReference.removeEventListener(projectListener);
+        groupsReference.removeEventListener(projectsListener);
         listIdReference.removeEventListener(listIdProjectsListener);
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_projects;
+        return R.layout.activity_projects_list_detail;
     }
 
     @Override
@@ -236,7 +238,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
                     searchProjects.add(project);
                 }
             }
-            myProjectsAdapter.submitList(searchProjects);
+            projectsAdapter.submitList(searchProjects);
         }
     };
 
@@ -252,14 +254,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
         Log.d(TAG, "vote click project: " + project.getGroup().getEvaluation());
         Intent intent = new Intent(this, ProjectDetailActivity.class);
         intent.putExtra(Project.KEY, project);
-        startActivity(intent);
-    }
-
-    public void chooseList(String namelist) {
-        Log.d(TAG, "click list: " + namelist);
-        Intent intent = new Intent(this, ProjectsListDetailActivity.class);
-        //todo creare un chiave
-        intent.putExtra("namelist", namelist);
         startActivity(intent);
     }
 
@@ -362,7 +356,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
                 builder.setPositiveButton("Retry", new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions(ProjectsActivity.this,
+                        ActivityCompat.requestPermissions(ProjectsListDetailActivity.this,
                                 new String [ ]{ /*Manifest.permission.ACCESS_COARSE_LOCATION,*/ Manifest.permission.ACCESS_FINE_LOCATION} ,
                                 REQUEST_LOCATION_PERMISSIONS);
                     }

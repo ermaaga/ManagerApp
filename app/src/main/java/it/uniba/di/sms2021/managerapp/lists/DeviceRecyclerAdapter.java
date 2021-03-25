@@ -1,5 +1,6 @@
 package it.uniba.di.sms2021.managerapp.lists;
 
+import android.bluetooth.BluetoothDevice;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import it.uniba.di.sms2021.managerapp.R;
 
-public class DeviceRecyclerAdapter extends ListAdapter<String, RecyclerView.ViewHolder> {
+public class DeviceRecyclerAdapter extends ListAdapter<BluetoothDevice, RecyclerView.ViewHolder> {
     private OnActionListener listener;
 
     public DeviceRecyclerAdapter(OnActionListener listener) {
@@ -38,21 +39,21 @@ public class DeviceRecyclerAdapter extends ListAdapter<String, RecyclerView.View
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         View itemView = holder.itemView;
-        itemView.setOnClickListener(view -> listener.onItemClicked(getItem(position)));
+        itemView.setOnClickListener(view -> listener.onItemClicked(getItem(position).getAddress()));
 
         TextView contentTextView = itemView.findViewById(R.id.nameDeviceTextView);
-        contentTextView.setText(getItem(position));
+        contentTextView.setText(getItem(position).getName()+" "+getItem(position).getAddress());
     }
 
-    static class StringDiffCallback extends DiffUtil.ItemCallback<String> {
+    static class StringDiffCallback extends DiffUtil.ItemCallback<BluetoothDevice> {
 
         @Override
-        public boolean areItemsTheSame(@NonNull String oldItem, @NonNull String newItem) {
+        public boolean areItemsTheSame(@NonNull BluetoothDevice oldItem, @NonNull BluetoothDevice newItem) {
             return oldItem == newItem;
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull String oldItem, @NonNull String newItem) {
+        public boolean areContentsTheSame(@NonNull BluetoothDevice oldItem, @NonNull BluetoothDevice newItem) {
             return oldItem.equals(newItem);
         }
     }

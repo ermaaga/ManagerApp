@@ -7,17 +7,30 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+import it.uniba.di.sms2021.managerapp.BluetoothConnection;
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
+import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.lists.DeviceRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 
@@ -25,13 +38,91 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
 
     private static final String TAG = "ProjectsSharingActivity";
 
-    ProgressBar progressBar;
-    private RecyclerView recyclerView;
-    private DeviceRecyclerAdapter adapter;
+    private ProgressBar progressBar;
+    private RecyclerView availableRecyclerView;
+    private RecyclerView pairedRecyclerView;
+    private DeviceRecyclerAdapter availableAdapter;
+    private DeviceRecyclerAdapter pairedAdapter;
+
+    private Context context;
+    private ListView listMessages;
+    private EditText  messageEditText;
+    private Button buttonSendMessage;
+    private ArrayAdapter<String> adapterMessages;
+    private String connectedDevice;
+    private String projectsId;
 
     BluetoothAdapter bluetoothAdapter;
+    private BluetoothConnection bluetoothConnection;
 
-    public ArrayList<String> devices = new ArrayList<>();
+    public ArrayList<BluetoothDevice> availableDevices = new ArrayList<>();
+    public ArrayList<BluetoothDevice> pairedDevices = new ArrayList<>();
+
+    private Handler handler = new Handler(new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message message) {
+            switch (message.what) {
+                case BluetoothConnection.MESSAGE_STATE_CHANGED:
+                    switch (message.arg1) {
+                        case BluetoothConnection.STATE_NONE:
+                            setState("Not Connected");
+                            break;
+                        case BluetoothConnection.STATE_LISTEN:
+                            setState("Not Connected");
+                            break;
+                        case BluetoothConnection.STATE_CONNECTING:
+                            setState("Connecting...");
+                            break;
+                        case BluetoothConnection.STATE_CONNECTED:
+                            setState("Connected: " + connectedDevice);
+                            break;
+                    }
+                    break;
+                case BluetoothConnection.MESSAGE_WRITE:
+                    byte[] buffer1 = (byte[]) message.obj;
+                    String outputBuffer = new String(buffer1);
+                    adapterMessages.add("Me: " + outputBuffer);
+                    break;
+                case BluetoothConnection.MESSAGE_READ:
+                    byte[] buffer = (byte[]) message.obj;
+                    String inputBuffer = new String(buffer, 0, message.arg1);
+                    adapterMessages.add(connectedDevice + ": " + inputBuffer);
+                    saveListProjects(inputBuffer);
+                    Intent intent = new Intent(getApplicationContext(), ProjectsActivity.class);
+                    startActivity(intent);
+                    break;
+                case BluetoothConnection.MESSAGE_DEVICE_NAME:
+                    connectedDevice = message.getData().getString(BluetoothConnection.DEVICE_NAME);
+                    Toast.makeText(context, connectedDevice, Toast.LENGTH_SHORT).show();
+                    break;
+                case BluetoothConnection.MESSAGE_TOAST:
+                    Toast.makeText(context, message.getData().getString(BluetoothConnection.TOAST), Toast.LENGTH_SHORT).show();
+                    break;
+            }
+            return false;
+        }
+    });
+
+    private void setState(CharSequence state) {
+        getSupportActionBar().setSubtitle(state);
+    }
+
+    private void saveListProjects(String message) {
+        String[] messageSplit = message.split(",");
+
+        List<String> listId = new ArrayList<>();
+
+        for(String id: messageSplit){
+            listId.add(id);
+        }
+
+        DatabaseReference listReference = FirebaseDbHelper.getListsProjectsReference(LoginHelper.getCurrentUser().getAccountId());
+
+        DatabaseReference newElement=listReference.push();
+
+        newElement.setValue(listId);
+
+    }
 
     /**
      * Broadcast Receiver for listing devices that are not yet paired
@@ -45,11 +136,11 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
             if (action.equals(BluetoothDevice.ACTION_FOUND)){
                 Log.d(TAG, "onReceive: ACTION FOUND.");
                 BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
-                if(!devices.contains(device.getAddress() + ", " + device.getName())){
-                    devices.add(device.getAddress() + ", " + device.getName());
+                if(!availableDevices.contains(device)){
+                    availableDevices.add(device);
                     Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
-                    adapter.submitList(devices);
-                    adapter.notifyDataSetChanged();
+                    availableAdapter.submitList(availableDevices);
+                    availableAdapter.notifyDataSetChanged();
                 }
             }
         }
@@ -75,7 +166,7 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
             if (action.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)){
                 progressBar.setVisibility(View.INVISIBLE);
                 Log.d(TAG, "onReceive: ACTION_DISCOVERY_FINISHED.");
-                Log.d(TAG, "onReceive: new devices" + devices.toString());
+                Log.d(TAG, "onReceive: new devices" + availableDevices.toString());
             }
         }
     };
@@ -92,22 +183,21 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
             if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
                 progressBar.setVisibility(View.INVISIBLE);
                 Log.d(TAG, "onReceive: discovery finish");
-                Log.d(TAG, "onReceive: new devices" + devices.toString());
+                Log.d(TAG, "onReceive: new devices" + availableDevices.toString());
             }
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                //bluetooth device found
                 BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                  /*if (device.getBondState() !=BluetoothDevice.BOND_BONDED)    {
 
                     near_device.add(device.getAddress());
                     */
 
-                devices.add(device.getAddress() + ", " + device.getName());
+                availableDevices.add(device);
 
 
                 Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
-                adapter.submitList(devices);
-                adapter.notifyDataSetChanged();
+                availableAdapter.submitList(availableDevices);
+                availableAdapter.notifyDataSetChanged();
             }
         }
     };
@@ -127,9 +217,32 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        context = this;
         progressBar=findViewById(R.id.progressBar);
-        recyclerView = findViewById(R.id.devices_recycler_view);
+        availableRecyclerView = findViewById(R.id.available_devices__recycler_view);
+        pairedRecyclerView = findViewById(R.id.paired_devices_recycler_view);
+
+        buttonSendMessage = findViewById(R.id.button_send);
+
+        //TODO CODICE DA ELIMINARE
+        listMessages = findViewById(R.id.list_conversation);
+        messageEditText = findViewById(R.id.editTextMessage);
+        listMessages.setVisibility(View.GONE);
+        messageEditText.setVisibility(View.GONE);
+        adapterMessages = new ArrayAdapter<String>(context, R.layout.list_item_message);
+        listMessages.setAdapter(adapterMessages);
+
+
+        projectsId = getIntent().getStringExtra(Project.KEY);
+        messageEditText.setText(projectsId);
+
+
+        buttonSendMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bluetoothConnection.write(projectsId.getBytes());
+            }
+        });
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -151,27 +264,60 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
 
             registerReceiver(mReceiver, filter);*/
 
+        bluetoothConnection = new BluetoothConnection(context, handler);
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        //TODO vedere se aggiungere icona dispositivo nell'adapter e quindi nel layout oppure
-        // se avere una semplice stringa e quindi togliere questo adapter e utilizzare stringAdapter
-
-        adapter = new DeviceRecyclerAdapter(new DeviceRecyclerAdapter.OnActionListener() {
+        pairedAdapter = new DeviceRecyclerAdapter(new DeviceRecyclerAdapter.OnActionListener() {
 
             @Override
-            public void onItemClicked(String string) {
-                Toast.makeText(getApplicationContext(), "devices selected is: "+ string, Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "devices selected is: "+ string);
+            public void onItemClicked(String address) {
+                bluetoothConnection.connect(bluetoothAdapter.getRemoteDevice(address));
+
+                Toast.makeText(getApplicationContext(), "devices selected is: "+ address, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "devices selected is: "+ address);
             }
         });
-        recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this,
+
+        pairedRecyclerView.setAdapter(pairedAdapter);
+        pairedRecyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        pairedRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        Set<BluetoothDevice> setPairedDevices = bluetoothAdapter.getBondedDevices();
+
+        // Se ci sono dispositivi già abbinati
+        if (setPairedDevices.size() > 0) {
+
+            for (BluetoothDevice device : setPairedDevices) {
+                pairedDevices.add(device);
+            }
+
+            pairedAdapter.submitList(pairedDevices);
+            pairedAdapter.notifyDataSetChanged();
+            Log.d(TAG, "PairedDevices: " + pairedDevices.toString());
+        }else{
+            Log.d(TAG, "PairedDevices: " + pairedDevices.toString());
+        }
+
+        availableAdapter = new DeviceRecyclerAdapter(new DeviceRecyclerAdapter.OnActionListener() {
+
+            @Override
+            public void onItemClicked(String address) {
+                bluetoothConnection.connect(bluetoothAdapter.getRemoteDevice(address));
+                    
+                Toast.makeText(getApplicationContext(), "devices selected is: "+ address, Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "devices selected is: "+ address);
+            }
+        });
+        availableRecyclerView.setAdapter(availableAdapter);
+        availableRecyclerView.addItemDecoration(new DividerItemDecoration(this,
+                DividerItemDecoration.VERTICAL));
+        availableRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         discover();
 
@@ -204,6 +350,10 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
 
         //brodcast unico
         // unregisterReceiver(mReceiver);
+
+        if (bluetoothConnection != null) {
+            bluetoothConnection.stop();
+        }
     }
 
 }

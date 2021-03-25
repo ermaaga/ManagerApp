@@ -73,7 +73,9 @@
     <string name="text_label_file_release_number">Release N.%d</string>
     <string name="text_label_evaluation">Evaluation:</string>
     <string name="text_label_my_projects_title">My Projects</string>
+    <string name="text_label_lists_projects_received_title">Lists of projects received</string>
     <string name="text_label_available_devices">Available devices:</string>
+    <string name="text_label_paired_devices">Paired devices:</string>
 
     <string name="text_label_project_preference_visibility">Anyone can view the project</string>
     <string name="text_label_project_preference_free_join">Anyone can join the project</string>
@@ -124,6 +126,7 @@
     <string name="description_file_actions">File Actions</string>
     <string name="description_preview_action">Preview</string>
     <string name="description_share_list">Share List</string>
+    <string name="description_bluetooth_device">Device Bluetooth</string>
 
     <string name="text_message_not_yet_implemented">Feature not yet implemented</string>
     <string name="text_message_study_case_created">The study case was created</string>
@@ -199,6 +202,7 @@
     <string name="text_button_view_answers">View answers</string>
     <string name="text_button_reply_review">Reply</string>
     <string name="text_button_check_connection">Open Settings</string>
+    <string name="text_button_share_list">Share</string>
 
     <string name="text_hint_email_user" translatable="false">Email</string>
     <string name="text_hint_password_user" translatable="false">Password</string>

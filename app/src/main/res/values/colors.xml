@@ -11,4 +11,5 @@
     <color name="grey">#FF888888</color>
     <color name="yellow_rating">#FAE422</color>
     <color name="red_error">#B00022</color>
+    <color name="blue">#004071</color>
 </resources>
