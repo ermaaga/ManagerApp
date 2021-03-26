@@ -1,6 +1,5 @@
 package it.uniba.di.sms2021.managerapp.lists;
 
-import android.bluetooth.BluetoothDevice;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,20 +10,24 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import it.uniba.di.sms2021.managerapp.R;
+import java.util.List;
 
-public class DeviceRecyclerAdapter extends ListAdapter<BluetoothDevice, RecyclerView.ViewHolder> {
+import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.enitities.Group;
+import it.uniba.di.sms2021.managerapp.enitities.ListProjects;
+
+public class ListProjectsRecyclerAdapter extends ListAdapter<ListProjects, RecyclerView.ViewHolder> {
     private OnActionListener listener;
 
-    public DeviceRecyclerAdapter(OnActionListener listener) {
-        super(new DeviceDiffCallback());
+    public ListProjectsRecyclerAdapter(OnActionListener listener) {
+        super(new ListProjectsDiffCallback());
         this.listener = listener;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_device,
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_simple_string,
                 parent, false);
 
         //Nota: volendo si può creare una classe ViewHolder a parte.
@@ -38,27 +41,28 @@ public class DeviceRecyclerAdapter extends ListAdapter<BluetoothDevice, Recycler
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        ListProjects list = getItem(position);
         View itemView = holder.itemView;
-        itemView.setOnClickListener(view -> listener.onItemClicked(getItem(position).getAddress()));
+        itemView.setOnClickListener(view -> listener.onItemClicked(list));
 
-        TextView contentTextView = itemView.findViewById(R.id.nameDeviceTextView);
-        contentTextView.setText(getItem(position).getName()+" "+getItem(position).getAddress());
+        TextView contentTextView = itemView.findViewById(R.id.simpleListItemTextView);
+        contentTextView.setText(getItem(position).getNameList());
     }
 
-    static class DeviceDiffCallback extends DiffUtil.ItemCallback<BluetoothDevice> {
+    static class ListProjectsDiffCallback extends DiffUtil.ItemCallback<ListProjects> {
 
         @Override
-        public boolean areItemsTheSame(@NonNull BluetoothDevice oldItem, @NonNull BluetoothDevice newItem) {
+        public boolean areItemsTheSame(@NonNull ListProjects oldItem, @NonNull ListProjects newItem) {
             return oldItem == newItem;
         }
 
         @Override
-        public boolean areContentsTheSame(@NonNull BluetoothDevice oldItem, @NonNull BluetoothDevice newItem) {
+        public boolean areContentsTheSame(@NonNull ListProjects oldItem, @NonNull ListProjects newItem) {
             return oldItem.equals(newItem);
         }
     }
 
     public interface OnActionListener {
-        void onItemClicked (String string);
+        void onItemClicked (ListProjects list);
     }
 }

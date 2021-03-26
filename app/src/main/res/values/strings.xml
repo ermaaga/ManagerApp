@@ -32,6 +32,7 @@
     <string name="label_Dialog_title_departments">Select departments</string>
     <string name="label_Dialog_confimation_message_join_necessary">Due to permission settings, this group can only be opened by members. Do you want to be part of this study group?</string>
     <string name="label_dialog_group_creation">Group creation</string>
+    <string name="label_Dialog_title_name_list">Save the received list</string>
 
     <string name="text_error_validation">The group name cannot have much than 20 characters</string>
     <string name="text_error_max_review_report">The review cannot have much than 800 characters</string>
@@ -76,6 +77,7 @@
     <string name="text_label_lists_projects_received_title">Lists of projects received</string>
     <string name="text_label_available_devices">Available devices:</string>
     <string name="text_label_paired_devices">Paired devices:</string>
+    <string name="text_label_name_list">Name list</string>
 
     <string name="text_label_project_preference_visibility">Anyone can view the project</string>
     <string name="text_label_project_preference_free_join">Anyone can join the project</string>
@@ -175,6 +177,7 @@
     <string name="text_message_connection_down">The app requires an internet connection</string>
     <string name="text_message_files_connection_down">You need a working internet connection to view the files of this project</string>
     <string name="text_message_files_empty">There are no files in this project</string>
+    <string name="text_message_list_saving_failed">The list could not be saved, please try again later.</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -218,6 +221,8 @@
     <string name="text_hint_review_project">What do you think of this project?</string>
     <string name="text_hint_report_project">What would you like to report to the group?</string>
 
+    <string name="text_default_name_list_received">List received</string>
+
     <string name="text_action_delete_file">Delete</string>
     <string name="text_action_share_file">Share</string>
     <string name="text_action_download_file">Download</string>
@@ -248,7 +253,6 @@
     <string name="text_notification_title_reply">New reply to report</string>
     <string name="text_notification_message_reply">%s has replied to the report \"%s%s\" related to your group\'s project: %s</string>
 
-
     <string name="notification_channel_name" translatable="false">Default Channel</string>
     <string name="notification_channel_description" translatable="false">The default notification channel for the app</string>
 
@@ -258,6 +262,9 @@
     <string name="text_filter_file_pdf" translatable="false">PDF</string>
     <string name="text_filter_file_doc" translatable="false">.doc</string>
     <string name="text_filter_file_audio">Audio</string>
+
+
+
 
     <plurals name="text_notification_title_feed">
         <item quantity="one">New notification Found</item>

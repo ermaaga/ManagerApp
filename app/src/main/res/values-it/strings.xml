@@ -67,6 +67,7 @@
     <string name="text_label_lists_projects_received_title">Liste di progetti ricevute</string>
     <string name="text_label_available_devices">Dispositivi disponibili:</string>
     <string name="text_label_paired_devices">Dispositivi abbinati:</string>
+    <string name="text_label_name_list">Name list</string>
 
     <string name="text_label_project_preference_visibility">Chiunque può accedere al progetto</string>
     <string name="text_label_project_preference_free_join">Chiunque può unirsi al progetto</string>
@@ -94,6 +95,7 @@
     <string name="label_Dialog_confimation_message_join_necessary">A causa di impostazioni sui permessi, questo gruppo può
          essere aperto solo dai propri membri. Vuoi far parte di questo gruppo studio?</string>
     <string name="label_dialog_group_creation">Creazione gruppo</string>
+    <string name="label_Dialog_title_name_list">Salva la lista ricevuta</string>
 
     <string name="registration_success">Registrazione avvenuta con successo</string>
     <string name="send_verification_email_success">Email di verifica inviata a </string>
@@ -164,6 +166,7 @@
     <string name="text_message_connection_down">L\'app richiede una connessione internet</string>
     <string name="text_message_files_connection_down">Serve una connessione internet funzionante per visualizzare i file di questo progetto</string>
     <string name="text_message_files_empty">Non ci sono file in questo progetto</string>
+    <string name="text_message_list_saving_failed">Non è stato possibile salvare la lista, riprova in seguito</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -205,6 +208,8 @@
     <string name="text_hint_review_project">Cosa ne pensi di questo progetto?</string>
     <string name="text_hint_report_project">Cosa vorresti segnalare al gruppo?</string>
 
+    <string name="text_default_name_list_received">List received</string>
+
     <string name="text_action_delete_file">Elimina</string>
     <string name="text_action_share_file">Condividi</string>
     <string name="text_action_download_file">Scarica</string>
@@ -234,7 +239,6 @@
     <string name="text_notification_message_report">%s ha inviato una segnalazione per il progetto del tuo gruppo: %s </string>
     <string name="text_notification_title_reply">Nuova risposta alla segnalazione</string>
     <string name="text_notification_message_reply">%s ha risposto alla segnalazione \"%s%s\" relativa al progetto del tuo gruppo: %s </string>
-
 
     <string name="text_filter_file_release">Rilasci</string>
     <string name="text_filter_file_image">Immagini</string>

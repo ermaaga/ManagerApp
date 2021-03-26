@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import it.uniba.di.sms2021.managerapp.R;
-
+//TODO se questo tipo di adapter non è usato in nessuna classe eliminare
 public class StringRecyclerAdapter extends ListAdapter<String, RecyclerView.ViewHolder> {
     private OnActionListener listener;
 

@@ -39,8 +39,8 @@ import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
+import it.uniba.di.sms2021.managerapp.enitities.ListProjects;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
-import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.lists.ProjectsRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
@@ -59,22 +59,20 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
 
     private static final String TAG = "ProjectsActivity";
     private DatabaseReference groupsReference;
-    private DatabaseReference listIdReference;
-    private ValueEventListener listIdProjectsListener;
     private ValueEventListener projectsListener;
 
     private MenuItem searchMenuItem;
     private List<String> listIdProjects;
     private List<Project> projects;
-    private String nameList;
+    private ListProjects listSelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        nameList  = getIntent().getStringExtra("namelist");
+        listSelected  = getIntent().getParcelableExtra(ListProjects.KEY);
         TextView project_list_title = findViewById(R.id.project_list_title_text_view);
-        project_list_title.setText(nameList);
+        project_list_title.setText(listSelected.getNameList());
 
         ImageView shareProjects = findViewById(R.id.share_list_image_view);
         projectsRecyclerView = findViewById(R.id.projects_recycler_view);
@@ -97,7 +95,7 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
         super.onStart();
 
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(nameList);
+        actionBar.setTitle(listSelected.getNameList());
 
         projectsAdapter = new ProjectsRecyclerAdapter(new ProjectsRecyclerAdapter.OnActionListener() {
             @Override
@@ -110,29 +108,9 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
                 DividerItemDecoration.VERTICAL));
         projectsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        listIdReference = FirebaseDbHelper.getListsProjectsReference(LoginHelper.getCurrentUser().getAccountId());
+        listIdProjects = listSelected.getIdProjects();
 
-        listIdProjectsListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                listIdProjects = new ArrayList<>();
-                if(snapshot.getChildrenCount()!=0) {
-                    for (DataSnapshot child : snapshot.getChildren()) {
-                        GenericTypeIndicator<List<String>> type = new GenericTypeIndicator<List<String>>() {};
-
-                        listIdProjects = child.getValue(type);
-
-                    Log.d(TAG, "listId: "+ listIdProjects.toString());
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        listIdReference.addValueEventListener(listIdProjectsListener);
+        Log.d(TAG, "listId: "+ listIdProjects.toString());
 
         //Ottengo i dati con cui riempire la lista.
         groupsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS);
@@ -176,7 +154,6 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
     protected void onStop() {
         super.onStop();
         groupsReference.removeEventListener(projectsListener);
-        listIdReference.removeEventListener(listIdProjectsListener);
     }
 
     @Override

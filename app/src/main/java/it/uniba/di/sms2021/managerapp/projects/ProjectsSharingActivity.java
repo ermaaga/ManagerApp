@@ -1,26 +1,34 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +36,7 @@ import java.util.Set;
 
 import it.uniba.di.sms2021.managerapp.BluetoothConnection;
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.enitities.ListProjects;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
@@ -82,14 +91,14 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
                     byte[] buffer1 = (byte[]) message.obj;
                     String outputBuffer = new String(buffer1);
                     adapterMessages.add("Me: " + outputBuffer);
+                    Log.d(TAG, "Me: " + outputBuffer);
                     break;
                 case BluetoothConnection.MESSAGE_READ:
                     byte[] buffer = (byte[]) message.obj;
                     String inputBuffer = new String(buffer, 0, message.arg1);
                     adapterMessages.add(connectedDevice + ": " + inputBuffer);
-                    saveListProjects(inputBuffer);
-                    Intent intent = new Intent(getApplicationContext(), ProjectsActivity.class);
-                    startActivity(intent);
+                    Log.d(TAG, connectedDevice + ": " + inputBuffer);
+                    displayListNameDialog(inputBuffer);
                     break;
                 case BluetoothConnection.MESSAGE_DEVICE_NAME:
                     connectedDevice = message.getData().getString(BluetoothConnection.DEVICE_NAME);
@@ -107,7 +116,29 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
         getSupportActionBar().setSubtitle(state);
     }
 
-    private void saveListProjects(String message) {
+    private void displayListNameDialog (String message) {
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_list_name, null);
+        EditText editText = (EditText) dialogView.findViewById(R.id.editTextNameList);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.label_Dialog_title_name_list)
+                .setView(dialogView)
+                .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        saveListProjects(editText.getText().toString(), message);
+                    }
+                }).setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        }).show();
+    }
+
+    private void saveListProjects(String nameList, String message) {
         String[] messageSplit = message.split(",");
 
         List<String> listId = new ArrayList<>();
@@ -117,10 +148,24 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
         }
 
         DatabaseReference listReference = FirebaseDbHelper.getListsProjectsReference(LoginHelper.getCurrentUser().getAccountId());
-
         DatabaseReference newElement=listReference.push();
 
-        newElement.setValue(listId);
+        ListProjects list = new ListProjects( newElement.getKey(), nameList, listId );
+
+        newElement.setValue(list).addOnSuccessListener(new OnSuccessListener<Void>() {
+               @Override
+               public void onSuccess(Void aVoid) {
+                   Intent intent = new Intent(getApplicationContext(), ProjectsActivity.class);
+                   startActivity(intent);
+               }
+            }
+        ).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(ProjectsSharingActivity.this, R.string.text_message_list_saving_failed, Toast.LENGTH_LONG).show();
+            }
+        });
+
 
     }
 
@@ -337,6 +382,18 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
         }
 
     }
+
+    @Override
+    public void onPause() {
+        Log.d(TAG, "onPause: called.");
+        super.onPause();
+        if(bluetoothAdapter != null) {
+            if (bluetoothAdapter.isDiscovering()) {
+                bluetoothAdapter.cancelDiscovery();
+            }
+        }
+    }
+
 
     protected void onDestroy() {
         Log.d(TAG, "onDestroy: called.");
