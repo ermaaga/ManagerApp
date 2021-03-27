@@ -16,54 +16,58 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:id="@+id/name_input_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="338dp"
+        android:layout_height="76dp"
+        android:layout_marginTop="88dp"
         android:hint="@string/text_hint_name_studycase"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="36dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/name_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:inputType="text"
             android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:id="@+id/desc_input_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="338dp"
+        android:layout_height="148dp"
+        android:layout_marginTop="28dp"
         android:hint="@string/text_hint_desc_study_case"
-        app:layout_constraintTop_toBottomOf="@+id/name_input_layout">
+        app:layout_constraintTop_toBottomOf="@+id/name_input_layout"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="36dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/desc_edit_text"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="top"
             android:inputType="textMultiLine"
-            android:lines="4"
-            android:gravity="top"/>
-            <!-->android:maxLines="3" <-->
+            android:lines="4" />
+        <!-->android:maxLines="3" <-->
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/button_create_study_case"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="251dp"
+        android:layout_height="57dp"
         android:layout_marginBottom="20dp"
         android:text="@string/text_buttom_create_study_case"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.455"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/file_card" />
+        app:layout_constraintTop_toBottomOf="@+id/file_card"
+        app:layout_constraintVertical_bias="0.296" />
 
     <include
         android:id="@+id/bottom_navigation"
@@ -75,8 +79,8 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/file_card"
-        android:layout_width="387dp"
-        android:layout_height="193dp"
+        android:layout_width="336dp"
+        android:layout_height="173dp"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -85,7 +89,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="177dp">
 
             <ImageView
                 android:id="@+id/file_type_image_view"
@@ -115,23 +119,11 @@
                 app:layout_constraintVertical_bias="0.446"
                 tools:text="file" />
 
-            <TextView
-                android:id="@+id/file_size_text_view"
-                style="@style/TextAppearance.AppCompat.Small"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textSize="16sp"
-                android:visibility="invisible"
-                app:layout_constraintStart_toStartOf="@+id/file_name_text_view"
-                app:layout_constraintTop_toBottomOf="@+id/file_name_text_view"
-                tools:text="16MB" />
-
             <ImageButton
                 android:id="@+id/button_select_file"
                 android:layout_width="61dp"
                 android:layout_height="63dp"
-                android:backgroundTint="#3F51B5"
+                android:backgroundTint="#0d47a1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -165,6 +157,17 @@
                 app:layout_constraintStart_toEndOf="@+id/file_type_image_view"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_baseline_cancel_24" />
+
+            <TextView
+                android:id="@+id/file_size_text_view"
+                style="@style/TextAppearance.AppCompat.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:visibility="invisible"
+                tools:layout_editor_absoluteX="148dp"
+                tools:layout_editor_absoluteY="147dp"
+                tools:text="16MB" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

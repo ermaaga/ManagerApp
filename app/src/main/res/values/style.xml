@@ -23,4 +23,13 @@
         <item name="colorControlNormal">@color/lightGrey</item>
         <item name="colorControlActivated">@color/yellow_rating</item>
     </style>
+    <style name="Primary" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="backgroundTint">#01579b</item>
+        <item name="colorControlNormal">@color/lightGrey</item>
+        <item name="colorControlActivated">@color/yellow_rating</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_width">251dp</item>
+        <item name="android:layout_height">57dp</item>
+    </style>
+
 </resources>

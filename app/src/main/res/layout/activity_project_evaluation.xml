@@ -19,14 +19,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:id="@+id/vote_input_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="338dp"
+        android:layout_height="76dp"
+        android:layout_marginTop="120dp"
         android:hint="@string/text_hint_vote_project"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="36dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/vote_edit_text"
@@ -36,17 +39,18 @@
             android:maxLines="1" />
     </com.google.android.material.textfield.TextInputLayout>
 
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/comment_input_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_width="338dp"
+        android:layout_height="138dp"
+        android:layout_marginTop="36dp"
         android:hint="@string/text_hint_comment_project"
         app:counterEnabled="true"
         app:counterMaxLength="125"
-        app:layout_constraintTop_toBottomOf="@+id/vote_input_layout">
+        app:layout_constraintTop_toBottomOf="@+id/vote_input_layout"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="36dp">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/comment_edit_text"
@@ -54,24 +58,21 @@
             android:layout_height="wrap_content"
             android:gravity="top"
             android:inputType="textMultiLine"
-            android:lines="5"
-           />
+            android:lines="5" />
         <!-->android:maxLines="3" <-->
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/button_evaluate_project"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="144dp"
-        android:layout_marginBottom="152dp"
+        android:layout_width="251dp"
+        android:layout_height="57dp"
         android:onClick="evaluateProject"
         android:text="@string/text_button_evaluate_project"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/comment_input_layout" />
+        app:layout_constraintTop_toBottomOf="@+id/comment_input_layout"
+        app:layout_constraintVertical_bias="0.282" />
 
     <include
         android:id="@+id/bottom_navigation"

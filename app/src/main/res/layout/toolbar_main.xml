@@ -7,11 +7,11 @@
     <!-->Elevazione standard di 4dp dettata dal material design:
      https://material.io/design/environment/elevation.html#elevation-hierarchy<-->
     <androidx.appcompat.widget.Toolbar
-        android:elevation="4dp"
         android:id="@+id/toolbar_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="#0d47a1"
+        android:elevation="4dp"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"

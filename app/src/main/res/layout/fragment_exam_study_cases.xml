@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="32dp"
+            android:backgroundTint="#5472d3"
             android:clickable="true"
             android:contentDescription="@string/description_add_study_case"
             android:focusable="true"
