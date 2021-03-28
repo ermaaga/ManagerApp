@@ -21,7 +21,7 @@
     <string name="activity_label_project_new_report">Submit a report</string>
     <string name="activity_label_project_reports">Reports</string>
     <string name="activity_label_project_reviews">Reviews</string>
-    <string name="activity_label_projects_sharing">Share your projects list</string>
+    <string name="activity_label_projects_sharing">Select the device</string>
 
     <string name="label_Dialog_Header">Information</string>
     <string name="label_Dialog_confimation_message">Do you want to be part of this study group?</string>
@@ -178,6 +178,10 @@
     <string name="text_message_files_connection_down">You need a working internet connection to view the files of this project</string>
     <string name="text_message_files_empty">There are no files in this project</string>
     <string name="text_message_list_saving_failed">The list could not be saved, please try again later.</string>
+    <string name="text_message_paired_devices_empty">There are no paired devices</string>
+    <string name="text_message_available_devices_empty">There are not available devices</string>
+    <string name="text_message_bluetooth_connection">Select search if you can\'t find the device. Select make discoverable if others can\'t find you</string>
+    <string name="text_message_available_devices_no_search">Select search if you can\'t find your device</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -206,6 +210,8 @@
     <string name="text_button_reply_review">Reply</string>
     <string name="text_button_check_connection">Open Settings</string>
     <string name="text_button_share_list">Share</string>
+    <string name="text_button_search_device">Search</string>
+    <string name="text_button_make_discoverable">Make Discoverable</string>
 
     <string name="text_hint_email_user" translatable="false">Email</string>
     <string name="text_hint_password_user" translatable="false">Password</string>
@@ -262,7 +268,6 @@
     <string name="text_filter_file_pdf" translatable="false">PDF</string>
     <string name="text_filter_file_doc" translatable="false">.doc</string>
     <string name="text_filter_file_audio">Audio</string>
-
 
 
 

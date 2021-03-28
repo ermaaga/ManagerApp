@@ -21,7 +21,7 @@
     <string name="activity_label_project_new_report">Invia una segnalazione</string>
     <string name="activity_label_project_reports">Segnalazioni</string>
     <string name="activity_label_project_reviews">Recensioni</string>
-    <string name="activity_label_projects_sharing">Share your projects list</string>
+    <string name="activity_label_projects_sharing">Seleziona il dispositivo</string>
 
     <string name="creation_exam_failed">Errore durante la creazione</string>
     <string name="text_error_validation">Il nome del gruppo non può essere maggiore di 20 caratteri</string>
@@ -167,6 +167,10 @@
     <string name="text_message_files_connection_down">Serve una connessione internet funzionante per visualizzare i file di questo progetto</string>
     <string name="text_message_files_empty">Non ci sono file in questo progetto</string>
     <string name="text_message_list_saving_failed">Non è stato possibile salvare la lista, riprova in seguito</string>
+    <string name="text_message_paired_devices_empty">Non ci sono dispositivi abbinati</string>
+    <string name="text_message_available_devices_empty">Non ci sono dispositivi disponibili</string>
+    <string name="text_message_bluetooth_connection">Seleziona ricerca se non trovi il dispositivo. Seleziona rendi rilevabile se gli altri non ti trovano </string>
+    <string name="text_message_available_devices_no_search">Seleziona ricerca se non trovi il tuo dispositivo</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -195,6 +199,8 @@
     <string name="text_button_reply_review">Rispondi</string>
     <string name="text_button_check_connection">Apri Impostazioni</string>
     <string name="text_button_share_list">Condividi</string>
+    <string name="text_button_search_device">Ricerca</string>
+    <string name="text_button_make_discoverable">Rendi rilevabile</string>
 
     <string name="text_hint_name_studycase">Nome</string>
     <string name="text_hint_name_group">Nome</string>
@@ -244,6 +250,7 @@
     <string name="text_filter_file_image">Immagini</string>
     <string name="text_filter_file_video">Video</string>
     <string name="text_filter_file_audio">Audio</string>
+
 
 
     <plurals name="text_notification_title_feed">
