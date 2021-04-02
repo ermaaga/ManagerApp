@@ -33,7 +33,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.ListProjects;
@@ -64,7 +66,9 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
     private ValueEventListener projectListener;
     private ValueEventListener listIdProjectsListener;
 
-    private MenuItem searchMenuItem;
+    private String lastQuery = "";
+    private final Set<String> searchFilters = new HashSet<>();
+
     private List<Project> projects;
     private List<ListProjects> idLists;
 
@@ -190,7 +194,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_projects, menu);
-        searchMenuItem = menu.findItem(R.id.action_search);
+        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
 
         //Impostazioni per la barra di ricerca.
         SearchView searchView = (SearchView) searchMenuItem.getActionView();
@@ -204,21 +208,48 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
     private SearchUtil.OnSearchListener onSearchListener = new SearchUtil.OnSearchListener() {
         @Override
         public void onSearchAction(String query) {
+            lastQuery = query;
+
             String[] keyWords = query.toLowerCase().split(" ");
 
             List<Project> searchProjects = new ArrayList<>();
+            String createdFilter = getString(R.string.text_filter_projects_created).toLowerCase();
+            String releaseFilter = getString(R.string.text_filter_projects_withrelease).toLowerCase();
+            String evaluatedFilter = getString(R.string.text_filter_projects_hasevaluation).toLowerCase();
 
             for (Project project: projects) {
                 boolean toAdd = true;
-                for (String string: keyWords) {
-                    //Se il progetto non include una delle parole chiavi, non verrà mostrato.
-                    //Verrà sempre mostrato sempre invece se la query è vuota
-                    if (toAdd && !query.equals("")) {
-                        toAdd = // Va aggiunto se il nome corrisponde alla query
-                                project.getName().toLowerCase().contains(string) ||
-                                // Va aggiunto se il nome del gruppo corrisponde alla query
-                                project.getStudyCaseName().toLowerCase().contains(string);
+
+                if (!query.isEmpty()) {
+                    for (String string: keyWords) {
+                        //Se il file non include una delle parole chiavi, non verrà mostrato.
+                        //Verrà sempre mostrato sempre invece se la query è vuota
+                        if (toAdd) {
+                            toAdd = // Va aggiunto se il nome corrisponde alla query
+                                    project.getName().toLowerCase().contains(string) ||
+                                    // Va aggiunto se il nome del gruppo corrisponde alla query
+                                    project.getStudyCaseName().toLowerCase().contains(string);
+                        }
                     }
+                }
+
+                if (toAdd && !searchFilters.isEmpty()) {
+                    // Il file va aggiunto se include almeno uno dei filtri
+                    boolean containsFilter = false;
+                    for (String string: searchFilters) {
+                        containsFilter =    // Filtro per i progetti creati dall'utente
+                                            (string.contains(createdFilter) && project.isCreator()) ||
+                                            // Filtro per i progetti con rilasci
+                                            (string.contains(releaseFilter) && project.hasReleases()) ||
+                                            // Filtro per i progetti valutati dal professore
+                                            (string.contains(evaluatedFilter) && project.isEvaluated());
+
+                        if (containsFilter) {
+                            break;
+                        }
+                    }
+
+                    toAdd = containsFilter;
                 }
 
                 if (toAdd) {
@@ -230,12 +261,14 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
 
         @Override
         public void onFilterAdded(String filter) {
-            //TODO implementare
+            searchFilters.add(filter.toLowerCase());
+            onSearchListener.onSearchAction(lastQuery);
         }
 
         @Override
         public void onFilterRemoved(String filter) {
-            //TODO implementare
+            searchFilters.remove(filter.toLowerCase());
+            onSearchListener.onSearchAction(lastQuery);
         }
     };
 

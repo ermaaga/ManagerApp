@@ -250,8 +250,9 @@
     <string name="text_filter_file_image">Immagini</string>
     <string name="text_filter_file_video">Video</string>
     <string name="text_filter_file_audio">Audio</string>
-
-
+    <string name="text_filter_projects_created">Creati</string>
+    <string name="text_filter_projects_withrelease">Con Rilasci</string>
+    <string name="text_filter_projects_hasevaluation">Valutati</string>
 
     <plurals name="text_notification_title_feed">
         <item quantity="one">Nuova notifica trovata</item>

@@ -268,7 +268,9 @@
     <string name="text_filter_file_pdf" translatable="false">PDF</string>
     <string name="text_filter_file_doc" translatable="false">.doc</string>
     <string name="text_filter_file_audio">Audio</string>
-
+    <string name="text_filter_projects_created">Created</string>
+    <string name="text_filter_projects_withrelease">With Releases</string>
+    <string name="text_filter_projects_hasevaluation">Evaluated</string>
 
 
     <plurals name="text_notification_title_feed">
