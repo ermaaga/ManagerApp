@@ -74,6 +74,7 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
         if (release != 0) {
             releaseTextView.setText(context.getString(R.string.text_label_file_release_number,
                     release));
+            releaseTextView.setVisibility(View.VISIBLE);
         } else {
             releaseTextView.setVisibility(View.GONE);
         }

@@ -227,7 +227,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
 
     /**
      * Imposta le azioni da prendere nei singoli fragment qualora cambiasse lo stato della connessione.
-     * Deve essere chiamato in ogni fragment di questa activity.
+     * Deve essere chiamato in onAttach in ogni fragment di questa activity.
      */
     public void setUpConnectionChangeListener (@Nullable ConnectionCheckBroadcastReceiver.OnConnectionChangeListener listener) {
         connectionChangeListener = listener;

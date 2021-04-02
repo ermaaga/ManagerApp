@@ -186,17 +186,6 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
                                 project.getName().toLowerCase().contains(string) ||
                                 // Va aggiunto se il nome del gruppo corrisponde alla query
                                 project.getStudyCaseName().toLowerCase().contains(string);
-
-                                        /*
-                                        // Va aggiunto se il tipo corrisponde alla query
-                                        file.getType().toLowerCase().contains(string.toLowerCase()) ||
-                                        // Va aggiunto se il filtro contiene i rilasci ed il file ne è uno
-                                        (string.contains(releaseFilter) && project.getReleaseNumber(file.getName()) != 0) ||
-                                        // Va aggiunto se il filtro contiene le immagini ed il file ne è una.
-                                        (string.contains(imagesFilter) && file.getType().contains("image/")) ||
-                                        // Va aggiunto se il filtro contiene i pdf ed il file ne è uno.
-                                        (string.contains(pdfFilter) && file.getType().equals("application/pdf"));
-                                         */
                     }
                 }
 
@@ -205,6 +194,16 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
                 }
             }
             projectsAdapter.submitList(searchProjects);
+        }
+
+        @Override
+        public void onFilterAdded(String filter) {
+            //TODO implementare
+        }
+
+        @Override
+        public void onFilterRemoved(String filter) {
+            //TODO implementare
         }
     };
 

@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -78,6 +80,9 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private ConstraintLayout emptyLayout;
     private TextView emptyMessageTextView;
 
+    private String lastQuery = "";
+    private final Set<String> searchFilters = new HashSet<>();
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -96,7 +101,9 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private final SearchUtil.OnSearchListener searchListener = new SearchUtil.OnSearchListener() {
         @Override
         public void onSearchAction(String query) {
-            String[] keyWords = query.toLowerCase().split(" ");
+            lastQuery = query;
+
+            List<String> keyWords = new ArrayList<>(Arrays.asList(query.toLowerCase().split(" ")));
 
             List<ManagerFile> searchFile = new ArrayList<>();
             String releaseFilter = getString(R.string.text_filter_file_release).toLowerCase();
@@ -105,21 +112,37 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
 
             for (ManagerFile file: files) {
                 boolean toAdd = true;
-                for (String string: keyWords) {
-                    //Se il file non include una delle parole chiavi, non verrà mostrato.
-                    //Verrà sempre mostrato sempre invece se la query è vuota
-                    if (toAdd && !query.equals("")) {
-                        toAdd = // Va aggiunto se il nome corrisponde alla query
-                                file.getName().toLowerCase().contains(string.toLowerCase()) ||
-                                        // Va aggiunto se il tipo corrisponde alla query
-                                        file.getType().toLowerCase().contains(string.toLowerCase()) ||
-                                        // Va aggiunto se il filtro contiene i rilasci ed il file ne è uno
-                                        (string.contains(releaseFilter) && project.getReleaseNumber(file.getName()) != 0) ||
-                                        // Va aggiunto se il filtro contiene le immagini ed il file ne è una.
-                                        (string.contains(imagesFilter) && file.getType().contains("image/")) ||
-                                        // Va aggiunto se il filtro contiene i pdf ed il file ne è uno.
-                                        (string.contains(pdfFilter) && file.getType().equals("application/pdf"));
+
+                if (!query.isEmpty()) {
+                    for (String string: keyWords) {
+                        //Se il file non include una delle parole chiavi, non verrà mostrato.
+                        //Verrà sempre mostrato sempre invece se la query è vuota
+                        if (toAdd) {
+                            // Va aggiunto se il nome corrisponde alla query
+                            toAdd = file.getName().toLowerCase().contains(string.toLowerCase()) ;
+                        }
                     }
+                }
+
+                if (toAdd && !searchFilters.isEmpty()) {
+                    // Il file va aggiunto se include almeno uno dei filtri
+                    boolean containsFilter = false;
+                    for (String string: searchFilters) {
+                        containsFilter = // Va aggiunto se il tipo corrisponde alla query
+                                (file.getType().toLowerCase().contains(string.toLowerCase()) ||
+                                // Va aggiunto se il filtro contiene i rilasci ed il file ne è uno
+                                (string.contains(releaseFilter) && project.getReleaseNumber(file.getName()) != 0) ||
+                                // Va aggiunto se il filtro contiene le immagini ed il file ne è una.
+                                (string.contains(imagesFilter) && file.getType().contains("image/")) ||
+                                // Va aggiunto se il filtro contiene i pdf ed il file ne è uno.
+                                (string.contains(pdfFilter) && file.getType().equals("application/pdf")));
+
+                        if (containsFilter) {
+                            break;
+                        }
+                    }
+
+                    toAdd = containsFilter;
                 }
 
                 if (toAdd) {
@@ -127,6 +150,18 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                 }
             }
             adapter.submitList(searchFile);
+        }
+
+        @Override
+        public void onFilterAdded(String filter) {
+            searchFilters.add(filter.toLowerCase());
+            onSearchAction(lastQuery);
+        }
+
+        @Override
+        public void onFilterRemoved(String filter) {
+            searchFilters.remove(filter.toLowerCase());
+            onSearchAction(lastQuery);
         }
     };
 
