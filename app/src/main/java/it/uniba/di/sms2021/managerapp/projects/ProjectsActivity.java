@@ -1,30 +1,28 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.Manifest;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -38,19 +36,34 @@ import java.util.List;
 import java.util.Set;
 
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.ListProjects;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
-import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.lists.ListProjectsRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.lists.ProjectsRecyclerAdapter;
-import it.uniba.di.sms2021.managerapp.lists.StringRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 import it.uniba.di.sms2021.managerapp.utility.SearchUtil;
 
-public class ProjectsActivity extends AbstractBottomNavigationActivity {
+public class ProjectsActivity extends AbstractBottomNavigationActivity implements SensorEventListener {
+
+    private SensorManager mSensorManager;
+    private Sensor sensor;
+    private float x, y, z;
+    private boolean itIsNotFirstTime = false;
+    private float accelerationPrev= 0.0f;
+    private float acceleration = 0.0f;
+
+    //Soglia massima della variazione di accelerazione affinchè venga considerato lo scuotimento
+    private static final float THRESHOLD = 5f;
+    //Soglia minima della accelerazione corrente affinchè venga considerato lo scuotimento
+    private static final float THRESHOLD_ACCELERATION = 20f;
+    //Soglia minima della accelerazione precedente affinchè venga considerato lo scuotimento
+    private static final float THRESHOLD_ACCELERATION_PREV = 20f;
+
+    private Vibrator vibrator;
 
     private static final int REQUEST_ENABLE_BT = 1;
 
@@ -75,6 +88,18 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Inizializza mSensorManager che gestisce il sensore
+        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        //Inizializza sensor, usata per incapsulare il sensore. In questo caso l'accelerometro
+        sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
+        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        /*Stabilisce i valori di riferimento per determinare le accelerazioni.
+        In questo caso uguale per tutte e due le variabili:la gravità terrestre*/
+        accelerationPrev = SensorManager.GRAVITY_EARTH;
+        acceleration = SensorManager.GRAVITY_EARTH;
 
         ImageView shareProjects = findViewById(R.id.share_list_image_view);
         myProjectsRecyclerView = findViewById(R.id.my_projects_recycler_view);
@@ -179,6 +204,18 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
         super.onStop();
         groupsReference.removeEventListener(projectListener);
         listIdReference.removeEventListener(listIdProjectsListener);
+    }
+
+    protected void onResume() {
+        super.onResume();
+        //Registrazione del Listener per il sensore
+        mSensorManager.registerListener(this, sensor,SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    public void onPause() {
+        super.onPause();
+        //Cancellazione del Listener per il sensore
+        mSensorManager.unregisterListener(this);
     }
 
     @Override
@@ -295,15 +332,16 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
     }
 
     public void share_list_project(View view){
+        actionShareList();
+    }
+    private void actionShareList(){
         if (!bluetoothAdapter.isEnabled()){
             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(intent, REQUEST_ENABLE_BT);
-        }
-        else {
+        } else {
             Log.d(TAG, "Bluetooth is already on ");
             go_sharing_activity();
         }
-
     }
 
     @Override
@@ -325,7 +363,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
 
     }
 
-
     public void go_sharing_activity(){
         Log.d(TAG, "goSharingActivity");
 
@@ -345,4 +382,53 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity {
         startActivity(intent);
     }
 
+    //Chiamato quando viene letto un nuovo evento dal sensore
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+
+        /*Inizializzati i valori delle accelerazioni
+        misurati per tutte e tre le dimensioni dello spazio*/
+        x = sensorEvent.values[0];
+        y = sensorEvent.values[1];
+        z = sensorEvent.values[2];
+
+        //Viene salvata l'accelerazione precedente per poi ricalcolarne la nuova
+        accelerationPrev=acceleration;
+
+        if(itIsNotFirstTime){
+            /*Calcola la somma delle componenti cartesiane x, y e z in valore
+             assoluto per determinare l'accelerazione corrente.
+             Accelerazione: a = a_x + a_y + a_z */
+            acceleration = Math.abs(x+y+z);
+            Log.d(TAG, "accelerazione"+ acceleration);
+            Log.d(TAG, "accelerationPrev"+ accelerationPrev);
+
+            //Calcola la differenza tra accelerazione e accelerazione precendente in valore assoluto
+            float differenceAcc = Math.abs(acceleration - accelerationPrev);
+            Log.d(TAG, "differenza accelerazione"+ differenceAcc);
+
+            /*Lo scuotimento viene rilevato nel caso in cui:
+             -la differenza delle accelerazioni è minore di una soglia (in questo caso 5)
+             tale per cui i valori di entrambe le accelerazioni applicate non si discostino di molto;
+             - I valori delle accelerazioni applicate siano maggiori di una certa soglia (in queso caso 20)*/
+            if(differenceAcc<THRESHOLD && acceleration>THRESHOLD_ACCELERATION && accelerationPrev>THRESHOLD_ACCELERATION_PREV){
+
+                //Se si sta eseguendo su Oreo (Api level 26) o successivi
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
+                }else{
+                    //Deprecato in Api 26
+                    vibrator.vibrate(500);
+                }
+                actionShareList();
+            }
+        }
+        //Usato per indicare che in precedenza c'è stato almeno un rilevamento
+        itIsNotFirstTime = true;
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
 }
