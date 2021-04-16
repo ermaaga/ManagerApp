@@ -82,7 +82,9 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
 
     @Override
     public void submitList(@Nullable List<ManagerFile> list) {
-        Collections.sort(list, new FileComparator(project.getCurrentReleaseName()));
+        if (list != null) {
+            Collections.sort(list, new FileComparator(project.getCurrentReleaseName()));
+        }
         super.submitList(list);
     }
 
@@ -90,7 +92,7 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
         void onClick (ManagerFile file);
 
         /**
-         * Setta il file come release del progetto
+         * Setta il file come release del progetto o lo rimuove dalle releases.
          * @param file il file da settare
          * @param addRelease true se bisogna settare il file come release, false se bisogna rimuoverlo
          */

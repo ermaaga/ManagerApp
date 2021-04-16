@@ -171,6 +171,8 @@
     <string name="text_message_available_devices_empty">Non ci sono dispositivi disponibili</string>
     <string name="text_message_bluetooth_connection">Seleziona ricerca se non trovi il dispositivo. Seleziona rendi rilevabile se gli altri non ti trovano </string>
     <string name="text_message_available_devices_no_search">Seleziona ricerca se non trovi il tuo dispositivo</string>
+    <string name="text_message_file_deletion">Cancellazione del File</string>
+    <string name="text_message_file_deletion_stopped">File ripristinato con successo</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -222,6 +224,7 @@
     <string name="text_action_add_release_action">Aggiungi ai Rilasci</string>
     <string name="text_action_remove_release_action">Rimuovi dai Rilasci</string>
     <string name="text_action_report_from_review">Clicca qui per segnalare un problema al gruppo.</string>
+    <string name="text_action_undo">Annulla</string>
 
     <string name="text_send_subject">Condivisione File</string>
     <string name="text_send_content">Date un\'occhiata al mio nuovo file %s che ho creato nel mio progetto %s!</string>

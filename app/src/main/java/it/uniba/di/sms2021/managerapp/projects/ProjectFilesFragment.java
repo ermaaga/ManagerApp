@@ -246,33 +246,63 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
             /**
              * Codice preso e modificato da:
              * https://firebase.google.com/docs/storage/android/delete-files
+             * Il file viene nascosto dalla lista e l'utente può annullare l'operazione grazie allo
+             * snackbar che appare. Se l'utente non esegue alcuna azione, il file viene eliminato
+             * definitivamente dal db.
              * @param file file da cancellare
              */
             @Override
             public void onDelete(ManagerFile file) {
-                // Delete the file
-                file.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // File deleted successfully
-                        files.remove(file);
-                        if (project.getReleaseNames().contains(file.getName())) {
-                            project.removeReleaseName(file.getName());
-                        }
+                // Indica se il file deve essere eliminato definitavemente o no
+                final boolean[] toDelete = {true};
 
-                        adapter.submitList(files);
-                        adapter.notifyDataSetChanged();
-                        Snackbar.make(requireView(), R.string.text_message_file_deleted_successfully,
-                                Snackbar.LENGTH_LONG).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Uh-oh, an error occurred!
-                        Snackbar.make(requireView(), R.string.text_message_file_deletion_failed,
-                                Snackbar.LENGTH_LONG).show();
-                    }
-                });
+                files.remove(file);
+                adapter.submitList(files);
+                adapter.notifyDataSetChanged();
+
+                Snackbar.make(requireView(), R.string.text_message_file_deletion,
+                        Snackbar.LENGTH_LONG).setAction(R.string.text_action_undo, new View.OnClickListener() {
+                            // Inserisce un'azione che permette di ripristinare un file cancellato per sbaglio.
+                            // L'azione è permessa solo fino a che lo snackbar rimane a schermo.
+                                @Override
+                                public void onClick(View v) {
+                                    files.add(file);
+                                    adapter.submitList(files);
+                                    adapter.notifyDataSetChanged();
+                                    toDelete[0] = false;
+                                    Snackbar.make(requireView(), R.string.text_message_file_deletion_stopped,
+                                            Snackbar.LENGTH_SHORT).show();
+                                }
+                            }).addCallback(new Snackbar.Callback() {
+                            @Override
+                            public void onDismissed(Snackbar transientBottomBar, int event) {
+                                // Quando lo snackbar sparisce, il file viene eliminato definitivamente dal db
+                                super.onDismissed(transientBottomBar, event);
+
+                                if (toDelete[0]) {
+                                    // Cancella definitivamente il file dal database
+                                    file.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            if (project.getReleaseNames().contains(file.getName())) {
+                                                project.removeReleaseName(file.getName());
+                                            }
+                                            Snackbar.make(requireView(), R.string.text_message_file_deleted_successfully,
+                                                    Snackbar.LENGTH_SHORT).show();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            files.add(file);
+                                            adapter.submitList(files);
+                                            adapter.notifyDataSetChanged();
+                                            Snackbar.make(requireView(), R.string.text_message_file_deletion_failed,
+                                                    Snackbar.LENGTH_LONG).show();
+                                        }
+                                    });
+                                }
+                            }
+                        }).show();
             }
 
             @Override
