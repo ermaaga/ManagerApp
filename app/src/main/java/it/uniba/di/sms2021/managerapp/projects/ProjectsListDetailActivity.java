@@ -1,21 +1,28 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,8 +44,12 @@ import it.uniba.di.sms2021.managerapp.lists.ProjectsRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 import it.uniba.di.sms2021.managerapp.utility.SearchUtil;
+import it.uniba.di.sms2021.managerapp.utility.ShakeUtil;
 
-public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity {
+public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity implements SensorEventListener {
+
+    Animation animRotate;
+    boolean firstStart;
 
     private static final int REQUEST_ENABLE_BT = 1;
 
@@ -55,15 +66,21 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
     private List<Project> projects;
     private ListProjects listSelected;
 
+    ImageView shareProjects;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ShakeUtil.inizializeShake(getApplicationContext());
+
+        animRotate = AnimationUtils.loadAnimation(this, R.anim.shake_animation);
 
         listSelected  = getIntent().getParcelableExtra(ListProjects.KEY);
         TextView project_list_title = findViewById(R.id.project_list_title_text_view);
         project_list_title.setText(listSelected.getNameList());
 
-        ImageView shareProjects = findViewById(R.id.share_list_image_view);
+        shareProjects = findViewById(R.id.share_list_image_view);
         projectsRecyclerView = findViewById(R.id.projects_recycler_view);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -83,8 +100,23 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
     protected void onStart() {
         super.onStart();
 
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        firstStart = prefs.getBoolean("firstStart", true);
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(listSelected.getNameList());
+
+        boolean myProjectsExist = getIntent().getBooleanExtra("tutorial", false);
+        //Se non ci sono progetti nella lista dei progetti personali
+        if(myProjectsExist == false){
+            //Se il Bluetooth è supportato dal dispositivo
+            if(shareProjects.getVisibility()==View.VISIBLE){
+                //Se l'activity viene aperta per la prima volta, viene mostrato il tutorial
+                if(firstStart){
+                    showImageDialog();
+                }
+            }
+        }
 
         projectsAdapter = new ProjectsRecyclerAdapter(new ProjectsRecyclerAdapter.OnActionListener() {
             @Override
@@ -126,7 +158,7 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
                                     }.initialiseProject(group);
                                 }
                             }
-                        }
+                    }
                 }
             }
 
@@ -143,6 +175,16 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
     protected void onStop() {
         super.onStop();
         groupsReference.removeEventListener(projectsListener);
+    }
+
+    protected void onResume() {
+        super.onResume();
+        ShakeUtil.registerShakeListener(this);
+    }
+
+    public void onPause() {
+        super.onPause();
+        ShakeUtil.unRegisterShakeListener(this);
     }
 
     @Override
@@ -223,15 +265,17 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
     }
 
     public void share_list_project(View view){
+        actionShareList();
+    }
+
+    private void actionShareList(){
         if (!bluetoothAdapter.isEnabled()){
             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(intent, REQUEST_ENABLE_BT);
-        }
-        else {
+        } else {
             Log.d(TAG, "Bluetooth is already on ");
             go_sharing_activity();
         }
-
     }
 
     @Override
@@ -272,4 +316,77 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
         intent.putExtra(Project.KEY, projectsId);
         startActivity(intent);
     }
+
+    //Utilizzato per mostrare il tutorial della condivisione tramite lo scuotimento
+    private void showImageDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProjectsListDetailActivity.this);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.item_shake_smartphone, null);
+        view.startAnimation(animRotate);
+
+        animRotate.setAnimationListener(new Animation.AnimationListener() {
+            int countRepeat=0;
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                countRepeat++;
+                animation.setStartOffset(0);
+                if(countRepeat>15){
+                    countRepeat=0;
+                    animation.setStartOffset(2000);
+                    view.startAnimation(animation);
+                }else{
+                    view.startAnimation(animation);
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+        builder.setView(view)
+                .setTitle(R.string.text_lable_shake_tutorial)
+                .setMessage(R.string.text_message_shake_tutorial)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        //Preferenza impostata a false per indicare che l'activity è stata già aperta una volta
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("firstStart", false);
+        editor.apply();
+    }
+
+    private ShakeUtil.OnShakeListener onShakeListener = new ShakeUtil.OnShakeListener() {
+        @Override
+        public void doActionAfterShake() {
+            actionShareList();
+        }
+    };
+
+    //Chiamato quando viene letto un nuovo evento dal sensore
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if(shareProjects.getVisibility()==View.VISIBLE) {
+            ShakeUtil.checkShake(sensorEvent, onShakeListener);
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
 }

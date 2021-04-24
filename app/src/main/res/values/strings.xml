@@ -99,6 +99,8 @@
     <string name="text_label_none_reports">There are no reports</string>
     <string name="text_lable_reply_project">Write a reply</string>
 
+    <string name="text_lable_shake_tutorial">Share with a shake</string>
+
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
 
@@ -182,6 +184,7 @@
     <string name="text_message_available_devices_empty">There are not available devices</string>
     <string name="text_message_bluetooth_connection">Select search if you can\'t find the device. Select make discoverable if others can\'t find you</string>
     <string name="text_message_available_devices_no_search">Select search if you can\'t find your device</string>
+    <string name="text_message_shake_tutorial">Shake your device to share a list quickly.</string>
     <string name="text_message_file_deletion">File being deleted</string>
     <string name="text_message_file_deletion_stopped">File restored successfully</string>
 
@@ -274,6 +277,7 @@
     <string name="text_filter_projects_created">Created</string>
     <string name="text_filter_projects_withrelease">With Releases</string>
     <string name="text_filter_projects_hasevaluation">Evaluated</string>
+
 
 
     <plurals name="text_notification_title_feed">

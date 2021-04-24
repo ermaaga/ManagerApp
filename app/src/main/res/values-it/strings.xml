@@ -85,6 +85,8 @@
     <string name="text_label_none_reports">Non ci sono segnalazioni</string>
     <string name="text_lable_reply_project">Scrivi una risposta</string>
 
+    <string name="text_lable_shake_tutorial">Condividi con uno shake</string>
+
     <string name="label_Dialog_Header">Informazione</string>
     <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>
     <string name="label_Dialog_confimation">Si</string>
@@ -173,6 +175,7 @@
     <string name="text_message_available_devices_no_search">Seleziona ricerca se non trovi il tuo dispositivo</string>
     <string name="text_message_file_deletion">Cancellazione del File</string>
     <string name="text_message_file_deletion_stopped">File ripristinato con successo</string>
+    <string name="text_message_shake_tutorial">Scuoti il dispositivo per condividere una lista velocemente. </string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 

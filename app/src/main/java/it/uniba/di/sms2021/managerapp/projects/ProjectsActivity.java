@@ -1,21 +1,22 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -46,24 +47,13 @@ import it.uniba.di.sms2021.managerapp.lists.ProjectsRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 import it.uniba.di.sms2021.managerapp.utility.SearchUtil;
+import it.uniba.di.sms2021.managerapp.utility.ShakeUtil;
 
 public class ProjectsActivity extends AbstractBottomNavigationActivity implements SensorEventListener {
 
-    private SensorManager mSensorManager;
-    private Sensor sensor;
-    private float x, y, z;
-    private boolean itIsNotFirstTime = false;
-    private float accelerationPrev= 0.0f;
-    private float acceleration = 0.0f;
-
-    //Soglia massima della variazione di accelerazione affinchè venga considerato lo scuotimento
-    private static final float THRESHOLD = 5f;
-    //Soglia minima della accelerazione corrente affinchè venga considerato lo scuotimento
-    private static final float THRESHOLD_ACCELERATION = 20f;
-    //Soglia minima della accelerazione precedente affinchè venga considerato lo scuotimento
-    private static final float THRESHOLD_ACCELERATION_PREV = 20f;
-
-    private Vibrator vibrator;
+    Animation animRotate;
+    boolean firstStart;
+    boolean myProjectsExist = false;
 
     private static final int REQUEST_ENABLE_BT = 1;
 
@@ -79,29 +69,23 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     private ValueEventListener projectListener;
     private ValueEventListener listIdProjectsListener;
 
+    ImageView shareProjects;
+
     private String lastQuery = "";
     private final Set<String> searchFilters = new HashSet<>();
 
-    private List<Project> projects;
+    private List<Project> projects = new ArrayList<>();
     private List<ListProjects> idLists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //Inizializza mSensorManager che gestisce il sensore
-        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
-        //Inizializza sensor, usata per incapsulare il sensore. In questo caso l'accelerometro
-        sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        ShakeUtil.inizializeShake(getApplicationContext());
 
-        vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        animRotate = AnimationUtils.loadAnimation(this, R.anim.shake_animation);
 
-        /*Stabilisce i valori di riferimento per determinare le accelerazioni.
-        In questo caso uguale per tutte e due le variabili:la gravità terrestre*/
-        accelerationPrev = SensorManager.GRAVITY_EARTH;
-        acceleration = SensorManager.GRAVITY_EARTH;
-
-        ImageView shareProjects = findViewById(R.id.share_list_image_view);
+        shareProjects = findViewById(R.id.share_list_image_view);
         myProjectsRecyclerView = findViewById(R.id.my_projects_recycler_view);
         listProjectsRecyclerView = findViewById(R.id.list_projects_recycler_view);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -115,12 +99,14 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         else {
             Log.d(TAG, "Bluetooth è supportato da questo dispositivo");
         }
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        firstStart = prefs.getBoolean("firstStart", true);
 
         //Creo l'adapter che crea gli elementi con i relativi dati.
         myProjectsAdapter = new ProjectsRecyclerAdapter(new ProjectsRecyclerAdapter.OnActionListener() {
@@ -139,11 +125,11 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         projectListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                projects = new ArrayList<>();
                 for (DataSnapshot child : snapshot.getChildren()) {
                     Group group = child.getValue(Group.class);
                     String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     if (group.getMembri().contains(currentUserId)) {
+                        myProjectsExist=true;
                         //Uso l'inizializzatore di progetti per ottenere tutti i dati utili
                         //e quando è inizializzato, lo visualizzo nella lista
                         new Project.Initialiser() {
@@ -156,6 +142,20 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                         }.initialiseProject(group);
                     }
                 }
+
+                //Se ci sono progetti nella lista dei progetti personali
+                if(myProjectsExist == true){
+                    //Se il Bluetooth è supportato dal dispositivo
+                    if(shareProjects.getVisibility()==View.VISIBLE){
+                        //Se l'activity viene aperta per la prima volta, viene mostrato il tutorial
+                        if(firstStart){
+                            showImageDialog();
+                        }
+                    }
+                }else{
+                    //Se la lista di progetti è vuota non viene visualizzata l'icona di condivisione
+                    shareProjects.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -164,6 +164,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
             }
         };
         groupsReference.addValueEventListener(projectListener);
+
         listProjectsAdapter = new ListProjectsRecyclerAdapter(new ListProjectsRecyclerAdapter.OnActionListener() {
             @Override
             public void onItemClicked(ListProjects list) {
@@ -208,14 +209,64 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
 
     protected void onResume() {
         super.onResume();
-        //Registrazione del Listener per il sensore
-        mSensorManager.registerListener(this, sensor,SensorManager.SENSOR_DELAY_NORMAL);
+        ShakeUtil.registerShakeListener(this);
     }
 
     public void onPause() {
         super.onPause();
-        //Cancellazione del Listener per il sensore
-        mSensorManager.unregisterListener(this);
+        ShakeUtil.unRegisterShakeListener(this);
+    }
+
+     //Utilizzato per mostrare il tutorial della condivisione tramite lo scuotimento
+    private void showImageDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProjectsActivity.this);
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.item_shake_smartphone, null);
+        view.startAnimation(animRotate);
+
+        animRotate.setAnimationListener(new Animation.AnimationListener() {
+            int countRepeat=0;
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                countRepeat++;
+                animation.setStartOffset(0);
+                if(countRepeat>15){
+                    countRepeat=0;
+                    animation.setStartOffset(2000);
+                    view.startAnimation(animation);
+                }else{
+                    view.startAnimation(animation);
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+        builder.setView(view)
+                .setTitle(R.string.text_lable_shake_tutorial)
+                .setMessage(R.string.text_message_shake_tutorial)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        //Preferenza impostata a false per indicare che l'activity è stata già aperta una volta
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("firstStart", false);
+        editor.apply();
     }
 
     @Override
@@ -328,12 +379,14 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         Log.d(TAG, "click list: " + list.getIdList());
         Intent intent = new Intent(this, ProjectsListDetailActivity.class);
         intent.putExtra(ListProjects.KEY, list);
+        intent.putExtra("tutorial", myProjectsExist);
         startActivity(intent);
     }
 
     public void share_list_project(View view){
         actionShareList();
     }
+
     private void actionShareList(){
         if (!bluetoothAdapter.isEnabled()){
             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -382,53 +435,23 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         startActivity(intent);
     }
 
+    private ShakeUtil.OnShakeListener onShakeListener = new ShakeUtil.OnShakeListener() {
+        @Override
+        public void doActionAfterShake() {
+            actionShareList();
+        }
+    };
+
     //Chiamato quando viene letto un nuovo evento dal sensore
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
-
-        /*Inizializzati i valori delle accelerazioni
-        misurati per tutte e tre le dimensioni dello spazio*/
-        x = sensorEvent.values[0];
-        y = sensorEvent.values[1];
-        z = sensorEvent.values[2];
-
-        //Viene salvata l'accelerazione precedente per poi ricalcolarne la nuova
-        accelerationPrev=acceleration;
-
-        if(itIsNotFirstTime){
-            /*Calcola la somma delle componenti cartesiane x, y e z in valore
-             assoluto per determinare l'accelerazione corrente.
-             Accelerazione: a = a_x + a_y + a_z */
-            acceleration = Math.abs(x+y+z);
-            Log.d(TAG, "accelerazione"+ acceleration);
-            Log.d(TAG, "accelerationPrev"+ accelerationPrev);
-
-            //Calcola la differenza tra accelerazione e accelerazione precendente in valore assoluto
-            float differenceAcc = Math.abs(acceleration - accelerationPrev);
-            Log.d(TAG, "differenza accelerazione"+ differenceAcc);
-
-            /*Lo scuotimento viene rilevato nel caso in cui:
-             -la differenza delle accelerazioni è minore di una soglia (in questo caso 5)
-             tale per cui i valori di entrambe le accelerazioni applicate non si discostino di molto;
-             - I valori delle accelerazioni applicate siano maggiori di una certa soglia (in queso caso 20)*/
-            if(differenceAcc<THRESHOLD && acceleration>THRESHOLD_ACCELERATION && accelerationPrev>THRESHOLD_ACCELERATION_PREV){
-
-                //Se si sta eseguendo su Oreo (Api level 26) o successivi
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
-                }else{
-                    //Deprecato in Api 26
-                    vibrator.vibrate(500);
-                }
-                actionShareList();
-            }
+        if(shareProjects.getVisibility()==View.VISIBLE) {
+            ShakeUtil.checkShake(sensorEvent, onShakeListener);
         }
-        //Usato per indicare che in precedenza c'è stato almeno un rilevamento
-        itIsNotFirstTime = true;
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
+
 }
