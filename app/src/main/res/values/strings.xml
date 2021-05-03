@@ -187,6 +187,7 @@
     <string name="text_message_shake_tutorial">Shake your device to share a list quickly.</string>
     <string name="text_message_file_deletion">File being deleted</string>
     <string name="text_message_file_deletion_stopped">File restored successfully</string>
+    <string name="text_message_file_permission_denied">Storage Permissions Denied</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -277,8 +278,6 @@
     <string name="text_filter_projects_created">Created</string>
     <string name="text_filter_projects_withrelease">With Releases</string>
     <string name="text_filter_projects_hasevaluation">Evaluated</string>
-
-
 
     <plurals name="text_notification_title_feed">
         <item quantity="one">New notification Found</item>

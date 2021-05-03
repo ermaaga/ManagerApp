@@ -42,6 +42,11 @@ public class FileUtil {
         return fileName;
     }
 
+    /**
+     * Ottiene la dimensione di un file a partire dal suo content uri
+     * @param uri uri della forma "content:"
+     * @return dimensione in byte del file
+     */
     public static Long getFileSizeFromURI (Context context, Uri uri) {
         Cursor returnCursor =
                 context.getContentResolver().query(uri, null, null, null, null);

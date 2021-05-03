@@ -1,11 +1,14 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -61,6 +65,8 @@ import static android.app.Activity.RESULT_OK;
 public class ProjectFilesFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "ProjectFilesFragment";
+    private static final int REQUEST_PERMISSION_DOWNLOAD = 1;
+    private static final int REQUEST_PERMISSION_PREVIEW = 2;
 
     private StorageReference storageRef;
     private Set<StorageReference> elaboratingReferences;
@@ -82,6 +88,9 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
 
     private String lastQuery = "";
     private final Set<String> searchFilters = new HashSet<>();
+
+    private Uri uriToPreview;
+    private ManagerFile fileToPreview;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -570,18 +579,17 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
      * installate.
      */
     private void previewFile(Uri uri, ManagerFile file) {
-        if (previewWarning) {
+        if (shouldShowPreviewWarning()) {
             //Avvisa l'utente che l'app userà applicazioni esterne per fare la preview
             new AlertDialog.Builder(getContext()).setMessage(R.string.text_message_file_preview_message)
                     .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 previewWarning = false;
-                                //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
-                                if (!FileUtil.openFileWithViewIntent(getContext(), uri, file.getType())) {
-                                    showDownloadSuggestion(
-                                            R.string.text_message_temp_file_not_supported, file);
-                                }
+                                uriToPreview = uri;
+                                fileToPreview = file;
+                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        REQUEST_PERMISSION_PREVIEW);
                             }
                         }
                     ).setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
@@ -598,21 +606,27 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         }
     }
 
+    private boolean shouldShowPreviewWarning() {
+        return previewWarning || requiresStorageAccess();
+    }
 
 
     /**
      * Avvisa l'utente che il file sarà accessibile anche ad altre applicazioni.
-     * Se l'utente accetta l'applicazione procederà al download.
+     * Se l'utente accetta l'applicazione procederà a richiedere i permessi di scrittura e successivamente
+     * al download.
      * @param file il file da scaricare
      */
     private void downloadWithWarning(ManagerFile file) {
-        if (downloadWarning) {
+        if (shouldShowDownloadWarning()) {
             new AlertDialog.Builder(getContext()).setMessage(R.string.text_message_file_download_message)
                     .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     downloadWarning = false;
-                                    download(file);
+                                    fileToBeDownloaded = file;
+                                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                            REQUEST_PERMISSION_DOWNLOAD);
                                 }
                             }
                     ).setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
@@ -623,6 +637,43 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
             }).create().show();
         } else {
             download(file);
+        }
+    }
+
+    private boolean shouldShowDownloadWarning() {
+        return downloadWarning || requiresStorageAccess();
+    }
+
+    private boolean requiresStorageAccess() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED;
+        } else {
+            return false;
+        }
+    }
+
+    private ManagerFile fileToBeDownloaded;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSION_DOWNLOAD) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, fileToBeDownloaded.toString());
+                download(fileToBeDownloaded);
+            } else {
+                Toast.makeText(getContext(), R.string.text_message_file_permission_denied, Toast.LENGTH_SHORT).show();
+            }
+        } else if (requestCode == REQUEST_PERMISSION_PREVIEW) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
+                if (!FileUtil.openFileWithViewIntent(getContext(), uriToPreview, fileToPreview.getType())) {
+                    showDownloadSuggestion(
+                            R.string.text_message_temp_file_not_supported, fileToPreview);
+                }
+            } else {
+                Toast.makeText(getContext(), R.string.text_message_file_permission_denied, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

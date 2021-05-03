@@ -176,6 +176,7 @@
     <string name="text_message_file_deletion">Cancellazione del File</string>
     <string name="text_message_file_deletion_stopped">File ripristinato con successo</string>
     <string name="text_message_shake_tutorial">Scuoti il dispositivo per condividere una lista velocemente. </string>
+    <string name="text_message_file_permission_denied">Permessi di Archiviazione Rifiutati</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
