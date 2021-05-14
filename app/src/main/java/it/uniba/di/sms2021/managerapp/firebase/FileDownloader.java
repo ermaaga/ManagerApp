@@ -109,7 +109,7 @@ public abstract class FileDownloader {
                         FileUtil.getUriFromFile(context, localFile), file.getType());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 int uniqueRequestCode = file.hashCode(); // Se il request code è uguale ad un'activity già
-                                                         // aperta la riusa.
+                // aperta la riusa.
                 PendingIntent pendingIntent = PendingIntent.getActivity(context, uniqueRequestCode, intent, 0);
 
                 // Aggiorna la notifica dopo 500ms per non avere problemi con aggiornamenti troppo frequenti

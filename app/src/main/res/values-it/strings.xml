@@ -23,6 +23,10 @@
     <string name="activity_label_project_reviews">Recensioni</string>
     <string name="activity_label_projects_sharing">Seleziona il dispositivo</string>
 
+    <string name="activity_subtitle_not_connected_bluetooth">Non connesso</string>
+    <string name="activity_subtitle_connecting_bluetooth">Connessione...</string>
+    <string name="activity_subtitle_connected_bluetooth">Connesso a:</string>
+
     <string name="creation_exam_failed">Errore durante la creazione</string>
     <string name="text_error_validation">Il nome del gruppo non può essere maggiore di 20 caratteri</string>
     <string name="text_error_max_review_report">La recensione non può contenere più di 800 caratteri</string>
@@ -84,7 +88,6 @@
     <string name="text_label_none_reviews">Non ci sono recensioni</string>
     <string name="text_label_none_reports">Non ci sono segnalazioni</string>
     <string name="text_lable_reply_project">Scrivi una risposta</string>
-
     <string name="text_lable_shake_tutorial">Condividi con uno shake</string>
 
     <string name="label_Dialog_Header">Informazione</string>
@@ -98,6 +101,8 @@
          essere aperto solo dai propri membri. Vuoi far parte di questo gruppo studio?</string>
     <string name="label_dialog_group_creation">Creazione gruppo</string>
     <string name="label_Dialog_title_name_list">Salva la lista ricevuta</string>
+
+    <string name="text_checkbox_dialog_continue_with_sharing">Continua con la condivisione</string>
 
     <string name="registration_success">Registrazione avvenuta con successo</string>
     <string name="send_verification_email_success">Email di verifica inviata a </string>
@@ -169,14 +174,20 @@
     <string name="text_message_files_connection_down">Serve una connessione internet funzionante per visualizzare i file di questo progetto</string>
     <string name="text_message_files_empty">Non ci sono file in questo progetto</string>
     <string name="text_message_list_saving_failed">Non è stato possibile salvare la lista, riprova in seguito</string>
+    <string name="text_message_list_saving_success">La tua lista \"%s\" è stata salvata</string>
     <string name="text_message_paired_devices_empty">Non ci sono dispositivi abbinati</string>
     <string name="text_message_available_devices_empty">Non ci sono dispositivi disponibili</string>
     <string name="text_message_bluetooth_connection">Seleziona ricerca se non trovi il dispositivo. Seleziona rendi rilevabile se gli altri non ti trovano </string>
-    <string name="text_message_available_devices_no_search">Seleziona ricerca se non trovi il tuo dispositivo</string>
+    <string name="text_message_discoverability_turned_on">Adesso il dispositivo è rilevabile</string>
+    <string name="text_message_already_discoverable">Il dispositivo è già rilevabile</string>
+    <string name="text_message_not_connected_bluetooth_device">Non sei connesso a un dispositivo</string>
+    <string name="text_message_enable_bluetooth">Il bluetooth è disabilitato. Per favore abilitalo per connetterti al dispositivo.</string>
+    <string name="text_message_bluetooth_connection_lost">Connessione persa</string>
+    <string name="text_message_cant_connect_bluetooth_device">Impossibile connettersi al dispositivo</string>
     <string name="text_message_file_deletion">Cancellazione del File</string>
     <string name="text_message_file_deletion_stopped">File ripristinato con successo</string>
-    <string name="text_message_shake_tutorial">Scuoti il dispositivo per condividere una lista velocemente. </string>
     <string name="text_message_file_permission_denied">Permessi di Archiviazione Rifiutati</string>
+    <string name="text_message_shake_tutorial">Scuoti il dispositivo per condividere una lista velocemente. </string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -207,6 +218,7 @@
     <string name="text_button_share_list">Condividi</string>
     <string name="text_button_search_device">Ricerca</string>
     <string name="text_button_make_discoverable">Rendi rilevabile</string>
+    <string name="text_button_receive_list">Ricevi</string>
 
     <string name="text_hint_name_studycase">Nome</string>
     <string name="text_hint_name_group">Nome</string>
@@ -260,6 +272,7 @@
     <string name="text_filter_projects_created">Creati</string>
     <string name="text_filter_projects_withrelease">Con Rilasci</string>
     <string name="text_filter_projects_hasevaluation">Valutati</string>
+
 
     <plurals name="text_notification_title_feed">
         <item quantity="one">Nuova notifica trovata</item>

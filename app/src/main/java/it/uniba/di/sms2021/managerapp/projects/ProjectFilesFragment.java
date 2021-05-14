@@ -139,12 +139,12 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                     for (String string: searchFilters) {
                         containsFilter = // Va aggiunto se il tipo corrisponde alla query
                                 (file.getType().toLowerCase().contains(string.toLowerCase()) ||
-                                // Va aggiunto se il filtro contiene i rilasci ed il file ne è uno
-                                (string.contains(releaseFilter) && project.getReleaseNumber(file.getName()) != 0) ||
-                                // Va aggiunto se il filtro contiene le immagini ed il file ne è una.
-                                (string.contains(imagesFilter) && file.getType().contains("image/")) ||
-                                // Va aggiunto se il filtro contiene i pdf ed il file ne è uno.
-                                (string.contains(pdfFilter) && file.getType().equals("application/pdf")));
+                                        // Va aggiunto se il filtro contiene i rilasci ed il file ne è uno
+                                        (string.contains(releaseFilter) && project.getReleaseNumber(file.getName()) != 0) ||
+                                        // Va aggiunto se il filtro contiene le immagini ed il file ne è una.
+                                        (string.contains(imagesFilter) && file.getType().contains("image/")) ||
+                                        // Va aggiunto se il filtro contiene i pdf ed il file ne è uno.
+                                        (string.contains(pdfFilter) && file.getType().equals("application/pdf")));
 
                         if (containsFilter) {
                             break;
@@ -271,47 +271,47 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
 
                 Snackbar.make(requireView(), R.string.text_message_file_deletion,
                         Snackbar.LENGTH_LONG).setAction(R.string.text_action_undo, new View.OnClickListener() {
-                            // Inserisce un'azione che permette di ripristinare un file cancellato per sbaglio.
-                            // L'azione è permessa solo fino a che lo snackbar rimane a schermo.
+                    // Inserisce un'azione che permette di ripristinare un file cancellato per sbaglio.
+                    // L'azione è permessa solo fino a che lo snackbar rimane a schermo.
+                    @Override
+                    public void onClick(View v) {
+                        files.add(file);
+                        adapter.submitList(files);
+                        adapter.notifyDataSetChanged();
+                        toDelete[0] = false;
+                        Snackbar.make(requireView(), R.string.text_message_file_deletion_stopped,
+                                Snackbar.LENGTH_SHORT).show();
+                    }
+                }).addCallback(new Snackbar.Callback() {
+                    @Override
+                    public void onDismissed(Snackbar transientBottomBar, int event) {
+                        // Quando lo snackbar sparisce, il file viene eliminato definitivamente dal db
+                        super.onDismissed(transientBottomBar, event);
+
+                        if (toDelete[0]) {
+                            // Cancella definitivamente il file dal database
+                            file.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
-                                public void onClick(View v) {
+                                public void onSuccess(Void aVoid) {
+                                    if (project.getReleaseNames().contains(file.getName())) {
+                                        project.removeReleaseName(file.getName());
+                                    }
+                                    Snackbar.make(requireView(), R.string.text_message_file_deleted_successfully,
+                                            Snackbar.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
                                     files.add(file);
                                     adapter.submitList(files);
                                     adapter.notifyDataSetChanged();
-                                    toDelete[0] = false;
-                                    Snackbar.make(requireView(), R.string.text_message_file_deletion_stopped,
-                                            Snackbar.LENGTH_SHORT).show();
+                                    Snackbar.make(requireView(), R.string.text_message_file_deletion_failed,
+                                            Snackbar.LENGTH_LONG).show();
                                 }
-                            }).addCallback(new Snackbar.Callback() {
-                            @Override
-                            public void onDismissed(Snackbar transientBottomBar, int event) {
-                                // Quando lo snackbar sparisce, il file viene eliminato definitivamente dal db
-                                super.onDismissed(transientBottomBar, event);
-
-                                if (toDelete[0]) {
-                                    // Cancella definitivamente il file dal database
-                                    file.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            if (project.getReleaseNames().contains(file.getName())) {
-                                                project.removeReleaseName(file.getName());
-                                            }
-                                            Snackbar.make(requireView(), R.string.text_message_file_deleted_successfully,
-                                                    Snackbar.LENGTH_SHORT).show();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            files.add(file);
-                                            adapter.submitList(files);
-                                            adapter.notifyDataSetChanged();
-                                            Snackbar.make(requireView(), R.string.text_message_file_deletion_failed,
-                                                    Snackbar.LENGTH_LONG).show();
-                                        }
-                                    });
-                                }
-                            }
-                        }).show();
+                            });
+                        }
+                    }
+                }).show();
             }
 
             @Override
@@ -380,7 +380,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private void getFiles() {
         files = new ArrayList<>();
         elaboratingReferences = new HashSet<>();    // Usato per avvisare il programma che i file
-                                                    // sono ancora in elaborazione
+        // sono ancora in elaborazione
         elaboratingReferences.add(storageRef);
 
         listAllPaginated(null);
@@ -532,9 +532,9 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                         * 100.0) / 100;
 
                 builder.setProgress(PROGRESS_MAX, progress, false)
-                .setContentText(getString(R.string.text_message_upload_progress,
-                        FileUtil.getFormattedSize(getContext(), taskSnapshot.getBytesTransferred()),
-                        FileUtil.getFormattedSize(getContext(), taskSnapshot.getTotalByteCount())));
+                        .setContentText(getString(R.string.text_message_upload_progress,
+                                FileUtil.getFormattedSize(getContext(), taskSnapshot.getBytesTransferred()),
+                                FileUtil.getFormattedSize(getContext(), taskSnapshot.getTotalByteCount())));
                 notificationManager.notify(NotificationUtil.UPLOAD_NOTIFICATION_ID, builder.build());
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -552,7 +552,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                 intent.putExtra(ProjectDetailActivity.INITIAL_TAB_POSITION_KEY,
                         ProjectDetailActivity.FILES_TAB_POSITION);
                 int uniqueRequestCode = file.hashCode(); // Se il request code è uguale ad un'activity già
-                                                         // aperta la riusa.
+                // aperta la riusa.
                 PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), uniqueRequestCode, intent, 0);
 
                 // Aggiorna la notifica dopo 500ms per non avere problemi con aggiornamenti troppo frequenti
@@ -583,15 +583,15 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
             //Avvisa l'utente che l'app userà applicazioni esterne per fare la preview
             new AlertDialog.Builder(getContext()).setMessage(R.string.text_message_file_preview_message)
                     .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                previewWarning = false;
-                                uriToPreview = uri;
-                                fileToPreview = file;
-                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                        REQUEST_PERMISSION_PREVIEW);
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    previewWarning = false;
+                                    uriToPreview = uri;
+                                    fileToPreview = file;
+                                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                            REQUEST_PERMISSION_PREVIEW);
+                                }
                             }
-                        }
                     ).setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {

@@ -42,7 +42,7 @@ public class DeviceRecyclerAdapter extends ListAdapter<BluetoothDevice, Recycler
         itemView.setOnClickListener(view -> listener.onItemClicked(getItem(position).getAddress()));
 
         TextView contentTextView = itemView.findViewById(R.id.nameDeviceTextView);
-        contentTextView.setText(getItem(position).getName()+" "+getItem(position).getAddress());
+        contentTextView.setText(getItem(position).getName());
     }
 
     static class DeviceDiffCallback extends DiffUtil.ItemCallback<BluetoothDevice> {

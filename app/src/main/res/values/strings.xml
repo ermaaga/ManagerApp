@@ -23,6 +23,10 @@
     <string name="activity_label_project_reviews">Reviews</string>
     <string name="activity_label_projects_sharing">Select the device</string>
 
+    <string name="activity_subtitle_not_connected_bluetooth">Not connected</string>
+    <string name="activity_subtitle_connecting_bluetooth">Connecting...</string>
+    <string name="activity_subtitle_connected_bluetooth">Connected to:</string>
+
     <string name="label_Dialog_Header">Information</string>
     <string name="label_Dialog_confimation_message">Do you want to be part of this study group?</string>
     <string name="label_Dialog_confimation">Yes</string>
@@ -93,12 +97,13 @@
     <string name="text_label_dialog_title_courses">Select courses</string>
     <string name="text_label_upload_file">Upload file</string>
 
+    <string name="text_checkbox_dialog_continue_with_sharing">Continue with sharing</string>
+
     <string name="text_label_submit_review">Enter your review</string>
     <string name="text_label_submit_report">Enter your report</string>
     <string name="text_label_none_reviews">There are no reviews</string>
     <string name="text_label_none_reports">There are no reports</string>
     <string name="text_lable_reply_project">Write a reply</string>
-
     <string name="text_lable_shake_tutorial">Share with a shake</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
@@ -180,14 +185,20 @@
     <string name="text_message_files_connection_down">You need a working internet connection to view the files of this project</string>
     <string name="text_message_files_empty">There are no files in this project</string>
     <string name="text_message_list_saving_failed">The list could not be saved, please try again later.</string>
+    <string name="text_message_list_saving_success">Your \"%s\" list has been saved</string>
     <string name="text_message_paired_devices_empty">There are no paired devices</string>
     <string name="text_message_available_devices_empty">There are not available devices</string>
     <string name="text_message_bluetooth_connection">Select search if you can\'t find the device. Select make discoverable if others can\'t find you</string>
-    <string name="text_message_available_devices_no_search">Select search if you can\'t find your device</string>
-    <string name="text_message_shake_tutorial">Shake your device to share a list quickly.</string>
+    <string name="text_message_discoverability_turned_on">Now the device is discoverable</string>
+    <string name="text_message_already_discoverable">The device is already discoverable</string>
+    <string name="text_message_not_connected_bluetooth_device">You are not connected to a device</string>
+    <string name="text_message_enable_bluetooth">Bluetooth is disabled. Please enable it to connect to the device.</string>
+    <string name="text_message_bluetooth_connection_lost">Connection Lost</string>
+    <string name="text_message_cant_connect_bluetooth_device">Unable to connect to the device</string>
     <string name="text_message_file_deletion">File being deleted</string>
     <string name="text_message_file_deletion_stopped">File restored successfully</string>
     <string name="text_message_file_permission_denied">Storage Permissions Denied</string>
+    <string name="text_message_shake_tutorial">Shake your device to share a list quickly.</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -218,6 +229,7 @@
     <string name="text_button_share_list">Share</string>
     <string name="text_button_search_device">Search</string>
     <string name="text_button_make_discoverable">Make Discoverable</string>
+    <string name="text_button_receive_list">Receive</string>
 
     <string name="text_hint_email_user" translatable="false">Email</string>
     <string name="text_hint_password_user" translatable="false">Password</string>
@@ -278,6 +290,7 @@
     <string name="text_filter_projects_created">Created</string>
     <string name="text_filter_projects_withrelease">With Releases</string>
     <string name="text_filter_projects_hasevaluation">Evaluated</string>
+
 
     <plurals name="text_notification_title_feed">
         <item quantity="one">New notification Found</item>

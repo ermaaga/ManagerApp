@@ -93,8 +93,8 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         //controlla se il bluetooth è supportato dal device
         //se non supportato non fa vedere icona di condivisione
         if (bluetoothAdapter == null){
-           shareProjects.setVisibility(View.GONE);
-           Log.d(TAG, "Bluetooth non è supportato da questo dispositivo");
+            shareProjects.setVisibility(View.GONE);
+            Log.d(TAG, "Bluetooth non è supportato da questo dispositivo");
         }
         else {
             Log.d(TAG, "Bluetooth è supportato da questo dispositivo");
@@ -217,7 +217,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         ShakeUtil.unRegisterShakeListener(this);
     }
 
-     //Utilizzato per mostrare il tutorial della condivisione tramite lo scuotimento
+    //Utilizzato per mostrare il tutorial della condivisione tramite lo scuotimento
     private void showImageDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ProjectsActivity.this);
 
@@ -253,11 +253,11 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                 .setTitle(R.string.text_lable_shake_tutorial)
                 .setMessage(R.string.text_message_shake_tutorial)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -315,8 +315,8 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                         if (toAdd) {
                             toAdd = // Va aggiunto se il nome corrisponde alla query
                                     project.getName().toLowerCase().contains(string) ||
-                                    // Va aggiunto se il nome del gruppo corrisponde alla query
-                                    project.getStudyCaseName().toLowerCase().contains(string);
+                                            // Va aggiunto se il nome del gruppo corrisponde alla query
+                                            project.getStudyCaseName().toLowerCase().contains(string);
                         }
                     }
                 }
@@ -326,11 +326,11 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                     boolean containsFilter = false;
                     for (String string: searchFilters) {
                         containsFilter =    // Filtro per i progetti creati dall'utente
-                                            (string.contains(createdFilter) && project.isCreator()) ||
-                                            // Filtro per i progetti con rilasci
-                                            (string.contains(releaseFilter) && project.hasReleases()) ||
-                                            // Filtro per i progetti valutati dal professore
-                                            (string.contains(evaluatedFilter) && project.isEvaluated());
+                                (string.contains(createdFilter) && project.isCreator()) ||
+                                        // Filtro per i progetti con rilasci
+                                        (string.contains(releaseFilter) && project.hasReleases()) ||
+                                        // Filtro per i progetti valutati dal professore
+                                        (string.contains(evaluatedFilter) && project.isEvaluated());
 
                         if (containsFilter) {
                             break;
@@ -422,11 +422,11 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         String projectsId = new String();
 
         for(Project proj: projects){
-           if(projectsId.isEmpty()){
-               projectsId = proj.getId();
-           }else {
-               projectsId = projectsId + "," + proj.getId();
-           }
+            if(projectsId.isEmpty()){
+                projectsId = proj.getId();
+            }else {
+                projectsId = projectsId + "," + proj.getId();
+            }
         }
 
         Log.d(TAG, "groupsId: "+projectsId);

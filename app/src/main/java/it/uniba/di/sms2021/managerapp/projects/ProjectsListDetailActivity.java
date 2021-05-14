@@ -87,8 +87,8 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
         //controlla se il bluetooth è supportato dal device
         //se non supportato non fa vedere icona di condivisione
         if (bluetoothAdapter == null){
-           shareProjects.setVisibility(View.GONE);
-           Log.d(TAG, "Bluetooth non è supportato da questo dispositivo");
+            shareProjects.setVisibility(View.GONE);
+            Log.d(TAG, "Bluetooth non è supportato da questo dispositivo");
         }
         else {
             Log.d(TAG, "Bluetooth è supportato da questo dispositivo");
@@ -143,21 +143,21 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
                 if(listIdProjects != null){
                     for (DataSnapshot child : snapshot.getChildren()) {
                         Group group = child.getValue(Group.class);
-                            for(String id: listIdProjects){
-                                if (group.getId().equals(id)) {
-                                    //Uso l'inizializzatore di progetti per ottenere tutti i dati utili
-                                    //e quando è inizializzato, lo visualizzo nella lista
-                                    new Project.Initialiser() {
-                                        @Override
-                                        public void onProjectInitialised(Project project) {
-                                            projects.add(project);
-                                            Log.d(TAG, "list project ricevuti: "+projects.toString());
-                                            projectsAdapter.submitList(projects);
-                                            projectsAdapter.notifyDataSetChanged();
-                                        }
-                                    }.initialiseProject(group);
-                                }
+                        for(String id: listIdProjects){
+                            if (group.getId().equals(id)) {
+                                //Uso l'inizializzatore di progetti per ottenere tutti i dati utili
+                                //e quando è inizializzato, lo visualizzo nella lista
+                                new Project.Initialiser() {
+                                    @Override
+                                    public void onProjectInitialised(Project project) {
+                                        projects.add(project);
+                                        Log.d(TAG, "list project ricevuti: "+projects.toString());
+                                        projectsAdapter.submitList(projects);
+                                        projectsAdapter.notifyDataSetChanged();
+                                    }
+                                }.initialiseProject(group);
                             }
+                        }
                     }
                 }
             }
@@ -226,8 +226,8 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
                     if (toAdd && !query.equals("")) {
                         toAdd = // Va aggiunto se il nome corrisponde alla query
                                 project.getName().toLowerCase().contains(string) ||
-                                // Va aggiunto se il nome del gruppo corrisponde alla query
-                                project.getStudyCaseName().toLowerCase().contains(string);
+                                        // Va aggiunto se il nome del gruppo corrisponde alla query
+                                        project.getStudyCaseName().toLowerCase().contains(string);
                     }
                 }
 
@@ -304,11 +304,11 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
         String projectsId = new String();
 
         for(Project proj: projects){
-           if(projectsId.isEmpty()){
-               projectsId = proj.getId();
-           }else {
-               projectsId = projectsId + "," + proj.getId();
-           }
+            if(projectsId.isEmpty()){
+                projectsId = proj.getId();
+            }else {
+                projectsId = projectsId + "," + proj.getId();
+            }
         }
 
         Log.d(TAG, "groupsId: "+projectsId);

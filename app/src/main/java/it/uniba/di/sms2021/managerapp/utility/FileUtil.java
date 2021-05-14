@@ -76,8 +76,8 @@ public class FileUtil {
     }
 
     /*Questo metodo era in FilesRecyclerAdapter ed è stato spostato qui perchè
-    * potrebbe essere utile in altre classi.
-    */
+     * potrebbe essere utile in altre classi.
+     */
     public static void setTypeImageView (Context context, ImageView imageView, String fileType) {
         if (fileType.contains("image/")) {
             imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.image));
