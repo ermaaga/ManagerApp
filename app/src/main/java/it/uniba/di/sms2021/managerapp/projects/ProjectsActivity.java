@@ -315,8 +315,8 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                         if (toAdd) {
                             toAdd = // Va aggiunto se il nome corrisponde alla query
                                     project.getName().toLowerCase().contains(string) ||
-                                            // Va aggiunto se il nome del gruppo corrisponde alla query
-                                            project.getStudyCaseName().toLowerCase().contains(string);
+                                    // Va aggiunto se il nome del gruppo corrisponde alla query
+                                    project.getStudyCaseName().toLowerCase().contains(string);
                         }
                     }
                 }
@@ -327,10 +327,10 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                     for (String string: searchFilters) {
                         containsFilter =    // Filtro per i progetti creati dall'utente
                                 (string.contains(createdFilter) && project.isCreator()) ||
-                                        // Filtro per i progetti con rilasci
-                                        (string.contains(releaseFilter) && project.hasReleases()) ||
-                                        // Filtro per i progetti valutati dal professore
-                                        (string.contains(evaluatedFilter) && project.isEvaluated());
+                                // Filtro per i progetti con rilasci
+                                (string.contains(releaseFilter) && project.hasReleases()) ||
+                                // Filtro per i progetti valutati dal professore
+                                (string.contains(evaluatedFilter) && project.isEvaluated());
 
                         if (containsFilter) {
                             break;
@@ -389,8 +389,21 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
 
     private void actionShareList(){
         if (!bluetoothAdapter.isEnabled()){
-            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(intent, REQUEST_ENABLE_BT);
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.label_Dialog_turn_on_bluetooth)
+                    .setPositiveButton(R.string.text_button_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                            startActivityForResult(intent, REQUEST_ENABLE_BT);
+                        }
+                    }).setNeutralButton(R.string.text_button_no_thanks, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            }).show();
+
         } else {
             Log.d(TAG, "Bluetooth is already on ");
             go_sharing_activity();
@@ -408,7 +421,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                     go_sharing_activity();
                 }
                 else {
-                    //TODO decidere se far vedere un dialog in cui spiegare all'utente che è necessario attivare il bluetooth se vuole condividere la lista
                     Log.d(TAG, "User denied to turn bluetooth on");
                 }
                 break;

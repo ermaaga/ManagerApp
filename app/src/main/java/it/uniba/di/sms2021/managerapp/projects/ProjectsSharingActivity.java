@@ -168,7 +168,7 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
         newElement.setValue(list).addOnSuccessListener(new OnSuccessListener<Void>() {
                @Override
                public void onSuccess(Void aVoid) {
-                   Toast.makeText(ProjectsSharingActivity.this, getString(R.string.text_message_list_saving_success, nameList), Toast.LENGTH_LONG).show();
+                   Toast.makeText(ProjectsSharingActivity.this, getString(R.string.text_message_list_saving_success, nameList), Toast.LENGTH_SHORT).show();
 
                    if(!wantsContinue){
                        bluetoothConnection.stop();
@@ -327,7 +327,7 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
                     discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
                     startActivityForResult(discoverableIntent,REQUEST_CODE_DISCOVERABLE);
                 }else{
-                    Toast.makeText(getApplicationContext(), getString(R.string.text_message_already_discoverable), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.text_message_already_discoverable), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -563,9 +563,22 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             if (!isGpsEnabled) {
-                //TODO decidere se far vedere un dialog in cui spiegare all'utente che è necessario attivare il GPS per trovare i dispositivi vicini
                 Log.d(TAG, "GPS NOT ENABLE");
-                startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), REQUEST_CODE_GPS);
+
+                new AlertDialog.Builder(this)
+                        .setMessage(R.string.label_Dialog_turn_on_gps)
+                        .setPositiveButton(R.string.text_button_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), REQUEST_CODE_GPS);
+                            }
+                        }).setNeutralButton(R.string.text_button_no_thanks, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+
             }else{
                discover();
             }
@@ -586,7 +599,7 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
                 boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 
                 if (!isGpsEnabled) {
-                    //TODO decidere se far vedere un dialog in cui spiegare all'utente che è necessario attivare il GPS per trovare i dispositivi vicini
+                    Toast.makeText(getApplicationContext(), getString(R.string.text_message_gps_not_turned_on), Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "User denied to turn GPS on");
                 }else{
                     Log.d(TAG, "GPS is on");
@@ -596,7 +609,7 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
 
             case REQUEST_CODE_DISCOVERABLE:
                 if(resultCode!=RESULT_CANCELED){
-                    Toast.makeText(getApplicationContext(), getString(R.string.text_message_discoverability_turned_on), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), getString(R.string.text_message_discoverability_turned_on), Toast.LENGTH_SHORT).show();
                 }
                 break;
         }

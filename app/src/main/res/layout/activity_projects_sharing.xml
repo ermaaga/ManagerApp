@@ -152,31 +152,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/pairedDevicesTextView" /> />
+                app:layout_constraintTop_toBottomOf="@+id/pairedDevicesTextView" />
+            />
 
-            <ListView
-                android:id="@+id/list_conversation"
-                android:layout_width="183dp"
-                android:layout_height="47dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
-                android:background="#efefef"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/paired_devices_recycler_view" />
-
-            <EditText
-                android:id="@+id/editTextMessage"
-                android:layout_width="146dp"
-                android:layout_height="54dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:ems="10"
-                android:inputType="textMultiLine"
-                android:text=""
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/list_conversation"
-                app:layout_constraintTop_toBottomOf="@+id/paired_devices_recycler_view" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
@@ -185,6 +163,7 @@
         android:id="@+id/button_send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="@string/text_button_share_list"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"

@@ -37,6 +37,8 @@
     <string name="label_Dialog_confimation_message_join_necessary">Due to permission settings, this group can only be opened by members. Do you want to be part of this study group?</string>
     <string name="label_dialog_group_creation">Group creation</string>
     <string name="label_Dialog_title_name_list">Save the received list</string>
+    <string name="label_Dialog_turn_on_bluetooth">To share the list you need to turn on the bluetooth</string>
+    <string name="label_Dialog_turn_on_gps">To search for available Bluetooth devices, you need to turn on the GPS</string>
 
     <string name="text_error_validation">The group name cannot have much than 20 characters</string>
     <string name="text_error_max_review_report">The review cannot have much than 800 characters</string>
@@ -199,6 +201,7 @@
     <string name="text_message_file_deletion_stopped">File restored successfully</string>
     <string name="text_message_file_permission_denied">Storage Permissions Denied</string>
     <string name="text_message_shake_tutorial">Shake your device to share a list quickly.</string>
+    <string name="text_message_gps_not_turned_on">The GPS was not turned on</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -230,6 +233,8 @@
     <string name="text_button_search_device">Search</string>
     <string name="text_button_make_discoverable">Make Discoverable</string>
     <string name="text_button_receive_list">Receive</string>
+    <string name="text_button_ok" translatable="false">Ok</string>
+    <string name="text_button_no_thanks">No, thanks</string>
 
     <string name="text_hint_email_user" translatable="false">Email</string>
     <string name="text_hint_password_user" translatable="false">Password</string>
@@ -290,6 +295,7 @@
     <string name="text_filter_projects_created">Created</string>
     <string name="text_filter_projects_withrelease">With Releases</string>
     <string name="text_filter_projects_hasevaluation">Evaluated</string>
+
 
 
     <plurals name="text_notification_title_feed">

@@ -101,6 +101,8 @@
          essere aperto solo dai propri membri. Vuoi far parte di questo gruppo studio?</string>
     <string name="label_dialog_group_creation">Creazione gruppo</string>
     <string name="label_Dialog_title_name_list">Salva la lista ricevuta</string>
+    <string name="label_Dialog_turn_on_bluetooth">Per condividere la lista è necessario accendere il bluetooth</string>
+    <string name="label_Dialog_turn_on_gps">Per cercare i dispositivi Bluetooth disponibili è necessario accendere il GPS</string>
 
     <string name="text_checkbox_dialog_continue_with_sharing">Continua con la condivisione</string>
 
@@ -188,6 +190,7 @@
     <string name="text_message_file_deletion_stopped">File ripristinato con successo</string>
     <string name="text_message_file_permission_denied">Permessi di Archiviazione Rifiutati</string>
     <string name="text_message_shake_tutorial">Scuoti il dispositivo per condividere una lista velocemente. </string>
+    <string name="text_message_gps_not_turned_on">Il GPS non è stato attivato</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -219,6 +222,7 @@
     <string name="text_button_search_device">Ricerca</string>
     <string name="text_button_make_discoverable">Rendi rilevabile</string>
     <string name="text_button_receive_list">Ricevi</string>
+    <string name="text_button_no_thanks">No, thanks</string>
 
     <string name="text_hint_name_studycase">Nome</string>
     <string name="text_hint_name_group">Nome</string>
@@ -272,6 +276,7 @@
     <string name="text_filter_projects_created">Creati</string>
     <string name="text_filter_projects_withrelease">Con Rilasci</string>
     <string name="text_filter_projects_hasevaluation">Valutati</string>
+
 
 
     <plurals name="text_notification_title_feed">
