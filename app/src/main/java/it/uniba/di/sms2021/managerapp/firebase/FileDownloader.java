@@ -1,15 +1,10 @@
 package it.uniba.di.sms2021.managerapp.firebase;
 
 import android.app.PendingIntent;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
-import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
@@ -56,17 +51,19 @@ public abstract class FileDownloader {
 
     /**
      * Scarica il file nella cartella dei download e quando finisce chiama onSuccessAction usando
-     * il file scaricato
+     * il file scaricato.
+     * Il file sarà inserito nella path "[CartellaDownload]/ManagerApp/[projectName]"
      *
      * @param file il file da scaricare
+     * @param projectName il nome del progetto a cui appartiene il file
      */
-    public void downloadFile(ManagerFile file) {
+    public void downloadFile(ManagerFile file, String projectName) {
         if (!isExternalStorageWritable()) {
             showErrorMessage(R.string.text_message_external_storage_not_found);
         }
 
-        File path = getDownloadPathDeprecated();
-        if (path == null || !path.exists()) {
+        File path = getDownloadPath(projectName);
+        if (!path.exists()) {
             showErrorMessage(R.string.text_message_download_path_not_usable);
         }
 
@@ -153,46 +150,17 @@ public abstract class FileDownloader {
      * Metodo di utility per ottenere un file scaricato in precedenza da questa classe
      * @param fileName il nome del file da ottenere
      */
-    public static File getDownloadedFile (String fileName) {
-        return new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), fileName);
+    public static File getDownloadedFile (String fileName, String projectName) {
+        return new File (getDownloadPath(projectName), fileName);
     }
 
-    private File getDownloadPathDeprecated() {
-        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-    }
-
-    /**
-     * Codice non funzionante preso da
-     * https://stackoverflow.com/questions/56468539/getexternalstoragepublicdirectory-deprecated-in-android-q
-     * per adempire alla deprecazione di "getExternalStoragePublicDirectory".
-     * Avendolo testato e modificato in vari modi, accade che:
-     * - o insert da un errore
-     * - o non da nessun errore ma uri risulta null.
-     * Ho consultato stackoverflow perchè la documentazione di Mediastore è molto scarsa e
-     * l'uso delle altre soluzioni (Context.getExternalFilesDir(String), Intent.ACTION_OPEN_DOCUMENT)
-     * non sono adatte al contesto poichè una conserva il contenuto in una cartella che viene
-     * cancellata insieme all'app, e l'altra richiede azioni aggiuntive dall'utente.
-     *
-     * @param file file da scaricare con le informazioni per il file temporaneo da creare
-     * @return path del file temporaneo
-     */
-    private File getTempFile(ManagerFile file) {
-        File path;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ContentResolver resolver = context.getContentResolver();
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, file.getName());
-            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, file.getType());
-            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS);
-
-            Uri uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, contentValues);
-            path = new File(uri.getPath());
-        } else {
-            path = new File (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
-                    file.getName());
+    private static File getDownloadPath(String projectName) {
+        File downloadPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(),
+                "ManagerApp/" + projectName);
+        if (!downloadPath.exists()) {
+            downloadPath.mkdirs();
         }
-        return path;
+
+        return downloadPath;
     }
-
-
 }

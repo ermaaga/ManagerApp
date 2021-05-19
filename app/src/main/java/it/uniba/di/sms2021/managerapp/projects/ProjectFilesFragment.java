@@ -68,16 +68,15 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private static final int REQUEST_PERMISSION_DOWNLOAD = 1;
     private static final int REQUEST_PERMISSION_PREVIEW = 2;
 
+    private static final String GROUPS_FOLDER = "Groups";
+
     private StorageReference storageRef;
     private Set<StorageReference> elaboratingReferences;
     private List<ManagerFile> files;
-
     private FilesRecyclerAdapter adapter;
 
-    private static final String GROUPS_FOLDER = "Groups";
-
-    private boolean previewWarning = true;
-    private boolean downloadWarning = true;
+    private static boolean previewWarning = true;
+    private static boolean downloadWarning = true;
 
     private Project project;
     private UploadTask uploadTask;
@@ -92,10 +91,12 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private Uri uriToPreview;
     private ManagerFile fileToPreview;
 
+    private ProjectDetailActivity activity;
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        ProjectDetailActivity activity = (ProjectDetailActivity) requireActivity();
+        activity = (ProjectDetailActivity) requireActivity();
 
         //Quando l'utente digita qualcosa nella barra di ricerca, la lista dei file verrà aggiornata
         //con i file che abbiano o nome o tipo corrispondenti alla query.
@@ -706,7 +707,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                             }
                         }).show();
             }
-        }.downloadFile(file);
+        }.downloadFile(file, project.getName());
     }
 
     /**

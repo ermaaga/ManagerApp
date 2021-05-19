@@ -60,10 +60,11 @@ public abstract class TemporaryFileDownloader {
      * in memoria esterna, e se è presente lo utilizza.
      *
      * @param file il file da scaricare
-     * @param internalFolderName nome della cartella in cui salvare il file
+     * @param project progetto a cui appartiene il file
      */
-    public void downloadTempFile (ManagerFile file, String internalFolderName) {
-        File downloadedFile = FileDownloader.getDownloadedFile(file.getName());
+    public void downloadTempFile (ManagerFile file, Project project) {
+        String internalFolderName = project.getId();
+        File downloadedFile = FileDownloader.getDownloadedFile(file.getName(), project.getName());
         if (downloadedFile.exists() &&
                 downloadedFile.length() == file.getSize()) {
             Log.i(TAG, "Using downloaded file");
