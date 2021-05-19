@@ -26,11 +26,18 @@ import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.projects.FileComparator;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 
+/**
+ * Adapter di una recyclerView per una lista di file
+ */
 public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView.ViewHolder> {
     private final Context context;
     private final OnActionListener listener;
     private final Project project;
 
+    /**
+     * Crea una adapter a partire dal contesto, dal progetto attuale e usando le azioni passate
+     * nel listener.
+     */
     public FilesRecyclerAdapter(Context context, Project project, OnActionListener listener) {
         super(new DiffCallback());
         this.listener = listener;
@@ -88,6 +95,9 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
         super.submitList(list);
     }
 
+    /**
+     * Presenta le azioni effettuabile su un singolo file della lista
+     */
     public interface OnActionListener {
         void onClick (ManagerFile file);
 
