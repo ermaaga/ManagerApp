@@ -1,16 +1,21 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,6 +35,7 @@ import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 public class ProjectReviewsActivity extends AbstractBottomNavigationActivity {
 
     private static final String TAG = "ProjectReviewsActivity";
+
     RecyclerView recyclerView;
 
     ReviewsRecyclerAdapter adapter;
@@ -78,17 +84,30 @@ public class ProjectReviewsActivity extends AbstractBottomNavigationActivity {
             }
 
             @Override
-            public void onClick(Review review) {
-                ViewRepliesFragment bottomSheetFragment = new ViewRepliesFragment();
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("originView", review);
-                bottomSheetFragment.setArguments(bundle);
-                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+            public void onClick(Review review,
+                                int pos,
+                                MaterialCardView containerCard,
+                                TextView userTextView,
+                                TextView dateTextView,
+                                TextView messageTextView,
+                                RatingBar ratingBar) {
+                //Creato intent per inviare l'oggetto della segnalazione all'activity delle risposte corrispondenti
+                Intent intent = new Intent(getApplicationContext(), OpinionRepliesActivity.class);
+                intent.putExtra("originObject", review);
+
+                //Impostata l'animazione dell'anteprima della segnalazione
+                Pair<View, String> p1 = Pair.create(containerCard, "containerTN");
+                Pair<View, String> p2 = Pair.create(userTextView, "userTN");
+                Pair<View, String> p3 = Pair.create(dateTextView, "dateTN");
+                Pair<View, String> p4 = Pair.create(messageTextView, "messageTN");
+                Pair<View, String> p5 = Pair.create(ratingBar, "ratingTN");
+
+                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(ProjectReviewsActivity.this, p1, p2, p3, p4, p5);
+
+                startActivity(intent, optionsCompat.toBundle());
             }
         });
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this,
-                DividerItemDecoration.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //Ottengo i dati con cui riempire la lista.
@@ -117,7 +136,6 @@ public class ProjectReviewsActivity extends AbstractBottomNavigationActivity {
             }
         };
         reviewsReference.addListenerForSingleValueEvent(reviewsListener);
-
     }
 
     @Override

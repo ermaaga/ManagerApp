@@ -55,6 +55,9 @@
             android:name=".projects.ProjectReportsActivity"
             android:label="@string/activity_label_project_reports"/>
         <activity
+            android:name=".projects.OpinionRepliesActivity"
+            android:label="@string/activity_label_report_replies"/>
+        <activity
             android:name=".projects.ProjectPermissionsActivity"
             android:label="@string/activity_label_project_permissions" />
         <activity

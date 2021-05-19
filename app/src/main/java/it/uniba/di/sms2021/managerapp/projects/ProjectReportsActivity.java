@@ -1,15 +1,20 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -64,11 +69,9 @@ public class ProjectReportsActivity extends AbstractBottomNavigationActivity {
         Report replyReport = getIntent().getParcelableExtra(Report.KEY);
 
         if(needReply){
-            ViewRepliesFragment bottomSheetFragment = new ViewRepliesFragment();
-            Bundle bundle = new Bundle();
-            bundle.putParcelable("originView", replyReport);
-            bottomSheetFragment.setArguments(bundle);
-            bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+            Intent intent = new Intent(getApplicationContext(), OpinionRepliesActivity.class);
+            intent.putExtra("originObject", replyReport);
+            startActivity(intent);
         }
     }
 
@@ -89,17 +92,28 @@ public class ProjectReportsActivity extends AbstractBottomNavigationActivity {
             }
 
             @Override
-            public void onClick(Report report) {
-                ViewRepliesFragment bottomSheetFragment = new ViewRepliesFragment();
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("originView", report);
-                bottomSheetFragment.setArguments(bundle);
-                bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+            public void onClick(Report report,
+                    int pos,
+                    MaterialCardView containerCard,
+                    TextView userTextView,
+                    TextView dateTextView,
+                    TextView messageTextView) {
+                //Creato intent per inviare l'oggetto della segnalazione all'activity delle risposte corrispondenti
+                Intent intent = new Intent(getApplicationContext(), OpinionRepliesActivity.class);
+                intent.putExtra("originObject", report);
+
+                //Impostata l'animazione dell'anteprima della segnalazione
+                Pair<View, String> p1 = Pair.create(containerCard, "containerTN");
+                Pair<View, String> p2 = Pair.create(userTextView, "userTN");
+                Pair<View, String> p3 = Pair.create(dateTextView, "dateTN");
+                Pair<View, String> p4 = Pair.create(messageTextView, "messageTN");
+
+                ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(ProjectReportsActivity.this, p1, p2, p3, p4);
+
+                startActivity(intent, optionsCompat.toBundle());
             }
         });
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(this,
-                DividerItemDecoration.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //Ottengo i dati con cui riempire la lista.
@@ -117,7 +131,6 @@ public class ProjectReportsActivity extends AbstractBottomNavigationActivity {
                     if(child.getValue(Report.class).getGroupId().equals(idgroup)){
                         reports.add(child.getValue(Report.class));
                     }
-
                 }
 
                 //Ogni volta che le recensioni cambiano, la lista visualizzata cambia.

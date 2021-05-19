@@ -22,6 +22,7 @@
     <string name="activity_label_project_reports">Segnalazioni</string>
     <string name="activity_label_project_reviews">Recensioni</string>
     <string name="activity_label_projects_sharing">Seleziona il dispositivo</string>
+    <string name="activity_label_report_replies">Risposte</string>
 
     <string name="activity_subtitle_not_connected_bluetooth">Non connesso</string>
     <string name="activity_subtitle_connecting_bluetooth">Connessione...</string>
