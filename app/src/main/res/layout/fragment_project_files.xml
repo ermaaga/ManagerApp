@@ -58,6 +58,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Message" />
+
+        <Button
+            android:id="@+id/files_empty_state_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/files_empty_state_message_text_view"
+            tools:text="Action" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

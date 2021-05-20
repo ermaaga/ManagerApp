@@ -19,6 +19,7 @@ import it.uniba.di.sms2021.managerapp.R;
 
 public class ConnectionCheckBroadcastReceiver extends BroadcastReceiver {
     private OnConnectionChangeListener listener;
+    private static Bundle connectionBundle;
 
     public ConnectionCheckBroadcastReceiver(OnConnectionChangeListener listener) {
         this.listener = listener;
@@ -26,10 +27,13 @@ public class ConnectionCheckBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Bundle extras = intent.getExtras();
+        connectionBundle = intent.getExtras();
 
-        NetworkInfo info = (NetworkInfo) extras
-                .getParcelable("networkInfo");
+        checkConnection(connectionBundle);
+    }
+
+    private void checkConnection (Bundle bundle) {
+        NetworkInfo info = (NetworkInfo) bundle.getParcelable("networkInfo");
 
         NetworkInfo.State state = info.getState();
         Log.d("ConnectionCheckBroadRec", info.toString() + " "
@@ -39,6 +43,12 @@ public class ConnectionCheckBroadcastReceiver extends BroadcastReceiver {
             listener.onConnectionUp();
         } else {
             listener.onConnectionDown();
+        }
+    }
+
+    public void checkConnection () {
+        if (connectionBundle != null) {
+            checkConnection(connectionBundle);
         }
     }
 

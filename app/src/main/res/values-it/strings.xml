@@ -174,7 +174,8 @@
     <string name="text_message_evaluation_failed">La valutazione del progetto è fallita, riprova in seguito</string>
     <string name="text_message_review_reply_submitted">Risposta inviata</string>
     <string name="text_message_connection_down">L\'app richiede una connessione internet</string>
-    <string name="text_message_files_connection_down">Serve una connessione internet funzionante per visualizzare i file di questo progetto</string>
+    <string name="text_message_files_connection_down">Serve una connessione internet funzionante per visualizzare i file di questo progetto\n
+                                                    Alternativamente puoi aprire la cartella dei download del progetto.</string>
     <string name="text_message_files_empty">Non ci sono file in questo progetto</string>
     <string name="text_message_list_saving_failed">Non è stato possibile salvare la lista, riprova in seguito</string>
     <string name="text_message_list_saving_success">La tua lista \"%s\" è stata salvata</string>
@@ -224,6 +225,7 @@
     <string name="text_button_make_discoverable">Rendi rilevabile</string>
     <string name="text_button_receive_list">Ricevi</string>
     <string name="text_button_no_thanks">No, thanks</string>
+    <string name="text_button_open_project_download_folder">Apri Cartella</string>
 
     <string name="text_hint_name_studycase">Nome</string>
     <string name="text_hint_name_group">Nome</string>

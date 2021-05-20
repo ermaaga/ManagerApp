@@ -77,7 +77,9 @@ public class NotificationsActivity extends AbstractBaseActivity {
         adapter = new NotificationRecyclerAdapter(this, new NotificationRecyclerAdapter.OnUpdateDataListener() {
             @Override
             public void onUpdateData() {
-                updateNotifications();
+                if (!notificationsAlreadyInElaboration()) {
+                    updateNotifications();
+                }
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -85,6 +87,10 @@ public class NotificationsActivity extends AbstractBaseActivity {
         recyclerView.setAdapter(adapter);
 
         updateNotifications();
+    }
+
+    private boolean notificationsAlreadyInElaboration() {
+        return workingReferences != null && !workingReferences.isEmpty();
     }
 
     @Override
@@ -336,7 +342,7 @@ public class NotificationsActivity extends AbstractBaseActivity {
      * notifiche sono state elaborate
      */
     private void executeUpdate() {
-        if (workingReferences.isEmpty()) {
+        if (!notificationsAlreadyInElaboration()) {
             notifications = new ArrayList<>();
 
             notifications.addAll(groupJoinRequests);

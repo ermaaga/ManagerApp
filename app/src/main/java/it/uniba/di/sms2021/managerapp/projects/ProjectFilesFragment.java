@@ -23,17 +23,19 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.DocumentsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
@@ -84,7 +86,8 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
 
     private ConstraintLayout filesLayout;
     private ConstraintLayout emptyLayout;
-    private TextView emptyMessageTextView;
+    private TextView emptyLayoutMessageTextView;
+    private Button emptyLayoutButton;
 
     private String lastQuery = "";
     private final Set<String> searchFilters = new HashSet<>();
@@ -122,7 +125,8 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
 
         filesLayout = view.findViewById(R.id.file_layout);
         emptyLayout = view.findViewById(R.id.empty_state_layout);
-        emptyMessageTextView = view.findViewById(R.id.files_empty_state_message_text_view);
+        emptyLayoutMessageTextView = view.findViewById(R.id.files_empty_state_message_text_view);
+        emptyLayoutButton = view.findViewById(R.id.files_empty_state_button);
 
         FloatingActionButton addFileFloatingActionButton =
                 view.findViewById(R.id.files_add_file_floating_action_button);
@@ -139,13 +143,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                 DividerItemDecoration.VERTICAL));
         filesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-
-        if (userCanViewFiles()) {
-            getFiles();
-        } else {
-            Snackbar.make(requireView(), R.string.text_message_files_are_private, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.text_button_dismiss, v -> {}).show();
-        }
+        getFiles();
 
         if (userCantAddFiles()) {
             addFileFloatingActionButton.setVisibility(View.GONE);
@@ -162,17 +160,33 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     }
 
     /**
-     * Ottiene la lista dei files e la visualizza a schermo<br><br>
+     * Ottiene la lista dei files e la visualizza a schermo se l'utente è abilitato a visualizzarli<br><br>
      *
      * Se la lista è vuota mostra un messaggio informativo all'utente
      */
     private void getFiles() {
-        files = new ArrayList<>();
-        elaboratingReferences = new HashSet<>();    // Usato per avvisare il programma che i file
-                                                    // sono ancora in elaborazione
-        elaboratingReferences.add(projectStorageRef);
+        if (userCanViewFiles()) {
+            if (filesAlreadyElaborating()) {
+                return;
+            }
 
-        listAll();
+            files = new ArrayList<>();
+            elaboratingReferences = new HashSet<>();
+            elaboratingReferences.add(projectStorageRef); // Usato per avvisare il programma che i file
+            // sono ancora in elaborazione
+
+            listAll();
+        } else {
+            Snackbar.make(requireView(), R.string.text_message_files_are_private, Snackbar.LENGTH_LONG)
+                    .setAction(R.string.text_button_dismiss, v -> {}).show();
+        }
+    }
+
+    /**
+     * Ritorna true quando l'elaborazione dei file è iniziata e non è ancora finita.
+     */
+    private boolean filesAlreadyElaborating() {
+        return elaboratingReferences != null && !elaboratingReferences.isEmpty();
     }
 
     /**
@@ -226,7 +240,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
      */
     private void showFiles () {
         if (files.isEmpty()) {
-            showMessageLayout(R.string.text_message_files_empty);
+            showMessageLayout(R.string.text_message_files_empty, null, null);
         } else {
             showFileLayout();
 
@@ -517,9 +531,21 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     /**
      * Nasconde la lista e mostra un messaggio all'utente
      * @param messageRes risorsa del messaggio da visualizzare
+     * @param buttonMessageRes risorsa del messaggio del bottone o null se il bottone non deve apparire
+     * @param buttonClickListener l'azione da effettuare al click del bottone se presente
      */
-    private void showMessageLayout (@StringRes int messageRes) {
-        emptyMessageTextView.setText(messageRes);
+    private void showMessageLayout (@StringRes int messageRes,
+                                    @Nullable @StringRes Integer buttonMessageRes,
+                                    @Nullable View.OnClickListener buttonClickListener) {
+        emptyLayoutMessageTextView.setText(messageRes);
+        if (buttonMessageRes != null) {
+            emptyLayoutButton.setVisibility(View.VISIBLE);
+            emptyLayoutButton.setText(buttonMessageRes);
+            emptyLayoutButton.setOnClickListener(buttonClickListener);
+        } else {
+            emptyLayoutButton.setVisibility(View.GONE);
+        }
+
         filesLayout.setVisibility(View.GONE);
         emptyLayout.setVisibility(View.VISIBLE);
     }
@@ -605,8 +631,18 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
 
         @Override
         public void onConnectionDown() {
-            showMessageLayout(R.string.text_message_files_connection_down);
+            showMessageLayout(R.string.text_message_files_connection_down,
+                    R.string.text_button_open_project_download_folder,
+                    v -> openDownloadFolder());
         }
+    }
+
+    /**
+     * Apre la cartella in cui vengono scaricati i file di questo progetto.<br>
+     * Permette all'utente di scegliere il file manager da usare.
+     */
+    private void openDownloadFolder() {
+        Toast.makeText(getContext(), R.string.text_message_not_yet_implemented, Toast.LENGTH_LONG).show();
     }
 
     /**

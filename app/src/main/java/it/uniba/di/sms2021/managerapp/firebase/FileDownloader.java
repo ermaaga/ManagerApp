@@ -154,7 +154,10 @@ public abstract class FileDownloader {
         return new File (getDownloadPath(projectName), fileName);
     }
 
-    private static File getDownloadPath(String projectName) {
+    /**
+     * Ritorna la cartella dei download di un specifico progetto.
+     */
+    public static File getDownloadPath(String projectName) {
         File downloadPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(),
                 "ManagerApp/" + projectName);
         if (!downloadPath.exists()) {
