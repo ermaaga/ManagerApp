@@ -61,6 +61,7 @@ public abstract class AbstractFormActivity extends AbstractBottomNavigationActiv
 
     public static void hideKeyboard(Activity context) {
         InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow( context.getCurrentFocus().getWindowToken(), 0);
+        if (context.getCurrentFocus() != null)
+            inputMethodManager.hideSoftInputFromWindow( context.getCurrentFocus().getWindowToken(), 0);
     }
 }
