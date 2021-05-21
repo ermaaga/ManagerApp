@@ -146,7 +146,7 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
                 if(numOfReviews==0){
                     avarageTextView.setText("0");
                     noneRevievsTextView.setVisibility(View.VISIBLE);
-                    seeReviewButton.setVisibility(View.INVISIBLE);
+                    seeReviewButton.setVisibility(View.GONE);
                     reviewDivider.setVisibility(View.INVISIBLE);
                 }else{
                     avarageTextView.setText(String.format("%.1f",avarage));
@@ -179,7 +179,7 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
                         setCommentLastReport();
                     }else{
                         noneReportsTextView.setVisibility(View.VISIBLE);
-                        seeReportButton.setVisibility(View.INVISIBLE);
+                        seeReportButton.setVisibility(View.GONE);
                         reportDivider.setVisibility(View.INVISIBLE);
                     }
 

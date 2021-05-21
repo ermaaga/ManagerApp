@@ -17,13 +17,13 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/about_card"
                 style="?attr/materialCardViewStyle"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="10dp"
@@ -87,10 +87,9 @@
                         style="@style/TextAppearance.AppCompat.Medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
                         android:text="@string/text_hint_comment_project"
                         app:layout_constraintStart_toStartOf="@+id/about_subtitle_label_vote"
-                        app:layout_constraintTop_toBottomOf="@id/about_subtitle_value_vote" />
+                        app:layout_constraintTop_toTopOf="@+id/about_subtitle_value_comment" />
 
                     <TextView
                         android:id="@+id/about_subtitle_value_comment"
@@ -98,12 +97,15 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
+                        android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="16dp"
                         android:maxLines="5"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/about_subtitle_label_comment"
-                        app:layout_constraintTop_toTopOf="@+id/about_subtitle_label_comment"
+                        app:layout_constraintTop_toBottomOf="@+id/about_subtitle_value_vote"
                         tools:text="value comment" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
@@ -113,7 +115,7 @@
                 android:id="@+id/reviews_card"
                 style="?attr/materialCardViewStyle"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="10dp"
@@ -154,6 +156,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:layout_marginBottom="8dp"
                         android:isIndicator="true"
                         android:numStars="5"
                         android:scaleX="0.8"
@@ -168,29 +171,33 @@
                         style="@style/TextAppearance.AppCompat.Medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="8dp"
                         android:text="@string/text_label_none_reviews"
-                        android:visibility="invisible"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toTopOf="@+id/reviews_divider"
                         app:layout_constraintStart_toStartOf="@+id/reviews_avarage_text_view"
-                        app:layout_constraintTop_toBottomOf="@+id/reviews_avarage_text_view" />
+                        app:layout_constraintTop_toBottomOf="@+id/reviews_avarage_text_view"
+                        tools:visibility="invisible" />
 
                     <ImageButton
                         android:id="@+id/add_review_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:backgroundTint="@color/white"
-                        android:visibility="invisible"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@+id/reviews_title_text_view"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:srcCompat="@drawable/ic_baseline_add_reviews_24" />
+                        app:srcCompat="@drawable/ic_baseline_add_reviews_24"
+                        tools:visibility="invisible" />
 
                     <View
                         android:id="@+id/reviews_divider"
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginBottom="15dp"
+                        android:layout_marginBottom="16dp"
                         android:background="?android:attr/listDivider"
                         app:layout_constraintBottom_toTopOf="@+id/reviews_clickable_text_view"
+                        app:layout_constraintTop_toBottomOf="@+id/none_reviews_text_view"
                         tools:layout_editor_absoluteX="8dp" />
 
                     <TextView
@@ -198,7 +205,7 @@
                         style="@style/LargeText_clickable"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
+                        android:layout_marginBottom="16dp"
                         android:clickable="true"
                         android:text="@string/text_button_see_more"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -209,94 +216,98 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/reports_card"
-            style="?attr/materialCardViewStyle"
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="16dp"
-            android:elevation="4dp"
-            app:cardCornerRadius="20dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/reviews_card">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/reports_card"
+                style="?attr/materialCardViewStyle"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="4dp"
+                app:cardCornerRadius="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/reviews_card">
 
-                <TextView
-                    android:id="@+id/reports_title_text_view"
-                    style="@style/LargeText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="32dp"
-                    android:text="@string/text_label_project_reports"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/last_report_text_view"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="60dp"
-                    android:layout_marginEnd="16dp"
-                    android:maxLines="5"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/reports_title_text_view"
-                    app:layout_constraintTop_toBottomOf="@id/reports_title_text_view" />
-
-                <TextView
-                    android:id="@+id/none_reports_text_view"
-                    style="@style/TextAppearance.AppCompat.Medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="@string/text_label_none_reports"
-                    android:visibility="invisible"
-                    app:layout_constraintStart_toStartOf="@+id/last_report_text_view"
-                    app:layout_constraintTop_toBottomOf="@+id/last_report_text_view" />
-
-                <ImageButton
-                    android:id="@+id/add_report_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:backgroundTint="@color/white"
-                    android:visibility="invisible"
-                    app:layout_constraintBottom_toBottomOf="@+id/reports_title_text_view"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_add_reviews_24" />
-
-                <View
-                    android:id="@+id/report_divider"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginBottom="15dp"
-                    android:background="?android:attr/listDivider"
-                    app:layout_constraintBottom_toTopOf="@+id/reports_clickable_text_view"
-                    tools:layout_editor_absoluteX="8dp" />
+                    android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/reports_clickable_text_view"
-                    style="@style/LargeText_clickable"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:clickable="true"
-                    android:text="@string/text_button_see_more"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
+                    <TextView
+                        android:id="@+id/reports_title_text_view"
+                        style="@style/LargeText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="32dp"
+                        android:text="@string/text_label_project_reports"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/last_report_text_view"
+                        style="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:maxLines="5"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/reports_title_text_view"
+                        app:layout_constraintTop_toBottomOf="@id/reports_title_text_view" />
+
+                    <TextView
+                        android:id="@+id/none_reports_text_view"
+                        style="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/text_label_none_reports"
+                        android:visibility="invisible"
+                        app:layout_constraintStart_toStartOf="@+id/last_report_text_view"
+                        app:layout_constraintTop_toBottomOf="@+id/last_report_text_view"
+                        tools:visibility="invisible" />
+
+                    <ImageButton
+                        android:id="@+id/add_report_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/white"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="@+id/reports_title_text_view"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:srcCompat="@drawable/ic_baseline_add_reviews_24"
+                        tools:visibility="invisible" />
+
+                    <View
+                        android:id="@+id/report_divider"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="16dp"
+                        android:background="?android:attr/listDivider"
+                        app:layout_constraintBottom_toTopOf="@+id/reports_clickable_text_view"
+                        app:layout_constraintTop_toBottomOf="@+id/none_reports_text_view"
+                        tools:layout_editor_absoluteX="8dp" />
+
+                    <TextView
+                        android:id="@+id/reports_clickable_text_view"
+                        style="@style/LargeText_clickable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:clickable="true"
+                        android:text="@string/text_button_see_more"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
