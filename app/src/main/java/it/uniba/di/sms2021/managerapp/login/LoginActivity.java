@@ -38,11 +38,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.exams.ExamsActivity;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
-import it.uniba.di.sms2021.managerapp.home.HomeActivity;
-import it.uniba.di.sms2021.managerapp.notifications.NotificationChecker;
-import it.uniba.di.sms2021.managerapp.notifications.NotificationService;
+
 import it.uniba.di.sms2021.managerapp.utility.AbstractBaseActivity;
 import it.uniba.di.sms2021.managerapp.utility.FormUtil;
 
@@ -151,7 +150,7 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
                         }else{
                             // Setta l'utente attuale in una variabile accessibile nel resto dell'applicazione
                             LoginHelper.setCurrentUser(user);
-                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                            startActivity(new Intent(LoginActivity.this, ExamsActivity.class));
                         }
 
                     }
@@ -289,7 +288,7 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
                                       }
                                 });
 
-                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, ExamsActivity.class);
                                 startActivity(intent);
                             }
                             else {

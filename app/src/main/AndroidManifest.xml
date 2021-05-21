@@ -91,9 +91,6 @@
             android:name=".exams.ExamsActivity"
             android:label="@string/activity_label_exams" />
         <activity
-            android:name=".home.HomeActivity"
-            android:label="@string/activity_label_home" />
-        <activity
             android:name=".exams.NewStudyCaseActivity"
             android:label="@string/activity_label_create_studycase" />
         <activity

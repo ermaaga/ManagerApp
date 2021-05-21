@@ -137,7 +137,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
 
     @Override
     protected int getBottomNavigationMenuItemId() {
-        return R.id.nav_home;
+        return R.id.nav_profile;
     }
 
     @Override

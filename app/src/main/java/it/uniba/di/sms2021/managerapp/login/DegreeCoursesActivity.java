@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,11 +26,10 @@ import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Course;
-
-import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.exams.ExamsActivity;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
-import it.uniba.di.sms2021.managerapp.home.HomeActivity;
 import it.uniba.di.sms2021.managerapp.lists.CourseRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBaseActivity;
 
@@ -181,7 +179,7 @@ public class DegreeCoursesActivity extends AbstractBaseActivity {
     }
 
     private void goToHome(){
-        Intent intent = new Intent(DegreeCoursesActivity.this, HomeActivity.class);
+        Intent intent = new Intent(DegreeCoursesActivity.this, ExamsActivity.class);
 
         // Pulisce il backstack delle activity (un utente non dovrebbe navigare indietro
         // fino al login)

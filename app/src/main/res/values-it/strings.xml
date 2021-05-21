@@ -34,10 +34,8 @@
 
     <string name="text_label_exams">Esami</string>
     <string name="text_label_projects">Progetti</string>
-    <string name="text_label_settings">Impostazioni</string>
+    <string name="text_label_profile">Profilo</string>
     <string name="text_label_notifications">Notifiche</string>
-    <string name="text_label_home_social_ideas">Idee Sociali</string>
-    <string name="text_label_home_projects">Progetti</string>
     <string name="text_label_project_files">Files</string>
     <string name="text_label_project_members">Membri</string>
     <string name="text_label_exam_study_cases">Casi di Studio</string>
@@ -52,7 +50,6 @@
     <string name="text_label_desc_study_case">Descrizione</string>
     <string name="text_label_name_account">Nome</string>
     <string name="text_label_surname_account">Cognome</string>
-    <string name="text_label_profile">Profilo</string>
     <string name="text_label_corso_account">Corso</string>
     <string name="text_label_exam_partecipants">Partecipanti</string>
     <string name="text_label_search">Ricerca</string>
