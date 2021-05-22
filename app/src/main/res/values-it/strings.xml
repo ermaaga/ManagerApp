@@ -190,6 +190,8 @@
     <string name="text_message_file_permission_denied">Permessi di Archiviazione Rifiutati</string>
     <string name="text_message_shake_tutorial">Scuoti il dispositivo per condividere una lista velocemente. </string>
     <string name="text_message_gps_not_turned_on">Il GPS non è stato attivato</string>
+    <string name="text_message_local_files_require_storage_permissions">Non è presente la connessione ad internet. Vuoi che l\'app mostri i file precedentemente scaricati?\n Se sì ti verranno chiesti i permessi per il disco.</string>
+    <string name="text_message_file_local_delete">Stai per cancellare il file sul tuo dispositivo.\nIl file nel cloud non sarà modificato al seguito di questa azione.</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -223,6 +225,8 @@
     <string name="text_button_receive_list">Ricevi</string>
     <string name="text_button_no_thanks">No, thanks</string>
     <string name="text_button_open_project_download_folder">Apri Cartella</string>
+    <string name="text_button_yes">Si</string>
+    <string name="text_button_no">No</string>
 
     <string name="text_hint_name_studycase">Nome</string>
     <string name="text_hint_name_group">Nome</string>

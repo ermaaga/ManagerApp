@@ -21,6 +21,8 @@ public class ConnectionCheckBroadcastReceiver extends BroadcastReceiver {
     private OnConnectionChangeListener listener;
     private static Bundle connectionBundle;
 
+    private static Snackbar connectivitySnackbar;
+
     public ConnectionCheckBroadcastReceiver(OnConnectionChangeListener listener) {
         this.listener = listener;
     }
@@ -63,7 +65,7 @@ public class ConnectionCheckBroadcastReceiver extends BroadcastReceiver {
     }
 
     public static void showConnectivitySnackbar (Context context, Window activityWindow) {
-        Snackbar snackbar = Snackbar.make(activityWindow.getDecorView().findViewById(android.R.id.content),
+        connectivitySnackbar = Snackbar.make(activityWindow.getDecorView().findViewById(android.R.id.content),
                 R.string.text_message_connection_down, Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.text_button_check_connection, new View.OnClickListener() {
                     @Override
@@ -76,8 +78,14 @@ public class ConnectionCheckBroadcastReceiver extends BroadcastReceiver {
                         }
                     }
                 });
-        snackbar.getView().setOnClickListener(v -> snackbar.dismiss());
-        snackbar.show();
+        connectivitySnackbar.getView().setOnClickListener(v -> connectivitySnackbar.dismiss());
+        connectivitySnackbar.show();
+    }
+
+    public static void dismissConnectivitySnackbar () {
+        if (connectivitySnackbar != null && connectivitySnackbar.isShown()) {
+            connectivitySnackbar.dismiss();
+        }
     }
 
     public interface OnConnectionChangeListener {

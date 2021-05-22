@@ -1,6 +1,5 @@
 package it.uniba.di.sms2021.managerapp.utility;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -9,7 +8,6 @@ import android.provider.OpenableColumns;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -19,7 +17,6 @@ import java.io.File;
 
 import it.uniba.di.sms2021.managerapp.BuildConfig;
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
 
 public class FileUtil {
     private static final String TAG = "FileUtil";

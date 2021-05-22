@@ -19,7 +19,7 @@ import com.google.firebase.storage.OnProgressListener;
 import java.io.File;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
+import it.uniba.di.sms2021.managerapp.enitities.file.ManagerCloudFile;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 import it.uniba.di.sms2021.managerapp.utility.NotificationUtil;
 
@@ -57,7 +57,7 @@ public abstract class FileDownloader {
      * @param file il file da scaricare
      * @param projectName il nome del progetto a cui appartiene il file
      */
-    public void downloadFile(ManagerFile file, String projectName) {
+    public void downloadFile(ManagerCloudFile file, String projectName) {
         if (!isExternalStorageWritable()) {
             showErrorMessage(R.string.text_message_external_storage_not_found);
         }

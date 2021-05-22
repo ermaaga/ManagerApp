@@ -49,7 +49,7 @@ public class AbstractBaseActivity extends AppCompatActivity {
     }
 
     protected void onConnectionUp () {
-        // Metodo vuoto che lascio per override nelle altre classi
+        ConnectionCheckBroadcastReceiver.dismissConnectivitySnackbar();
     }
 
     protected void onConnectionDown () {

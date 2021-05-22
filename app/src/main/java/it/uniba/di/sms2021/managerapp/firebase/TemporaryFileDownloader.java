@@ -1,8 +1,6 @@
 package it.uniba.di.sms2021.managerapp.firebase;
 
 import android.content.Context;
-import android.net.Uri;
-import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,8 +14,7 @@ import com.google.firebase.storage.FileDownloadTask;
 import java.io.File;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
-import it.uniba.di.sms2021.managerapp.utility.FileUtil;
+import it.uniba.di.sms2021.managerapp.enitities.file.ManagerCloudFile;
 
 /**
  * Classe di utility che astrae il download di un file temporaneo e permette di fare un'azione con
@@ -62,7 +59,7 @@ public abstract class TemporaryFileDownloader {
      * @param file il file da scaricare
      * @param project progetto a cui appartiene il file
      */
-    public void downloadTempFile (ManagerFile file, Project project) {
+    public void downloadTempFile (ManagerCloudFile file, Project project) {
         String internalFolderName = project.getId();
         File downloadedFile = FileDownloader.getDownloadedFile(file.getName(), project.getName());
         if (downloadedFile.exists() &&

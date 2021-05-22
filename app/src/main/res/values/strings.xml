@@ -199,6 +199,8 @@
     <string name="text_message_file_permission_denied">Storage Permissions Denied</string>
     <string name="text_message_shake_tutorial">Shake your device to share a list quickly.</string>
     <string name="text_message_gps_not_turned_on">The GPS was not turned on</string>
+    <string name="text_message_local_files_require_storage_permissions">There is no internet connection. Do you want the app to show the files you previously downloaded?\nIf yes you will be asked for storage permissions.</string>
+    <string name="text_message_file_local_delete">You are about to the delete the file on your device.\nThe file in the cloud won\'t be affected by this action.</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -233,6 +235,8 @@
     <string name="text_button_ok" translatable="false">Ok</string>
     <string name="text_button_no_thanks">No, thanks</string>
     <string name="text_button_open_project_download_folder">Open Folder</string>
+    <string name="text_button_yes">Yes</string>
+    <string name="text_button_no">No</string>
 
     <string name="text_hint_email_user" translatable="false">Email</string>
     <string name="text_hint_password_user" translatable="false">Password</string>

@@ -21,9 +21,11 @@ import java.util.Collections;
 import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
+import it.uniba.di.sms2021.managerapp.enitities.file.ManagerCloudFile;
+import it.uniba.di.sms2021.managerapp.enitities.file.ManagerFile;
+import it.uniba.di.sms2021.managerapp.enitities.file.ManagerLocalFile;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
-import it.uniba.di.sms2021.managerapp.projects.FileComparator;
+import it.uniba.di.sms2021.managerapp.enitities.file.FileComparator;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 
 /**
@@ -65,7 +67,6 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
         ManagerFile file = getItem(position);
 
         MaterialCardView cardView = itemView.findViewById(R.id.file_card);
-        cardView.setOnClickListener(view -> listener.onClick(file));
         ImageView typeImageView = itemView.findViewById(R.id.file_type_image_view);
         TextView nameTextView = itemView.findViewById(R.id.file_name_text_view);
         TextView sizeTextView = itemView.findViewById(R.id.file_size_text_view);
@@ -75,7 +76,16 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
         nameTextView.setText(file.getName());
         sizeTextView.setText(FileUtil.getFormattedSize(context, file.getSize()));
         FileUtil.setTypeImageView(context, typeImageView, file.getType());
-        actionsImageView.setOnClickListener(view -> showMenu(view, file));
+
+        if (file.getClass() == ManagerCloudFile.class) {
+            ManagerCloudFile cloudFile = (ManagerCloudFile) file;
+            cardView.setOnClickListener(view -> listener.onClick(cloudFile));
+            actionsImageView.setOnClickListener(view -> showMenu(view, cloudFile));
+        } else if (file.getClass() == ManagerLocalFile.class) {
+            ManagerLocalFile localFile = (ManagerLocalFile) file;
+            cardView.setOnClickListener(view -> listener.onClick(localFile));
+            actionsImageView.setOnClickListener(view -> showMenu(view, localFile));
+        }
 
         int release = project.getReleaseNumber(file.getName());
         if (release != 0) {
@@ -96,29 +106,40 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
     }
 
     /**
-     * Presenta le azioni effettuabile su un singolo file della lista
+     * Presenta le azioni effettuabile su un singolo file della lista<br><br>
+     *
+     * Supporta sia file provenienti da firebase (ManagerCloudFile), sia file scaricati sulla
+     * memoria del dispositivo (ManagerLocalFile)
      */
     public interface OnActionListener {
-        void onClick (ManagerFile file);
+        /**
+         * Azione da eseguire quando l'utente clicca su un file presente sul cloud
+         */
+        void onClick(ManagerCloudFile file);
+        /**
+         * Azione da eseguire quando l'utente clicca su un file presente nello storage
+         */
+        void onClick(ManagerLocalFile file);
 
         /**
          * Setta il file come release del progetto o lo rimuove dalle releases.
          * @param file il file da settare
          * @param addRelease true se bisogna settare il file come release, false se bisogna rimuoverlo
          */
-        void onSetRelease(ManagerFile file, boolean addRelease);
-        void onDelete (ManagerFile file);
-        void onShare (ManagerFile file);
-        void onDownload (ManagerFile file);
+        void onSetRelease(ManagerCloudFile file, boolean addRelease);
+        void onDelete (ManagerCloudFile file);
+        void onDelete (ManagerLocalFile file);
+        void onShare (ManagerCloudFile file);
+        void onDownload (ManagerCloudFile file);
     }
 
     /**
-     * Mostra un menù popup a partire dal bottone premuto.
+     * Mostra un menù popup a partire dal bottone premuto.<br>
      * Preso e modificato da: https://material.io/components/menus/android#dropdown-menus
      */
-    private void showMenu(View view, ManagerFile file) {
+    private void showMenu(View view, ManagerCloudFile file) {
         PopupMenu popup = new PopupMenu(context, view);
-        popup.getMenuInflater().inflate(R.menu.file_action_popup_menu, popup.getMenu());
+        popup.getMenuInflater().inflate(R.menu.cloud_file_action_popup_menu, popup.getMenu());
 
         //Nasconde l'azione elimina nel caso l'utente non sia un un membro del gruppo
         if (!project.isMember()) {
@@ -142,6 +163,36 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
                     listener.onShare(file);
                 } else if (item.getItemId() == R.id.file_download_action) {
                     listener.onDownload(file);
+                } else {
+                    throw new RuntimeException("Id Menù " + item.getItemId() + " non trovato");
+                }
+                return false;
+            }
+        });
+        popup.setOnDismissListener(new PopupMenu.OnDismissListener() {
+            @Override
+            public void onDismiss(PopupMenu menu) {
+                // Respond to popup being dismissed.
+            }
+        });
+        // Show the popup menu.
+        popup.show();
+    }
+
+    /**
+     * Mostra un menù popup a partire dal bottone premuto.<br>
+     * Le azioni disponibili solo solo quelle di visualizzazione e di cancellazione del file locale<br>
+     * Preso e modificato da: https://material.io/components/menus/android#dropdown-menus
+     */
+    private void showMenu (View view, ManagerLocalFile file) {
+        PopupMenu popup = new PopupMenu(context, view);
+        popup.getMenuInflater().inflate(R.menu.local_file_action_popup_menu, popup.getMenu());
+
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.file_delete_action) {
+                    listener.onDelete(file);
                 } else {
                     throw new RuntimeException("Id Menù " + item.getItemId() + " non trovato");
                 }

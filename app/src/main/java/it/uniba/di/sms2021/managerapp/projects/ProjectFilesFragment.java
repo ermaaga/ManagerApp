@@ -53,10 +53,12 @@ import java.util.List;
 import java.util.Set;
 
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.enitities.file.ManagerFile;
+import it.uniba.di.sms2021.managerapp.enitities.file.ManagerLocalFile;
 import it.uniba.di.sms2021.managerapp.firebase.FileDownloader;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.firebase.TemporaryFileDownloader;
-import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
+import it.uniba.di.sms2021.managerapp.enitities.file.ManagerCloudFile;
 import it.uniba.di.sms2021.managerapp.lists.FilesRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.ConnectionCheckBroadcastReceiver;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
@@ -70,6 +72,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private static final String TAG = "ProjectFilesFragment";
     private static final int REQUEST_PERMISSION_DOWNLOAD = 1;
     private static final int REQUEST_PERMISSION_PREVIEW = 2;
+    private static final int REQUEST_PERMISSION_LOCAL_FILES = 3;
 
     private static final String GROUPS_FOLDER = "Groups";
 
@@ -93,7 +96,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private final Set<String> searchFilters = new HashSet<>();
 
     private Uri uriToPreview;
-    private ManagerFile fileToPreview;
+    private ManagerCloudFile fileToPreview;
 
     private ProjectDetailActivity activity;
 
@@ -206,7 +209,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                             item.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                                 @Override
                                 public void onSuccess(StorageMetadata storageMetadata) {
-                                    files.add(new ManagerFile(item, item.getName(),
+                                    files.add(new ManagerCloudFile(item, item.getName(),
                                             storageMetadata.getContentType(),
                                             storageMetadata.getSizeBytes(),
                                             storageMetadata.getUpdatedTimeMillis()));
@@ -249,14 +252,49 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    /**
+     * Avvisa l'utente che servono i permessi  di lettura e scrittura sul disco ed ottiene i file
+     * locali.
+     */
+    private void getLocalFilesWithWarning() {
+        new AlertDialog.Builder(getContext())
+                .setMessage(R.string.text_message_local_files_require_storage_permissions)
+                .setPositiveButton(R.string.text_button_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                REQUEST_PERMISSION_LOCAL_FILES);
+                    }
+                })
+                .setNegativeButton(R.string.text_button_no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        showMessageLayout(R.string.text_message_files_connection_down,
+                                null, null);
+                    }
+                }).create().show();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
+    /**
+     * Ottiene i file locali scaricati dal progetto presenti sul disco.<br>
+     * Richiede i permessi di lettura e scrittura dallo storage.
+     */
+    private void getLocalFiles () {
+        File downloadFolder = FileDownloader.getDownloadPath(project.getName());
+        File[] localFiles = downloadFolder.listFiles();
+        files = new ArrayList<>();
+
+        for (File file: localFiles) {
+            Uri fileUri = FileUtil.getUriFromFile(getContext(), file);
+            ManagerLocalFile managerFile = new ManagerLocalFile(file, file.getName(),
+                    FileUtil.getMimeTypeFromUri(requireContext(), fileUri),
+                    FileUtil.getFileSizeFromURI(requireContext(), fileUri),
+                    file.lastModified());
+
+            files.add(managerFile);
+        }
+
+        showFiles();
     }
 
     @Override
@@ -372,7 +410,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
      * Mostra un messaggio informativo all'utente ed apre il file usando una della applicazioni
      * installate.
      */
-    private void previewFile(Uri uri, ManagerFile file) {
+    private void previewFile(Uri uri, ManagerCloudFile file) {
         if (shouldShowPreviewWarning()) {
             //Avvisa l'utente che l'app userà applicazioni esterne per fare la preview
             new AlertDialog.Builder(getContext()).setMessage(R.string.text_message_file_preview_message)
@@ -414,7 +452,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
      * al download.
      * @param file il file da scaricare
      */
-    private void downloadWithWarning(ManagerFile file) {
+    private void downloadWithWarning(ManagerCloudFile file) {
         if (shouldShowDownloadWarning()) {
             new AlertDialog.Builder(getContext()).setMessage(R.string.text_message_file_download_message)
                     .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
@@ -450,7 +488,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    private ManagerFile fileToBeDownloaded;
+    private ManagerCloudFile fileToBeDownloaded;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -471,6 +509,8 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
             } else {
                 Toast.makeText(getContext(), R.string.text_message_file_permission_denied, Toast.LENGTH_SHORT).show();
             }
+        } else if (requestCode == REQUEST_PERMISSION_LOCAL_FILES) {
+            getLocalFiles();
         }
     }
 
@@ -479,7 +519,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
      * Se l'utente vuole può anche aprire direttamente il file scaricato.
      * In caso di errori, essi verranno mostrati e sarà data la possibilità all'utente di riprovare.
      */
-    private void download (ManagerFile file) {
+    private void download (ManagerCloudFile file) {
         new FileDownloader(getContext()) {
             @Override
             protected void onSuccessAction(File localFile) {
@@ -510,7 +550,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
      * Mostra un messaggio qualora il file non sia scaricabile come file temporaneo
      * @param textMessageId il messaggio da visualizzare
      */
-    private void showDownloadSuggestion (int textMessageId, ManagerFile file) {
+    private void showDownloadSuggestion (int textMessageId, ManagerCloudFile file) {
         Snackbar.make(getView(), textMessageId, Snackbar.LENGTH_LONG)
                 .setAction(R.string.text_button_download, new View.OnClickListener() {
                     @Override
@@ -631,9 +671,12 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
 
         @Override
         public void onConnectionDown() {
-            showMessageLayout(R.string.text_message_files_connection_down,
-                    R.string.text_button_open_project_download_folder,
-                    v -> openDownloadFolder());
+            if (requiresStorageAccess()) {
+                getLocalFilesWithWarning();
+            } else {
+                getLocalFiles();
+            }
+            ConnectionCheckBroadcastReceiver.dismissConnectivitySnackbar();
         }
     }
 
@@ -649,8 +692,11 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
      * Implementazione delle azioni effettuabili su ogni file della lista
      */
     private class ProjectFilesFileActionsListener implements FilesRecyclerAdapter.OnActionListener {
+        /**
+         * Azione da eseguire quando l'utente clicca su un file presente sul cloud
+         */
         @Override
-        public void onClick(ManagerFile file) {
+        public void onClick(ManagerCloudFile file) {
             //Scarica il file temporaneo e lo visualizza usando un app esterna
             new TemporaryFileDownloader(getContext()) {
                 @Override
@@ -668,8 +714,18 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
             }.downloadTempFile(file, project);
         }
 
+        /**
+         * Azione da eseguire quando l'utente clicca su un file presente nello storage
+         */
         @Override
-        public void onSetRelease(ManagerFile file, boolean addRelease) {
+        public void onClick(ManagerLocalFile file) {
+            FileUtil.openFileWithViewIntent(getContext(),
+                    FileUtil.getUriFromFile(getContext(), file.getLocalFile()),
+                    file.getType());
+        }
+
+        @Override
+        public void onSetRelease(ManagerCloudFile file, boolean addRelease) {
             if (addRelease) {
                 project.addReleaseName(file.getName());
                 Toast.makeText(getContext(), R.string.text_message_release_add, Toast.LENGTH_LONG).show();
@@ -691,7 +747,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
          * @param file file da cancellare
          */
         @Override
-        public void onDelete(ManagerFile file) {
+        public void onDelete(ManagerCloudFile file) {
             // Indica se il file deve essere eliminato definitavemente o no
             final boolean[] toDelete = {true};
 
@@ -745,7 +801,36 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         }
 
         @Override
-        public void onShare(ManagerFile file) {
+        public void onDelete(ManagerLocalFile file) {
+            new AlertDialog.Builder(getContext())
+                    .setMessage(R.string.text_message_file_local_delete)
+                    .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            boolean deleted = file.getLocalFile().delete();
+
+                            if (deleted) {
+                                files.remove(file);
+                                adapter.submitList(files);
+                                adapter.notifyDataSetChanged();
+                                Toast.makeText(getContext(), R.string.text_message_file_deleted_successfully,
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getContext(), R.string.text_message_file_deletion_failed,
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).create().show();
+        }
+
+        @Override
+        public void onShare(ManagerCloudFile file) {
             //Scarica il file temporaneo e lo condivido permettendo all'utente di scegliere il
             //mezzo di condivisione.
             new TemporaryFileDownloader(getContext()) {
@@ -779,7 +864,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         }
 
         @Override
-        public void onDownload(ManagerFile file) {
+        public void onDownload(ManagerCloudFile file) {
             downloadWithWarning(file);
         }
     }
