@@ -77,20 +77,20 @@ public class FileUtil {
      */
     public static void setTypeImageView (Context context, ImageView imageView, String fileType) {
         if (fileType.contains("image/")) {
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.image));
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_image));
         } else if (fileType.equals("application/pdf")) {
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.pdf));
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_pdf));
         } else if (fileType.contains("audio/")) {
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.audio));
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_audio));
         } else if (fileType.contains("video/")) {
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.video));
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_video));
         } else if (fileType.contains("text/plain")) {
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.text));
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_text));
         } else if (fileType.contains("application/vnd.android.package-archive")) {
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.apk));
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_apk));
         } else {
             Log.i(TAG, "Tipo " + fileType + " non supportato.");
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.file));
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_file));
         }
     }
 

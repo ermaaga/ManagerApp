@@ -3,8 +3,7 @@ package it.uniba.di.sms2021.managerapp.lists;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -51,8 +50,8 @@ public class StudyCasesRecyclerAdapter extends ListAdapter<StudyCase, RecyclerVi
         titleTextView.setText(studyCase.getNome());
         descriptionTextView.setText(studyCase.getDescrizione());
 
-        ImageButton infoButton = itemView.findViewById(R.id.study_case_info_button);
-        infoButton.setOnClickListener(view -> listener.onInfo(studyCase));
+        ImageView infoImageView = itemView.findViewById(R.id.file_type_image_view);
+        infoImageView.setOnClickListener(view -> listener.onInfo(studyCase));
     }
 
     public interface OnActionListener {
