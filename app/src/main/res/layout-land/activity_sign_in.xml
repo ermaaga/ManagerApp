@@ -17,8 +17,8 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="395dp"
-        android:layout_height="590dp"
+        android:layout_width="722dp"
+        android:layout_height="295dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,11 +29,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/name_input_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="264dp"
-            android:layout_height="100dp"
+            android:layout_width="265dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="52dp"
+            android:layout_marginTop="4dp"
             android:hint="@string/text_hint_name_user"
             app:errorEnabled="true"
-            app:layout_constraintEnd_toEndOf="@+id/Label_Credential"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/Label_Credential">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -46,8 +48,8 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/surname_input_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="264dp"
-            android:layout_height="100dp"
+            android:layout_width="266dp"
+            android:layout_height="98dp"
             android:hint="@string/text_hint_surname_user"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="@+id/name_input_layout"
@@ -64,12 +66,15 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/email_input_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="264dp"
-            android:layout_height="100dp"
+            android:layout_width="265dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="52dp"
             android:hint="@string/text_hint_email_user"
-            app:layout_constraintEnd_toEndOf="@+id/surname_input_layout"
-            app:layout_constraintStart_toStartOf="@+id/surname_input_layout"
-            app:layout_constraintTop_toBottomOf="@+id/surname_input_layout">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/name_input_layout"
+            app:layout_constraintTop_toBottomOf="@+id/Label_Credential">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/email_edit_text"
@@ -82,12 +87,13 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/password_input_layout"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="264dp"
-            android:layout_height="100dp"
+            android:layout_width="266dp"
+            android:layout_height="98dp"
             android:hint="@string/text_hint_password_user"
             app:endIconMode="password_toggle"
             app:errorEnabled="true"
             app:layout_constraintEnd_toEndOf="@+id/email_input_layout"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="@+id/email_input_layout"
             app:layout_constraintTop_toBottomOf="@+id/email_input_layout">
 
@@ -104,16 +110,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="168dp"
             android:onClick="saveNewAccount"
-            android:text="@string/text_Labelsign_in"
-            app:layout_constraintEnd_toEndOf="@+id/password_input_layout"
-            app:layout_constraintStart_toStartOf="@+id/password_input_layout"
-            app:layout_constraintTop_toBottomOf="@+id/password_input_layout" />
+            android:text="Sign in"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/password_input_layout"
+            app:layout_constraintStart_toEndOf="@+id/surname_input_layout"
+            app:layout_constraintTop_toBottomOf="@+id/Label_Credential"
+            app:layout_constraintVertical_bias="0.384" />
 
         <ProgressBar
             android:id="@+id/progressBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="720dp"
+            android:layout_height="36dp"
             android:indeterminate="true"
             android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -129,8 +138,8 @@
             android:fontFamily="sans-serif-black"
             android:gravity="center"
             android:includeFontPadding="false"
-            android:text="@string/text_label_insert_credential"
-            android:textSize="24sp"
+            android:text="Inserisci le tue credenziali"
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.503"

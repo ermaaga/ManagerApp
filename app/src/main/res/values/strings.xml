@@ -98,6 +98,9 @@
     <string name="text_label_none_reviews">There are no reviews</string>
     <string name="text_label_none_reports">There are no reports</string>
     <string name="text_lable_reply_project">Write a reply</string>
+    <string name="text_Labelsign_in">Sign in</string>
+    <string name="text_label_insert_credential">Insert your credential.</string>
+
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
@@ -262,9 +265,6 @@
     <string name="text_filter_file_pdf" translatable="false">PDF</string>
     <string name="text_filter_file_doc" translatable="false">.doc</string>
     <string name="text_filter_file_audio">Audio</string>
-
-
-
 
     <plurals name="text_notification_title_feed">
         <item quantity="one">New notification Found</item>
