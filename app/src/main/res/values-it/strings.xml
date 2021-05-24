@@ -86,6 +86,11 @@
     <string name="text_lable_reply_project">Scrivi una risposta</string>
     <string name="text_Labelsign_in">Registrati</string>
     <string name="text_label_insert_credential">Inserisci le tue credenziali.</string>
+    <string name="text_label_login">Accedi</string>
+    <string name="text_lable_login_google">Accedi con Google</string>
+    <string name="Text_label_here">qui</string>
+    <string name="text_label_or">oppure</string>
+    <string name="text_label_question">Non hai ancora un account? registrati</string>
 
     <string name="label_Dialog_Header">Informazione</string>
     <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>
