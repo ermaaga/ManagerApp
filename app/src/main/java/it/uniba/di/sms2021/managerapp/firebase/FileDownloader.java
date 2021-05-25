@@ -20,6 +20,7 @@ import java.io.File;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.file.ManagerCloudFile;
+import it.uniba.di.sms2021.managerapp.utility.FileException;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 import it.uniba.di.sms2021.managerapp.utility.NotificationUtil;
 
@@ -102,22 +103,32 @@ public abstract class FileDownloader {
         }).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Intent intent = FileUtil.getFileViewIntent(context,
-                        FileUtil.getUriFromFile(context, localFile), file.getType());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                int uniqueRequestCode = file.hashCode(); // Se il request code è uguale ad un'activity già
-                                                         // aperta la riusa.
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, uniqueRequestCode, intent, 0);
+                PendingIntent pendingIntent;
+                try {
+                    Intent intent = FileUtil.getFileViewIntent(context,
+                            FileUtil.getUriFromFile(context, localFile), file.getType());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    int uniqueRequestCode = file.hashCode(); // Se il request code è uguale ad un'activity già
+                                                             // aperta la riusa.
+                    pendingIntent = PendingIntent.getActivity(context, uniqueRequestCode, intent, 0);
+                } catch (FileException e) {
+                    pendingIntent = null;
+                }
+
 
                 // Aggiorna la notifica dopo 500ms per non avere problemi con aggiornamenti troppo frequenti
                 // come specificato in https://developer.android.com/training/notify-user/build-notification#Updating
+                PendingIntent finalPendingIntent = pendingIntent;
                 new Handler(context.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         builder.setContentText(context.getString(R.string.text_message_download_complete))
                                 .setProgress(0,0,false)
-                                .setContentIntent(pendingIntent)
                                 .setAutoCancel(true);
+                        if (finalPendingIntent != null) {
+                            builder.setContentIntent(finalPendingIntent);
+                        }
+
                         notificationManager.notify(NotificationUtil.DOWNLOAD_NOTIFICATION_ID, builder.build());
                     }
                 }, 500);

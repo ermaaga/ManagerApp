@@ -23,9 +23,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Environment;
 import android.os.Handler;
-import android.provider.DocumentsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +59,7 @@ import it.uniba.di.sms2021.managerapp.firebase.TemporaryFileDownloader;
 import it.uniba.di.sms2021.managerapp.enitities.file.ManagerCloudFile;
 import it.uniba.di.sms2021.managerapp.lists.FilesRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.ConnectionCheckBroadcastReceiver;
+import it.uniba.di.sms2021.managerapp.utility.FileException;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 import it.uniba.di.sms2021.managerapp.utility.NotificationUtil;
 import it.uniba.di.sms2021.managerapp.utility.SearchUtil;
@@ -87,7 +86,10 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private Project project;
     private UploadTask uploadTask;
 
+    private FloatingActionButton addFileFloatingActionButton;
     private ConstraintLayout filesLayout;
+    private ConstraintLayout warningOfflineMessageLayout;
+
     private ConstraintLayout emptyLayout;
     private TextView emptyLayoutMessageTextView;
     private Button emptyLayoutButton;
@@ -127,12 +129,12 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         super.onViewCreated(view, savedInstanceState);
 
         filesLayout = view.findViewById(R.id.file_layout);
+        warningOfflineMessageLayout = view.findViewById(R.id.files_offline_warning_constraintView);
         emptyLayout = view.findViewById(R.id.empty_state_layout);
         emptyLayoutMessageTextView = view.findViewById(R.id.files_empty_state_message_text_view);
         emptyLayoutButton = view.findViewById(R.id.files_empty_state_button);
 
-        FloatingActionButton addFileFloatingActionButton =
-                view.findViewById(R.id.files_add_file_floating_action_button);
+        addFileFloatingActionButton = view.findViewById(R.id.files_add_file_floating_action_button);
         addFileFloatingActionButton.setOnClickListener(this);
 
         project = ((ProjectDetailActivity)getActivity()).getSelectedProject();
@@ -147,10 +149,6 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         filesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         getFiles();
-
-        if (userCantAddFiles()) {
-            addFileFloatingActionButton.setVisibility(View.GONE);
-        }
     }
 
     public boolean userCantAddFiles() {
@@ -234,14 +232,27 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private void dropElaboratingReference (StorageReference ref) {
         elaboratingReferences.remove(ref);
         if (elaboratingReferences.isEmpty()) {
-            showFiles();
+            showFiles(false);
         }
     }
 
     /**
      * Mostra la lista dei file trovati
+     * @param offline indica se mostrare un messaggio informativo quando l'applicazione è offline
      */
-    private void showFiles () {
+    private void showFiles (boolean offline) {
+        if (offline) {
+            warningOfflineMessageLayout.setVisibility(View.VISIBLE);
+        } else {
+            warningOfflineMessageLayout.setVisibility(View.GONE);
+        }
+
+        if (offline || userCantAddFiles()) {
+            addFileFloatingActionButton.setVisibility(View.GONE);
+        } else {
+            addFileFloatingActionButton.setVisibility(View.VISIBLE);
+        }
+
         if (files.isEmpty()) {
             showMessageLayout(R.string.text_message_files_empty, null, null);
         } else {
@@ -294,7 +305,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
             files.add(managerFile);
         }
 
-        showFiles();
+        showFiles(true);
     }
 
     @Override
@@ -432,8 +443,12 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
             }).create().show();
         } else {
             //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
-            if (!FileUtil.openFileWithViewIntent(getContext(), uri, file.getType())) {
-                showDownloadSuggestion(R.string.text_message_temp_file_not_supported, file);
+            try {
+                FileUtil.openFileWithViewIntent(getContext(), uri, file.getType());
+            } catch (FileException e) {
+                if (e.getErrorCode() == FileException.NO_INTENT_FOUND) {
+                    showDownloadSuggestion(R.string.text_message_temp_file_not_supported, fileToPreview);
+                }
             }
         }
     }
@@ -492,25 +507,32 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_PERMISSION_DOWNLOAD) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, fileToBeDownloaded.toString());
-                download(fileToBeDownloaded);
-            } else {
-                Toast.makeText(getContext(), R.string.text_message_file_permission_denied, Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == REQUEST_PERMISSION_PREVIEW) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
-                if (!FileUtil.openFileWithViewIntent(getContext(), uriToPreview, fileToPreview.getType())) {
-                    showDownloadSuggestion(
-                            R.string.text_message_temp_file_not_supported, fileToPreview);
+        switch (requestCode) {
+            case REQUEST_PERMISSION_DOWNLOAD:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, fileToBeDownloaded.toString());
+                    download(fileToBeDownloaded);
+                } else {
+                    Toast.makeText(getContext(), R.string.text_message_file_permission_denied, Toast.LENGTH_SHORT).show();
                 }
-            } else {
-                Toast.makeText(getContext(), R.string.text_message_file_permission_denied, Toast.LENGTH_SHORT).show();
-            }
-        } else if (requestCode == REQUEST_PERMISSION_LOCAL_FILES) {
-            getLocalFiles();
+                break;
+            case REQUEST_PERMISSION_PREVIEW:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
+                    try {
+                        FileUtil.openFileWithViewIntent(getContext(), uriToPreview, fileToPreview.getType());
+                    } catch (FileException e) {
+                        if (e.getErrorCode() == FileException.NO_INTENT_FOUND) {
+                            showDownloadSuggestion(R.string.text_message_temp_file_not_supported, fileToPreview);
+                        }
+                    }
+                } else {
+                    Toast.makeText(getContext(), R.string.text_message_file_permission_denied, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case REQUEST_PERMISSION_LOCAL_FILES:
+                getLocalFiles();
+                break;
         }
     }
 
@@ -719,9 +741,16 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
          */
         @Override
         public void onClick(ManagerLocalFile file) {
-            FileUtil.openFileWithViewIntent(getContext(),
-                    FileUtil.getUriFromFile(getContext(), file.getLocalFile()),
-                    file.getType());
+            try {
+                FileUtil.openFileWithViewIntent(getContext(),
+                        FileUtil.getUriFromFile(getContext(), file.getLocalFile()),
+                        file.getType());
+            } catch (FileException e) {
+                if (e.getErrorCode() == FileException.NO_INTENT_FOUND) {
+                    Toast.makeText(getContext(), R.string.text_message_downloaded_file_not_supported,
+                            Toast.LENGTH_LONG).show();
+                }
+            }
         }
 
         @Override

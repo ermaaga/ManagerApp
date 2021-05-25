@@ -201,6 +201,8 @@
     <string name="text_message_gps_not_turned_on">The GPS was not turned on</string>
     <string name="text_message_local_files_require_storage_permissions">There is no internet connection. Do you want the app to show the files you previously downloaded?\nIf yes you will be asked for storage permissions.</string>
     <string name="text_message_file_local_delete">You are about to the delete the file on your device.\nThe file in the cloud won\'t be affected by this action.</string>
+    <string name="text_message_files_local_files_displayed">Displayed files are downloaded files.\nThey may differ from files in the cloud.</string>
+    <string name="text_message_downloaded_file_not_supported">The selected file isn\'t supported by your device.</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 

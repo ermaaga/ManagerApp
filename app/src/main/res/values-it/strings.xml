@@ -192,6 +192,8 @@
     <string name="text_message_gps_not_turned_on">Il GPS non è stato attivato</string>
     <string name="text_message_local_files_require_storage_permissions">Non è presente la connessione ad internet. Vuoi che l\'app mostri i file precedentemente scaricati?\n Se sì ti verranno chiesti i permessi per il disco.</string>
     <string name="text_message_file_local_delete">Stai per cancellare il file sul tuo dispositivo.\nIl file nel cloud non sarà modificato al seguito di questa azione.</string>
+    <string name="text_message_files_local_files_displayed">I file mostrati sono file scaricati.\nPotrebbero differire dai file nel cloud.</string>
+    <string name="text_message_downloaded_file_not_supported">Il file selezionato non è supportato dal tuo dispositivo.</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
