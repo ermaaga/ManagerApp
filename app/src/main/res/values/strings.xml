@@ -60,11 +60,13 @@
     <string name="text_label_desc_study_case">Description</string>
     <string name="text_label_exam_name">Name</string>
     <string name="text_label_exam_description">Description</string>
-    <string name="text_label_name_account">Name</string>
-    <string name="text_label_surname_account">Surname</string>
-    <string name="text_label_email_account" translatable="false">Email</string>
+    <string name="text_label_name_account">NAME</string>
+    <string name="text_label_surname_account">SURNAME</string>
+    <string name="text_label_email_account" translatable="false">EMAIL</string>
     <string name="text_label_corso_account">Course</string>
     <string name="text_label_exam_partecipants">Partecipants</string>
+    <string name="text_label_edit_profile">Edit profile</string>
+    <string name="text_label_save_profile">Save changes</string>
     <string name="text_label_search">Search</string>
     <string name="text_label_year">Year</string>
     <string name="text_label_permissions">Permissions</string>
@@ -307,13 +309,13 @@
     </plurals>
 
     <plurals name="numberOfDepartments">
-        <item quantity="one">Department</item>
-        <item quantity="other">Departments</item>
+        <item quantity="one">DEPARTMENTS</item>
+        <item quantity="other">DEPARTMENTS</item>
     </plurals>
 
     <plurals name="numberOfCourses">
-        <item quantity="one">Course</item>
-        <item quantity="other">Courses</item>
+        <item quantity="one">COURSE</item>
+        <item quantity="other">COURSES</item>
     </plurals>
 
     <plurals name="numberOfNotifications">

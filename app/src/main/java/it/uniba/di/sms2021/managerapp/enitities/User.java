@@ -1,11 +1,14 @@
 package it.uniba.di.sms2021.managerapp.enitities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.database.Exclude;
 
 import java.util.List;
 import java.util.Objects;
 
-public class User {
+public class User implements Parcelable {
     public static final int ROLE_STUDENT = 1;
     public static final int ROLE_PROFESSOR = 2;
 
@@ -20,6 +23,8 @@ public class User {
     private List<String> dipartimenti;
     private List<String> corsi;
     private String profileImage;
+
+    public static final String KEY = "user";
 
     public User() {
     }
@@ -51,6 +56,29 @@ public class User {
         this.dipartimenti = dipartimenti;
         this.profileImage=profileImage;
     }
+
+    protected User(Parcel in) {
+        accountId = in.readString();
+        nome = in.readString();
+        cognome = in.readString();
+        email = in.readString();
+        ruolo = in.readInt();
+        dipartimenti = in.createStringArrayList();
+        corsi = in.createStringArrayList();
+        profileImage = in.readString();
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 
     public String getAccountId() {
         return accountId;
@@ -164,5 +192,22 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hash(accountId, nome, cognome, email, ruolo, dipartimenti, corsi, profileImage);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(accountId);
+        dest.writeString(nome);
+        dest.writeString(cognome);
+        dest.writeString(email);
+        dest.writeInt(ruolo);
+        dest.writeStringList(dipartimenti);
+        dest.writeStringList(corsi);
+        dest.writeString(profileImage);
     }
 }

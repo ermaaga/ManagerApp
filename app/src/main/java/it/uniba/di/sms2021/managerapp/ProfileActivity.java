@@ -67,6 +67,9 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
 
     User user;
     String userid;
+    String currentUserId;
+    User userFromLink;
+    boolean fromLink;
 
     TextView textName;
     TextView textSurname;
@@ -99,14 +102,20 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
     boolean[] depIsChecked;
     boolean[] courseIsChecked;
 
+    HashMap childUpdates;
+
     private ValueEventListener userListener;
     private ValueEventListener userListenerCreate;
     private ValueEventListener departmentsListener;
     private ValueEventListener coursesListener;
 
+    MenuItem iconSave;
+    MenuItem iconEdit;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_profile, menu);
+        iconSave = menu.findItem(R.id.action_save);
         return true;
     }
 
@@ -115,16 +124,37 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
         int menuId = item.getItemId();
         MenuUtil.performMainActions(this, menuId);
 
+        //Se viene selezionata l'icona di modifica
+        if (menuId == R.id.action_edit) {
+            //Chiamata al metodo che permette la modifica dei dati di profilo
+            editProfile();
+            /*//Rimpiazza l'icona di modifica con l'icona "spunta" per salvare le modifiche
+            Drawable myDrawable = getResources().getDrawable(R.drawable.ic_baseline_done_24, getApplicationContext().getTheme());
+            item.setIcon(myDrawable);*/
+            item.setVisible(false);
+            iconSave.setVisible(true);
+        }
+        if(menuId == R.id.action_save){
+            saveProfile();
+            item.setVisible(false);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if (fragmentManager.getBackStackEntryCount() == 0) {
+        if(editPhotoButton.getVisibility()==View.VISIBLE){
+            Intent refresh = new Intent(ProfileActivity.this, ProfileActivity.class);
+            startActivity(refresh);
             finish();
+        } else if (fragmentManager.getBackStackEntryCount() == 0) {
+            finish();
+            Log.d(TAG, "count==0");
         } else {
             fragmentManager.popBackStack();
+            Log.d(TAG, "ultimo log");
         }
 
         return super.onSupportNavigateUp();
@@ -146,7 +176,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        textName = (TextView) findViewById(R.id.value_name_account_text_view);
+        textName = findViewById(R.id.value_name_account_text_view);
         textSurname = (TextView) findViewById(R.id.value_surname_account_text_view);
         textEmail = (TextView) findViewById(R.id.value_email_account_text_view);
         textDepartments = (TextView) findViewById(R.id.value_department);
@@ -157,14 +187,10 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
 
         photoProfile = (ImageView) findViewById(R.id.image_account);
 
-        editButton = (Button) findViewById(R.id.button_edit_profile);
-        saveButton = (Button) findViewById(R.id.button_save_profile);
         editDepartments = (ImageButton) findViewById(R.id.departments_button);
         editCourses = (ImageButton) findViewById(R.id.courses_button);
         editPhotoButton = (FloatingActionButton) findViewById(R.id.button_uplod_photo);
 
-        editButton.setOnClickListener(this);
-        saveButton.setOnClickListener(this);
         editPhotoButton.setOnClickListener(this);
 
         database = FirebaseDbHelper.getDBInstance();
@@ -176,9 +202,30 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
         departmentsChecked = new ArrayList<String>();
         coursesChecked = new ArrayList<String>();
 
+        fromLink= getIntent().getBooleanExtra("fromLinkBoolean", false);
+        userFromLink = getIntent().getParcelableExtra(User.KEY);
+
         //TODO considerare l'utilizzo di LoginHelper.getCurrentUser()
-        userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        /*Se viene visualizzato il profilo di un altro utente, invece che il profilo corrente,
+        * l'id dell'utente viene ottenuto dall'oggetto passato tramite Intent e non viene
+        * permessa la modifica del profilo */
+        if(fromLink){
+            userid = userFromLink.getAccountId();
+            if(!userFromLink.getAccountId().equals(currentUserId)){
+                editButton.setVisibility(View.GONE);
+            }
+        }else{
+            userid = currentUserId;
+        }
+
         currentUserReference = usersReference.child(userid);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         userListenerCreate = new ValueEventListener() {
             @Override
@@ -212,11 +259,6 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
             }
         };
         currentUserReference.addListenerForSingleValueEvent(userListenerCreate);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         userListener = new ValueEventListener() {
             @Override
@@ -234,7 +276,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
                 TextView labelDepartments = (TextView) findViewById(R.id.label_departments);
                 labelDepartments.setText(getResources().getQuantityString(R.plurals.numberOfDepartments, sizeDepartments));
 
-                int sizeCourses = user.getDipartimenti().size();
+                int sizeCourses = user.getCorsi().size();
                 TextView labelCourses = (TextView) findViewById(R.id.label_courses);
                 labelCourses.setText(getResources().getQuantityString(R.plurals.numberOfCourses, sizeCourses));
             }
@@ -360,11 +402,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
 
     @Override
     public void onClick(View v) {
-        if(v.getId()== R.id.button_edit_profile) {
-            editProfile();
-        }else if(v.getId()== R.id.button_save_profile){
-            saveProfile();
-        }else if(v.getId()== R.id.button_uplod_photo){
+        if(v.getId()== R.id.button_uplod_photo){
             selectImage();
         }
     }
@@ -398,11 +436,9 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
     public void editProfile() {
         textName.setVisibility(View.GONE);
         textSurname.setVisibility(View.GONE);
-        editButton.setVisibility(View.GONE);
 
         editName.setVisibility(View.VISIBLE);
         editSurname.setVisibility(View.VISIBLE);
-        saveButton.setVisibility(View.VISIBLE);
         editDepartments.setVisibility(View.VISIBLE);
         editCourses.setVisibility(View.VISIBLE);
         editPhotoButton.setVisibility(View.VISIBLE);
@@ -412,9 +448,12 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
     }
 
     public void saveProfile() {
+
+        childUpdates = new HashMap();
+
         if(fullFileUri!= null) {
 
-            //Eliminazione della foto profilo eventualmente già presente
+            //Eliminazione della foto profilo eventualmente già presente nello storage
             storageReference.child("profileimages/"+userid).listAll()
                     .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                         @Override
@@ -466,26 +505,24 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Log.d(TAG, "File caricato con successo");
-                    HashMap childUpdates = new HashMap();
                     childUpdates.put("/profileImage/", FileUtil.getFileNameFromURI(ProfileActivity.this, fullFileUri));
-                    childUpdates.put("/nome/", editName.getText().toString());
-                    childUpdates.put("/cognome/", editSurname.getText().toString());
-                    if(currentListDepartment!=null){
-                        childUpdates.put("/dipartimenti/", currentListDepartment);
-                    }
-                    if(currentListCourse!=null){
-                        childUpdates.put("/corsi/", currentListCourse);
-                    }
-
-                    usersReference.child(user.getAccountId()).updateChildren(childUpdates);
-
-                    Intent refresh = new Intent(ProfileActivity.this, ProfileActivity.class);
-                    startActivity(refresh);
-                    finish();
                 }
             });
         }
 
+        childUpdates.put("/nome/", editName.getText().toString());
+        childUpdates.put("/cognome/", editSurname.getText().toString());
+        if(currentListDepartment!=null){
+            childUpdates.put("/dipartimenti/", currentListDepartment);
+        }
+        if(currentListCourse!=null){
+            childUpdates.put("/corsi/", currentListCourse);
+        }
+        usersReference.child(user.getAccountId()).updateChildren(childUpdates);
+
+        Intent refresh = new Intent(ProfileActivity.this, ProfileActivity.class);
+        startActivity(refresh);
+        finish();
     }
 
     public void editDepartments() {

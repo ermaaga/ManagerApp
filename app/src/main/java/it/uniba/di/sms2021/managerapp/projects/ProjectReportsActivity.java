@@ -69,6 +69,7 @@ public class ProjectReportsActivity extends AbstractBottomNavigationActivity {
         Report replyReport = getIntent().getParcelableExtra(Report.KEY);
 
         if(needReply){
+            //TODO vedere se funziona
             Intent intent = new Intent(getApplicationContext(), OpinionRepliesActivity.class);
             intent.putExtra("originObject", replyReport);
             startActivity(intent);

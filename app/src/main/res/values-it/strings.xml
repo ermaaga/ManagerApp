@@ -52,6 +52,8 @@
     <string name="text_label_surname_account">Cognome</string>
     <string name="text_label_corso_account">Corso</string>
     <string name="text_label_exam_partecipants">Partecipanti</string>
+    <string name="text_label_edit_profile">Modifica profilo</string>
+    <string name="text_label_save_profile">Salva modifiche</string>
     <string name="text_label_search">Ricerca</string>
     <string name="text_label_year">Anno</string>
     <string name="text_label_dialog_title_departments">Seleziona i dipartimenti</string>
@@ -282,7 +284,6 @@
     <string name="text_filter_projects_created">Creati</string>
     <string name="text_filter_projects_withrelease">Con Rilasci</string>
     <string name="text_filter_projects_hasevaluation">Valutati</string>
-
 
 
     <plurals name="text_notification_title_feed">
