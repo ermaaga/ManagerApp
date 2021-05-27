@@ -134,7 +134,7 @@ public class GroupJoinNotice implements Notifiable {
 
     @Override
     public void onNotificationAction1Click(Context context, @Nullable OnActionDoneListener listener) {
-        FirebaseDbHelper.getUserJoinNoticeReference(uid).child(noticeId).removeValue();
+        FirebaseDbHelper.getGroupUserJoinNoticeReference(uid).child(noticeId).removeValue();
 
         if (listener != null) {
             listener.onActionDone();

@@ -9,7 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 /**
- * Se avviato, ogni tot minuti avvia NotificationService
+ * Se avviato, ogni X minuti, assegnato in MINUTE_CHECKED, avvia NotificationService
  */
 public class NotificationChecker extends BroadcastReceiver {
 

@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import it.uniba.di.sms2021.managerapp.notifications.NotificationChecker;
+
 /**
  * Activity di base dell'applicazione che contiene behaviour contenuti in tutte le activity.<br>
  * In particolare contiene logica relativa al cambio di stato della connettività internet, con

@@ -40,7 +40,6 @@ import it.uniba.di.sms2021.managerapp.utility.NotificationUtil;
 public class NotificationService extends Service {
     private static final String TAG = "NotificationService";
 
-    private Looper serviceLooper;
     private ServiceHandler serviceHandler;
 
     private Set<DatabaseReference> workingReferences;
@@ -70,7 +69,7 @@ public class NotificationService extends Service {
         thread.start();
 
         // Get the HandlerThread's Looper and use it for our Handler
-        serviceLooper = thread.getLooper();
+        Looper serviceLooper = thread.getLooper();
         serviceHandler = new ServiceHandler(serviceLooper);
     }
 
@@ -128,7 +127,7 @@ public class NotificationService extends Service {
             }
         });
 
-        DatabaseReference userJoinNoticeReference = FirebaseDbHelper.getUserJoinNoticeReference(LoginHelper.getCurrentUser().getAccountId());
+        DatabaseReference userJoinNoticeReference = FirebaseDbHelper.getGroupUserJoinNoticeReference(LoginHelper.getCurrentUser().getAccountId());
         workingReferences.add(userJoinNoticeReference);
 
         userJoinNoticeReference.addListenerForSingleValueEvent(new ValueEventListener() {

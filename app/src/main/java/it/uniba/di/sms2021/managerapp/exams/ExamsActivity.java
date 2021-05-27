@@ -35,6 +35,7 @@ import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.lists.ExamsRecyclerAdapter;
+import it.uniba.di.sms2021.managerapp.notifications.NotificationChecker;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
@@ -66,6 +67,8 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
                 startActivity(new Intent(ExamsActivity.this,NewExamActivity.class));
             }
         });
+
+        NotificationChecker.subscribeCheckForNotifications(this);
     }
 
     @Override
