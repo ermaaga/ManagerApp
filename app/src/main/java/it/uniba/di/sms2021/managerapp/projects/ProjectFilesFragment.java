@@ -178,8 +178,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
 
             listAll();
         } else {
-            Snackbar.make(requireView(), R.string.text_message_files_are_private, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.text_button_dismiss, v -> {}).show();
+            showMessageLayout(R.string.text_message_files_are_private, null, null);
         }
     }
 
@@ -268,22 +267,27 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
      * locali.
      */
     private void getLocalFilesWithWarning() {
-        new AlertDialog.Builder(getContext())
-                .setMessage(R.string.text_message_local_files_require_storage_permissions)
-                .setPositiveButton(R.string.text_button_yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                                REQUEST_PERMISSION_LOCAL_FILES);
-                    }
-                })
-                .setNegativeButton(R.string.text_button_no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        showMessageLayout(R.string.text_message_files_connection_down,
-                                null, null);
-                    }
-                }).create().show();
+        if (userCanViewFiles()) {
+            new AlertDialog.Builder(getContext())
+                    .setMessage(R.string.text_message_local_files_require_storage_permissions)
+                    .setPositiveButton(R.string.text_button_yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    REQUEST_PERMISSION_LOCAL_FILES);
+                        }
+                    })
+                    .setNegativeButton(R.string.text_button_no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            showMessageLayout(R.string.text_message_files_connection_down,
+                                    null, null);
+                        }
+                    }).create().show();
+        } else {
+            showMessageLayout(R.string.text_message_files_are_private,
+                    null, null);
+        }
     }
 
     /**
@@ -291,21 +295,26 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
      * Richiede i permessi di lettura e scrittura dallo storage.
      */
     private void getLocalFiles () {
-        File downloadFolder = FileDownloader.getDownloadPath(project.getName());
-        File[] localFiles = downloadFolder.listFiles();
-        files = new ArrayList<>();
+        if (userCanViewFiles()) {
+            File downloadFolder = FileDownloader.getDownloadPath(project.getName());
+            File[] localFiles = downloadFolder.listFiles();
+            files = new ArrayList<>();
 
-        for (File file: localFiles) {
-            Uri fileUri = FileUtil.getUriFromFile(getContext(), file);
-            ManagerLocalFile managerFile = new ManagerLocalFile(file, file.getName(),
-                    FileUtil.getMimeTypeFromUri(requireContext(), fileUri),
-                    FileUtil.getFileSizeFromURI(requireContext(), fileUri),
-                    file.lastModified());
+            for (File file: localFiles) {
+                Uri fileUri = FileUtil.getUriFromFile(getContext(), file);
+                ManagerLocalFile managerFile = new ManagerLocalFile(file, file.getName(),
+                        FileUtil.getMimeTypeFromUri(requireContext(), fileUri),
+                        FileUtil.getFileSizeFromURI(requireContext(), fileUri),
+                        file.lastModified());
 
-            files.add(managerFile);
+                files.add(managerFile);
+            }
+
+            showFiles(true);
+        } else {
+            showMessageLayout(R.string.text_message_files_are_private,
+                    null, null);
         }
-
-        showFiles(true);
     }
 
     @Override
