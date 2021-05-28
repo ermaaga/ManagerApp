@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -80,8 +79,6 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
     EditText editName;
     EditText editSurname;
 
-    Button editButton;
-    Button saveButton;
     ImageButton editDepartments;
     ImageButton editCourses;
     FloatingActionButton editPhotoButton;
@@ -116,6 +113,13 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_profile, menu);
         iconSave = menu.findItem(R.id.action_save);
+        iconEdit = menu.findItem(R.id.action_edit);
+
+        /*Se viene visualizzato il profilo di un altro utente, invece che il profilo corrente,
+         * non viene permessa la modifica del profilo */
+        if(!userid.equals(currentUserId)){
+            iconEdit.setVisible(false);
+        }
         return true;
     }
 
@@ -128,9 +132,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
         if (menuId == R.id.action_edit) {
             //Chiamata al metodo che permette la modifica dei dati di profilo
             editProfile();
-            /*//Rimpiazza l'icona di modifica con l'icona "spunta" per salvare le modifiche
-            Drawable myDrawable = getResources().getDrawable(R.drawable.ic_baseline_done_24, getApplicationContext().getTheme());
-            item.setIcon(myDrawable);*/
+            //Rimpiazza l'icona di modifica con l'icona "spunta" per salvare le modifiche
             item.setVisible(false);
             iconSave.setVisible(true);
         }
@@ -151,10 +153,8 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
             finish();
         } else if (fragmentManager.getBackStackEntryCount() == 0) {
             finish();
-            Log.d(TAG, "count==0");
         } else {
             fragmentManager.popBackStack();
-            Log.d(TAG, "ultimo log");
         }
 
         return super.onSupportNavigateUp();
@@ -209,13 +209,9 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         /*Se viene visualizzato il profilo di un altro utente, invece che il profilo corrente,
-        * l'id dell'utente viene ottenuto dall'oggetto passato tramite Intent e non viene
-        * permessa la modifica del profilo */
+         * l'id dell'utente viene ottenuto dall'oggetto passato tramite Intent*/
         if(fromLink){
             userid = userFromLink.getAccountId();
-            if(!userFromLink.getAccountId().equals(currentUserId)){
-                editButton.setVisibility(View.GONE);
-            }
         }else{
             userid = currentUserId;
         }

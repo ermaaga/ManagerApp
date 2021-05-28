@@ -309,7 +309,7 @@
     </plurals>
 
     <plurals name="numberOfDepartments">
-        <item quantity="one">DEPARTMENTS</item>
+        <item quantity="one">DEPARTMENT</item>
         <item quantity="other">DEPARTMENTS</item>
     </plurals>
 
