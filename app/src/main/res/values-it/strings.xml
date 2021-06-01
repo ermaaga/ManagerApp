@@ -66,12 +66,14 @@
     <string name="text_label_project_reviews">Recensioni</string>
     <string name="text_label_project_reports">Segnalazioni</string>
     <string name="text_label_file_release_number">Rilascio N°%d</string>
-    <string name="text_label_evaluation">Valutazione:</string>
+    <string name="text_label_evaluation">Valutazione</string>
     <string name="text_label_my_projects_title">I Miei Progetti</string>
     <string name="text_label_lists_projects_received_title">Liste di progetti ricevute</string>
     <string name="text_label_available_devices">Dispositivi disponibili:</string>
     <string name="text_label_paired_devices">Dispositivi abbinati:</string>
     <string name="text_label_name_list">Name list</string>
+    <string name="text_label_study_case">Caso di studio</string>
+    <string name="text_label_none_evaluation">There is no evaluation</string>
 
     <string name="text_label_project_preference_visibility">Chiunque può accedere al progetto</string>
     <string name="text_label_project_preference_free_join">Chiunque può unirsi al progetto</string>

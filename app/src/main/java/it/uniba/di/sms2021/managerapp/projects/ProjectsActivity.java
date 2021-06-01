@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -69,7 +70,8 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     private ValueEventListener projectListener;
     private ValueEventListener listIdProjectsListener;
 
-    ImageView shareProjects;
+    private ImageView shareProjects;
+    private Button receiveButton;
 
     private String lastQuery = "";
     private final Set<String> searchFilters = new HashSet<>();
@@ -86,6 +88,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         animRotate = AnimationUtils.loadAnimation(this, R.anim.shake_animation);
 
         shareProjects = findViewById(R.id.share_list_image_view);
+        receiveButton = findViewById(R.id.button_receive);
         myProjectsRecyclerView = findViewById(R.id.my_projects_recycler_view);
         listProjectsRecyclerView = findViewById(R.id.list_projects_recycler_view);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -94,6 +97,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         //se non supportato non fa vedere icona di condivisione
         if (bluetoothAdapter == null){
             shareProjects.setVisibility(View.GONE);
+            receiveButton.setVisibility(View.GONE);
             Log.d(TAG, "Bluetooth non è supportato da questo dispositivo");
         }
         else {

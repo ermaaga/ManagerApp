@@ -20,8 +20,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.Report;
 import it.uniba.di.sms2021.managerapp.enitities.Review;
+import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
+import it.uniba.di.sms2021.managerapp.exams.StudyCaseDetailActivity;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
@@ -40,6 +43,10 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
     TextView noneRevievsTextView;
     TextView noneReportsTextView;
     TextView lastReportTextView;
+    TextView studycaseTextView;
+    TextView noneEvaluationTextView;
+    TextView voteTextView;
+    TextView commentTextView;
 
     View reviewDivider;
     View reportDivider;
@@ -86,6 +93,10 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
         noneRevievsTextView = (TextView) view.findViewById(R.id.none_reviews_text_view);
         noneReportsTextView = (TextView) view.findViewById(R.id.none_reports_text_view);
         lastReportTextView = (TextView) view.findViewById(R.id.last_report_text_view);
+        studycaseTextView = (TextView) view.findViewById(R.id.about_subtitle_value_study_case);
+        noneEvaluationTextView = (TextView) view.findViewById(R.id.none_evaluation);
+        voteTextView = (TextView) view.findViewById(R.id.about_subtitle_label_vote);
+        commentTextView = (TextView) view.findViewById(R.id.about_subtitle_label_comment);
 
         reviewDivider = (View) view.findViewById(R.id.reviews_divider);
         reportDivider = (View) view.findViewById(R.id.report_divider);
@@ -96,12 +107,13 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
         addReportButton.setOnClickListener(this);
         seeReviewButton.setOnClickListener(this);
         seeReportButton.setOnClickListener(this);
-
+        studycaseTextView.setOnClickListener(this);
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
         project = ((ProjectDetailActivity)getActivity()).getSelectedProject();
 
         if(!project.getGroup().getMembri().contains(LoginHelper.getCurrentUser().getAccountId())){
@@ -110,12 +122,26 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
         }
 
         if(project.getEvaluation()!=null){
+            voteTextView.setVisibility(View.VISIBLE);
+            textVote.setVisibility(View.VISIBLE);
             textVote.setText(""+project.getEvaluation().getVote());
-            if(project.getEvaluation().getComment()!=null){
+            if(!project.getEvaluation().getComment().equals("")){
+                commentTextView.setVisibility(View.VISIBLE);
+                textComment.setVisibility(View.VISIBLE);
                 textComment.setText(project.getEvaluation().getComment());
             }
 
+        }else{
+            //todo controllare se servono
+            voteTextView.setVisibility(View.GONE);
+            textVote.setVisibility(View.GONE);
+            commentTextView.setVisibility(View.GONE);
+            textComment.setVisibility(View.GONE);
+
+            noneEvaluationTextView.setVisibility(View.VISIBLE);
         }
+
+        studycaseTextView.setText(project.getStudyCaseName());
 
         setAvarage();
         setLastReport();
@@ -223,6 +249,9 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
         }else if(v.getId()== R.id.reports_clickable_text_view) {
             saveMoreReports();
         }
+        else if(v.getId()== R.id.about_subtitle_value_study_case) {
+            goToStudyCase();
+        }
     }
 
     private void addReview() {
@@ -246,6 +275,13 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
     private void saveMoreReports() {
         Intent intent = new Intent(getContext(), ProjectReportsActivity.class);
         intent.putExtra(Project.KEY, project);
+        startActivity(intent);
+    }
+
+    private void goToStudyCase() {
+        Intent intent = new Intent(getContext(), StudyCaseDetailActivity.class);
+        intent.putExtra(StudyCase.Keys.ID, project.getGroup().getStudyCase());
+        intent.putExtra(Exam.Keys.EXAM, project.getGroup().getExam());
         startActivity(intent);
     }
 

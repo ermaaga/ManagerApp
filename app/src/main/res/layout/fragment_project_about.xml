@@ -50,14 +50,54 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
+                        android:id="@+id/about_subtitle_label_study_case"
+                        style="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="@string/text_label_study_case"
+                        app:layout_constraintStart_toStartOf="@+id/about_title_text_view"
+                        app:layout_constraintTop_toBottomOf="@+id/about_title_text_view" />
+
+                    <TextView
+                        android:id="@+id/about_subtitle_value_study_case"
+                        style="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:textColor="@color/blue"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/about_subtitle_label_study_case"
+                        app:layout_constraintTop_toTopOf="@+id/about_subtitle_label_study_case"
+                        tools:text="value study case" />
+
+                    <TextView
                         android:id="@+id/about_subtitle_label_evaluation"
                         style="@style/TextAppearance.AppCompat.Medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"
                         android:text="@string/text_label_evaluation"
-                        app:layout_constraintStart_toStartOf="@+id/about_title_text_view"
-                        app:layout_constraintTop_toBottomOf="@id/about_title_text_view" />
+                        app:layout_goneMarginBottom="24dp"
+                        app:layout_constraintBottom_toTopOf="@+id/about_subtitle_label_vote"
+                        app:layout_constraintStart_toStartOf="@+id/about_subtitle_label_study_case"
+                        app:layout_constraintTop_toBottomOf="@+id/about_subtitle_label_study_case" />
+
+                    <TextView
+                        android:id="@+id/none_evaluation"
+                        style="@style/TextAppearance.AppCompat.Medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="@string/text_label_none_evaluation"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/about_subtitle_label_evaluation"
+                        app:layout_constraintTop_toTopOf="@+id/about_subtitle_label_evaluation"
+                        tools:visibility="invisible" />
 
                     <TextView
                         android:id="@+id/about_subtitle_label_vote"
@@ -65,10 +105,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"
                         android:text="@string/text_hint_vote_project"
+                        android:visibility="gone"
+                        app:layout_goneMarginBottom="24dp"
+                        app:layout_constraintBottom_toTopOf="@+id/about_subtitle_label_comment"
                         app:layout_constraintStart_toStartOf="@+id/about_subtitle_label_evaluation"
-                        app:layout_constraintTop_toBottomOf="@id/about_subtitle_label_evaluation" />
+                        tools:visibility="invisible" />
 
                     <TextView
                         android:id="@+id/about_subtitle_value_vote"
@@ -76,20 +119,26 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/about_subtitle_label_vote"
                         app:layout_constraintTop_toTopOf="@+id/about_subtitle_label_vote"
-                        tools:text="value vote" />
+                        tools:text="value vote"
+                        tools:visibility="invisible"
+                       />
 
                     <TextView
                         android:id="@+id/about_subtitle_label_comment"
                         style="@style/TextAppearance.AppCompat.Medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="24dp"
                         android:text="@string/text_hint_comment_project"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="@+id/about_subtitle_label_vote"
-                        app:layout_constraintTop_toTopOf="@+id/about_subtitle_value_comment" />
+                        tools:visibility="invisible" />
 
                     <TextView
                         android:id="@+id/about_subtitle_value_comment"
@@ -97,16 +146,16 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
-                        android:layout_marginTop="16dp"
                         android:layout_marginEnd="16dp"
-                        android:layout_marginBottom="16dp"
                         android:maxLines="5"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/about_subtitle_label_comment"
-                        app:layout_constraintTop_toBottomOf="@+id/about_subtitle_value_vote"
-                        tools:text="value comment" />
+                        app:layout_constraintTop_toTopOf="@+id/about_subtitle_label_comment"
+                        tools:text="value comment"
+                        tools:visibility="invisible" />
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>

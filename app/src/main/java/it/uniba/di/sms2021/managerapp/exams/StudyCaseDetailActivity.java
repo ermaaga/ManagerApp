@@ -9,18 +9,29 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
 public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
 
     private StudyCase studyCase;
-    private Exam exam;
+    private String idStudyCase;
+    private String idExam;
+
+    TextView textName;
+    TextView textDesc;
+
+    private DatabaseReference studyCaseReference;
+    private ValueEventListener studyCaseListener;
 
     @Override
     protected int getLayoutId() {
@@ -39,19 +50,41 @@ public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
-        studyCase = (StudyCase) intent.getParcelableExtra(StudyCase.Keys.ID);
-        exam = intent.getParcelableExtra(Exam.Keys.EXAM);
+        idStudyCase =  intent.getStringExtra(StudyCase.Keys.ID);
+        idExam = intent.getStringExtra(Exam.Keys.EXAM);
 
-        TextView textName = (TextView) findViewById(R.id.textView_name_study_case);
-        TextView textDesc = (TextView) findViewById(R.id.textView_desc_study_case);
+        textName = (TextView) findViewById(R.id.textView_name_study_case);
+        textDesc = (TextView) findViewById(R.id.textView_desc_study_case);
 
-        textName.setText(studyCase.getNome());
-        textDesc.setText(studyCase.getDescrizione());
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        studyCaseReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_STUDYCASES);
+        studyCaseListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    if (child.getKey().equals(idStudyCase)) {
+                        studyCase = child.getValue(StudyCase.class);
+                        textName.setText(studyCase.getNome());
+                        textDesc.setText(studyCase.getDescrizione());
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+
+        studyCaseReference.addValueEventListener(studyCaseListener);
+
     }
 
     @Override
@@ -77,7 +110,7 @@ public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
     public void createGroup(View v){
         Intent intent = new Intent(this, NewGroupActivity.class);
         intent.putExtra(StudyCase.Keys.ID, studyCase.getId());
-        intent.putExtra(Exam.Keys.EXAM, exam);
+        intent.putExtra(Exam.Keys.EXAM, idExam);
         startActivity(intent);
     }
 }
