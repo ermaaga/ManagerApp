@@ -100,6 +100,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
     boolean[] courseIsChecked;
 
     HashMap childUpdates;
+    HashMap childUpdatesImage;
 
     private ValueEventListener userListener;
     private ValueEventListener userListenerCreate;
@@ -223,38 +224,53 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
     protected void onStart() {
         super.onStart();
 
-        userListenerCreate = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        /*Se proviene dalla modifica dell'immagine, imposta l'immagine di profilo modificata,
+         altrimenti la acquisisce dal database*/
+        if(fullFileUri!=null){
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(fullFileUri);
+                bitmap = BitmapFactory.decodeStream(inputStream);
+                photoProfile.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                //TODO vedere cosa fare
+                Toast.makeText(ProfileActivity.this, "Failed", Toast.LENGTH_LONG).show();
+            }
+        }else {
+            userListenerCreate = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                user = snapshot.getValue(User.class);
-                //Se il nodo "profileImage" è popolato nel database
-                if(user.getProfileImage()!= null){
-                    //Acquisizione dell'Url dell'immagine dell'utente presente nello Storage
-                    storageReference.child("profileimages/"+userid).child(user.getProfileImage()).getDownloadUrl()
-                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    //Set ImageView foto profilo
-                                    Glide.with(ProfileActivity.this)
-                                            .load(uri)
-                                            .into(photoProfile);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            Log.d(TAG," Failed setImageView");
-                        }
-                    });
+                    user = snapshot.getValue(User.class);
+                    //Se il nodo "profileImage" è popolato nel database
+                    if(user.getProfileImage()!= null){
+                        //Acquisizione dell'Url dell'immagine dell'utente presente nello Storage
+                        storageReference.child("profileimages/"+userid).child(user.getProfileImage()).getDownloadUrl()
+                                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        //Set ImageView foto profilo
+                                        Glide.with(ProfileActivity.this)
+                                                .load(uri)
+                                                .into(photoProfile);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                Log.d(TAG," Failed setImageView"+ exception);
+                            }
+                        });
+                    }
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-        };
-        currentUserReference.addListenerForSingleValueEvent(userListenerCreate);
+                }
+            };
+            currentUserReference.addListenerForSingleValueEvent(userListenerCreate);
+        }
+
+
 
         userListener = new ValueEventListener() {
             @Override
@@ -415,7 +431,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
 
         if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK) {
             Bitmap thumbnail = data.getParcelableExtra("data"); /*TODO farci qualcosa come mostrare una finestra di dialogo
-                                                                         che mostri il progresso dell'upload e che usi il thumbnail*/
+                                                                        che mostri il progresso dell'upload e che usi il thumbnail*/
             fullFileUri = data.getData();
             try {
                 InputStream inputStream = getContentResolver().openInputStream(fullFileUri);
@@ -447,7 +463,19 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
 
         childUpdates = new HashMap();
 
-        if(fullFileUri!= null) {
+        childUpdates.put("/nome/", editName.getText().toString());
+        childUpdates.put("/cognome/", editSurname.getText().toString());
+        if (currentListDepartment != null) {
+            childUpdates.put("/dipartimenti/", currentListDepartment);
+        }
+        if (currentListCourse != null) {
+            childUpdates.put("/corsi/", currentListCourse);
+        }
+        usersReference.child(user.getAccountId()).updateChildren(childUpdates);
+
+        if(fullFileUri==null){
+            ProfileActivity.this.recreate();
+        }else if(fullFileUri!= null) {
 
             //Eliminazione della foto profilo eventualmente già presente nello storage
             storageReference.child("profileimages/"+userid).listAll()
@@ -502,23 +530,11 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Log.d(TAG, "File caricato con successo");
                     childUpdates.put("/profileImage/", FileUtil.getFileNameFromURI(ProfileActivity.this, fullFileUri));
+                    usersReference.child(user.getAccountId()).updateChildren(childUpdates);
+                    ProfileActivity.this.recreate();
                 }
             });
         }
-
-        childUpdates.put("/nome/", editName.getText().toString());
-        childUpdates.put("/cognome/", editSurname.getText().toString());
-        if(currentListDepartment!=null){
-            childUpdates.put("/dipartimenti/", currentListDepartment);
-        }
-        if(currentListCourse!=null){
-            childUpdates.put("/corsi/", currentListCourse);
-        }
-        usersReference.child(user.getAccountId()).updateChildren(childUpdates);
-
-        Intent refresh = new Intent(ProfileActivity.this, ProfileActivity.class);
-        startActivity(refresh);
-        finish();
     }
 
     public void editDepartments() {

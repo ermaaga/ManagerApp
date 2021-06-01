@@ -62,7 +62,7 @@ public class ProjectMembersFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        adapter = new UserRecyclerAdapter(new UserRecyclerAdapter.OnActionListener(){
+        adapter = new UserRecyclerAdapter(getContext(), new UserRecyclerAdapter.OnActionListener(){
 
             @Override
             public void onItemClicked(User string) {
@@ -89,8 +89,7 @@ public class ProjectMembersFragment extends Fragment {
                 for (DataSnapshot child: snapshot.getChildren()) {
                     User currentUser = child.getValue(User.class);
 
-                    for(String userId : lstMembers)
-                    {
+                    for(String userId : lstMembers) {
                         if(currentUser.getAccountId().equals(userId)){
                             lstUsers.add(currentUser);
                         }

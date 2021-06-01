@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,7 +51,7 @@ public class ExamsPartecipantsActivity extends AbstractBottomNavigationActivity 
 
         exam = getIntent().getParcelableExtra(Exam.Keys.EXAM);
 
-        adapter = new UserRecyclerAdapter(new UserRecyclerAdapter.OnActionListener() {
+        adapter = new UserRecyclerAdapter(getApplicationContext(),new UserRecyclerAdapter.OnActionListener() {
             @Override
             public void onItemClicked(User string) {
                 Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
@@ -63,6 +64,7 @@ public class ExamsPartecipantsActivity extends AbstractBottomNavigationActivity 
         });
         partecipantsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         partecipantsRecyclerView.setAdapter(adapter);
+        partecipantsRecyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
 
         userReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS);
         partecipantsListener = new ValueEventListener() {
