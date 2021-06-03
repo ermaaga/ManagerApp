@@ -32,4 +32,6 @@
         <item name="android:layout_height">57dp</item>
     </style>
 
+    <style name="Secondary" parent="Widget.MaterialComponents.Button.TextButton" />
+
 </resources>
