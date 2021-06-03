@@ -218,7 +218,7 @@ public class GroupJoinRequestNotification implements Notifiable {
     private void notifyMembers(Group group, User sender) {
         for (String user: group.getMembri()) {
             if (!user.equals(group.getMembri().get(0))) {
-                DatabaseReference pushReference = FirebaseDbHelper.getUserJoinNoticeReference(user).push();
+                DatabaseReference pushReference = FirebaseDbHelper.getGroupUserJoinNoticeReference(user).push();
                 pushReference.setValue(
                         new GroupJoinNotice(user, pushReference.getKey(), sender, group,
                                 user.equals(sender.getAccountId()), System.currentTimeMillis()));

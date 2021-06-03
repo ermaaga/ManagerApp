@@ -40,10 +40,8 @@ import it.uniba.di.sms2021.managerapp.utility.NotificationUtil;
 public class NotificationService extends Service {
     private static final String TAG = "NotificationService";
 
-    private Looper serviceLooper;
     private ServiceHandler serviceHandler;
 
-    private Set<DatabaseReference> workingReferences;
     private int notificationsFound;
 
     // Handler that receives messages from the thread
@@ -70,7 +68,7 @@ public class NotificationService extends Service {
         thread.start();
 
         // Get the HandlerThread's Looper and use it for our Handler
-        serviceLooper = thread.getLooper();
+        Looper serviceLooper = thread.getLooper();
         serviceHandler = new ServiceHandler(serviceLooper);
     }
 
@@ -101,75 +99,21 @@ public class NotificationService extends Service {
 
     private void checkForNotifications(Message msg) {
         Log.i(TAG, "Checking for Notifications");
-
-        workingReferences = new HashSet<>();
         notificationsFound = 0;
 
-        DatabaseReference  groupRequestReference =
-                FirebaseDbHelper.getGroupJoinRequestReference(LoginHelper.getCurrentUser().getAccountId());
-        workingReferences.add(groupRequestReference);
-
-        groupRequestReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference notificationsReference = FirebaseDbHelper.getNotifications(
+                LoginHelper.getCurrentUser().getAccountId()
+        );
+        notificationsReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot child: snapshot.getChildren()) {
-                    GroupJoinRequest request = child.getValue(GroupJoinRequest.class);
-                    if (request.getGroupOwnerId().equals(LoginHelper.getCurrentUser().getAccountId())) {
-                        notificationsFound += 1;
-                    }
-                }
-                workingReferences.remove(groupRequestReference);
-                showNotification(msg);
-            }
+                notificationsFound += snapshot.child(FirebaseDbHelper.TABLE_EXAM_JOIN_REQUESTS).getChildrenCount();
+                notificationsFound += snapshot.child(FirebaseDbHelper.TABLE_GROUP_JOIN_NOTICE).getChildrenCount();
+                notificationsFound += snapshot.child(FirebaseDbHelper.TABLE_GROUP_JOIN_REQUESTS).getChildrenCount();
+                notificationsFound += snapshot.child(FirebaseDbHelper.TABLE_NEW_EVALUATION).getChildrenCount();
+                notificationsFound += snapshot.child(FirebaseDbHelper.TABLE_NEW_REPLY_REPORT).getChildrenCount();
+                notificationsFound += snapshot.child(FirebaseDbHelper.TABLE_NEW_REPORT).getChildrenCount();
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        DatabaseReference userJoinNoticeReference = FirebaseDbHelper.getUserJoinNoticeReference(LoginHelper.getCurrentUser().getAccountId());
-        workingReferences.add(userJoinNoticeReference);
-
-        userJoinNoticeReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        notificationsFound += snapshot.getChildrenCount();
-                        workingReferences.remove(userJoinNoticeReference);
-                        showNotification(msg);
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-        DatabaseReference newEvaluationReference = FirebaseDbHelper.getNewEvaluationReference(LoginHelper.getCurrentUser().getAccountId());
-        workingReferences.add(newEvaluationReference);
-
-        newEvaluationReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    notificationsFound += snapshot.getChildrenCount();
-                    workingReferences.remove(newEvaluationReference);
-                    showNotification(msg);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        DatabaseReference newReportReference = FirebaseDbHelper.getNewReportReference(LoginHelper.getCurrentUser().getAccountId());
-        workingReferences.add(newReportReference);
-
-        newReportReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                notificationsFound += snapshot.getChildrenCount();
-                workingReferences.remove(newReportReference);
                 showNotification(msg);
             }
 
@@ -181,30 +125,28 @@ public class NotificationService extends Service {
     }
 
     private void showNotification (Message msg) {
-        if (workingReferences.isEmpty()) {
-            if (notificationsFound != 0) {
-                NotificationUtil.createNotificationChannel(this);
+        if (notificationsFound != 0) {
+            NotificationUtil.createNotificationChannel(this);
 
-                Intent intent = new Intent(this, NotificationsActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            Intent intent = new Intent(this, NotificationsActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NotificationUtil.DEFAULT_CHANNEL_ID)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle(getResources().getQuantityString(R.plurals.text_notification_title_feed,
-                                notificationsFound))
-                        .setContentText(getResources().getQuantityString(R.plurals.numberOfNotifications,
-                                notificationsFound, notificationsFound))
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                        .setContentIntent(pendingIntent)
-                        .setOnlyAlertOnce(true)
-                        .setAutoCancel(true);
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, NotificationUtil.DEFAULT_CHANNEL_ID)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(getResources().getQuantityString(R.plurals.text_notification_title_feed,
+                            notificationsFound))
+                    .setContentText(getResources().getQuantityString(R.plurals.numberOfNotifications,
+                            notificationsFound, notificationsFound))
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentIntent(pendingIntent)
+                    .setOnlyAlertOnce(true)
+                    .setAutoCancel(true);
 
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-                notificationManager.notify(NotificationUtil.FEED_NOTIFICATION_ID, builder.build());
-            }
-
-            stopSelf(msg.arg1);
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            notificationManager.notify(NotificationUtil.FEED_NOTIFICATION_ID, builder.build());
         }
+
+        stopSelf(msg.arg1);
     }
 }

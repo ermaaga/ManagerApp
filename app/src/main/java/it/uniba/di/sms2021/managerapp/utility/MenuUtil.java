@@ -22,11 +22,6 @@ public class MenuUtil {
     public static void performMainActions (Context context, int menuItemId) {
         if (menuItemId == R.id.action_notifications) {
             context.startActivity(new Intent(context, NotificationsActivity.class));
-        } else if (menuItemId == R.id.action_settings) {
-            Toast.makeText(context, "Not implemented yet", Toast.LENGTH_SHORT).show();
-        } else if (menuItemId == R.id.action_profile) {
-            Intent intent = new Intent(context, ProfileActivity.class);
-            context.startActivity(intent);
         } else if (menuItemId == R.id.action_logout) {
             LoginHelper.logout(context);
         }

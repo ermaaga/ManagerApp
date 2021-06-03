@@ -6,10 +6,14 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="text_profile">#212121</color>
+    <color name="white">#FFFFFF</color>
     <color name="lightGrey">#FFCCCCCC</color>
+    <color name="CardGrey">#5BCCCCCC</color>
     <color name="grey">#FF888888</color>
+    <color name="dark_grey">#757575</color>
     <color name="yellow_rating">#FAE422</color>
     <color name="red_error">#B00022</color>
     <color name="blue">#004071</color>
+    <color name="lightBlue">#004071</color>
 </resources>

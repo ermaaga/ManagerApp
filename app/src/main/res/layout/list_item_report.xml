@@ -7,10 +7,11 @@
     android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/notification_item_card"
+        android:id="@+id/report_item_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
+        android:elevation="4dp"
+        app:cardCornerRadius="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:focusable="true">
@@ -25,7 +26,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:lines="1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -47,7 +48,7 @@
                 style="@android:style/TextAppearance.Material.Medium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:maxLines="50"
                 app:layout_constraintEnd_toEndOf="@+id/date_TextView"
                 app:layout_constraintStart_toStartOf="@+id/user_TextView"
@@ -59,8 +60,8 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="10dp"
                 android:maxLength="18"
                 android:text="@string/text_button_reply_review"
                 android:textColor="#002171"
@@ -78,7 +79,7 @@
                 android:maxLines="3"
                 android:text="@string/text_button_view_answers"
                 android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@+id/reply_button"
+                app:layout_constraintTop_toTopOf="@+id/reply_button"
                 app:layout_constraintStart_toStartOf="@+id/user_TextView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

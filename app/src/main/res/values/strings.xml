@@ -4,7 +4,6 @@
     <string name="activity_label_login">Login</string>
     <string name="activity_label_projects">Projects</string>
     <string name="activity_label_exams">Exams</string>
-    <string name="activity_label_home" translatable="false">Home</string>
     <string name="activity_label_degree_courses">Choose your Degree Course</string>
     <string name="activity_label_notifications">Notifications</string>
     <string name="activity_label_new_group">Create Group</string>
@@ -21,7 +20,12 @@
     <string name="activity_label_project_new_report">Submit a report</string>
     <string name="activity_label_project_reports">Reports</string>
     <string name="activity_label_project_reviews">Reviews</string>
-    <string name="activity_label_projects_sharing">Share your projects list</string>
+    <string name="activity_label_projects_sharing">Select the device</string>
+    <string name="activity_label_report_replies">Replies</string>
+
+    <string name="activity_subtitle_not_connected_bluetooth">Not connected</string>
+    <string name="activity_subtitle_connecting_bluetooth">Connecting...</string>
+    <string name="activity_subtitle_connected_bluetooth">Connected to:</string>
 
     <string name="label_Dialog_Header">Information</string>
     <string name="label_Dialog_confimation_message">Do you want to be part of this study group?</string>
@@ -33,17 +37,16 @@
     <string name="label_Dialog_confimation_message_join_necessary">Due to permission settings, this group can only be opened by members. Do you want to be part of this study group?</string>
     <string name="label_dialog_group_creation">Group creation</string>
     <string name="label_Dialog_title_name_list">Save the received list</string>
+    <string name="label_Dialog_turn_on_bluetooth">To share the list you need to turn on the bluetooth</string>
+    <string name="label_Dialog_turn_on_gps">To search for available Bluetooth devices, you need to turn on the GPS</string>
 
     <string name="text_error_validation">The group name cannot have much than 20 characters</string>
     <string name="text_error_max_review_report">The review cannot have much than 800 characters</string>
 
     <string name="text_label_exams">Exams</string>
-    <string name="text_label_home" translatable="false">Home</string>
     <string name="text_label_projects">Projects</string>
-    <string name="text_label_settings">Settings</string>
+    <string name="text_label_profile">Profile</string>
     <string name="text_label_notifications">Notifications</string>
-    <string name="text_label_home_social_ideas">Social Ideas</string>
-    <string name="text_label_home_projects">Projects</string>
     <string name="text_label_project_about" translatable="false">About</string>
     <string name="text_label_project_files">Files</string>
     <string name="text_label_project_members">Members</string>
@@ -57,12 +60,13 @@
     <string name="text_label_desc_study_case">Description</string>
     <string name="text_label_exam_name">Name</string>
     <string name="text_label_exam_description">Description</string>
-    <string name="text_label_name_account">Name</string>
-    <string name="text_label_surname_account">Surname</string>
-    <string name="text_label_email_account" translatable="false">Email</string>
-    <string name="text_label_profile">Profile</string>
+    <string name="text_label_name_account">NAME</string>
+    <string name="text_label_surname_account">SURNAME</string>
+    <string name="text_label_email_account" translatable="false">EMAIL</string>
     <string name="text_label_corso_account">Course</string>
     <string name="text_label_exam_partecipants">Partecipants</string>
+    <string name="text_label_edit_profile">Edit profile</string>
+    <string name="text_label_save_profile">Save changes</string>
     <string name="text_label_search">Search</string>
     <string name="text_label_year">Year</string>
     <string name="text_label_permissions">Permissions</string>
@@ -72,12 +76,14 @@
     <string name="text_label_project_reviews">Reviews</string>
     <string name="text_label_project_reports">Reports</string>
     <string name="text_label_file_release_number">Release N.%d</string>
-    <string name="text_label_evaluation">Evaluation:</string>
+    <string name="text_label_evaluation">Evaluation</string>
     <string name="text_label_my_projects_title">My Projects</string>
     <string name="text_label_lists_projects_received_title">Lists of projects received</string>
     <string name="text_label_available_devices">Available devices:</string>
     <string name="text_label_paired_devices">Paired devices:</string>
     <string name="text_label_name_list">Name list</string>
+    <string name="text_label_study_case">Study case</string>
+    <string name="text_label_none_evaluation">There is no evaluation</string>
 
     <string name="text_label_project_preference_visibility">Anyone can view the project</string>
     <string name="text_label_project_preference_free_join">Anyone can join the project</string>
@@ -93,6 +99,8 @@
     <string name="text_label_dialog_title_courses">Select courses</string>
     <string name="text_label_upload_file">Upload file</string>
 
+    <string name="text_checkbox_dialog_continue_with_sharing">Continue with sharing</string>
+
     <string name="text_label_submit_review">Enter your review</string>
     <string name="text_label_submit_report">Enter your report</string>
     <string name="text_label_none_reviews">There are no reviews</string>
@@ -105,6 +113,7 @@
     <string name="Text_label_here">here</string>
     <string name="text_label_or">Or</string>
     <string name="text_label_question">Do you not have an account? register</string>
+    <string name="text_lable_shake_tutorial">Share with a shake</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
@@ -182,9 +191,29 @@
     <string name="text_message_evaluation_failed">The project evaluation failed, please try again later</string>
     <string name="text_message_review_reply_submitted">Reply sent</string>
     <string name="text_message_connection_down">The app requires an internet connection</string>
-    <string name="text_message_files_connection_down">You need a working internet connection to view the files of this project</string>
+    <string name="text_message_files_connection_down">You need a working internet connection to view the files of this project.\n
+                                                    Alternatively you can open the project download folder.</string>
     <string name="text_message_files_empty">There are no files in this project</string>
     <string name="text_message_list_saving_failed">The list could not be saved, please try again later.</string>
+    <string name="text_message_list_saving_success">Your \"%s\" list has been saved</string>
+    <string name="text_message_paired_devices_empty">There are no paired devices</string>
+    <string name="text_message_available_devices_empty">There are not available devices</string>
+    <string name="text_message_bluetooth_connection">Select search if you can\'t find the device. Select make discoverable if others can\'t find you</string>
+    <string name="text_message_discoverability_turned_on">Now the device is discoverable</string>
+    <string name="text_message_already_discoverable">The device is already discoverable</string>
+    <string name="text_message_not_connected_bluetooth_device">You are not connected to a device</string>
+    <string name="text_message_enable_bluetooth">Bluetooth is disabled. Please enable it to connect to the device.</string>
+    <string name="text_message_bluetooth_connection_lost">Connection Lost</string>
+    <string name="text_message_cant_connect_bluetooth_device">Unable to connect to the device</string>
+    <string name="text_message_file_deletion">File being deleted</string>
+    <string name="text_message_file_deletion_stopped">File restored successfully</string>
+    <string name="text_message_file_permission_denied">Storage Permissions Denied</string>
+    <string name="text_message_shake_tutorial">Shake your device to share a list quickly.</string>
+    <string name="text_message_gps_not_turned_on">The GPS was not turned on</string>
+    <string name="text_message_local_files_require_storage_permissions">There is no internet connection. Do you want the app to show the files you previously downloaded?\nIf yes you will be asked for storage permissions.</string>
+    <string name="text_message_file_local_delete">You are about to the delete the file on your device.\nThe file in the cloud won\'t be affected by this action.</string>
+    <string name="text_message_files_local_files_displayed">Displayed files are downloaded files.\nThey may differ from files in the cloud.</string>
+    <string name="text_message_downloaded_file_not_supported">The selected file isn\'t supported by your device.</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -213,6 +242,14 @@
     <string name="text_button_reply_review">Reply</string>
     <string name="text_button_check_connection">Open Settings</string>
     <string name="text_button_share_list">Share</string>
+    <string name="text_button_search_device">Search</string>
+    <string name="text_button_make_discoverable">Make Discoverable</string>
+    <string name="text_button_receive_list">Receive</string>
+    <string name="text_button_ok" translatable="false">Ok</string>
+    <string name="text_button_no_thanks">No, thanks</string>
+    <string name="text_button_open_project_download_folder">Open Folder</string>
+    <string name="text_button_yes">Yes</string>
+    <string name="text_button_no">No</string>
 
     <string name="text_hint_email_user" translatable="false">Email</string>
     <string name="text_hint_password_user" translatable="false">Password</string>
@@ -236,6 +273,7 @@
     <string name="text_action_add_release_action">Set as Release</string>
     <string name="text_action_remove_release_action">Remove from Releases</string>
     <string name="text_action_report_from_review">Click here to report a problem to the group.</string>
+    <string name="text_action_undo">Undo</string>
 
     <string name="text_send_subject">File Sharing</string>
     <string name="text_send_content">Check out my new file %s that i created in my project %s!</string>
@@ -269,6 +307,9 @@
     <string name="text_filter_file_pdf" translatable="false">PDF</string>
     <string name="text_filter_file_doc" translatable="false">.doc</string>
     <string name="text_filter_file_audio">Audio</string>
+    <string name="text_filter_projects_created">Created</string>
+    <string name="text_filter_projects_withrelease">With Releases</string>
+    <string name="text_filter_projects_hasevaluation">Evaluated</string>
 
 
     <plurals name="text_notification_title_feed">
@@ -277,13 +318,13 @@
     </plurals>
 
     <plurals name="numberOfDepartments">
-        <item quantity="one">Department</item>
-        <item quantity="other">Departments</item>
+        <item quantity="one">DEPARTMENT</item>
+        <item quantity="other">DEPARTMENTS</item>
     </plurals>
 
     <plurals name="numberOfCourses">
-        <item quantity="one">Course</item>
-        <item quantity="other">Courses</item>
+        <item quantity="one">COURSE</item>
+        <item quantity="other">COURSES</item>
     </plurals>
 
     <plurals name="numberOfNotifications">

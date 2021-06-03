@@ -1,7 +1,11 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,23 +14,16 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import it.uniba.di.sms2021.managerapp.ProfileActivity;
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
@@ -65,11 +62,15 @@ public class ProjectMembersFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        adapter = new UserRecyclerAdapter(new UserRecyclerAdapter.OnActionListener(){
+        adapter = new UserRecyclerAdapter(getContext(), new UserRecyclerAdapter.OnActionListener(){
 
             @Override
             public void onItemClicked(User string) {
-
+                Intent intent = new Intent(getContext(), ProfileActivity.class);
+                intent.putExtra(User.KEY, string);
+                boolean fromLink = true;
+                intent.putExtra("fromLinkBoolean", fromLink);
+                startActivity(intent);
             }
         });
 
@@ -88,8 +89,7 @@ public class ProjectMembersFragment extends Fragment {
                 for (DataSnapshot child: snapshot.getChildren()) {
                     User currentUser = child.getValue(User.class);
 
-                    for(String userId : lstMembers)
-                    {
+                    for(String userId : lstMembers) {
                         if(currentUser.getAccountId().equals(userId)){
                             lstUsers.add(currentUser);
                         }

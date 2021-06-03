@@ -44,17 +44,14 @@ public class NotificationsActivity extends AbstractBaseActivity {
 
     private List<Notifiable> notifications;
 
+    private Set<DataSnapshot> workingSnapshots;
+
+    private List<ExamJoinRequest> examJoinRequests;
     private List<GroupJoinRequestNotification> groupJoinRequests;
     private List<GroupJoinNotice> groupJoinNotices;
-    private List<ExamJoinRequest> examJoinRequests;
-    private Set<DatabaseReference> workingReferences;
-
     private List<EvaluationNotification> newEvaluations;
-
-    private List<ReportNotification> newReports;
-    private List<ReplyNotification> newReplies;
-
-
+    private List<ReplyNotification> newReplyReportNotices;
+    private List<ReportNotification> newReportNotices;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +74,9 @@ public class NotificationsActivity extends AbstractBaseActivity {
         adapter = new NotificationRecyclerAdapter(this, new NotificationRecyclerAdapter.OnUpdateDataListener() {
             @Override
             public void onUpdateData() {
-                updateNotifications();
+                if (!notificationsAlreadyInElaboration()) {
+                    updateNotifications();
+                }
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -85,6 +84,10 @@ public class NotificationsActivity extends AbstractBaseActivity {
         recyclerView.setAdapter(adapter);
 
         updateNotifications();
+    }
+
+    private boolean notificationsAlreadyInElaboration() {
+        return workingSnapshots != null && !workingSnapshots.isEmpty();
     }
 
     @Override
@@ -98,237 +101,181 @@ public class NotificationsActivity extends AbstractBaseActivity {
         return super.onSupportNavigateUp();
     }
 
-    //TODO ristrutturare db e fare un solo valueEventListener
-    private void updateNotifications() {
-        workingReferences = new HashSet<>();
+    private void updateNotifications () {
+        if (LoginHelper.getCurrentUser().getAccountId() == null) {
+            return;
+        }
 
-        DatabaseReference groupRequestsReference =
-                FirebaseDbHelper.getGroupJoinRequestReference(LoginHelper.getCurrentUser().getAccountId());
-        workingReferences.add(groupRequestsReference);
+        workingSnapshots = new HashSet<>();
+        DatabaseReference notificationsReference = FirebaseDbHelper.getNotifications(
+                LoginHelper.getCurrentUser().getAccountId()
+        );
 
-        ValueEventListener groupRequestsListener = new ValueEventListener() {
+        ValueEventListener notificationsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                groupJoinRequests = new ArrayList<>();
-
-                Log.d(TAG,  "groupJoinRequests: "+snapshot.getChildrenCount() );
-
-                // Se non ci sono figli aggiorna subito la ui
                 if (snapshot.getChildrenCount() == 0) {
-                    workingReferences.remove(groupRequestsReference);
                     executeUpdate();
                     return;
                 }
 
-                // Inizializza le notifiche e non appena sono tutte inizializzate aggiorna la ui
-                Set<DataSnapshot> elaboratingChildren = new HashSet<>();
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    GroupJoinRequest request = child.getValue(GroupJoinRequest.class);
-                    if (request.getGroupOwnerId().equals(LoginHelper.getCurrentUser().getAccountId())) {
-                        elaboratingChildren.add(child);
-                        new GroupJoinRequestNotification.Initialiser() {
-                            @Override
-                            public void onNotificationInitialised(GroupJoinRequestNotification notification) {
-                                groupJoinRequests.add(notification);
-                                elaboratingChildren.remove(child);
+                initialiseExamJoinRequests(snapshot);
+                initialiseGroupJoinNotices(snapshot);
+                initialiseGroupJoinRequests(snapshot);
+                initialiseNewEvaluations(snapshot);
+                initialiseNewReplyReportNotice(snapshot);
+                initialiseNewReportNotices(snapshot);
+                executeUpdate();
+            }
 
-                                if (elaboratingChildren.isEmpty()) {
-                                    workingReferences.remove(groupRequestsReference);
-                                    executeUpdate();
-                                }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(TAG, error.getMessage());
+            }
+        };
+
+        notificationsReference.addListenerForSingleValueEvent(notificationsListener);
+    }
+
+    public void initialiseExamJoinRequests(DataSnapshot snapshot) {
+        examJoinRequests = new ArrayList<>();
+        DataSnapshot examJoinRequestSnapshot = snapshot.child(FirebaseDbHelper.TABLE_EXAM_JOIN_REQUESTS);
+        Log.d(TAG,"ExamJoinRequests: " + examJoinRequestSnapshot.getChildrenCount());
+        for (DataSnapshot child : examJoinRequestSnapshot.getChildren()) {
+            ExamJoinRequest request = child.getValue(ExamJoinRequest.class);
+            examJoinRequests.add(request);
+        }
+    }
+
+    public void initialiseGroupJoinNotices(DataSnapshot snapshot) {
+        groupJoinNotices = new ArrayList<>();
+        DataSnapshot groupJoinNoticesSnapshot = snapshot.child(FirebaseDbHelper.TABLE_GROUP_JOIN_NOTICE);
+        Log.d(TAG,  "GroupJoinNotices: " + groupJoinNoticesSnapshot.getChildrenCount());
+        for (DataSnapshot child : groupJoinNoticesSnapshot.getChildren()) {
+            GroupJoinNotice notice = child.getValue(GroupJoinNotice.class);
+            groupJoinNotices.add(notice);
+        }
+    }
+
+    public void initialiseGroupJoinRequests(DataSnapshot snapshot) {
+        DataSnapshot groupJoinRequestsSnapshot = snapshot.child(FirebaseDbHelper.TABLE_GROUP_JOIN_REQUESTS);
+        groupJoinRequests = new ArrayList<>();
+        Log.d(TAG, "GroupJoinRequests: " + groupJoinRequestsSnapshot.getChildrenCount());
+        if (groupJoinRequestsSnapshot.getChildrenCount() != 0) {
+            workingSnapshots.add(groupJoinRequestsSnapshot);
+
+            // Inizializza le notifiche e non appena sono tutte inizializzate aggiorna la ui
+            Set<DataSnapshot> elaboratingChildren = new HashSet<>();
+            for (DataSnapshot child : groupJoinRequestsSnapshot.getChildren()) {
+                GroupJoinRequest request = child.getValue(GroupJoinRequest.class);
+                if (request.getGroupOwnerId().equals(LoginHelper.getCurrentUser().getAccountId())) {
+                    elaboratingChildren.add(child);
+                    new GroupJoinRequestNotification.Initialiser() {
+                        @Override
+                        public void onNotificationInitialised(GroupJoinRequestNotification notification) {
+                            groupJoinRequests.add(notification);
+                            elaboratingChildren.remove(child);
+
+                            if (elaboratingChildren.isEmpty()) {
+                                workingSnapshots.remove(groupJoinRequestsSnapshot);
+                                executeUpdate();
                             }
-                        }.initialiseNotification(request);
+                        }
+                    }.initialiseNotification(request);
+                }
+            }
+        }
+    }
+
+    public void initialiseNewEvaluations(DataSnapshot snapshot) {
+        DataSnapshot newEvaluationsSnapshot = snapshot.child(FirebaseDbHelper.TABLE_NEW_EVALUATION);
+        newEvaluations = new ArrayList<>();
+        Log.d(TAG,  "NewEvaluations: " + newEvaluationsSnapshot.getChildrenCount());
+
+        if (newEvaluationsSnapshot.getChildrenCount() != 0) {
+            workingSnapshots.add(newEvaluationsSnapshot);
+
+            Set<DataSnapshot> elaboratingChildren = new HashSet<>();
+            for (DataSnapshot child : newEvaluationsSnapshot.getChildren()) {
+
+                elaboratingChildren.add(child);
+                NewEvaluation evaluation = child.getValue(NewEvaluation.class);
+                new EvaluationNotification.Initialiser() {
+                    @Override
+                    public void onNotificationInitialised(EvaluationNotification notification) {
+                        newEvaluations.add(notification);
+                        elaboratingChildren.remove(child);
+
+                        if (elaboratingChildren.isEmpty()) {
+                            workingSnapshots.remove(newEvaluationsSnapshot);
+                            executeUpdate();
+                        }
                     }
-                }
+                }.initialiseNotification(evaluation);
             }
+        }
+    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, error.getMessage());
-            }
-        };
-        groupRequestsReference.addListenerForSingleValueEvent(groupRequestsListener);
+    public void initialiseNewReplyReportNotice(DataSnapshot snapshot) {
+        DataSnapshot newReplyReportNoticesSnapshot = snapshot.child(
+                FirebaseDbHelper.TABLE_NEW_REPLY_REPORT
+        );
+        newReplyReportNotices = new ArrayList<>();
+        Log.d(TAG, "NewReplyReportNotices: " + newReplyReportNoticesSnapshot.getChildrenCount());
 
-        DatabaseReference userJoinNoticeReference = FirebaseDbHelper.getUserJoinNoticeReference(LoginHelper.getCurrentUser().getAccountId());
-        workingReferences.add(userJoinNoticeReference);
+        if (newReplyReportNoticesSnapshot.getChildrenCount() != 0) {
+            workingSnapshots.add(newReplyReportNoticesSnapshot);
 
-        ValueEventListener userJoinNoticeListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                groupJoinNotices = new ArrayList<>();
+            Set<DataSnapshot> elaboratingChildren = new HashSet<>();
+            for (DataSnapshot child : newReplyReportNoticesSnapshot.getChildren()) {
+                elaboratingChildren.add(child);
 
-                Log.d(TAG,  "userJoinNotice: "+snapshot.getChildrenCount() );
+                NewReplyReportNotice replyReportNotice = child.getValue(NewReplyReportNotice.class);
+                new ReplyNotification.Initialiser() {
+                    @Override
+                    public void onNotificationInitialised(ReplyNotification notification) {
+                        newReplyReportNotices.add(notification);
+                        elaboratingChildren.remove(child);
 
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    GroupJoinNotice notice = child.getValue(GroupJoinNotice.class);
-                    groupJoinNotices.add(notice);
-                }
-
-                workingReferences.remove(userJoinNoticeReference);
-                executeUpdate();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        userJoinNoticeReference.addListenerForSingleValueEvent(userJoinNoticeListener);
-
-        DatabaseReference newEvaluationReference = FirebaseDbHelper.getNewEvaluationReference(LoginHelper.getCurrentUser().getAccountId());
-        workingReferences.add(newEvaluationReference);
-
-        ValueEventListener newEvaluationListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                newEvaluations = new ArrayList<>();
-
-                Log.d(TAG,  "newEvaluation: "+snapshot.getChildrenCount() );
-
-                if (snapshot.getChildrenCount() == 0) {
-                    workingReferences.remove(newEvaluationReference);
-                    executeUpdate();
-                    return;
-                }
-
-                Set<DataSnapshot> elaboratingChildren = new HashSet<>();
-                for (DataSnapshot child : snapshot.getChildren()) {
-
-                    elaboratingChildren.add(child);
-                    NewEvaluation evaluation = child.getValue(NewEvaluation.class);
-                        new EvaluationNotification.Initialiser() {
-                            @Override
-                            public void onNotificationInitialised(EvaluationNotification notification) {
-                                newEvaluations.add(notification);
-                                elaboratingChildren.remove(child);
-
-                                if (elaboratingChildren.isEmpty()) {
-                                    workingReferences.remove(newEvaluationReference);
-                                    executeUpdate();
-                                }
-                                Log.d(TAG,"size listener" + newEvaluations.size());
-                            }
-                        }.initialiseNotification(evaluation);
-
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, error.getMessage());
-            }
-        };
-        newEvaluationReference.addListenerForSingleValueEvent(newEvaluationListener);
-
-        DatabaseReference newReportReference = FirebaseDbHelper.getNewReportReference(LoginHelper.getCurrentUser().getAccountId());
-        workingReferences.add(newReportReference);
-
-        ValueEventListener newReportListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                newReports = new ArrayList<>();
-
-                if (snapshot.getChildrenCount() == 0) {
-                    workingReferences.remove(newReportReference);
-                    executeUpdate();
-                    return;
-                }
-
-                Set<DataSnapshot> elaboratingChildren = new HashSet<>();
-                for (DataSnapshot child : snapshot.getChildren()) {
-
-                    elaboratingChildren.add(child);
-                    NewReportNotice reportNotice = child.getValue(NewReportNotice.class);
-                    new ReportNotification.Initialiser() {
-                        @Override
-                        public void onNotificationInitialised(ReportNotification notification) {
-                            newReports.add(notification);
-                            elaboratingChildren.remove(child);
-
-                            if (elaboratingChildren.isEmpty()) {
-                                workingReferences.remove(newReportReference);
-                                executeUpdate();
-                            }
+                        if (elaboratingChildren.isEmpty()) {
+                            workingSnapshots.remove(newReplyReportNoticesSnapshot);
+                            executeUpdate();
                         }
-                    }.initialiseNotification(reportNotice);
-
-                }
+                    }
+                }.initialiseNotification(replyReportNotice);
             }
+        }
+    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, error.getMessage());
-            }
-        };
-        newReportReference.addListenerForSingleValueEvent(newReportListener);
+    public void initialiseNewReportNotices(DataSnapshot snapshot) {
+        DataSnapshot newReportNoticeSnapshot = snapshot.child(
+                FirebaseDbHelper.TABLE_NEW_REPORT
+        );
+        newReportNotices = new ArrayList<>();
+        Log.d(TAG, "NewReportNotices: " + newReportNoticeSnapshot.getChildrenCount());
 
-        DatabaseReference newReplyReportReference = FirebaseDbHelper.getNewReplyReportReference(LoginHelper.getCurrentUser().getAccountId());
-        workingReferences.add(newReplyReportReference);
+        if (newReportNoticeSnapshot.getChildrenCount() != 0) {
+            workingSnapshots.add(newReportNoticeSnapshot);
 
-        ValueEventListener newReplyReportListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                newReplies = new ArrayList<>();
+            Set<DataSnapshot> elaboratingChildren = new HashSet<>();
+            for (DataSnapshot child : newReportNoticeSnapshot.getChildren()) {
 
-                if (snapshot.getChildrenCount() == 0) {
-                    workingReferences.remove(newReplyReportReference);
-                    executeUpdate();
-                    return;
-                }
+                elaboratingChildren.add(child);
+                NewReportNotice reportNotice = child.getValue(NewReportNotice.class);
+                new ReportNotification.Initialiser() {
+                    @Override
+                    public void onNotificationInitialised(ReportNotification notification) {
+                        newReportNotices.add(notification);
+                        elaboratingChildren.remove(child);
 
-                Set<DataSnapshot> elaboratingChildren = new HashSet<>();
-                for (DataSnapshot child : snapshot.getChildren()) {
-
-                    elaboratingChildren.add(child);
-                    NewReplyReportNotice replyReportNotice = child.getValue(NewReplyReportNotice.class);
-                    new ReplyNotification.Initialiser() {
-                        @Override
-                        public void onNotificationInitialised(ReplyNotification notification) {
-                            newReplies.add(notification);
-                            elaboratingChildren.remove(child);
-
-                            if (elaboratingChildren.isEmpty()) {
-                                workingReferences.remove(newReplyReportReference);
-                                executeUpdate();
-                            }
+                        if (elaboratingChildren.isEmpty()) {
+                            workingSnapshots.remove(newReportNoticeSnapshot);
+                            executeUpdate();
                         }
-                    }.initialiseNotification(replyReportNotice);
-
-                }
+                    }
+                }.initialiseNotification(reportNotice);
             }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d(TAG, error.getMessage());
-            }
-        };
-        newReplyReportReference.addListenerForSingleValueEvent(newReplyReportListener);
-
-        DatabaseReference examJoinRequestsReference = FirebaseDbHelper.getExamJoinRequestReference(LoginHelper.getCurrentUser().getAccountId());
-        workingReferences.add(examJoinRequestsReference);
-
-        ValueEventListener examJoinRequestListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                examJoinRequests = new ArrayList<>();
-
-                Log.d(TAG,  "examJoinRequests: "+snapshot.getChildrenCount() );
-
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    ExamJoinRequest request = child.getValue(ExamJoinRequest.class);
-                    examJoinRequests.add(request);
-                }
-
-                workingReferences.remove(examJoinRequestsReference);
-                executeUpdate();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        examJoinRequestsReference.addListenerForSingleValueEvent(examJoinRequestListener);
+        }
     }
 
     /**
@@ -336,15 +283,15 @@ public class NotificationsActivity extends AbstractBaseActivity {
      * notifiche sono state elaborate
      */
     private void executeUpdate() {
-        if (workingReferences.isEmpty()) {
+        if (!notificationsAlreadyInElaboration()) {
             notifications = new ArrayList<>();
 
             notifications.addAll(groupJoinRequests);
             notifications.addAll(groupJoinNotices);
             notifications.addAll(newEvaluations);
             notifications.addAll(examJoinRequests);
-            notifications.addAll(newReports);
-            notifications.addAll(newReplies);
+            notifications.addAll(newReportNotices);
+            notifications.addAll(newReplyReportNotices);
 
             adapter.submitList(notifications);
             adapter.notifyDataSetChanged();

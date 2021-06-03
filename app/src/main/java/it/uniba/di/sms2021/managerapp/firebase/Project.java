@@ -2,13 +2,19 @@ package it.uniba.di.sms2021.managerapp.firebase;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +25,7 @@ import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.ProjectPermissions;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
+import it.uniba.di.sms2021.managerapp.projects.ProjectFilesFragment;
 
 /**
  * Classe di utility che popolerà tutte le informazioni utili per un progetto a partire da query
@@ -209,6 +216,10 @@ public class Project implements Parcelable {
         group.setReleaseNames(releaseNames);
     }
 
+    public boolean hasReleases() {
+        return !group.getReleaseNames().isEmpty();
+    }
+
     /**
      * Aggiunge un file marcato come rilascio ed aggiorna l'informazione sul db
      * @param releaseName nome del file
@@ -254,6 +265,10 @@ public class Project implements Parcelable {
                 .child(Group.Keys.RELEASE_NAMES).setValue(releaseNames);
     }
 
+    public boolean isEvaluated() {
+        return getEvaluation() != null;
+    }
+
     @Exclude
     public boolean isGroupFull() {
         return group.isGroupFull();
@@ -271,6 +286,13 @@ public class Project implements Parcelable {
      */
     public boolean isMember () {
         return getMembri().contains(LoginHelper.getCurrentUser().getAccountId());
+    }
+
+    /**
+     * Ritorna true se l'utente corrente è il creatore del progetto
+     */
+    public boolean isCreator() {
+        return getMembri().get(0).contains(LoginHelper.getCurrentUser().getAccountId());
     }
 
     /**

@@ -10,6 +10,8 @@
         android:id="@+id/review_item_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="4dp"
+        app:cardCornerRadius="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -20,14 +22,15 @@
             <TextView
                 android:id="@+id/review_replies_TextView"
                 style="@android:style/TextAppearance.Material.Medium"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:clickable="true"
                 android:maxLines="3"
                 android:text="@string/text_button_view_answers"
                 android:visibility="invisible"
-                android:clickable="true"
-                app:layout_constraintBottom_toBottomOf="@+id/reply_button"
-                app:layout_constraintStart_toStartOf="@+id/user_TextView" />
+                app:layout_constraintBaseline_toBaselineOf="@+id/reply_button"
+                app:layout_constraintStart_toStartOf="@+id/user_TextView"
+                tools:layout_editor_absoluteY="67dp" />
 
             <TextView
                 android:id="@+id/user_TextView"
@@ -57,12 +60,12 @@
                 style="@android:style/TextAppearance.Material.Medium"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="35dp"
+                android:layout_marginTop="15dp"
                 android:maxLines="50"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@+id/date_TextView"
                 app:layout_constraintStart_toStartOf="@+id/user_TextView"
-                app:layout_constraintTop_toBottomOf="@+id/user_TextView"
+                app:layout_constraintTop_toBottomOf="@+id/user_rating_stars"
                 tools:text="Message Here                                                         It could also be multiple lines" />
 
             <Button
@@ -70,15 +73,14 @@
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="15dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="10dp"
                 android:maxLength="18"
                 android:text="@string/text_button_reply_review"
                 android:textColor="#002171"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/date_TextView"
                 app:layout_constraintTop_toBottomOf="@+id/message_TextView"
-                app:layout_constraintVertical_bias="0.0"
                 tools:text="Rispondi" />
 
             <RatingBar
@@ -86,7 +88,7 @@
                 style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="2dp"
                 android:isIndicator="true"
                 android:numStars="5"
                 android:stepSize="0.1"

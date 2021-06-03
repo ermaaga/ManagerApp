@@ -1,8 +1,5 @@
 package it.uniba.di.sms2021.managerapp.login;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +9,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -38,11 +34,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.exams.ExamsActivity;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
-import it.uniba.di.sms2021.managerapp.home.HomeActivity;
-import it.uniba.di.sms2021.managerapp.notifications.NotificationChecker;
-import it.uniba.di.sms2021.managerapp.notifications.NotificationService;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBaseActivity;
 import it.uniba.di.sms2021.managerapp.utility.FormUtil;
 
@@ -151,7 +145,7 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
                         }else{
                             // Setta l'utente attuale in una variabile accessibile nel resto dell'applicazione
                             LoginHelper.setCurrentUser(user);
-                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                            startActivity(new Intent(LoginActivity.this, ExamsActivity.class));
                         }
 
                     }
@@ -204,6 +198,7 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            //TODO tradurre commento in italiano
             if (e.getStatusCode() == GoogleSignInStatusCodes.SIGN_IN_FAILED) {
                 Toast.makeText(this, R.string.error_sha1_not_found, Toast.LENGTH_SHORT).show();
             }
@@ -289,7 +284,7 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
                                       }
                                 });
 
-                                Intent intent = new Intent(LoginActivity.this, HomeActivity.class);
+                                Intent intent = new Intent(LoginActivity.this, ExamsActivity.class);
                                 startActivity(intent);
                             }
                             else {
@@ -357,4 +352,5 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
         return valid;
     }
   */
+    //TODO rimuovere commento in seguito
 }

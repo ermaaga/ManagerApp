@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
@@ -20,7 +19,8 @@ import com.google.firebase.storage.OnProgressListener;
 import java.io.File;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
+import it.uniba.di.sms2021.managerapp.enitities.file.ManagerCloudFile;
+import it.uniba.di.sms2021.managerapp.utility.FileException;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 import it.uniba.di.sms2021.managerapp.utility.NotificationUtil;
 
@@ -52,17 +52,19 @@ public abstract class FileDownloader {
 
     /**
      * Scarica il file nella cartella dei download e quando finisce chiama onSuccessAction usando
-     * il file scaricato
+     * il file scaricato.
+     * Il file sarà inserito nella path "[CartellaDownload]/ManagerApp/[projectName]"
      *
      * @param file il file da scaricare
+     * @param projectName il nome del progetto a cui appartiene il file
      */
-    public void downloadFile(ManagerFile file) {
+    public void downloadFile(ManagerCloudFile file, String projectName) {
         if (!isExternalStorageWritable()) {
             showErrorMessage(R.string.text_message_external_storage_not_found);
         }
 
-        File path = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
-        if (path == null) {
+        File path = getDownloadPath(projectName);
+        if (!path.exists()) {
             showErrorMessage(R.string.text_message_download_path_not_usable);
         }
 
@@ -80,8 +82,8 @@ public abstract class FileDownloader {
         int PROGRESS_MAX = 100;
         builder.setProgress(PROGRESS_MAX, 0, false);
         notificationManager.notify(NotificationUtil.DOWNLOAD_NOTIFICATION_ID, builder.build());
-        final boolean[] finished = {false};
 
+        // Avvia il processo di download
         File localFile = new File(path, file.getName());
         FileDownloadTask downloadTask = file.getReference().getFile(localFile);
         downloadTask.addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
@@ -97,32 +99,40 @@ public abstract class FileDownloader {
                                 FileUtil.getFormattedSize(context, snapshot.getTotalByteCount())));
                 notificationManager.notify(NotificationUtil.DOWNLOAD_NOTIFICATION_ID, builder.build());
 
-                //Log.d("Test", "inProgress");
             }
         }).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                Intent intent = FileUtil.getFileViewIntent(context,
-                        FileUtil.getUriFromFile(context, localFile), file.getType());
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                int uniqueRequestCode = file.hashCode(); // Se il request code è uguale ad un'activity già
-                                                         // aperta la riusa.
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, uniqueRequestCode, intent, 0);
+                PendingIntent pendingIntent;
+                try {
+                    Intent intent = FileUtil.getFileViewIntent(context,
+                            FileUtil.getUriFromFile(context, localFile), file.getType());
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    int uniqueRequestCode = file.hashCode(); // Se il request code è uguale ad un'activity già
+                                                             // aperta la riusa.
+                    pendingIntent = PendingIntent.getActivity(context, uniqueRequestCode, intent, 0);
+                } catch (FileException e) {
+                    pendingIntent = null;
+                }
+
 
                 // Aggiorna la notifica dopo 500ms per non avere problemi con aggiornamenti troppo frequenti
                 // come specificato in https://developer.android.com/training/notify-user/build-notification#Updating
+                PendingIntent finalPendingIntent = pendingIntent;
                 new Handler(context.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         builder.setContentText(context.getString(R.string.text_message_download_complete))
                                 .setProgress(0,0,false)
-                                .setContentIntent(pendingIntent)
                                 .setAutoCancel(true);
+                        if (finalPendingIntent != null) {
+                            builder.setContentIntent(finalPendingIntent);
+                        }
+
                         notificationManager.notify(NotificationUtil.DOWNLOAD_NOTIFICATION_ID, builder.build());
                     }
                 }, 500);
 
-                //Log.d("Test", "onSuccess");
                 onSuccessAction(localFile);
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -147,4 +157,24 @@ public abstract class FileDownloader {
         return false;
     }
 
+    /**
+     * Metodo di utility per ottenere un file scaricato in precedenza da questa classe
+     * @param fileName il nome del file da ottenere
+     */
+    public static File getDownloadedFile (String fileName, String projectName) {
+        return new File (getDownloadPath(projectName), fileName);
+    }
+
+    /**
+     * Ritorna la cartella dei download di un specifico progetto.
+     */
+    public static File getDownloadPath(String projectName) {
+        File downloadPath = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath(),
+                "ManagerApp/" + projectName);
+        if (!downloadPath.exists()) {
+            downloadPath.mkdirs();
+        }
+
+        return downloadPath;
+    }
 }

@@ -1,12 +1,8 @@
-package it.uniba.di.sms2021.managerapp.projects;
-
-import android.util.Log;
+package it.uniba.di.sms2021.managerapp.enitities.file;
 
 import java.util.Comparator;
-import java.util.List;
 
-import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
-import it.uniba.di.sms2021.managerapp.firebase.Project;
+import it.uniba.di.sms2021.managerapp.enitities.file.ManagerCloudFile;
 
 /**
  * Ordina i file di un progetto mettendo al primo posto la release corrente e successivamente tutti

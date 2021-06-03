@@ -1,29 +1,28 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
-import android.os.Build;
+import android.content.SharedPreferences;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,7 +30,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -46,12 +44,14 @@ import it.uniba.di.sms2021.managerapp.lists.ProjectsRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 import it.uniba.di.sms2021.managerapp.utility.SearchUtil;
+import it.uniba.di.sms2021.managerapp.utility.ShakeUtil;
 
-public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity {
+public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity implements SensorEventListener {
+
+    Animation animRotate;
+    boolean firstStart;
 
     private static final int REQUEST_ENABLE_BT = 1;
-    private static final int REQUEST_LOCATION_PERMISSIONS = 2;
-    private static final int REQUEST_CODE_GPS = 3;
 
     private RecyclerView projectsRecyclerView;
     private ProjectsRecyclerAdapter projectsAdapter;
@@ -66,23 +66,29 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
     private List<Project> projects;
     private ListProjects listSelected;
 
+    ImageView shareProjects;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ShakeUtil.inizializeShake(getApplicationContext());
+
+        animRotate = AnimationUtils.loadAnimation(this, R.anim.shake_animation);
 
         listSelected  = getIntent().getParcelableExtra(ListProjects.KEY);
         TextView project_list_title = findViewById(R.id.project_list_title_text_view);
         project_list_title.setText(listSelected.getNameList());
 
-        ImageView shareProjects = findViewById(R.id.share_list_image_view);
+        shareProjects = findViewById(R.id.share_list_image_view);
         projectsRecyclerView = findViewById(R.id.projects_recycler_view);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         //controlla se il bluetooth è supportato dal device
         //se non supportato non fa vedere icona di condivisione
         if (bluetoothAdapter == null){
-           shareProjects.setVisibility(View.GONE);
-           Log.d(TAG, "Bluetooth non è supportato da questo dispositivo");
+            shareProjects.setVisibility(View.GONE);
+            Log.d(TAG, "Bluetooth non è supportato da questo dispositivo");
         }
         else {
             Log.d(TAG, "Bluetooth è supportato da questo dispositivo");
@@ -94,8 +100,23 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
     protected void onStart() {
         super.onStart();
 
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        firstStart = prefs.getBoolean("firstStart", true);
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(listSelected.getNameList());
+
+        boolean myProjectsExist = getIntent().getBooleanExtra("tutorial", false);
+        //Se non ci sono progetti nella lista dei progetti personali
+        if(myProjectsExist == false){
+            //Se il Bluetooth è supportato dal dispositivo
+            if(shareProjects.getVisibility()==View.VISIBLE){
+                //Se l'activity viene aperta per la prima volta, viene mostrato il tutorial
+                if(firstStart){
+                    showImageDialog();
+                }
+            }
+        }
 
         projectsAdapter = new ProjectsRecyclerAdapter(new ProjectsRecyclerAdapter.OnActionListener() {
             @Override
@@ -122,22 +143,22 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
                 if(listIdProjects != null){
                     for (DataSnapshot child : snapshot.getChildren()) {
                         Group group = child.getValue(Group.class);
-                            for(String id: listIdProjects){
-                                if (group.getId().equals(id)) {
-                                    //Uso l'inizializzatore di progetti per ottenere tutti i dati utili
-                                    //e quando è inizializzato, lo visualizzo nella lista
-                                    new Project.Initialiser() {
-                                        @Override
-                                        public void onProjectInitialised(Project project) {
-                                            projects.add(project);
-                                            Log.d(TAG, "list project ricevuti: "+projects.toString());
-                                            projectsAdapter.submitList(projects);
-                                            projectsAdapter.notifyDataSetChanged();
-                                        }
-                                    }.initialiseProject(group);
-                                }
+                        for(String id: listIdProjects){
+                            if (group.getId().equals(id)) {
+                                //Uso l'inizializzatore di progetti per ottenere tutti i dati utili
+                                //e quando è inizializzato, lo visualizzo nella lista
+                                new Project.Initialiser() {
+                                    @Override
+                                    public void onProjectInitialised(Project project) {
+                                        projects.add(project);
+                                        Log.d(TAG, "list project ricevuti: "+projects.toString());
+                                        projectsAdapter.submitList(projects);
+                                        projectsAdapter.notifyDataSetChanged();
+                                    }
+                                }.initialiseProject(group);
                             }
                         }
+                    }
                 }
             }
 
@@ -154,6 +175,16 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
     protected void onStop() {
         super.onStop();
         groupsReference.removeEventListener(projectsListener);
+    }
+
+    protected void onResume() {
+        super.onResume();
+        ShakeUtil.registerShakeListener(this);
+    }
+
+    public void onPause() {
+        super.onPause();
+        ShakeUtil.unRegisterShakeListener(this);
     }
 
     @Override
@@ -197,17 +228,6 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
                                 project.getName().toLowerCase().contains(string) ||
                                 // Va aggiunto se il nome del gruppo corrisponde alla query
                                 project.getStudyCaseName().toLowerCase().contains(string);
-
-                                        /*
-                                        // Va aggiunto se il tipo corrisponde alla query
-                                        file.getType().toLowerCase().contains(string.toLowerCase()) ||
-                                        // Va aggiunto se il filtro contiene i rilasci ed il file ne è uno
-                                        (string.contains(releaseFilter) && project.getReleaseNumber(file.getName()) != 0) ||
-                                        // Va aggiunto se il filtro contiene le immagini ed il file ne è una.
-                                        (string.contains(imagesFilter) && file.getType().contains("image/")) ||
-                                        // Va aggiunto se il filtro contiene i pdf ed il file ne è uno.
-                                        (string.contains(pdfFilter) && file.getType().equals("application/pdf"));
-                                         */
                     }
                 }
 
@@ -216,6 +236,16 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
                 }
             }
             projectsAdapter.submitList(searchProjects);
+        }
+
+        @Override
+        public void onFilterAdded(String filter) {
+            //TODO implementare
+        }
+
+        @Override
+        public void onFilterRemoved(String filter) {
+            //TODO implementare
         }
     };
 
@@ -235,16 +265,30 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
     }
 
     public void share_list_project(View view){
+        actionShareList();
+    }
+
+    private void actionShareList(){
         if (!bluetoothAdapter.isEnabled()){
-            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(intent, REQUEST_ENABLE_BT);
-        }
-        else {
+            new AlertDialog.Builder(this)
+                    .setMessage(R.string.label_Dialog_turn_on_bluetooth)
+                    .setPositiveButton(R.string.text_button_ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                            startActivityForResult(intent, REQUEST_ENABLE_BT);
+                        }
+                    }).setNeutralButton(R.string.text_button_no_thanks, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            }).show();
+
+        } else {
             Log.d(TAG, "Bluetooth is already on ");
-            checkBTPermissions();
+            go_sharing_activity();
         }
-
-
     }
 
     @Override
@@ -255,27 +299,12 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
             case REQUEST_ENABLE_BT:
                 if (resultCode == RESULT_OK){
                     Log.d(TAG, "Bluetooth is on");
-                    checkBTPermissions();
+                    go_sharing_activity();
                 }
                 else {
-                    //TODO decidere se far vedere un dialog in cui spiegare all'utente che è necessario attivare il bluetooth se vuole condividere la lista
                     Log.d(TAG, "User denied to turn bluetooth on");
                 }
                 break;
-            case REQUEST_CODE_GPS:
-                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-                if (!isGpsEnabled) {
-                    //TODO decidere se far vedere un dialog in cui spiegare all'utente che è necessario attivare il GPS per trovare i dispositivi vicini
-                    Log.d(TAG, "User denied to turn GPS on");
-                    //startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), REQUEST_CODE_GPS);
-                }else{
-                    Log.d(TAG, "GPS is on");
-                    go_sharing_activity();
-                }
-                break;
-
         }
 
     }
@@ -287,11 +316,11 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
         String projectsId = new String();
 
         for(Project proj: projects){
-           if(projectsId.isEmpty()){
-               projectsId = proj.getId();
-           }else {
-               projectsId = projectsId + "," + proj.getId();
-           }
+            if(projectsId.isEmpty()){
+                projectsId = proj.getId();
+            }else {
+                projectsId = projectsId + "," + proj.getId();
+            }
         }
 
         Log.d(TAG, "groupsId: "+projectsId);
@@ -300,121 +329,76 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
         startActivity(intent);
     }
 
-    /*
-     I permessi dangerous per tutti i dispositivi che eseguono API >= 23 (Android 6.0+ MARSHMALLOW) devono essere gestiti a run-time.
-     In questo caso per il Bluetooth il permesso dangerous è: ACCESS_FINE_LOCATION.
-     //todo vedere se è necessario ACCESS_COARSE_LOCATION
-     L'utente in qualsiasi momento può revocare tali permessi, pertanto l’ app deve verificare i permessi ogni qualvolta deve usare le risorse.
+    //Utilizzato per mostrare il tutorial della condivisione tramite lo scuotimento
+    private void showImageDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ProjectsListDetailActivity.this);
 
-     In versioni precedenti, i permessi erano verificati solo all’installazione, quindi bastava indicarli solo nel manifest.
-     */
-    private void checkBTPermissions() {
+        LayoutInflater inflater = this.getLayoutInflater();
+        View view = inflater.inflate(R.layout.item_shake_smartphone, null);
+        view.startAnimation(animRotate);
 
-        Log.d(TAG, "checkBTPermissions");
+        animRotate.setAnimationListener(new Animation.AnimationListener() {
+            int countRepeat=0;
 
-        //TODO vedere se implementare anche il permesso ACCESS_COARSE_LOCATION
-
-        // Controlliamo se i permessi sono stati concessi
-        if (/*ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED &&*/ ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            // Permessi non concessi
-            // Dobbiamo mostrare una spiegazione?
-            if (/*ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_COARSE_LOCATION) ||*/ ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-                // Mostra una spiegazione del perchè la mancanza di questi permessi può negare alcune
-                // funzionalità. Questa spiegazione può essere data con un semplice AlertDialog(). Alla riposta
-                // positiva (l'utente accetta di dare i permessi) andremo a richiedere i permessi con le istruzioni
-                // predefiniti (es. ActivityCompat.requestPermissions([...])
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Permission necessary");
-                builder.setMessage("Permission is required to send your project list.");
-                builder.setPositiveButton("Retry", new DialogInterface.OnClickListener(){
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        ActivityCompat.requestPermissions(ProjectsListDetailActivity.this,
-                                new String [ ]{ /*Manifest.permission.ACCESS_COARSE_LOCATION,*/ Manifest.permission.ACCESS_FINE_LOCATION} ,
-                                REQUEST_LOCATION_PERMISSIONS);
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                });
-                builder.show();
-            } else {
-                // Nessuna spiegazione da dare, richiediamo direttamente i permessi
-                ActivityCompat.requestPermissions(this,
-                        new String [ ]{ /*Manifest.permission.ACCESS_COARSE_LOCATION,*/ Manifest.permission.ACCESS_FINE_LOCATION } ,
-                        REQUEST_LOCATION_PERMISSIONS);
-
-                //REQUEST_LOCATION_PERMISSIONS è una costante che andremo ad utilizzare
-                // nel metodo onRequestPermissionsResults([...]) per analizzare i risultati
-                // ed agire di conseguenza
+            @Override
+            public void onAnimationStart(Animation animation) {
             }
-        } else {
-            // Abbiamo già i permessi, possiamo procedere con ciò che vogliamo fare
-            Log.d(TAG, "already PERMISSION_GRANTED");
-            checkLocationServicesIsNeededAndEnable();
-        }
 
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                countRepeat++;
+                animation.setStartOffset(0);
+                if(countRepeat>15){
+                    countRepeat=0;
+                    animation.setStartOffset(2000);
+                    view.startAnimation(animation);
+                }else{
+                    view.startAnimation(animation);
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+        builder.setView(view)
+                .setTitle(R.string.text_lable_shake_tutorial)
+                .setMessage(R.string.text_message_shake_tutorial)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+        //Preferenza impostata a false per indicare che l'activity è stata già aperta una volta
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("firstStart", false);
+        editor.apply();
+    }
+
+    private ShakeUtil.OnShakeListener onShakeListener = new ShakeUtil.OnShakeListener() {
+        @Override
+        public void doActionAfterShake() {
+            actionShareList();
+        }
+    };
+
+    //Chiamato quando viene letto un nuovo evento dal sensore
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if(shareProjects.getVisibility()==View.VISIBLE) {
+            ShakeUtil.checkShake(sensorEvent, onShakeListener);
+        }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case REQUEST_LOCATION_PERMISSIONS:
-                // Se la richiesta viene annullata, gli array dei risultati sono vuoti.
-                if (grantResults.length > 0 &&
-                        grantResults[0] == PackageManager.PERMISSION_GRANTED /*&& grantResults[1] == PackageManager.PERMISSION_GRANTED*/) {
-                    // L'autorizzazione è concessa. Continua l'azione o il flusso di lavoro nella tua app.
-                    Log.d(TAG, "PERMISSION_GRANTED");
-                    checkLocationServicesIsNeededAndEnable();
-
-                }  else {
-                    // Spiega all'utente che la funzione non è disponibile perché la funzione richiede
-                    //un permesso che l'utente ha negato. Allo stesso tempo, rispetta la decisione dell'utente.
-                    // Non collegare a impostazioni di sistema nel tentativo di convincere l'utente
-                    //a modificare la propria decisione.
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Permission denied");
-                    builder.setMessage("Without permission the app is unable to send your project list.");
-                    builder.setPositiveButton("Ok", null);
-                    builder.show();
-                    Log.d(TAG, "PERMISSION_DENIED");
-                }
-                return;
-        }
-        // Altri case per verificare altri permessi che questa app potrebbe richiedere.
-    }
-
-    /*
-    * Dalla versione android >= 10 per per cercare i dispositivi Bluetooth disponibili è necessario attivare il GPS
-    * Quindi questo metodo controlla la versione di android del dispositivo se >= 10 chiede di attivare il GPS (se non attivo)
-    * altrimenti prosegue con l'esecuzione
-    */
-    //TODO vedere se è necessario controllare che il GPS è disponibile nel dispositivo (come abbiamo fatto col Bluetooth)
-    public void checkLocationServicesIsNeededAndEnable() {
-        Log.d(TAG, "checkLocationServicesIsNeededAndEnable");
-        //TODO controllare se anche per la versione 11 è necessario attivare la posizione per poter individuare i dispositivi disponibili
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
-            Log.d(TAG, "android >= 10");
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            if (!isGpsEnabled) {
-                //TODO decidere se far vedere un dialog in cui spiegare all'utente che è necessario attivare il GPS per trovare i dispositivi vicini
-                Log.d(TAG, "GPS NOT ENABLE");
-                startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), REQUEST_CODE_GPS);
-            }else{
-                  go_sharing_activity();
-            }
-        }else{
-            //il dispositivo ha una versione android < 10 e quindi per cercare i dispositivi disponibili non è necessario attivare il GPS
-            //si può procedere alla chiamata dell'activity successiva
-            go_sharing_activity();
-        }
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 
 }

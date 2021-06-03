@@ -21,7 +21,12 @@
     <string name="activity_label_project_new_report">Invia una segnalazione</string>
     <string name="activity_label_project_reports">Segnalazioni</string>
     <string name="activity_label_project_reviews">Recensioni</string>
-    <string name="activity_label_projects_sharing">Share your projects list</string>
+    <string name="activity_label_projects_sharing">Seleziona il dispositivo</string>
+    <string name="activity_label_report_replies">Risposte</string>
+
+    <string name="activity_subtitle_not_connected_bluetooth">Non connesso</string>
+    <string name="activity_subtitle_connecting_bluetooth">Connessione...</string>
+    <string name="activity_subtitle_connected_bluetooth">Connesso a:</string>
 
     <string name="creation_exam_failed">Errore durante la creazione</string>
     <string name="text_error_validation">Il nome del gruppo non può essere maggiore di 20 caratteri</string>
@@ -29,10 +34,8 @@
 
     <string name="text_label_exams">Esami</string>
     <string name="text_label_projects">Progetti</string>
-    <string name="text_label_settings">Impostazioni</string>
+    <string name="text_label_profile">Profilo</string>
     <string name="text_label_notifications">Notifiche</string>
-    <string name="text_label_home_social_ideas">Idee Sociali</string>
-    <string name="text_label_home_projects">Progetti</string>
     <string name="text_label_project_files">Files</string>
     <string name="text_label_project_members">Membri</string>
     <string name="text_label_exam_study_cases">Casi di Studio</string>
@@ -47,9 +50,10 @@
     <string name="text_label_desc_study_case">Descrizione</string>
     <string name="text_label_name_account">Nome</string>
     <string name="text_label_surname_account">Cognome</string>
-    <string name="text_label_profile">Profilo</string>
     <string name="text_label_corso_account">Corso</string>
     <string name="text_label_exam_partecipants">Partecipanti</string>
+    <string name="text_label_edit_profile">Modifica profilo</string>
+    <string name="text_label_save_profile">Salva modifiche</string>
     <string name="text_label_search">Ricerca</string>
     <string name="text_label_year">Anno</string>
     <string name="text_label_dialog_title_departments">Seleziona i dipartimenti</string>
@@ -62,12 +66,14 @@
     <string name="text_label_project_reviews">Recensioni</string>
     <string name="text_label_project_reports">Segnalazioni</string>
     <string name="text_label_file_release_number">Rilascio N°%d</string>
-    <string name="text_label_evaluation">Valutazione:</string>
+    <string name="text_label_evaluation">Valutazione</string>
     <string name="text_label_my_projects_title">I Miei Progetti</string>
     <string name="text_label_lists_projects_received_title">Liste di progetti ricevute</string>
     <string name="text_label_available_devices">Dispositivi disponibili:</string>
     <string name="text_label_paired_devices">Dispositivi abbinati:</string>
     <string name="text_label_name_list">Name list</string>
+    <string name="text_label_study_case">Caso di studio</string>
+    <string name="text_label_none_evaluation">There is no evaluation</string>
 
     <string name="text_label_project_preference_visibility">Chiunque può accedere al progetto</string>
     <string name="text_label_project_preference_free_join">Chiunque può unirsi al progetto</string>
@@ -91,6 +97,7 @@
     <string name="Text_label_here">qui</string>
     <string name="text_label_or">oppure</string>
     <string name="text_label_question">Non hai ancora un account? registrati</string>
+    <string name="text_lable_shake_tutorial">Condividi con uno shake</string>
 
     <string name="label_Dialog_Header">Informazione</string>
     <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>
@@ -103,6 +110,10 @@
          essere aperto solo dai propri membri. Vuoi far parte di questo gruppo studio?</string>
     <string name="label_dialog_group_creation">Creazione gruppo</string>
     <string name="label_Dialog_title_name_list">Salva la lista ricevuta</string>
+    <string name="label_Dialog_turn_on_bluetooth">Per condividere la lista è necessario accendere il bluetooth</string>
+    <string name="label_Dialog_turn_on_gps">Per cercare i dispositivi Bluetooth disponibili è necessario accendere il GPS</string>
+
+    <string name="text_checkbox_dialog_continue_with_sharing">Continua con la condivisione</string>
 
     <string name="registration_success">Registrazione avvenuta con successo</string>
     <string name="send_verification_email_success">Email di verifica inviata a </string>
@@ -171,9 +182,29 @@
     <string name="text_message_evaluation_failed">La valutazione del progetto è fallita, riprova in seguito</string>
     <string name="text_message_review_reply_submitted">Risposta inviata</string>
     <string name="text_message_connection_down">L\'app richiede una connessione internet</string>
-    <string name="text_message_files_connection_down">Serve una connessione internet funzionante per visualizzare i file di questo progetto</string>
+    <string name="text_message_files_connection_down">Serve una connessione internet funzionante per visualizzare i file di questo progetto\n
+                                                    Alternativamente puoi aprire la cartella dei download del progetto.</string>
     <string name="text_message_files_empty">Non ci sono file in questo progetto</string>
     <string name="text_message_list_saving_failed">Non è stato possibile salvare la lista, riprova in seguito</string>
+    <string name="text_message_list_saving_success">La tua lista \"%s\" è stata salvata</string>
+    <string name="text_message_paired_devices_empty">Non ci sono dispositivi abbinati</string>
+    <string name="text_message_available_devices_empty">Non ci sono dispositivi disponibili</string>
+    <string name="text_message_bluetooth_connection">Seleziona ricerca se non trovi il dispositivo. Seleziona rendi rilevabile se gli altri non ti trovano </string>
+    <string name="text_message_discoverability_turned_on">Adesso il dispositivo è rilevabile</string>
+    <string name="text_message_already_discoverable">Il dispositivo è già rilevabile</string>
+    <string name="text_message_not_connected_bluetooth_device">Non sei connesso a un dispositivo</string>
+    <string name="text_message_enable_bluetooth">Il bluetooth è disabilitato. Per favore abilitalo per connetterti al dispositivo.</string>
+    <string name="text_message_bluetooth_connection_lost">Connessione persa</string>
+    <string name="text_message_cant_connect_bluetooth_device">Impossibile connettersi al dispositivo</string>
+    <string name="text_message_file_deletion">Cancellazione del File</string>
+    <string name="text_message_file_deletion_stopped">File ripristinato con successo</string>
+    <string name="text_message_file_permission_denied">Permessi di Archiviazione Rifiutati</string>
+    <string name="text_message_shake_tutorial">Scuoti il dispositivo per condividere una lista velocemente. </string>
+    <string name="text_message_gps_not_turned_on">Il GPS non è stato attivato</string>
+    <string name="text_message_local_files_require_storage_permissions">Non è presente la connessione ad internet. Vuoi che l\'app mostri i file precedentemente scaricati?\n Se sì ti verranno chiesti i permessi per il disco.</string>
+    <string name="text_message_file_local_delete">Stai per cancellare il file sul tuo dispositivo.\nIl file nel cloud non sarà modificato al seguito di questa azione.</string>
+    <string name="text_message_files_local_files_displayed">I file mostrati sono file scaricati.\nPotrebbero differire dai file nel cloud.</string>
+    <string name="text_message_downloaded_file_not_supported">Il file selezionato non è supportato dal tuo dispositivo.</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -202,6 +233,13 @@
     <string name="text_button_reply_review">Rispondi</string>
     <string name="text_button_check_connection">Apri Impostazioni</string>
     <string name="text_button_share_list">Condividi</string>
+    <string name="text_button_search_device">Ricerca</string>
+    <string name="text_button_make_discoverable">Rendi rilevabile</string>
+    <string name="text_button_receive_list">Ricevi</string>
+    <string name="text_button_no_thanks">No, thanks</string>
+    <string name="text_button_open_project_download_folder">Apri Cartella</string>
+    <string name="text_button_yes">Si</string>
+    <string name="text_button_no">No</string>
 
     <string name="text_hint_name_studycase">Nome</string>
     <string name="text_hint_name_group">Nome</string>
@@ -223,6 +261,7 @@
     <string name="text_action_add_release_action">Aggiungi ai Rilasci</string>
     <string name="text_action_remove_release_action">Rimuovi dai Rilasci</string>
     <string name="text_action_report_from_review">Clicca qui per segnalare un problema al gruppo.</string>
+    <string name="text_action_undo">Annulla</string>
 
     <string name="text_send_subject">Condivisione File</string>
     <string name="text_send_content">Date un\'occhiata al mio nuovo file %s che ho creato nel mio progetto %s!</string>
@@ -251,6 +290,9 @@
     <string name="text_filter_file_image">Immagini</string>
     <string name="text_filter_file_video">Video</string>
     <string name="text_filter_file_audio">Audio</string>
+    <string name="text_filter_projects_created">Creati</string>
+    <string name="text_filter_projects_withrelease">Con Rilasci</string>
+    <string name="text_filter_projects_hasevaluation">Valutati</string>
 
 
     <plurals name="text_notification_title_feed">

@@ -1,33 +1,39 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
@@ -39,17 +45,21 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.enitities.file.ManagerFile;
+import it.uniba.di.sms2021.managerapp.enitities.file.ManagerLocalFile;
 import it.uniba.di.sms2021.managerapp.firebase.FileDownloader;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.firebase.TemporaryFileDownloader;
-import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
+import it.uniba.di.sms2021.managerapp.enitities.file.ManagerCloudFile;
 import it.uniba.di.sms2021.managerapp.lists.FilesRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.ConnectionCheckBroadcastReceiver;
+import it.uniba.di.sms2021.managerapp.utility.FileException;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 import it.uniba.di.sms2021.managerapp.utility.NotificationUtil;
 import it.uniba.di.sms2021.managerapp.utility.SearchUtil;
@@ -59,93 +69,49 @@ import static android.app.Activity.RESULT_OK;
 public class ProjectFilesFragment extends Fragment implements View.OnClickListener {
 
     private static final String TAG = "ProjectFilesFragment";
-
-    private StorageReference storageRef;
-    private Set<StorageReference> elaboratingReferences;
-    private List<ManagerFile> files;
-
-    private FilesRecyclerAdapter adapter;
+    private static final int REQUEST_PERMISSION_DOWNLOAD = 1;
+    private static final int REQUEST_PERMISSION_PREVIEW = 2;
+    private static final int REQUEST_PERMISSION_LOCAL_FILES = 3;
 
     private static final String GROUPS_FOLDER = "Groups";
 
-    private boolean previewWarning = true;
-    private boolean downloadWarning = true;
+    private StorageReference projectStorageRef;
+    private Set<StorageReference> elaboratingReferences;
+    private List<ManagerFile> files;
+    private FilesRecyclerAdapter adapter;
+
+    private static boolean previewWarning = true;
+    private static boolean downloadWarning = true;
 
     private Project project;
     private UploadTask uploadTask;
 
+    private FloatingActionButton addFileFloatingActionButton;
     private ConstraintLayout filesLayout;
+    private ConstraintLayout warningOfflineMessageLayout;
+
     private ConstraintLayout emptyLayout;
-    private TextView emptyMessageTextView;
+    private TextView emptyLayoutMessageTextView;
+    private Button emptyLayoutButton;
+
+    private String lastQuery = "";
+    private final Set<String> searchFilters = new HashSet<>();
+
+    private Uri uriToPreview;
+    private ManagerCloudFile fileToPreview;
+
+    private ProjectDetailActivity activity;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        ProjectDetailActivity activity = (ProjectDetailActivity) requireActivity();
+        activity = (ProjectDetailActivity) requireActivity();
 
-        //Quando l'utente digita qualcosa nella barra di ricerca, la lista dei file verrà aggiornata
-        //con i file che abbiano o nome o tipo corrispondenti alla query.
-        activity.setUpSearchAction(true, searchListener);
+        activity.setUpSearchAction(true, new ProjectFilesOnSearchListener());
+
         //Mostra la lista o un messaggio informativo qualora la connessione mancasse
-        activity.setUpConnectionChangeListener(connectionChangeListener);
+        activity.setUpConnectionChangeListener(new ProjectFilesConnectionChangeListener());
     }
-
-    /**
-     * Azione da eseguire quando viene effettuata una ricerca
-     */
-    private final SearchUtil.OnSearchListener searchListener = new SearchUtil.OnSearchListener() {
-        @Override
-        public void onSearchAction(String query) {
-            String[] keyWords = query.toLowerCase().split(" ");
-
-            List<ManagerFile> searchFile = new ArrayList<>();
-            String releaseFilter = getString(R.string.text_filter_file_release).toLowerCase();
-            String imagesFilter = getString(R.string.text_filter_file_image).toLowerCase();
-            String pdfFilter = getString(R.string.text_filter_file_pdf);
-
-            for (ManagerFile file: files) {
-                boolean toAdd = true;
-                for (String string: keyWords) {
-                    //Se il file non include una delle parole chiavi, non verrà mostrato.
-                    //Verrà sempre mostrato sempre invece se la query è vuota
-                    if (toAdd && !query.equals("")) {
-                        toAdd = // Va aggiunto se il nome corrisponde alla query
-                                file.getName().toLowerCase().contains(string.toLowerCase()) ||
-                                        // Va aggiunto se il tipo corrisponde alla query
-                                        file.getType().toLowerCase().contains(string.toLowerCase()) ||
-                                        // Va aggiunto se il filtro contiene i rilasci ed il file ne è uno
-                                        (string.contains(releaseFilter) && project.getReleaseNumber(file.getName()) != 0) ||
-                                        // Va aggiunto se il filtro contiene le immagini ed il file ne è una.
-                                        (string.contains(imagesFilter) && file.getType().contains("image/")) ||
-                                        // Va aggiunto se il filtro contiene i pdf ed il file ne è uno.
-                                        (string.contains(pdfFilter) && file.getType().equals("application/pdf"));
-                    }
-                }
-
-                if (toAdd) {
-                    searchFile.add(file);
-                }
-            }
-            adapter.submitList(searchFile);
-        }
-    };
-
-    /**
-     * Azioni da eseguire quando cambia lo stato della connessione
-     */
-    private final ConnectionCheckBroadcastReceiver.OnConnectionChangeListener connectionChangeListener =
-            new ConnectionCheckBroadcastReceiver.OnConnectionChangeListener() {
-                @Override
-                public void onConnectionUp() {
-                    getFiles();
-                }
-
-                @Override
-                public void onConnectionDown() {
-                    showMessageLayout();
-                    emptyMessageTextView.setText(R.string.text_message_files_connection_down);
-                }
-            };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -163,166 +129,75 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         super.onViewCreated(view, savedInstanceState);
 
         filesLayout = view.findViewById(R.id.file_layout);
+        warningOfflineMessageLayout = view.findViewById(R.id.files_offline_warning_constraintView);
         emptyLayout = view.findViewById(R.id.empty_state_layout);
-        emptyMessageTextView = view.findViewById(R.id.files_empty_state_message_text_view);
+        emptyLayoutMessageTextView = view.findViewById(R.id.files_empty_state_message_text_view);
+        emptyLayoutButton = view.findViewById(R.id.files_empty_state_button);
 
-        FloatingActionButton addFileFloatingActionButton =
-                view.findViewById(R.id.files_add_file_floating_action_button);
+        addFileFloatingActionButton = view.findViewById(R.id.files_add_file_floating_action_button);
         addFileFloatingActionButton.setOnClickListener(this);
 
         project = ((ProjectDetailActivity)getActivity()).getSelectedProject();
-        storageRef = FirebaseStorage.getInstance().getReference().child(GROUPS_FOLDER).child(project.getId());
+        projectStorageRef = FirebaseStorage.getInstance().getReference().child(GROUPS_FOLDER).child(project.getId());
 
         RecyclerView filesRecyclerView = view.findViewById(R.id.files_recyclerView);
 
-        //Nel listener dichiaro tutte le azioni eseguibili su un file della lista
-        adapter = new FilesRecyclerAdapter(getContext(), project, new FilesRecyclerAdapter.OnActionListener() {
-            @Override
-            public void onClick(ManagerFile file) {
-                //Scarica il file temporaneo e lo visualizza usando un app esterna
-                new TemporaryFileDownloader(getContext()) {
-                    @Override
-                    protected void showDownloadSuggestion(int messageRes) {
-                        //Mostra un messaggio qualora il file non sia scaricabile come file temporaneo
-                        ProjectFilesFragment.this.showDownloadSuggestion(messageRes, file);
-                    }
-
-                    @Override
-                    protected void onSuccessAction(File localFile) {
-                        Uri uri = FileUtil.getUriFromFile(getContext(), localFile);
-
-                        previewFile(uri, file);
-                    }
-                }.downloadTempFile(file, project.getId());
-            }
-
-            @Override
-            public void onSetRelease(ManagerFile file, boolean addRelease) {
-                if (addRelease) {
-                    project.addReleaseName(file.getName());
-                    Toast.makeText(getContext(), R.string.text_message_release_add, Toast.LENGTH_LONG).show();
-                } else {
-                    project.removeReleaseName(file.getName());
-                    Toast.makeText(getContext(), R.string.text_message_release_removed, Toast.LENGTH_LONG).show();
-                }
-                getFiles();
-            }
-
-            /**
-             * Codice preso e modificato da:
-             * https://firebase.google.com/docs/storage/android/delete-files
-             * @param file file da cancellare
-             */
-            @Override
-            public void onDelete(ManagerFile file) {
-                // Delete the file
-                file.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // File deleted successfully
-                        files.remove(file);
-                        if (project.getReleaseNames().contains(file.getName())) {
-                            project.removeReleaseName(file.getName());
-                        }
-
-                        adapter.submitList(files);
-                        adapter.notifyDataSetChanged();
-                        Snackbar.make(requireView(), R.string.text_message_file_deleted_successfully,
-                                Snackbar.LENGTH_LONG).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception exception) {
-                        // Uh-oh, an error occurred!
-                        Snackbar.make(requireView(), R.string.text_message_file_deletion_failed,
-                                Snackbar.LENGTH_LONG).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onShare(ManagerFile file) {
-                //Scarica il file temporaneo e lo condivido permettendo all'utente di scegliere il
-                //mezzo di condivisione.
-                new TemporaryFileDownloader(getContext()) {
-                    @Override
-                    protected void showDownloadSuggestion(int messageRes) {
-                        ProjectFilesFragment.this.showDownloadSuggestion(messageRes, file);
-                    }
-
-                    @Override
-                    protected void onSuccessAction(File localFile) {
-                        Uri uri = FileUtil.getUriFromFile(getContext(), localFile);
-
-                        Intent intentShareFile = new Intent(Intent.ACTION_SEND);
-
-                        if(uri != null) {
-                            intentShareFile.setType(file.getType());
-                            intentShareFile.putExtra(Intent.EXTRA_STREAM, uri);
-
-                            intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
-                                    R.string.text_send_subject);
-                            intentShareFile.putExtra(Intent.EXTRA_TEXT,
-                                    getString(R.string.text_send_content,
-                                            file.getName(), project.getName()));
-
-                            startActivity(Intent.createChooser(intentShareFile, "Share File"));
-                        }
-                    }
-                }.downloadTempFile(file, project.getId());
-
-
-            }
-
-            @Override
-            public void onDownload(ManagerFile file) {
-                downloadWithWarning(file);
-            }
-        });
-
-
+        adapter = new FilesRecyclerAdapter(getContext(), project, new ProjectFilesFileActionsListener());
         filesRecyclerView.setAdapter(adapter);
         filesRecyclerView.addItemDecoration(new DividerItemDecoration(requireContext(),
                 DividerItemDecoration.VERTICAL));
         filesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        if (project.isMember() || project.isProfessor() ||
-                project.getPermissions().isFileAccessible()) {
-            getFiles();
-        } else {
-            Snackbar.make(requireView(), R.string.text_message_files_are_private, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.text_button_dismiss, v -> {}).show();
-        }
+        getFiles();
+    }
 
-        if (project.isProfessor() || !project.isMember() || !project.canAddFiles()) {
-            addFileFloatingActionButton.setVisibility(View.GONE);
-        }
+    public boolean userCantAddFiles() {
+        return project.isProfessor() || !project.isMember() || !project.canAddFiles();
+    }
+
+    public boolean userCanViewFiles() {
+        return project.isMember() || project.isProfessor() ||
+                project.getPermissions().isFileAccessible();
     }
 
     /**
-     * Ottiene la lista dei files e la visualizza a schermo
+     * Ottiene la lista dei files e la visualizza a schermo se l'utente è abilitato a visualizzarli<br><br>
+     *
      * Se la lista è vuota mostra un messaggio informativo all'utente
      */
     private void getFiles() {
-        files = new ArrayList<>();
-        elaboratingReferences = new HashSet<>();    // Usato per avvisare il programma che i file
-                                                    // sono ancora in elaborazione
-        elaboratingReferences.add(storageRef);
+        if (userCanViewFiles()) {
+            if (filesAlreadyElaborating()) {
+                return;
+            }
 
-        listAllPaginated(null);
+            files = new ArrayList<>();
+            elaboratingReferences = new HashSet<>();
+            elaboratingReferences.add(projectStorageRef); // Usato per avvisare il programma che i file
+            // sono ancora in elaborazione
+
+            listAll();
+        } else {
+            showMessageLayout(R.string.text_message_files_are_private, null, null);
+        }
     }
 
     /**
-     * Effettua una query per i file e non appena finisce aggiorna la lista dei files.
-     * Codice modificato a partire da: https://firebase.google.com/docs/storage/android/list-files#paginate_list_results
+     * Ritorna true quando l'elaborazione dei file è iniziata e non è ancora finita.
      */
-    private void listAllPaginated (@Nullable String pageToken) {
-        // Fetch the next page of results, using the pageToken if we have one.
-        Task<ListResult> listPageTask = pageToken != null
-                ? storageRef.list(100, pageToken)
-                : storageRef.list(100);
+    private boolean filesAlreadyElaborating() {
+        return elaboratingReferences != null && !elaboratingReferences.isEmpty();
+    }
 
-        listPageTask
+    /**
+     * Effettua una query su tutti i file del progetto e non appena finisce aggiorna la lista dei files.
+     * Codice modificato a partire da: https://firebase.google.com/docs/storage/android/list-files#list_all_files
+     *
+     * Non supportiamo la paginazione a causa del metodo di ricerca utilizzato, che lavora in locale
+     * non avendo query native sul db di firebase
+     */
+    private void listAll() {
+        projectStorageRef.listAll()
                 .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                     @Override
                     public void onSuccess(ListResult listResult) {
@@ -331,7 +206,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                             item.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                                 @Override
                                 public void onSuccess(StorageMetadata storageMetadata) {
-                                    files.add(new ManagerFile(item, item.getName(),
+                                    files.add(new ManagerCloudFile(item, item.getName(),
                                             storageMetadata.getContentType(),
                                             storageMetadata.getSizeBytes(),
                                             storageMetadata.getUpdatedTimeMillis()));
@@ -339,21 +214,15 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                                 }
                             });
                         }
-                        dropElaboratingReference(storageRef);
-
-                        // Recurse onto next page
-                        if (listResult.getPageToken() != null) {
-                            listAllPaginated(listResult.getPageToken());
-                        } else {
-                            dropElaboratingReference(storageRef);
-                        }
+                        dropElaboratingReference(projectStorageRef);
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                // Uh-oh, an error occurred.
-            }
-        });
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
     }
 
     /**
@@ -362,17 +231,29 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private void dropElaboratingReference (StorageReference ref) {
         elaboratingReferences.remove(ref);
         if (elaboratingReferences.isEmpty()) {
-            showFiles();
+            showFiles(false);
         }
     }
 
     /**
      * Mostra la lista dei file trovati
+     * @param offline indica se mostrare un messaggio informativo quando l'applicazione è offline
      */
-    private void showFiles () {
+    private void showFiles (boolean offline) {
+        if (offline) {
+            warningOfflineMessageLayout.setVisibility(View.VISIBLE);
+        } else {
+            warningOfflineMessageLayout.setVisibility(View.GONE);
+        }
+
+        if (offline || userCantAddFiles()) {
+            addFileFloatingActionButton.setVisibility(View.GONE);
+        } else {
+            addFileFloatingActionButton.setVisibility(View.VISIBLE);
+        }
+
         if (files.isEmpty()) {
-            showMessageLayout();
-            emptyMessageTextView.setText(R.string.text_message_files_empty);
+            showMessageLayout(R.string.text_message_files_empty, null, null);
         } else {
             showFileLayout();
 
@@ -381,14 +262,59 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+    /**
+     * Avvisa l'utente che servono i permessi  di lettura e scrittura sul disco ed ottiene i file
+     * locali.
+     */
+    private void getLocalFilesWithWarning() {
+        if (userCanViewFiles()) {
+            new AlertDialog.Builder(getContext())
+                    .setMessage(R.string.text_message_local_files_require_storage_permissions)
+                    .setPositiveButton(R.string.text_button_yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                    REQUEST_PERMISSION_LOCAL_FILES);
+                        }
+                    })
+                    .setNegativeButton(R.string.text_button_no, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            showMessageLayout(R.string.text_message_files_connection_down,
+                                    null, null);
+                        }
+                    }).create().show();
+        } else {
+            showMessageLayout(R.string.text_message_files_are_private,
+                    null, null);
+        }
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
+    /**
+     * Ottiene i file locali scaricati dal progetto presenti sul disco.<br>
+     * Richiede i permessi di lettura e scrittura dallo storage.
+     */
+    private void getLocalFiles () {
+        if (userCanViewFiles()) {
+            File downloadFolder = FileDownloader.getDownloadPath(project.getName());
+            File[] localFiles = downloadFolder.listFiles();
+            files = new ArrayList<>();
+
+            for (File file: localFiles) {
+                Uri fileUri = FileUtil.getUriFromFile(getContext(), file);
+                ManagerLocalFile managerFile = new ManagerLocalFile(file, file.getName(),
+                        FileUtil.getMimeTypeFromUri(requireContext(), fileUri),
+                        FileUtil.getFileSizeFromURI(requireContext(), fileUri),
+                        file.lastModified());
+
+                files.add(managerFile);
+            }
+
+            showFiles(true);
+        } else {
+            showMessageLayout(R.string.text_message_files_are_private,
+                    null, null);
+        }
     }
 
     @Override
@@ -431,7 +357,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                 .build();
 
         // Crea la task di upload
-        uploadTask = storageRef.child(FileUtil.getFileNameFromURI(getContext(), file))
+        uploadTask = projectStorageRef.child(FileUtil.getFileNameFromURI(getContext(), file))
                 .putFile(file, metadata);
 
         // Crea la notifica dell'upload
@@ -459,8 +385,8 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
 
                 builder.setProgress(PROGRESS_MAX, progress, false)
                 .setContentText(getString(R.string.text_message_upload_progress,
-                        FileUtil.getFormattedSize(getContext(), taskSnapshot.getBytesTransferred()),
-                        FileUtil.getFormattedSize(getContext(), taskSnapshot.getTotalByteCount())));
+                                FileUtil.getFormattedSize(getContext(), taskSnapshot.getBytesTransferred()),
+                                FileUtil.getFormattedSize(getContext(), taskSnapshot.getTotalByteCount())));
                 notificationManager.notify(NotificationUtil.UPLOAD_NOTIFICATION_ID, builder.build());
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -504,19 +430,18 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
      * Mostra un messaggio informativo all'utente ed apre il file usando una della applicazioni
      * installate.
      */
-    private void previewFile(Uri uri, ManagerFile file) {
-        if (previewWarning) {
+    private void previewFile(Uri uri, ManagerCloudFile file) {
+        if (shouldShowPreviewWarning()) {
             //Avvisa l'utente che l'app userà applicazioni esterne per fare la preview
             new AlertDialog.Builder(getContext()).setMessage(R.string.text_message_file_preview_message)
                     .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 previewWarning = false;
-                                //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
-                                if (!FileUtil.openFileWithViewIntent(getContext(), uri, file.getType())) {
-                                    showDownloadSuggestion(
-                                            R.string.text_message_temp_file_not_supported, file);
-                                }
+                                uriToPreview = uri;
+                                fileToPreview = file;
+                                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                        REQUEST_PERMISSION_PREVIEW);
                             }
                         }
                     ).setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
@@ -527,27 +452,40 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
             }).create().show();
         } else {
             //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
-            if (!FileUtil.openFileWithViewIntent(getContext(), uri, file.getType())) {
-                showDownloadSuggestion(R.string.text_message_temp_file_not_supported, file);
+            try {
+                FileUtil.openFileWithViewIntent(getContext(), uri, file.getType());
+            } catch (FileException e) {
+                if (e.getErrorCode() == FileException.NO_INTENT_FOUND) {
+                    showDownloadSuggestion(R.string.text_message_temp_file_not_supported, fileToPreview);
+                }
             }
         }
     }
 
+    /**
+     * Ritorna true se si deve mostrare all'utente un messaggio informativo sulla preview dei file
+     */
+    private boolean shouldShowPreviewWarning() {
+        return previewWarning || requiresStorageAccess();
+    }
 
 
     /**
      * Avvisa l'utente che il file sarà accessibile anche ad altre applicazioni.
-     * Se l'utente accetta l'applicazione procederà al download.
+     * Se l'utente accetta l'applicazione procederà a richiedere i permessi di scrittura e successivamente
+     * al download.
      * @param file il file da scaricare
      */
-    private void downloadWithWarning(ManagerFile file) {
-        if (downloadWarning) {
+    private void downloadWithWarning(ManagerCloudFile file) {
+        if (shouldShowDownloadWarning()) {
             new AlertDialog.Builder(getContext()).setMessage(R.string.text_message_file_download_message)
                     .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     downloadWarning = false;
-                                    download(file);
+                                    fileToBeDownloaded = file;
+                                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                                            REQUEST_PERMISSION_DOWNLOAD);
                                 }
                             }
                     ).setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
@@ -561,12 +499,58 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
         }
     }
 
+    private boolean shouldShowDownloadWarning() {
+        return downloadWarning || requiresStorageAccess();
+    }
+
+    private boolean requiresStorageAccess() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED;
+        } else {
+            return false;
+        }
+    }
+
+    private ManagerCloudFile fileToBeDownloaded;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_PERMISSION_DOWNLOAD:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, fileToBeDownloaded.toString());
+                    download(fileToBeDownloaded);
+                } else {
+                    Toast.makeText(getContext(), R.string.text_message_file_permission_denied, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case REQUEST_PERMISSION_PREVIEW:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //Apre il file o se non è possibile aprirlo, mostra un messaggio all'utente.
+                    try {
+                        FileUtil.openFileWithViewIntent(getContext(), uriToPreview, fileToPreview.getType());
+                    } catch (FileException e) {
+                        if (e.getErrorCode() == FileException.NO_INTENT_FOUND) {
+                            showDownloadSuggestion(R.string.text_message_temp_file_not_supported, fileToPreview);
+                        }
+                    }
+                } else {
+                    Toast.makeText(getContext(), R.string.text_message_file_permission_denied, Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case REQUEST_PERMISSION_LOCAL_FILES:
+                getLocalFiles();
+                break;
+        }
+    }
+
     /**
      * Scarica il file e notifica l'utente a download finito.
      * Se l'utente vuole può anche aprire direttamente il file scaricato.
      * In caso di errori, essi verranno mostrati e sarà data la possibilità all'utente di riprovare.
      */
-    private void download (ManagerFile file) {
+    private void download (ManagerCloudFile file) {
         new FileDownloader(getContext()) {
             @Override
             protected void onSuccessAction(File localFile) {
@@ -590,14 +574,14 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                             }
                         }).show();
             }
-        }.downloadFile(file);
+        }.downloadFile(file, project.getName());
     }
 
     /**
      * Mostra un messaggio qualora il file non sia scaricabile come file temporaneo
      * @param textMessageId il messaggio da visualizzare
      */
-    private void showDownloadSuggestion (int textMessageId, ManagerFile file) {
+    private void showDownloadSuggestion (int textMessageId, ManagerCloudFile file) {
         Snackbar.make(getView(), textMessageId, Snackbar.LENGTH_LONG)
                 .setAction(R.string.text_button_download, new View.OnClickListener() {
                     @Override
@@ -607,13 +591,319 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                 }).show();
     }
 
+    /**
+     * Mostra la lista dei file nascondendo altri layout
+     */
     private void showFileLayout () {
         filesLayout.setVisibility(View.VISIBLE);
         emptyLayout.setVisibility(View.GONE);
     }
 
-    private void showMessageLayout () {
+    /**
+     * Nasconde la lista e mostra un messaggio all'utente
+     * @param messageRes risorsa del messaggio da visualizzare
+     * @param buttonMessageRes risorsa del messaggio del bottone o null se il bottone non deve apparire
+     * @param buttonClickListener l'azione da effettuare al click del bottone se presente
+     */
+    private void showMessageLayout (@StringRes int messageRes,
+                                    @Nullable @StringRes Integer buttonMessageRes,
+                                    @Nullable View.OnClickListener buttonClickListener) {
+        emptyLayoutMessageTextView.setText(messageRes);
+        if (buttonMessageRes != null) {
+            emptyLayoutButton.setVisibility(View.VISIBLE);
+            emptyLayoutButton.setText(buttonMessageRes);
+            emptyLayoutButton.setOnClickListener(buttonClickListener);
+        } else {
+            emptyLayoutButton.setVisibility(View.GONE);
+        }
+
         filesLayout.setVisibility(View.GONE);
         emptyLayout.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Gestisce la barra di ricerca e la selezione di filtri
+     */
+    private class ProjectFilesOnSearchListener implements SearchUtil.OnSearchListener {
+        @Override
+        public void onSearchAction(String query) {
+            lastQuery = query;
+
+            List<String> keyWords = new ArrayList<>(Arrays.asList(query.toLowerCase().split(" ")));
+
+            List<ManagerFile> searchFile = new ArrayList<>();
+            String releaseFilter = getString(R.string.text_filter_file_release).toLowerCase();
+            String imagesFilter = getString(R.string.text_filter_file_image).toLowerCase();
+            String pdfFilter = getString(R.string.text_filter_file_pdf);
+
+            for (ManagerFile file: files) {
+                boolean toAdd = true;
+
+                if (!query.isEmpty()) {
+                    for (String string: keyWords) {
+                        //Se il file non include una delle parole chiavi, non verrà mostrato.
+                        //Verrà sempre mostrato sempre invece se la query è vuota
+                        if (toAdd) {
+                            // Va aggiunto se il nome corrisponde alla query
+                            toAdd = file.getName().toLowerCase().contains(string.toLowerCase()) ;
+                        }
+                    }
+                }
+
+                if (toAdd && !searchFilters.isEmpty()) {
+                    // Il file va aggiunto se include almeno uno dei filtri
+                    boolean containsFilter = false;
+                    for (String string: searchFilters) {
+                        containsFilter = // Va aggiunto se il tipo corrisponde alla query
+                                (file.getType().toLowerCase().contains(string.toLowerCase()) ||
+                                // Va aggiunto se il filtro contiene i rilasci ed il file ne è uno
+                                (string.contains(releaseFilter) && project.getReleaseNumber(file.getName()) != 0) ||
+                                // Va aggiunto se il filtro contiene le immagini ed il file ne è una.
+                                (string.contains(imagesFilter) && file.getType().contains("image/")) ||
+                                // Va aggiunto se il filtro contiene i pdf ed il file ne è uno.
+                                (string.contains(pdfFilter) && file.getType().equals("application/pdf")));
+
+                        if (containsFilter) {
+                            break;
+                        }
+                    }
+
+                    toAdd = containsFilter;
+                }
+
+                if (toAdd) {
+                    searchFile.add(file);
+                }
+            }
+            adapter.submitList(searchFile);
+        }
+
+        @Override
+        public void onFilterAdded(String filter) {
+            searchFilters.add(filter.toLowerCase());
+            onSearchAction(lastQuery);
+        }
+
+        @Override
+        public void onFilterRemoved(String filter) {
+            searchFilters.remove(filter.toLowerCase());
+            onSearchAction(lastQuery);
+        }
+    }
+
+    /**
+     * Nasconde o mostra la lista in base a se è presente la connessione
+     */
+    private class ProjectFilesConnectionChangeListener implements ConnectionCheckBroadcastReceiver.OnConnectionChangeListener {
+        @Override
+        public void onConnectionUp() {
+            getFiles();
+        }
+
+        @Override
+        public void onConnectionDown() {
+            if (requiresStorageAccess()) {
+                getLocalFilesWithWarning();
+            } else {
+                getLocalFiles();
+            }
+            ConnectionCheckBroadcastReceiver.dismissConnectivitySnackbar();
+        }
+    }
+
+    /**
+     * Apre la cartella in cui vengono scaricati i file di questo progetto.<br>
+     * Permette all'utente di scegliere il file manager da usare.
+     */
+    private void openDownloadFolder() {
+        Toast.makeText(getContext(), R.string.text_message_not_yet_implemented, Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * Implementazione delle azioni effettuabili su ogni file della lista
+     */
+    private class ProjectFilesFileActionsListener implements FilesRecyclerAdapter.OnActionListener {
+        /**
+         * Azione da eseguire quando l'utente clicca su un file presente sul cloud
+         */
+        @Override
+        public void onClick(ManagerCloudFile file) {
+            //Scarica il file temporaneo e lo visualizza usando un app esterna
+            new TemporaryFileDownloader(getContext()) {
+                @Override
+                protected void showDownloadSuggestion(int messageRes) {
+                    //Mostra un messaggio qualora il file non sia scaricabile come file temporaneo
+                    ProjectFilesFragment.this.showDownloadSuggestion(messageRes, file);
+                }
+
+                @Override
+                protected void onSuccessAction(File localFile) {
+                    Uri uri = FileUtil.getUriFromFile(getContext(), localFile);
+
+                    previewFile(uri, file);
+                }
+            }.downloadTempFile(file, project);
+        }
+
+        /**
+         * Azione da eseguire quando l'utente clicca su un file presente nello storage
+         */
+        @Override
+        public void onClick(ManagerLocalFile file) {
+            try {
+                FileUtil.openFileWithViewIntent(getContext(),
+                        FileUtil.getUriFromFile(getContext(), file.getLocalFile()),
+                        file.getType());
+            } catch (FileException e) {
+                if (e.getErrorCode() == FileException.NO_INTENT_FOUND) {
+                    Toast.makeText(getContext(), R.string.text_message_downloaded_file_not_supported,
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+
+        @Override
+        public void onSetRelease(ManagerCloudFile file, boolean addRelease) {
+            if (addRelease) {
+                project.addReleaseName(file.getName());
+                Toast.makeText(getContext(), R.string.text_message_release_add, Toast.LENGTH_LONG).show();
+            } else {
+                project.removeReleaseName(file.getName());
+                Toast.makeText(getContext(), R.string.text_message_release_removed, Toast.LENGTH_LONG).show();
+            }
+            getFiles();
+        }
+
+        /**
+         * Il file viene nascosto dalla lista e l'utente può annullare l'operazione grazie allo
+         * snackbar che appare. Se l'utente non esegue alcuna azione, il file viene eliminato
+         * definitivamente dal db.
+         *
+         * Per l'eliminazione definitiva dal db viene usato il codice preso e modificato da:
+         * https://firebase.google.com/docs/storage/android/delete-file
+         *
+         * @param file file da cancellare
+         */
+        @Override
+        public void onDelete(ManagerCloudFile file) {
+            // Indica se il file deve essere eliminato definitavemente o no
+            final boolean[] toDelete = {true};
+
+            files.remove(file);
+            adapter.submitList(files);
+            adapter.notifyDataSetChanged();
+
+            Snackbar.make(requireView(), R.string.text_message_file_deletion,
+                    Snackbar.LENGTH_LONG).setAction(R.string.text_action_undo, new View.OnClickListener() {
+                // Inserisce un'azione che permette di ripristinare un file cancellato per sbaglio.
+                // L'azione è permessa solo fino a che lo snackbar rimane a schermo.
+                @Override
+                public void onClick(View v) {
+                    files.add(file);
+                    adapter.submitList(files);
+                    adapter.notifyDataSetChanged();
+                    toDelete[0] = false;
+                    Snackbar.make(requireView(), R.string.text_message_file_deletion_stopped,
+                            Snackbar.LENGTH_SHORT).show();
+                }
+            }).addCallback(new Snackbar.Callback() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    // Quando lo snackbar sparisce, il file viene eliminato definitivamente dal db
+                    super.onDismissed(transientBottomBar, event);
+
+                    if (toDelete[0]) {
+                        // Cancella definitivamente il file dal database
+                        file.getReference().delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                if (project.getReleaseNames().contains(file.getName())) {
+                                    project.removeReleaseName(file.getName());
+                                }
+                                Snackbar.make(requireView(), R.string.text_message_file_deleted_successfully,
+                                        Snackbar.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                files.add(file);
+                                adapter.submitList(files);
+                                adapter.notifyDataSetChanged();
+                                Snackbar.make(requireView(), R.string.text_message_file_deletion_failed,
+                                        Snackbar.LENGTH_LONG).show();
+                            }
+                        });
+                    }
+                }
+            }).show();
+        }
+
+        @Override
+        public void onDelete(ManagerLocalFile file) {
+            new AlertDialog.Builder(getContext())
+                    .setMessage(R.string.text_message_file_local_delete)
+                    .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            boolean deleted = file.getLocalFile().delete();
+
+                            if (deleted) {
+                                files.remove(file);
+                                adapter.submitList(files);
+                                adapter.notifyDataSetChanged();
+                                Toast.makeText(getContext(), R.string.text_message_file_deleted_successfully,
+                                        Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getContext(), R.string.text_message_file_deletion_failed,
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    }).create().show();
+        }
+
+        @Override
+        public void onShare(ManagerCloudFile file) {
+            //Scarica il file temporaneo e lo condivido permettendo all'utente di scegliere il
+            //mezzo di condivisione.
+            new TemporaryFileDownloader(getContext()) {
+                @Override
+                protected void showDownloadSuggestion(int messageRes) {
+                    ProjectFilesFragment.this.showDownloadSuggestion(messageRes, file);
+                }
+
+                @Override
+                protected void onSuccessAction(File localFile) {
+                    Uri uri = FileUtil.getUriFromFile(getContext(), localFile);
+
+                    Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+
+                    if(uri != null) {
+                        intentShareFile.setType(file.getType());
+                        intentShareFile.putExtra(Intent.EXTRA_STREAM, uri);
+
+                        intentShareFile.putExtra(Intent.EXTRA_SUBJECT,
+                                R.string.text_send_subject);
+                        intentShareFile.putExtra(Intent.EXTRA_TEXT,
+                                getString(R.string.text_send_content,
+                                        file.getName(), project.getName()));
+
+                        startActivity(Intent.createChooser(intentShareFile, "Share File"));
+                    }
+                }
+            }.downloadTempFile(file, project);
+
+
+        }
+
+        @Override
+        public void onDownload(ManagerCloudFile file) {
+            downloadWithWarning(file);
+        }
     }
 }

@@ -2,20 +2,16 @@ package it.uniba.di.sms2021.managerapp.utility;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import it.uniba.di.sms2021.managerapp.ProfileActivity;
+import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.exams.ExamsActivity;
 import it.uniba.di.sms2021.managerapp.projects.ProjectsActivity;
-import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.home.HomeActivity;
 
 /**
  * Activity con bottom navigation bar. Il file layout dell'activity deve necessariamente
@@ -56,8 +52,8 @@ public abstract class AbstractBottomNavigationActivity extends AbstractBaseActiv
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
-        if (itemId == R.id.nav_home) {
-            startActivity(new Intent(this, HomeActivity.class));
+        if (itemId == R.id.nav_profile) {
+            startActivity(new Intent(this, ProfileActivity.class));
         } else if (itemId == R.id.nav_exams) {
             startActivity(new Intent(this, ExamsActivity.class));
         } else if (itemId == R.id.nav_projects) {

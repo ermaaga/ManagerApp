@@ -3,11 +3,18 @@ package it.uniba.di.sms2021.managerapp.utility;
 import android.os.Bundle;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
+import it.uniba.di.sms2021.managerapp.notifications.NotificationChecker;
 
 /**
- * Activity di base dell'applicazione che contiene behaviour contenuti in tutte le activity
+ * Activity di base dell'applicazione che contiene behaviour contenuti in tutte le activity.<br>
+ * In particolare contiene logica relativa al cambio di stato della connettività internet, con
+ * relativi listener implementabili nelle singole activity.
  */
 public class AbstractBaseActivity extends AppCompatActivity {
     private ConnectionCheckBroadcastReceiver receiver;
@@ -27,6 +34,8 @@ public class AbstractBaseActivity extends AppCompatActivity {
                 AbstractBaseActivity.this.onConnectionDown();
             }
         });
+
+        checkConnectionOnFragmentResumed();
     }
 
     @Override
@@ -42,11 +51,39 @@ public class AbstractBaseActivity extends AppCompatActivity {
     }
 
     protected void onConnectionUp () {
-        // Metodo vuoto che lascio per override nelle altre classi
+        ConnectionCheckBroadcastReceiver.dismissConnectivitySnackbar();
     }
 
     protected void onConnectionDown () {
         ConnectionCheckBroadcastReceiver.showConnectivitySnackbar(
                 AbstractBaseActivity.this, getWindow());
+    }
+
+    /**
+     * Controlla la connessione e notifica il listener
+     */
+    public void checkConnection () {
+        receiver.checkConnection();
+    }
+
+    /**
+     * Controlla la connessione ogni volta che un frammento entra nello stato di resumed (utile
+     * quando si cambia fragment e l'activity non chiama onResume)
+     */
+    public void checkConnectionOnFragmentResumed() {
+        getSupportFragmentManager().registerFragmentLifecycleCallbacks(new FragmentManager.FragmentLifecycleCallbacks() {
+            /**
+             * Called after the fragment has returned from the FragmentManager's call to
+             * {@link Fragment#onResume()}.
+             *
+             * @param fm Host FragmentManager
+             * @param f  Fragment changing state
+             */
+            @Override
+            public void onFragmentResumed(@NonNull FragmentManager fm, @NonNull Fragment f) {
+                super.onFragmentResumed(fm, f);
+                checkConnection();
+            }
+        }, false);
     }
 }

@@ -1,28 +1,37 @@
-package it.uniba.di.sms2021.managerapp.projects;
+  package it.uniba.di.sms2021.managerapp.projects;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothClass;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,6 +55,9 @@ import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
 
     private static final String TAG = "ProjectsSharingActivity";
+    private static final int REQUEST_LOCATION_PERMISSIONS = 2;
+    private static final int REQUEST_CODE_GPS = 3;
+    private static final int REQUEST_CODE_DISCOVERABLE = 4;
 
     private ProgressBar progressBar;
     private RecyclerView availableRecyclerView;
@@ -53,16 +65,18 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
     private DeviceRecyclerAdapter availableAdapter;
     private DeviceRecyclerAdapter pairedAdapter;
 
+    private TextView stateAvailableMessageTextView;
+    private TextView emptyPairedMessageTextView;
+
     private Context context;
-    private ListView listMessages;
-    private EditText  messageEditText;
     private Button buttonSendMessage;
-    private ArrayAdapter<String> adapterMessages;
+    private Button buttonSearch;
+    private Button buttonDiscoverable;
     private String connectedDevice;
     private String projectsId;
 
-    BluetoothAdapter bluetoothAdapter;
-    private BluetoothConnection bluetoothConnection;
+    private BluetoothAdapter bluetoothAdapter;
+    private BluetoothConnection bluetoothConnection = null;
 
     public ArrayList<BluetoothDevice> availableDevices = new ArrayList<>();
     public ArrayList<BluetoothDevice> pairedDevices = new ArrayList<>();
@@ -74,35 +88,31 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
                 case BluetoothConnection.MESSAGE_STATE_CHANGED:
                     switch (message.arg1) {
                         case BluetoothConnection.STATE_NONE:
-                            setState("Not Connected");
+                            setState(getString(R.string.activity_subtitle_not_connected_bluetooth));
                             break;
                         case BluetoothConnection.STATE_LISTEN:
-                            setState("Not Connected");
                             break;
                         case BluetoothConnection.STATE_CONNECTING:
-                            setState("Connecting...");
+                            setState(getString(R.string.activity_subtitle_connecting_bluetooth));
                             break;
                         case BluetoothConnection.STATE_CONNECTED:
-                            setState("Connected: " + connectedDevice);
+                            setState(getString(R.string.activity_subtitle_connected_bluetooth) +  " " + connectedDevice);
                             break;
                     }
                     break;
                 case BluetoothConnection.MESSAGE_WRITE:
-                    byte[] buffer1 = (byte[]) message.obj;
-                    String outputBuffer = new String(buffer1);
-                    adapterMessages.add("Me: " + outputBuffer);
-                    Log.d(TAG, "Me: " + outputBuffer);
+                    byte[] outputBuffer = (byte[]) message.obj;
+                    String outputMessage = new String(outputBuffer);
+                    Log.d(TAG, "MESSAGE_WRITE Me: " + outputMessage);
                     break;
                 case BluetoothConnection.MESSAGE_READ:
-                    byte[] buffer = (byte[]) message.obj;
-                    String inputBuffer = new String(buffer, 0, message.arg1);
-                    adapterMessages.add(connectedDevice + ": " + inputBuffer);
-                    Log.d(TAG, connectedDevice + ": " + inputBuffer);
-                    displayListNameDialog(inputBuffer);
+                    byte[] inputBuffer = (byte[]) message.obj;
+                    String inputMessage = new String(inputBuffer, 0, message.arg1);
+                    Log.d(TAG, "MESSAGE_READ " + connectedDevice + ": " + inputMessage);
+                    displayListNameDialog(inputMessage);
                     break;
                 case BluetoothConnection.MESSAGE_DEVICE_NAME:
                     connectedDevice = message.getData().getString(BluetoothConnection.DEVICE_NAME);
-                    Toast.makeText(context, connectedDevice, Toast.LENGTH_SHORT).show();
                     break;
                 case BluetoothConnection.MESSAGE_TOAST:
                     Toast.makeText(context, message.getData().getString(BluetoothConnection.TOAST), Toast.LENGTH_SHORT).show();
@@ -117,10 +127,11 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
     }
 
     private void displayListNameDialog (String message) {
-
+        Log.d(TAG, "displayListNameDialog");
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_list_name, null);
         EditText editText = (EditText) dialogView.findViewById(R.id.editTextNameList);
+        CheckBox continueCheckbox = (CheckBox) dialogView.findViewById(R.id.checkBoxContinue);
 
         new AlertDialog.Builder(this)
                 .setTitle(R.string.label_Dialog_title_name_list)
@@ -128,7 +139,8 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
                 .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        saveListProjects(editText.getText().toString(), message);
+                        Boolean wantsContinue = continueCheckbox.isChecked();
+                        saveListProjects(editText.getText().toString(), message, wantsContinue);
                     }
                 }).setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
             @Override
@@ -138,7 +150,8 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
         }).show();
     }
 
-    private void saveListProjects(String nameList, String message) {
+    private void saveListProjects(String nameList, String message, Boolean wantsContinue) {
+        Log.d(TAG, "saveListProjects");
         String[] messageSplit = message.split(",");
 
         List<String> listId = new ArrayList<>();
@@ -155,8 +168,14 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
         newElement.setValue(list).addOnSuccessListener(new OnSuccessListener<Void>() {
                @Override
                public void onSuccess(Void aVoid) {
-                   Intent intent = new Intent(getApplicationContext(), ProjectsActivity.class);
-                   startActivity(intent);
+                   Toast.makeText(ProjectsSharingActivity.this, getString(R.string.text_message_list_saving_success, nameList), Toast.LENGTH_SHORT).show();
+
+                   if(!wantsContinue){
+                       bluetoothConnection.stop();
+                       Intent intent = new Intent(getApplicationContext(), ProjectsActivity.class);
+                       startActivity(intent);
+                   }
+
                }
             }
         ).addOnFailureListener(new OnFailureListener() {
@@ -166,32 +185,44 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
             }
         });
 
-
     }
 
     /**
-     * Broadcast Receiver for listing devices that are not yet paired
-     * -Executed by discover() method.
+     * Broadcast Receiver per quando trova un dispositivo disponibile
      */
-    private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver broadcastReceiver1 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
             if (action.equals(BluetoothDevice.ACTION_FOUND)){
-                Log.d(TAG, "onReceive: ACTION FOUND.");
                 BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
+                Log.d(TAG, "onReceive: ACTION FOUND. Name device: "+ device.getName());
                 if(!availableDevices.contains(device)){
-                    availableDevices.add(device);
-                    Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
-                    availableAdapter.submitList(availableDevices);
-                    availableAdapter.notifyDataSetChanged();
+
+                    if(device.getBluetoothClass().getMajorDeviceClass() == BluetoothClass.Device.Major.COMPUTER ||
+                       device.getBluetoothClass().getMajorDeviceClass() == BluetoothClass.Device.Major.PHONE){
+
+                       if(availableDevices.size() == 0){
+                            stateAvailableMessageTextView.setVisibility(View.GONE);
+                            availableRecyclerView.setVisibility(View.VISIBLE);
+                        }
+
+                        availableDevices.add(device);
+                        Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
+                        availableAdapter.submitList(availableDevices);
+                        availableAdapter.notifyDataSetChanged();
+                    }
+
                 }
             }
         }
     };
 
-    private BroadcastReceiver broadcastReceiver1 = new BroadcastReceiver() {
+    /**
+     * Broadcast Receiver per quando inizia la ricerca dei dispositivi disponibili
+     */
+    private BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
@@ -203,50 +234,55 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
         }
     };
 
-    private BroadcastReceiver broadcastReceiver2 = new BroadcastReceiver() {
+    /**
+     * Broadcast Receiver per quando finisce la ricerca dei dispositivi disponibili
+     */
+    private BroadcastReceiver broadcastReceiver3 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
 
             if (action.equals(BluetoothAdapter.ACTION_DISCOVERY_FINISHED)){
-                progressBar.setVisibility(View.INVISIBLE);
                 Log.d(TAG, "onReceive: ACTION_DISCOVERY_FINISHED.");
-                Log.d(TAG, "onReceive: new devices" + availableDevices.toString());
+                progressBar.setVisibility(View.GONE);
+                if(availableDevices.size() == 0) {
+                    stateAvailableMessageTextView.setVisibility(View.VISIBLE);
+                    availableRecyclerView.setVisibility(View.GONE);
+                    stateAvailableMessageTextView.setText(R.string.text_message_available_devices_empty);
+                }
+                Log.d(TAG, "onReceive: ACTION_DISCOVERY_FINISHED. new devices:" + availableDevices.toString() + " " + availableDevices.isEmpty());
             }
         }
     };
 
-    //Brodcast unico
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    /**
+     * Broadcast Receiver per le modifiche apportate alla rilevabilità del dispositivo
+     */
+    private final BroadcastReceiver broadcastReceiver4 = new BroadcastReceiver() {
+
+        @Override
         public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
+            final String action = intent.getAction();
 
-            if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-                progressBar.setVisibility(View.VISIBLE);
-                Log.d(TAG, "onReceive: start discovery");
-            }
-            if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                progressBar.setVisibility(View.INVISIBLE);
-                Log.d(TAG, "onReceive: discovery finish");
-                Log.d(TAG, "onReceive: new devices" + availableDevices.toString());
-            }
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                 /*if (device.getBondState() !=BluetoothDevice.BOND_BONDED)    {
+            if (action.equals(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED)) {
 
-                    near_device.add(device.getAddress());
-                    */
+                int mode = intent.getIntExtra(BluetoothAdapter.EXTRA_SCAN_MODE, BluetoothAdapter.ERROR);
 
-                availableDevices.add(device);
+                switch (mode) {
+                    case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
+                        Log.d(TAG, "broadcastReceiver3: SCAN_MODE_CONNECTABLE_DISCOVERABLE Il dispositivo è in modalità rilevabile.");
+                        break;
+                    case BluetoothAdapter.SCAN_MODE_CONNECTABLE:
+                        Log.d(TAG, "broadcastReceiver3: SCAN_MODE_CONNECTABLE Il dispositivo non è in modalità rilevabile ma può comunque ricevere connessioni.");
+                        break;
+                    case BluetoothAdapter.SCAN_MODE_NONE:
+                        Log.d(TAG, "broadcastReceiver3: SCAN_MODE_NONE Il dispositivo non è in modalità rilevabile e non può ricevere connessioni.");
+                        break;
+                }
 
-
-                Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
-                availableAdapter.submitList(availableDevices);
-                availableAdapter.notifyDataSetChanged();
             }
         }
     };
-
 
     @Override
     protected int getLayoutId() {
@@ -258,73 +294,84 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
         return R.id.nav_projects;
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        context = this;
-        progressBar=findViewById(R.id.progressBar);
-        availableRecyclerView = findViewById(R.id.available_devices__recycler_view);
+        Log.d(TAG, "onCreate");
+        context = getApplicationContext();
+        progressBar = findViewById(R.id.progressBar);
+        availableRecyclerView = findViewById(R.id.available_devices_recycler_view);
         pairedRecyclerView = findViewById(R.id.paired_devices_recycler_view);
 
+        stateAvailableMessageTextView = findViewById(R.id.available_devices_empty_state_message_text_view);
+        emptyPairedMessageTextView = findViewById(R.id.paired_devices_empty_state_message_text_view);
+
         buttonSendMessage = findViewById(R.id.button_send);
-
-        //TODO CODICE DA ELIMINARE
-        listMessages = findViewById(R.id.list_conversation);
-        messageEditText = findViewById(R.id.editTextMessage);
-        listMessages.setVisibility(View.GONE);
-        messageEditText.setVisibility(View.GONE);
-        adapterMessages = new ArrayAdapter<String>(context, R.layout.list_item_message);
-        listMessages.setAdapter(adapterMessages);
-
+        buttonSearch = findViewById(R.id.button_search);
+        buttonDiscoverable = findViewById(R.id.button_discoverable);
 
         projectsId = getIntent().getStringExtra(Project.KEY);
-        messageEditText.setText(projectsId);
 
+        buttonSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkBTPermissions();
+            }
+        });
+
+        buttonDiscoverable.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(bluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE){
+                    Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+                    discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+                    startActivityForResult(discoverableIntent,REQUEST_CODE_DISCOVERABLE);
+                }else{
+                    Toast.makeText(getApplicationContext(), getString(R.string.text_message_already_discoverable), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         buttonSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                bluetoothConnection.write(projectsId.getBytes());
+                // Controlla se il dispositivo è effettivamente connesso prima di provare a inviare la lista dei progetti
+                if (bluetoothConnection.getState() == BluetoothConnection.STATE_CONNECTED) {
+                    bluetoothConnection.write(projectsId.getBytes());
+                }else{
+                    Toast.makeText(context, R.string.text_message_not_connected_bluetooth_device, Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        registerReceiver(broadcastReceiver, discoverDevicesIntent);
+        registerReceiver(broadcastReceiver1, discoverDevicesIntent);
 
         IntentFilter startdiscoverIntent = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        registerReceiver(broadcastReceiver1, startdiscoverIntent);
+        registerReceiver(broadcastReceiver2, startdiscoverIntent);
 
         IntentFilter finishdiscoverIntent = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        registerReceiver(broadcastReceiver2, finishdiscoverIntent);
+        registerReceiver(broadcastReceiver3, finishdiscoverIntent);
 
-         /* brodcast unico
-             IntentFilter filter = new IntentFilter();
-
-            filter.addAction(BluetoothDevice.ACTION_FOUND);
-            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-            filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-
-            registerReceiver(mReceiver, filter);*/
-
-        bluetoothConnection = new BluetoothConnection(context, handler);
+        IntentFilter intentFilter = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+        registerReceiver(broadcastReceiver4, intentFilter);
 
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        Log.d(TAG, "onStart");
 
+        Log.d(TAG, "onStart dispositivi disponibili "+ availableDevices.toString());
         pairedAdapter = new DeviceRecyclerAdapter(new DeviceRecyclerAdapter.OnActionListener() {
 
             @Override
             public void onItemClicked(String address) {
-                bluetoothConnection.connect(bluetoothAdapter.getRemoteDevice(address));
-
-                Toast.makeText(getApplicationContext(), "devices selected is: "+ address, Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "devices selected is: "+ address);
+                connectIfBluetoothEnabled(address);
             }
         });
 
@@ -337,26 +384,32 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
 
         // Se ci sono dispositivi già abbinati
         if (setPairedDevices.size() > 0) {
-
             for (BluetoothDevice device : setPairedDevices) {
-                pairedDevices.add(device);
-            }
+                if(!pairedDevices.contains(device)){
+                    if(device.getBluetoothClass().getMajorDeviceClass() == BluetoothClass.Device.Major.COMPUTER ||
+                        device.getBluetoothClass().getMajorDeviceClass() == BluetoothClass.Device.Major.PHONE){
 
+                        if(pairedDevices.size() == 0){
+                            pairedRecyclerView.setVisibility(View.VISIBLE);
+                        }
+
+                        pairedDevices.add(device);
+                    }
+                }
+            }
             pairedAdapter.submitList(pairedDevices);
-            pairedAdapter.notifyDataSetChanged();
             Log.d(TAG, "PairedDevices: " + pairedDevices.toString());
         }else{
-            Log.d(TAG, "PairedDevices: " + pairedDevices.toString());
+            emptyPairedMessageTextView.setVisibility(View.VISIBLE);
+            emptyPairedMessageTextView.setText(R.string.text_message_paired_devices_empty);
+            Log.d(TAG, "PairedDevices empty: " + pairedDevices.toString());
         }
 
         availableAdapter = new DeviceRecyclerAdapter(new DeviceRecyclerAdapter.OnActionListener() {
 
             @Override
             public void onItemClicked(String address) {
-                bluetoothConnection.connect(bluetoothAdapter.getRemoteDevice(address));
-                    
-                Toast.makeText(getApplicationContext(), "devices selected is: "+ address, Toast.LENGTH_SHORT).show();
-                Log.d(TAG, "devices selected is: "+ address);
+                connectIfBluetoothEnabled(address);
             }
         });
         availableRecyclerView.setAdapter(availableAdapter);
@@ -364,7 +417,202 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
                 DividerItemDecoration.VERTICAL));
         availableRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        discover();
+        //Visualizza i dispositivi disponibili eventualmente ricercati in precedenza se si ritornata da onStop()
+         if(availableDevices.size() != 0){
+            availableAdapter.submitList(availableDevices);
+         }
+
+        //Se il bluetooth è abilitato e bluetoothConnection non è stato inizializzato lo inizializza e avvia bluetoothConnection
+        if (bluetoothAdapter.isEnabled() && bluetoothConnection == null) {
+            bluetoothConnection = new BluetoothConnection(context, handler);
+            bluetoothConnection.start();
+        }
+
+        //Codice per stampare nei log lo stato della rilevabilità attuale
+        int mode = bluetoothAdapter.getScanMode();
+
+        switch (mode) {
+            case BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE:
+                Log.d(TAG, "onStart: SCAN_MODE_CONNECTABLE_DISCOVERABLE Il dispositivo è in modalità rilevabile.");
+                break;
+            case BluetoothAdapter.SCAN_MODE_CONNECTABLE:
+                Log.d(TAG, "onStart: SCAN_MODE_CONNECTABLE Il dispositivo non è in modalità rilevabile ma può comunque ricevere connessioni.");
+                break;
+            case BluetoothAdapter.SCAN_MODE_NONE:
+                Log.d(TAG, "onStart: SCAN_MODE_NONE Il dispositivo non è in modalità rilevabile e non può ricevere connessioni.");
+                break;
+        }
+
+    }
+
+    private void connectIfBluetoothEnabled(String address) {
+
+        if (!bluetoothAdapter.isEnabled()) {
+            Log.d(TAG, "Bluetooth disabilitato per favore abilitalo per connetterti al dispositivo");
+            Toast.makeText(context, getString(R.string.text_message_enable_bluetooth), Toast.LENGTH_LONG).show();
+        }else{
+            if (bluetoothAdapter.isDiscovering()) {
+                bluetoothAdapter.cancelDiscovery();
+            }
+
+            if(bluetoothConnection.getState() == BluetoothConnection.STATE_CONNECTED){
+                bluetoothConnection.stop();
+                bluetoothConnection.start();
+            }
+            bluetoothConnection.connect(bluetoothAdapter.getRemoteDevice(address));
+
+            Log.d(TAG, "devices selected is: "+ address);
+        }
+
+    }
+
+
+    /*
+     I permessi dangerous per tutti i dispositivi che eseguono API >= 23 (Android 6.0+ MARSHMALLOW) devono essere gestiti a run-time.
+     In questo caso per il Bluetooth il permesso dangerous è: ACCESS_FINE_LOCATION.
+     L'utente in qualsiasi momento può revocare tali permessi, pertanto l’ app deve verificare i permessi ogni qualvolta deve usare le risorse.
+
+     In versioni precedenti, i permessi erano verificati solo all’installazione, quindi bastava indicarli solo nel manifest.
+     */
+    private void checkBTPermissions() {
+
+        Log.d(TAG, "checkBTPermissions");
+
+        // Controlliamo se i permessi sono stati concessi
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permessi non concessi
+            // Dobbiamo mostrare una spiegazione?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                // Mostra una spiegazione del perchè la mancanza di questi permessi può negare alcune
+                // funzionalità. Alla riposta positiva (l'utente accetta di dare i permessi)
+                // andremo a richiedere i permessi.
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Permission necessary");
+                builder.setMessage("Permission is required to send your project list.");
+                builder.setPositiveButton("Retry", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(ProjectsSharingActivity.this,
+                                new String [ ]{Manifest.permission.ACCESS_FINE_LOCATION} ,
+                                REQUEST_LOCATION_PERMISSIONS);
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                builder.show();
+            } else {
+                // Nessuna spiegazione da dare, richiediamo direttamente i permessi
+                ActivityCompat.requestPermissions(this,
+                        new String [ ]{ Manifest.permission.ACCESS_FINE_LOCATION } ,
+                        REQUEST_LOCATION_PERMISSIONS);
+
+                //REQUEST_LOCATION_PERMISSIONS è una costante che andremo ad utilizzare
+                // nel metodo onRequestPermissionsResults([...]) per analizzare i risultati
+                // ed agire di conseguenza
+            }
+        } else {
+            // Abbiamo già i permessi, possiamo procedere con ciò che vogliamo fare
+            Log.d(TAG, "already PERMISSION_GRANTED");
+            checkLocationServicesIsNeededAndEnable();
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_LOCATION_PERMISSIONS:
+                // Se la richiesta viene annullata, gli array dei risultati sono vuoti.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // L'autorizzazione è concessa. Continua il flusso di lavoro dell'app.
+                    Log.d(TAG, "PERMISSION_GRANTED");
+                    checkLocationServicesIsNeededAndEnable();
+
+                }  else {
+                    // Spiega all'utente che la funzione non è disponibile perché la funzione richiede
+                    //un permesso che l'utente ha negato. Allo stesso tempo, rispetta la decisione dell'utente.
+                    // Non collegare a impostazioni di sistema nel tentativo di convincere l'utente
+                    //a modificare la propria decisione.
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Permission denied");
+                    builder.setMessage("Without permission the app is unable to send your project list.");
+                    builder.setPositiveButton("Ok", null);
+                    builder.show();
+                    Log.d(TAG, "PERMISSION_DENIED");
+                }
+                return;
+        }
+        // Altri case per verificare altri permessi che questa app potrebbe richiedere.
+    }
+
+    /*
+     * Dalla versione android >= 10 per per cercare i dispositivi Bluetooth disponibili è necessario attivare il GPS
+     * Quindi questo metodo controlla la versione di android del dispositivo se >= 10 chiede di attivare il GPS (se non attivo)
+     * altrimenti prosegue con l'esecuzione
+     */
+    public void checkLocationServicesIsNeededAndEnable() {
+        Log.d(TAG, "checkLocationServicesIsNeededAndEnable");
+        //TODO controllare se anche per la versione 11 è necessario attivare la posizione per poter individuare i dispositivi disponibili
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            Log.d(TAG, "android >= 10");
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            if (!isGpsEnabled) {
+                Log.d(TAG, "GPS NOT ENABLE");
+
+                new AlertDialog.Builder(this)
+                        .setMessage(R.string.label_Dialog_turn_on_gps)
+                        .setPositiveButton(R.string.text_button_ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), REQUEST_CODE_GPS);
+                            }
+                        }).setNeutralButton(R.string.text_button_no_thanks, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+
+            }else{
+               discover();
+            }
+        }else{
+            //il dispositivo ha una versione android < 10 e quindi per cercare i dispositivi disponibili non è necessario attivare il GPS
+            //si può procedere con la ricerca dei dispositivi
+            discover();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult");
+        switch (requestCode){
+            case REQUEST_CODE_GPS:
+                LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                boolean isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+                if (!isGpsEnabled) {
+                    Toast.makeText(getApplicationContext(), getString(R.string.text_message_gps_not_turned_on), Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "User denied to turn GPS on");
+                }else{
+                    Log.d(TAG, "GPS is on");
+                    discover();
+                }
+                break;
+
+            case REQUEST_CODE_DISCOVERABLE:
+                if(resultCode!=RESULT_CANCELED){
+                    Toast.makeText(getApplicationContext(), getString(R.string.text_message_discoverability_turned_on), Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
 
     }
 
@@ -376,10 +624,19 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
             if (bluetoothAdapter.isDiscovering()) {
                 bluetoothAdapter.cancelDiscovery();
             }
+            availableDevices.clear();
+            availableRecyclerView.setVisibility(View.GONE);
 
             bluetoothAdapter.startDiscovery();
 
         }
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume() called.");
 
     }
 
@@ -398,19 +655,33 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
     protected void onDestroy() {
         Log.d(TAG, "onDestroy: called.");
         super.onDestroy();
+
         if (bluetoothAdapter != null) {
-            bluetoothAdapter.cancelDiscovery();
+            if (bluetoothAdapter.isDiscovering()) {
+                bluetoothAdapter.cancelDiscovery();
+            }
         }
-        unregisterReceiver(broadcastReceiver);
+
         unregisterReceiver(broadcastReceiver1);
         unregisterReceiver(broadcastReceiver2);
-
-        //brodcast unico
-        // unregisterReceiver(mReceiver);
+        unregisterReceiver(broadcastReceiver3);
+        unregisterReceiver(broadcastReceiver4);
 
         if (bluetoothConnection != null) {
             bluetoothConnection.stop();
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop: called.");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Log.d(TAG, "onRestart: called.");
     }
 
 }

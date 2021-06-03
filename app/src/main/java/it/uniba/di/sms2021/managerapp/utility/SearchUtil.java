@@ -74,12 +74,16 @@ public class SearchUtil {
         searchView.setOnQueryTextListener(queryTextListener);
 
         if (searchFilters != null) {
-            // Al click di qualunque dei filtri, viene aggiunta alla query il filtro corrispondente
+            // Al click di qualunque dei filtri, viene aggiunto o rimosso il filtro
             ConstraintLayout searchFilterLayout = (ConstraintLayout) searchFilters.getChildAt(0);
             for (int i = 0; i < searchFilterLayout.getChildCount(); i++) {
                 Chip chip = (Chip) searchFilterLayout.getChildAt(i);
                 chip.setOnClickListener(v -> {
-                    appendToSearchQuery(searchView, chip.getText().toString());
+                    if (chip.isChecked()) {
+                        onSearchListener.onFilterAdded(chip.getText().toString());
+                    } else {
+                        onSearchListener.onFilterRemoved(chip.getText().toString());
+                    }
                 });
             }
         }
@@ -90,15 +94,25 @@ public class SearchUtil {
      */
     public static void appendToSearchQuery (SearchView searchView, String string) {
         String query = searchView.getQuery().toString();
-
-        // Aggiunge uno spazio alla query se già non finisce con uno
-        if (!query.matches(" $")) {
-            query += " ";
-        }
-
-        query += string;
+        query = appendToQuery(query, string);
 
         searchView.setQuery(query, true);
+    }
+
+    /**
+     * Aggiunge un nuovo termine alla query e ritorna il valore modificato.
+     * La query originale non viene modificata.
+     */
+    public static String appendToQuery (String query, String appendable) {
+        String returnable = query;
+
+        // Aggiunge uno spazio alla query se già non finisce con uno
+        if (!returnable.matches(" $")) {
+            returnable += " ";
+        }
+
+        returnable += appendable;
+        return returnable;
     }
 
     /**
@@ -106,5 +120,7 @@ public class SearchUtil {
      */
     public interface OnSearchListener {
         void onSearchAction(String query);
+        void onFilterAdded(String filter);
+        void onFilterRemoved(String filter);
     }
 }

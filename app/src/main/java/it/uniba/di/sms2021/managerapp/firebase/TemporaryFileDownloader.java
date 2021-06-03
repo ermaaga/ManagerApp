@@ -1,8 +1,8 @@
 package it.uniba.di.sms2021.managerapp.firebase;
 
 import android.content.Context;
-import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -14,7 +14,7 @@ import com.google.firebase.storage.FileDownloadTask;
 import java.io.File;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
+import it.uniba.di.sms2021.managerapp.enitities.file.ManagerCloudFile;
 
 /**
  * Classe di utility che astrae il download di un file temporaneo e permette di fare un'azione con
@@ -25,6 +25,7 @@ import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
 public abstract class TemporaryFileDownloader {
     // Si possono scaricare file temporanei grandi massimo 10MB
     private static final int MAX_TEMP_FILE_SIZE = 1024*1024*10;
+    private static final String TAG = "TemporaryFileDownloader";
 
     /**
      * Mostra un messaggio qualora non sia possibile scaricare il file come file temporaneo.
@@ -56,11 +57,14 @@ public abstract class TemporaryFileDownloader {
      * in memoria esterna, e se è presente lo utilizza.
      *
      * @param file il file da scaricare
-     * @param internalFolderName nome della cartella in cui salvare il file
+     * @param project progetto a cui appartiene il file
      */
-    public void downloadTempFile (ManagerFile file, String internalFolderName) {
-        File downloadedFile = new File (context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), file.getName());
-        if (downloadedFile.exists()) {
+    public void downloadTempFile (ManagerCloudFile file, Project project) {
+        String internalFolderName = project.getId();
+        File downloadedFile = FileDownloader.getDownloadedFile(file.getName(), project.getName());
+        if (downloadedFile.exists() &&
+                downloadedFile.length() == file.getSize()) {
+            Log.i(TAG, "Using downloaded file");
             onSuccessAction(downloadedFile);
             return;
         }
@@ -76,12 +80,14 @@ public abstract class TemporaryFileDownloader {
         }
         File localFile = new File(path, file.getName());
         if (localFile.exists()) {
+            Log.i(TAG, "Using temporary file");
             onSuccessAction(localFile);
         } else {
             FileDownloadTask fileDownloadTask = file.getReference().getFile(localFile);
             fileDownloadTask.addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    Log.i(TAG, "Using downloaded temporary file");
                     onSuccessAction(localFile);
                 }
             }).addOnFailureListener(new OnFailureListener() {

@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -67,6 +66,9 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
 
     User user;
     String userid;
+    String currentUserId;
+    User userFromLink;
+    boolean fromLink;
 
     TextView textName;
     TextView textSurname;
@@ -77,8 +79,6 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
     EditText editName;
     EditText editSurname;
 
-    Button editButton;
-    Button saveButton;
     ImageButton editDepartments;
     ImageButton editCourses;
     FloatingActionButton editPhotoButton;
@@ -99,14 +99,28 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
     boolean[] depIsChecked;
     boolean[] courseIsChecked;
 
+    HashMap childUpdates;
+    HashMap childUpdatesImage;
+
     private ValueEventListener userListener;
     private ValueEventListener userListenerCreate;
     private ValueEventListener departmentsListener;
     private ValueEventListener coursesListener;
 
+    MenuItem iconSave;
+    MenuItem iconEdit;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_profile, menu);
+        iconSave = menu.findItem(R.id.action_save);
+        iconEdit = menu.findItem(R.id.action_edit);
+
+        /*Se viene visualizzato il profilo di un altro utente, invece che il profilo corrente,
+         * non viene permessa la modifica del profilo */
+        if(!userid.equals(currentUserId)){
+            iconEdit.setVisible(false);
+        }
         return true;
     }
 
@@ -115,13 +129,30 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
         int menuId = item.getItemId();
         MenuUtil.performMainActions(this, menuId);
 
+        //Se viene selezionata l'icona di modifica
+        if (menuId == R.id.action_edit) {
+            //Chiamata al metodo che permette la modifica dei dati di profilo
+            editProfile();
+            //Rimpiazza l'icona di modifica con l'icona "spunta" per salvare le modifiche
+            item.setVisible(false);
+            iconSave.setVisible(true);
+        }
+        if(menuId == R.id.action_save){
+            saveProfile();
+            item.setVisible(false);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if (fragmentManager.getBackStackEntryCount() == 0) {
+        if(editPhotoButton.getVisibility()==View.VISIBLE){
+            Intent refresh = new Intent(ProfileActivity.this, ProfileActivity.class);
+            startActivity(refresh);
+            finish();
+        } else if (fragmentManager.getBackStackEntryCount() == 0) {
             finish();
         } else {
             fragmentManager.popBackStack();
@@ -137,7 +168,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
 
     @Override
     protected int getBottomNavigationMenuItemId() {
-        return R.id.nav_home;
+        return R.id.nav_profile;
     }
 
     @Override
@@ -146,7 +177,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        textName = (TextView) findViewById(R.id.value_name_account_text_view);
+        textName = findViewById(R.id.value_name_account_text_view);
         textSurname = (TextView) findViewById(R.id.value_surname_account_text_view);
         textEmail = (TextView) findViewById(R.id.value_email_account_text_view);
         textDepartments = (TextView) findViewById(R.id.value_department);
@@ -157,14 +188,10 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
 
         photoProfile = (ImageView) findViewById(R.id.image_account);
 
-        editButton = (Button) findViewById(R.id.button_edit_profile);
-        saveButton = (Button) findViewById(R.id.button_save_profile);
         editDepartments = (ImageButton) findViewById(R.id.departments_button);
         editCourses = (ImageButton) findViewById(R.id.courses_button);
         editPhotoButton = (FloatingActionButton) findViewById(R.id.button_uplod_photo);
 
-        editButton.setOnClickListener(this);
-        saveButton.setOnClickListener(this);
         editPhotoButton.setOnClickListener(this);
 
         database = FirebaseDbHelper.getDBInstance();
@@ -176,47 +203,74 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
         departmentsChecked = new ArrayList<String>();
         coursesChecked = new ArrayList<String>();
 
+        fromLink= getIntent().getBooleanExtra("fromLinkBoolean", false);
+        userFromLink = getIntent().getParcelableExtra(User.KEY);
+
         //TODO considerare l'utilizzo di LoginHelper.getCurrentUser()
-        userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        /*Se viene visualizzato il profilo di un altro utente, invece che il profilo corrente,
+         * l'id dell'utente viene ottenuto dall'oggetto passato tramite Intent*/
+        if(fromLink){
+            userid = userFromLink.getAccountId();
+        }else{
+            userid = currentUserId;
+        }
+
         currentUserReference = usersReference.child(userid);
-
-        userListenerCreate = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                user = snapshot.getValue(User.class);
-                //Se il nodo "profileImage" è popolato nel database
-                if(user.getProfileImage()!= null){
-                    //Acquisizione dell'Url dell'immagine dell'utente presente nello Storage
-                    storageReference.child("profileimages/"+userid).child(user.getProfileImage()).getDownloadUrl()
-                            .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    //Set ImageView foto profilo
-                                    Glide.with(ProfileActivity.this)
-                                            .load(uri)
-                                            .into(photoProfile);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            Log.d(TAG," Failed setImageView");
-                        }
-                    });
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        currentUserReference.addListenerForSingleValueEvent(userListenerCreate);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        /*Se proviene dalla modifica dell'immagine, imposta l'immagine di profilo modificata,
+         altrimenti la acquisisce dal database*/
+        if(fullFileUri!=null){
+            try {
+                InputStream inputStream = getContentResolver().openInputStream(fullFileUri);
+                bitmap = BitmapFactory.decodeStream(inputStream);
+                photoProfile.setImageBitmap(bitmap);
+            } catch (FileNotFoundException e) {
+                //TODO vedere cosa fare
+                Toast.makeText(ProfileActivity.this, "Failed", Toast.LENGTH_LONG).show();
+            }
+        }else {
+            userListenerCreate = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    user = snapshot.getValue(User.class);
+                    //Se il nodo "profileImage" è popolato nel database
+                    if(user.getProfileImage()!= null){
+                        //Acquisizione dell'Url dell'immagine dell'utente presente nello Storage
+                        storageReference.child("profileimages/"+userid).child(user.getProfileImage()).getDownloadUrl()
+                                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        //Set ImageView foto profilo
+                                        Glide.with(ProfileActivity.this)
+                                                .load(uri)
+                                                .into(photoProfile);
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                Log.d(TAG," Failed setImageView"+ exception);
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            };
+            currentUserReference.addListenerForSingleValueEvent(userListenerCreate);
+        }
+
+
 
         userListener = new ValueEventListener() {
             @Override
@@ -234,7 +288,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
                 TextView labelDepartments = (TextView) findViewById(R.id.label_departments);
                 labelDepartments.setText(getResources().getQuantityString(R.plurals.numberOfDepartments, sizeDepartments));
 
-                int sizeCourses = user.getDipartimenti().size();
+                int sizeCourses = user.getCorsi().size();
                 TextView labelCourses = (TextView) findViewById(R.id.label_courses);
                 labelCourses.setText(getResources().getQuantityString(R.plurals.numberOfCourses, sizeCourses));
             }
@@ -360,11 +414,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
 
     @Override
     public void onClick(View v) {
-        if(v.getId()== R.id.button_edit_profile) {
-            editProfile();
-        }else if(v.getId()== R.id.button_save_profile){
-            saveProfile();
-        }else if(v.getId()== R.id.button_uplod_photo){
+        if(v.getId()== R.id.button_uplod_photo){
             selectImage();
         }
     }
@@ -381,7 +431,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
 
         if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK) {
             Bitmap thumbnail = data.getParcelableExtra("data"); /*TODO farci qualcosa come mostrare una finestra di dialogo
-                                                                         che mostri il progresso dell'upload e che usi il thumbnail*/
+                                                                        che mostri il progresso dell'upload e che usi il thumbnail*/
             fullFileUri = data.getData();
             try {
                 InputStream inputStream = getContentResolver().openInputStream(fullFileUri);
@@ -398,11 +448,9 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
     public void editProfile() {
         textName.setVisibility(View.GONE);
         textSurname.setVisibility(View.GONE);
-        editButton.setVisibility(View.GONE);
 
         editName.setVisibility(View.VISIBLE);
         editSurname.setVisibility(View.VISIBLE);
-        saveButton.setVisibility(View.VISIBLE);
         editDepartments.setVisibility(View.VISIBLE);
         editCourses.setVisibility(View.VISIBLE);
         editPhotoButton.setVisibility(View.VISIBLE);
@@ -412,9 +460,24 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
     }
 
     public void saveProfile() {
-        if(fullFileUri!= null) {
 
-            //Eliminazione della foto profilo eventualmente già presente
+        childUpdates = new HashMap();
+
+        childUpdates.put("/nome/", editName.getText().toString());
+        childUpdates.put("/cognome/", editSurname.getText().toString());
+        if (currentListDepartment != null) {
+            childUpdates.put("/dipartimenti/", currentListDepartment);
+        }
+        if (currentListCourse != null) {
+            childUpdates.put("/corsi/", currentListCourse);
+        }
+        usersReference.child(user.getAccountId()).updateChildren(childUpdates);
+
+        if(fullFileUri==null){
+            ProfileActivity.this.recreate();
+        }else if(fullFileUri!= null) {
+
+            //Eliminazione della foto profilo eventualmente già presente nello storage
             storageReference.child("profileimages/"+userid).listAll()
                     .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                         @Override
@@ -466,26 +529,12 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Log.d(TAG, "File caricato con successo");
-                    HashMap childUpdates = new HashMap();
                     childUpdates.put("/profileImage/", FileUtil.getFileNameFromURI(ProfileActivity.this, fullFileUri));
-                    childUpdates.put("/nome/", editName.getText().toString());
-                    childUpdates.put("/cognome/", editSurname.getText().toString());
-                    if(currentListDepartment!=null){
-                        childUpdates.put("/dipartimenti/", currentListDepartment);
-                    }
-                    if(currentListCourse!=null){
-                        childUpdates.put("/corsi/", currentListCourse);
-                    }
-
                     usersReference.child(user.getAccountId()).updateChildren(childUpdates);
-
-                    Intent refresh = new Intent(ProfileActivity.this, ProfileActivity.class);
-                    startActivity(refresh);
-                    finish();
+                    ProfileActivity.this.recreate();
                 }
             });
         }
-
     }
 
     public void editDepartments() {

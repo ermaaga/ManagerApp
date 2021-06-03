@@ -1,12 +1,12 @@
 package it.uniba.di.sms2021.managerapp.exams;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,11 +18,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.uniba.di.sms2021.managerapp.ProfileActivity;
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
-import it.uniba.di.sms2021.managerapp.lists.StringRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.lists.UserRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
@@ -51,16 +51,20 @@ public class ExamsPartecipantsActivity extends AbstractBottomNavigationActivity 
 
         exam = getIntent().getParcelableExtra(Exam.Keys.EXAM);
 
-        adapter = new UserRecyclerAdapter(new UserRecyclerAdapter.OnActionListener() {
+        adapter = new UserRecyclerAdapter(getApplicationContext(),new UserRecyclerAdapter.OnActionListener() {
             @Override
             public void onItemClicked(User string) {
-                //TODO implementare visualizzazione profilo
-                Toast.makeText(ExamsPartecipantsActivity.this,
-                        R.string.text_message_not_yet_implemented, Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                intent.putExtra(User.KEY, string);
+                boolean fromLink = true;
+                intent.putExtra("fromLinkBoolean", fromLink);
+                startActivity(intent);
+
             }
         });
         partecipantsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         partecipantsRecyclerView.setAdapter(adapter);
+        partecipantsRecyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
 
         userReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS);
         partecipantsListener = new ValueEventListener() {

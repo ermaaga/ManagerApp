@@ -19,6 +19,9 @@ import it.uniba.di.sms2021.managerapp.R;
 
 public class ConnectionCheckBroadcastReceiver extends BroadcastReceiver {
     private OnConnectionChangeListener listener;
+    private static Bundle connectionBundle;
+
+    private static Snackbar connectivitySnackbar;
 
     public ConnectionCheckBroadcastReceiver(OnConnectionChangeListener listener) {
         this.listener = listener;
@@ -26,10 +29,13 @@ public class ConnectionCheckBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Bundle extras = intent.getExtras();
+        connectionBundle = intent.getExtras();
 
-        NetworkInfo info = (NetworkInfo) extras
-                .getParcelable("networkInfo");
+        checkConnection(connectionBundle);
+    }
+
+    private void checkConnection (Bundle bundle) {
+        NetworkInfo info = (NetworkInfo) bundle.getParcelable("networkInfo");
 
         NetworkInfo.State state = info.getState();
         Log.d("ConnectionCheckBroadRec", info.toString() + " "
@@ -39,6 +45,12 @@ public class ConnectionCheckBroadcastReceiver extends BroadcastReceiver {
             listener.onConnectionUp();
         } else {
             listener.onConnectionDown();
+        }
+    }
+
+    public void checkConnection () {
+        if (connectionBundle != null) {
+            checkConnection(connectionBundle);
         }
     }
 
@@ -53,7 +65,7 @@ public class ConnectionCheckBroadcastReceiver extends BroadcastReceiver {
     }
 
     public static void showConnectivitySnackbar (Context context, Window activityWindow) {
-        Snackbar snackbar = Snackbar.make(activityWindow.getDecorView().findViewById(android.R.id.content),
+        connectivitySnackbar = Snackbar.make(activityWindow.getDecorView().findViewById(android.R.id.content),
                 R.string.text_message_connection_down, Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.text_button_check_connection, new View.OnClickListener() {
                     @Override
@@ -66,8 +78,14 @@ public class ConnectionCheckBroadcastReceiver extends BroadcastReceiver {
                         }
                     }
                 });
-        snackbar.getView().setOnClickListener(v -> snackbar.dismiss());
-        snackbar.show();
+        connectivitySnackbar.getView().setOnClickListener(v -> connectivitySnackbar.dismiss());
+        connectivitySnackbar.show();
+    }
+
+    public static void dismissConnectivitySnackbar () {
+        if (connectivitySnackbar != null && connectivitySnackbar.isShown()) {
+            connectivitySnackbar.dismiss();
+        }
     }
 
     public interface OnConnectionChangeListener {

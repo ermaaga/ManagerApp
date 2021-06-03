@@ -32,6 +32,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:listitem="@layout/list_item_simple_string" />
+        tools:listitem="@layout/list_item_user" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

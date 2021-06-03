@@ -1,7 +1,12 @@
 package it.uniba.di.sms2021.managerapp.firebase;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class FirebaseDbHelper {
     public static final String TABLE_USERS = "users";
@@ -12,10 +17,10 @@ public class FirebaseDbHelper {
     public static final String TABLE_COURSES = "courses";
     public static final String TABLE_LISTS_PROJECTS= "lists_projects";
 
-    private static final String TABLE_GROUP_REQUESTS = "group_requests";
-    private static final String TABLE_GROUP_JOIN_NOTICE = "group_join_notice";
-    private static final String TABLE_EXAM_REQUESTS = "exam_requests";
-    private static final String TABLE_NOTIFICATIONS = "notifications";
+    public static final String TABLE_GROUP_JOIN_REQUESTS = "group_requests";
+    public static final String TABLE_GROUP_JOIN_NOTICE = "group_join_notice";
+    public static final String TABLE_EXAM_JOIN_REQUESTS = "exam_requests";
+    public static final String TABLE_NOTIFICATIONS = "notifications";
     public static final String TABLE_NEW_EVALUATION = "new_evalutation";
 
     public static final String TABLE_REVIEWS = "reviews";
@@ -37,28 +42,32 @@ public class FirebaseDbHelper {
         return INSTANCE;
     }
 
-    public static DatabaseReference getGroupJoinRequestReference (String uid) {
-        return getDBInstance().getReference(TABLE_NOTIFICATIONS + "/" + TABLE_GROUP_REQUESTS).child(uid);
-    }
-
-    public static DatabaseReference getUserJoinNoticeReference (String uid) {
-        return getDBInstance().getReference(TABLE_NOTIFICATIONS + "/" +  TABLE_GROUP_JOIN_NOTICE).child(uid);
-    }
-
-    public static DatabaseReference getNewEvaluationReference (String uid) {
-        return getDBInstance().getReference(TABLE_NOTIFICATIONS + "/" +  TABLE_NEW_EVALUATION).child(uid);
-    }
-
-    public static DatabaseReference getNewReportReference (String uid) {
-        return getDBInstance().getReference(TABLE_NOTIFICATIONS + "/" +  TABLE_NEW_REPORT).child(uid);
-    }
-
-    public static DatabaseReference getNewReplyReportReference (String uid) {
-        return getDBInstance().getReference(TABLE_NOTIFICATIONS + "/" +  TABLE_NEW_REPLY_REPORT).child(uid);
+    public static DatabaseReference getNotifications (String uid) {
+        return getDBInstance().getReference(TABLE_NOTIFICATIONS).child(uid);
     }
 
     public static DatabaseReference getExamJoinRequestReference (String uid) {
-        return getDBInstance().getReference(TABLE_NOTIFICATIONS + "/" + TABLE_EXAM_REQUESTS).child(uid);
+        return getDBInstance().getReference(TABLE_NOTIFICATIONS).child(uid).child(TABLE_EXAM_JOIN_REQUESTS);
+    }
+
+    public static DatabaseReference getGroupUserJoinNoticeReference(String uid) {
+        return getDBInstance().getReference(TABLE_NOTIFICATIONS).child(uid).child(TABLE_GROUP_JOIN_NOTICE);
+    }
+
+    public static DatabaseReference getGroupJoinRequestReference (String uid) {
+        return getDBInstance().getReference(TABLE_NOTIFICATIONS).child(uid).child(TABLE_GROUP_JOIN_REQUESTS);
+    }
+
+    public static DatabaseReference getNewEvaluationReference (String uid) {
+        return getDBInstance().getReference(TABLE_NOTIFICATIONS).child(uid).child(TABLE_NEW_EVALUATION);
+    }
+
+    public static DatabaseReference getNewReplyReportReference (String uid) {
+        return getDBInstance().getReference(TABLE_NOTIFICATIONS).child(uid).child(TABLE_NEW_REPLY_REPORT);
+    }
+
+    public static DatabaseReference getNewReportReference (String uid) {
+        return getDBInstance().getReference(TABLE_NOTIFICATIONS).child(uid).child(TABLE_NEW_REPORT);
     }
 
     public static DatabaseReference getListsProjectsReference (String uid) {

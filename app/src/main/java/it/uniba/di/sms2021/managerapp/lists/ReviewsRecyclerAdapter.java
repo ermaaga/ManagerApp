@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -54,19 +55,14 @@ public class ReviewsRecyclerAdapter extends ListAdapter<Review, ReviewsRecyclerA
 
         View itemView = holder.itemView;
         review = getItem(position);
-        RatingBar userRatingBar = itemView.findViewById(R.id.user_rating_stars);
 
-        TextView userTextView = itemView.findViewById(R.id.user_TextView);
-        TextView dateTextView = itemView.findViewById(R.id.date_TextView);
-        TextView messageTextView= itemView.findViewById(R.id.message_TextView);
-
-        setUserName(userTextView, review);
-        userRatingBar.setRating(review.getRating());
-        dateTextView.setText(review.getDate());
+        setUserName(holder.userTextView, review);
+        holder.ratingBar.setRating(review.getRating());
+        holder.dateTextView.setText(review.getDate());
 
         if(!review.getComment().equals("")) {
-            messageTextView.setVisibility(View.VISIBLE);
-            messageTextView.setText(review.getComment());
+            holder.messageTextView.setVisibility(View.VISIBLE);
+            holder.messageTextView.setText(review.getComment());
         }
 
     }
@@ -84,11 +80,22 @@ public class ReviewsRecyclerAdapter extends ListAdapter<Review, ReviewsRecyclerA
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView repliesTextView;
         Button replyButton;
+        TextView userTextView;
+        TextView dateTextView;
+        TextView messageTextView;
+        MaterialCardView containerCard;
+        RatingBar ratingBar;
 
         public ViewHolder(View itemView, List<Review> list, OnActionListener listener) {
             super(itemView);
 
+            userTextView = itemView.findViewById(R.id.user_TextView);
+            dateTextView = itemView.findViewById(R.id.date_TextView);
+            messageTextView= itemView.findViewById(R.id.message_TextView);
             replyButton = itemView.findViewById(R.id.reply_button);
+            containerCard = itemView.findViewById(R.id.review_item_card);
+            ratingBar = itemView.findViewById(R.id.user_rating_stars);
+
             replyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -97,10 +104,17 @@ public class ReviewsRecyclerAdapter extends ListAdapter<Review, ReviewsRecyclerA
             });
 
             repliesTextView = itemView.findViewById(R.id.review_replies_TextView);
+
             repliesTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClick(list.get(getAdapterPosition()));
+                    listener.onClick(list.get(getAdapterPosition()),
+                            getAdapterPosition(),
+                            containerCard,
+                            userTextView,
+                            dateTextView,
+                            messageTextView,
+                            ratingBar);
                 }
             });
 
@@ -164,6 +178,12 @@ public class ReviewsRecyclerAdapter extends ListAdapter<Review, ReviewsRecyclerA
 
     public interface OnActionListener {
         void onReply(Review review);
-        void onClick(Review review);
+        void onClick(Review review,
+                     int pos,
+                     MaterialCardView containerCard,
+                     TextView userTextView,
+                     TextView dateTextView,
+                     TextView messageTextView,
+                     RatingBar ratingBar);
     }
 }

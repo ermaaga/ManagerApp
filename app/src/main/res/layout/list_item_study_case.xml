@@ -35,26 +35,26 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:maxLines="2"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/study_case_info_button"
+                app:layout_constraintEnd_toStartOf="@+id/file_type_image_view"
                 app:layout_constraintStart_toStartOf="@+id/study_case_title_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/study_case_title_text_view"
                 tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla eget vulputate ligula. Etiam iaculis imperdiet sapien." />
 
-            <ImageButton
-                android:id="@+id/study_case_info_button"
-                style="@android:style/Widget.Material.ImageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ImageView
+                android:id="@+id/file_type_image_view"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="8dp"
                 android:contentDescription="@string/description_case_study_info"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_pdf_24" />
+                app:layout_constraintVertical_bias="1.0"
+                app:srcCompat="@drawable/ic_pdf" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>

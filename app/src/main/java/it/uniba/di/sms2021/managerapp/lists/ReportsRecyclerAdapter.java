@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -53,16 +54,13 @@ public class ReportsRecyclerAdapter extends ListAdapter<Report, ReportsRecyclerA
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         View itemView = holder.itemView;
         report = getItem(position);
-        TextView userTextView = itemView.findViewById(R.id.user_TextView);
-        TextView dateTextView = itemView.findViewById(R.id.date_TextView);
-        TextView messageTextView = itemView.findViewById(R.id.message_TextView);
 
-        setUserName(userTextView, report);
-        dateTextView.setText(report.getDate());
+        setUserName(holder.userTextView, report);
+        holder.dateTextView.setText(report.getDate());
 
         if(!report.getComment().equals("")) {
-            messageTextView.setVisibility(View.VISIBLE);
-            messageTextView.setText(report.getComment());
+            holder.messageTextView.setVisibility(View.VISIBLE);
+            holder.messageTextView.setText(report.getComment());
         }
 
     }
@@ -80,9 +78,20 @@ public class ReportsRecyclerAdapter extends ListAdapter<Report, ReportsRecyclerA
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView repliesTextView;
         Button replyButton;
+        MaterialCardView containerCard;
+        TextView userTextView;
+        TextView dateTextView;
+        TextView messageTextView;
+
         public ViewHolder(View itemView, List<Report> list, ReportsRecyclerAdapter.OnActionListener listener) {
             super(itemView);
+            containerCard = itemView.findViewById(R.id.report_item_card);
+            userTextView = itemView.findViewById(R.id.user_TextView);
+            dateTextView = itemView.findViewById(R.id.date_TextView);
+            messageTextView = itemView.findViewById(R.id.message_TextView);
+
             replyButton = itemView.findViewById(R.id.reply_button);
+
             replyButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -90,10 +99,16 @@ public class ReportsRecyclerAdapter extends ListAdapter<Report, ReportsRecyclerA
                 }
             });
             repliesTextView = itemView.findViewById(R.id.replies_TextView);
+
             repliesTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClick(list.get(getAdapterPosition()));
+                    listener.onClick(list.get(getAdapterPosition()),
+                            getAdapterPosition(),
+                            containerCard,
+                            userTextView,
+                            dateTextView,
+                            messageTextView);
                 }
             });
             setViewReplies(repliesTextView, list);
@@ -157,6 +172,11 @@ public class ReportsRecyclerAdapter extends ListAdapter<Report, ReportsRecyclerA
 
     public interface OnActionListener {
         void onReply(Report report);
-        void onClick(Report report);
+        void onClick(Report report,
+                     int pos,
+                     MaterialCardView containerCard,
+                     TextView userTextView,
+                     TextView dateTextView,
+                     TextView messageTextView);
     }
 }

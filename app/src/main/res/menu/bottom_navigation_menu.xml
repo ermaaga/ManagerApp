@@ -6,13 +6,13 @@
         android:icon="@drawable/ic_exams"
         android:title="@string/text_label_exams"/>
     <item
-        android:id="@+id/nav_home"
-        android:enabled="true"
-        android:icon="@drawable/ic_baseline_home_24"
-        android:title="@string/text_label_home"/>
-    <item
         android:id="@+id/nav_projects"
         android:enabled="true"
         android:icon="@drawable/ic_projects"
         android:title="@string/text_label_projects"/>
+    <item
+        android:id="@+id/nav_profile"
+        android:enabled="true"
+        android:icon="@drawable/ic_baseline_account_circle_24"
+        android:title="@string/text_label_profile" />
 </menu>

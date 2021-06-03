@@ -40,6 +40,7 @@ public class NewGroupActivity extends AbstractFormActivity {
     private static final String TAG = "NewGroupActivity";
     private FirebaseDatabase database;
     private DatabaseReference groupsRef;
+    private String idexam;
     private Exam exam;
 
     private EditText name;
@@ -49,9 +50,11 @@ public class NewGroupActivity extends AbstractFormActivity {
     private RecyclerView userRecyclerView;
     private UserSelectionRecyclerAdapter adapter;
     private DatabaseReference userReference;
+    private DatabaseReference examReference;
     private ValueEventListener examMembersListener;
+    private ValueEventListener examListener;
 
-    Group group;
+    private Group group;
 
     @Override
     protected int getLayoutId() { return R.layout.activity_new_group; }
@@ -75,7 +78,27 @@ public class NewGroupActivity extends AbstractFormActivity {
     protected void onStart() {
         super.onStart();
 
-        exam = getIntent().getParcelableExtra(Exam.Keys.EXAM);
+        idexam = getIntent().getStringExtra(Exam.Keys.EXAM);
+
+        examReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_EXAMS);
+        examListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    if (child.getKey().equals(idexam)) {
+                        exam = child.getValue(Exam.class);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        };
+        examReference.addValueEventListener( examListener);
+
         adapter = new UserSelectionRecyclerAdapter(this, new UserSelectionRecyclerAdapter.OnActionListener() {
             @Override
             public void onItemClicked() {

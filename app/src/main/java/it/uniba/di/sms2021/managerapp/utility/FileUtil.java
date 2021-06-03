@@ -1,15 +1,14 @@
 package it.uniba.di.sms2021.managerapp.utility;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.OpenableColumns;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -19,7 +18,6 @@ import java.io.File;
 
 import it.uniba.di.sms2021.managerapp.BuildConfig;
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.ManagerFile;
 
 public class FileUtil {
     private static final String TAG = "FileUtil";
@@ -42,6 +40,11 @@ public class FileUtil {
         return fileName;
     }
 
+    /**
+     * Ottiene la dimensione di un file a partire dal suo content uri
+     * @param uri uri della forma "content:"
+     * @return dimensione in byte del file
+     */
     public static Long getFileSizeFromURI (Context context, Uri uri) {
         Cursor returnCursor =
                 context.getContentResolver().query(uri, null, null, null, null);
@@ -71,24 +74,24 @@ public class FileUtil {
     }
 
     /*Questo metodo era in FilesRecyclerAdapter ed è stato spostato qui perchè
-    * potrebbe essere utile in altre classi.
-    */
+     * potrebbe essere utile in altre classi.
+     */
     public static void setTypeImageView (Context context, ImageView imageView, String fileType) {
         if (fileType.contains("image/")) {
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.image));
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_image));
         } else if (fileType.equals("application/pdf")) {
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.pdf));
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_pdf));
         } else if (fileType.contains("audio/")) {
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.audio));
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_audio));
         } else if (fileType.contains("video/")) {
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.video));
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_video));
         } else if (fileType.contains("text/plain")) {
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.text));
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_text));
         } else if (fileType.contains("application/vnd.android.package-archive")) {
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.apk));
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_apk));
         } else {
             Log.i(TAG, "Tipo " + fileType + " non supportato.");
-            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.file));
+            imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_file));
         }
     }
 
@@ -106,26 +109,40 @@ public class FileUtil {
      * Apre un file usando una della applicazioni installate.
      * @param uri l'uri del file in memoria da aprire
      * @param mimeType il tipo mime del file
-     * @return true se il file è apribile, false altrimenti
+     * @throws FileException ha errorCode "NO_INTENT_FOUND" se non è stato trovato alcun intent
+     *      capace di aprire la tipologia di file
      */
-    public static boolean openFileWithViewIntent(Context context, Uri uri, String mimeType) {
-        // I file apk devono prima essere scaricati
+    public static void openFileWithViewIntent(Context context, Uri uri, String mimeType) throws FileException {
         if (mimeType.equals(("application/vnd.android.package-archive"))) {
-            return false;
+            openApkWithPackageManager(context, uri);
+            return;
         }
 
-        Intent intent = getFileViewIntent(context, uri, mimeType);
-
-        if (intent != null) {
+        try {
+            Intent intent = getFileViewIntent(context, uri, mimeType);
             context.startActivity(intent);
-            return true;
-        } else {
-            return false;
+        } catch (FileException e) {
+            throw e;
         }
     }
 
+    private static void openApkWithPackageManager(Context context, Uri uri) {
+        Intent installationIntent;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            installationIntent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+            installationIntent.setData(uri);
+            installationIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            installationIntent = new Intent(Intent.ACTION_VIEW);
+            installationIntent.setDataAndType(uri, "application/vnd.android.package-archive");
+            installationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+
+        context.startActivity(installationIntent);
+    }
+
     @Nullable
-    public static Intent getFileViewIntent (Context context, Uri uri, String mimeType) {
+    public static Intent getFileViewIntent (Context context, Uri uri, String mimeType) throws FileException {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(uri, mimeType);
@@ -138,7 +155,7 @@ public class FileUtil {
         if (intent.resolveActivity(context.getPackageManager()) != null) {
             return chooser;
         } else {
-            return null;
+            throw new FileException(FileException.NO_INTENT_FOUND);
         }
     }
 
