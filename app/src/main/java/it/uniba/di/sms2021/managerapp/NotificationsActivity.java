@@ -80,7 +80,7 @@ public class NotificationsActivity extends AbstractBaseActivity {
             }
         });
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
 
         updateNotifications();
@@ -115,7 +115,7 @@ public class NotificationsActivity extends AbstractBaseActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.getChildrenCount() == 0) {
-                    executeUpdate();
+                    executeUpdate(false);
                     return;
                 }
 
@@ -125,7 +125,7 @@ public class NotificationsActivity extends AbstractBaseActivity {
                 initialiseNewEvaluations(snapshot);
                 initialiseNewReplyReportNotice(snapshot);
                 initialiseNewReportNotices(snapshot);
-                executeUpdate();
+                executeUpdate(true);
             }
 
             @Override
@@ -178,7 +178,7 @@ public class NotificationsActivity extends AbstractBaseActivity {
 
                             if (elaboratingChildren.isEmpty()) {
                                 workingSnapshots.remove(groupJoinRequestsSnapshot);
-                                executeUpdate();
+                                executeUpdate(true);
                             }
                         }
                     }.initialiseNotification(request);
@@ -208,7 +208,7 @@ public class NotificationsActivity extends AbstractBaseActivity {
 
                         if (elaboratingChildren.isEmpty()) {
                             workingSnapshots.remove(newEvaluationsSnapshot);
-                            executeUpdate();
+                            executeUpdate(true);
                         }
                     }
                 }.initialiseNotification(evaluation);
@@ -239,7 +239,7 @@ public class NotificationsActivity extends AbstractBaseActivity {
 
                         if (elaboratingChildren.isEmpty()) {
                             workingSnapshots.remove(newReplyReportNoticesSnapshot);
-                            executeUpdate();
+                            executeUpdate(true);
                         }
                     }
                 }.initialiseNotification(replyReportNotice);
@@ -270,7 +270,7 @@ public class NotificationsActivity extends AbstractBaseActivity {
 
                         if (elaboratingChildren.isEmpty()) {
                             workingSnapshots.remove(newReportNoticeSnapshot);
-                            executeUpdate();
+                            executeUpdate(true);
                         }
                     }
                 }.initialiseNotification(reportNotice);
@@ -282,16 +282,18 @@ public class NotificationsActivity extends AbstractBaseActivity {
      * Aggiorna la lista delle notifiche e la mostra nella recyclerView ma solo se tutte le
      * notifiche sono state elaborate
      */
-    private void executeUpdate() {
+    private void executeUpdate(boolean notificationsPresent) {
         if (!notificationsAlreadyInElaboration()) {
             notifications = new ArrayList<>();
 
-            notifications.addAll(groupJoinRequests);
-            notifications.addAll(groupJoinNotices);
-            notifications.addAll(newEvaluations);
-            notifications.addAll(examJoinRequests);
-            notifications.addAll(newReportNotices);
-            notifications.addAll(newReplyReportNotices);
+            if (notificationsPresent) {
+                notifications.addAll(groupJoinRequests);
+                notifications.addAll(groupJoinNotices);
+                notifications.addAll(newEvaluations);
+                notifications.addAll(examJoinRequests);
+                notifications.addAll(newReportNotices);
+                notifications.addAll(newReplyReportNotices);
+            }
 
             adapter.submitList(notifications);
             adapter.notifyDataSetChanged();
