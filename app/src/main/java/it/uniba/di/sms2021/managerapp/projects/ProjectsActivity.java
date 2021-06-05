@@ -19,6 +19,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
@@ -64,6 +65,9 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     private ListProjectsRecyclerAdapter listProjectsAdapter;
     private BluetoothAdapter bluetoothAdapter;
 
+    private TextView myProjectsEmptyTextView;
+    private TextView listProjectsEmptyTextView;
+
     private static final String TAG = "ProjectsActivity";
     private DatabaseReference groupsReference;
     private DatabaseReference listIdReference;
@@ -92,6 +96,9 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         myProjectsRecyclerView = findViewById(R.id.my_projects_recycler_view);
         listProjectsRecyclerView = findViewById(R.id.list_projects_recycler_view);
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        myProjectsEmptyTextView = findViewById(R.id.my_projects_empty_text_view);
+        listProjectsEmptyTextView = findViewById(R.id.project_lists_empty_text_view);
 
         //controlla se il bluetooth è supportato dal device
         //se non supportato non fa vedere icona di condivisione
@@ -160,6 +167,8 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                     //Se la lista di progetti è vuota non viene visualizzata l'icona di condivisione
                     shareProjects.setVisibility(View.GONE);
                 }
+
+                setProjectsViewVisible(myProjectsExist);
             }
 
             @Override
@@ -193,6 +202,10 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                     }
                     listProjectsAdapter.submitList(idLists);
                     Log.d(TAG, "listId: "+ idLists.toString());
+
+                    setProjectListsViewVisible(true);
+                } else {
+                    setProjectListsViewVisible(false);
                 }
             }
 
@@ -468,6 +481,26 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
+    private void setProjectsViewVisible (boolean visible) {
+        if (visible) {
+            myProjectsRecyclerView.setVisibility(View.VISIBLE);
+            myProjectsEmptyTextView.setVisibility(View.GONE);
+        } else {
+            myProjectsRecyclerView.setVisibility(View.GONE);
+            myProjectsEmptyTextView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setProjectListsViewVisible (boolean visible) {
+        if (visible) {
+            listProjectsRecyclerView.setVisibility(View.VISIBLE);
+            listProjectsEmptyTextView.setVisibility(View.GONE);
+        } else {
+            listProjectsRecyclerView.setVisibility(View.GONE);
+            listProjectsEmptyTextView.setVisibility(View.VISIBLE);
+        }
     }
 
 }

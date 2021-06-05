@@ -205,6 +205,8 @@
     <string name="text_message_file_local_delete">Stai per cancellare il file sul tuo dispositivo.\nIl file nel cloud non sarà modificato al seguito di questa azione.</string>
     <string name="text_message_files_local_files_displayed">I file mostrati sono file scaricati.\nPotrebbero differire dai file nel cloud.</string>
     <string name="text_message_downloaded_file_not_supported">Il file selezionato non è supportato dal tuo dispositivo.</string>
+    <string name="text_message_projects_empty">Al momento non hai progetti. Prova ad unirti ad un gruppo o a crearne uno per un esame a tua scelta.</string>
+    <string name="text_message_project_lists_empty">Al momento non hai ricevuto liste di progetti</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
