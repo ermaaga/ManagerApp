@@ -60,30 +60,6 @@
         app:layout_constraintStart_toStartOf="@+id/password_input_layout"
         app:layout_constraintTop_toBottomOf="@+id/password_input_layout" />
 
-    <Button
-        android:id="@+id/buttonLoginGoogle"
-        style="@style/Primary"
-        android:layout_width="230dp"
-        android:layout_height="44dp"
-        android:layout_marginTop="1dp"
-        android:text="@string/text_lable_login_google"
-        app:layout_constraintBottom_toTopOf="@+id/progressBar"
-        app:layout_constraintEnd_toEndOf="@+id/buttonLoginEmailPassword"
-        app:layout_constraintStart_toStartOf="@+id/buttonLoginEmailPassword"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-    <Button
-        android:id="@+id/goButtonCreateAccount"
-        style="@style/Primary"
-        android:layout_width="72dp"
-        android:layout_height="39dp"
-        android:layout_marginTop="4dp"
-        android:text="@string/Text_label_here"
-        app:layout_constraintEnd_toEndOf="@+id/textView5"
-        app:layout_constraintHorizontal_bias="0.472"
-        app:layout_constraintStart_toStartOf="@+id/textView5"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
-
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="match_parent"
@@ -110,19 +86,9 @@
         app:srcCompat="@mipmap/ic_launcher_round" />
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/text_label_or"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/buttonLoginEmailPassword"
-        app:layout_constraintStart_toStartOf="@+id/buttonLoginEmailPassword"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLoginEmailPassword" />
-
-    <TextView
         android:id="@+id/textView5"
-        android:layout_width="252dp"
-        android:layout_height="30dp"
+        android:layout_width="188dp"
+        android:layout_height="22dp"
         android:layout_marginBottom="28dp"
         android:text="@string/text_label_question"
         app:layout_constraintBottom_toTopOf="@+id/progressBar"
@@ -130,5 +96,48 @@
         app:layout_constraintStart_toStartOf="@+id/imageView"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
         app:layout_constraintVertical_bias="0.253" />
+
+    <TextView
+        android:id="@+id/goTextViewCreateAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:shadowColor="#3F51B5"
+        android:text="@string/text_Labelsign_in"
+        android:textColor="@color/blue"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/textView5"
+        app:layout_constraintHorizontal_bias="0.482"
+        app:layout_constraintStart_toStartOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <TextView
+        android:id="@+id/TextViewloginGoogle"
+        android:layout_width="54dp"
+        android:layout_height="26dp"
+        android:layout_marginEnd="76dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:shadowColor="#3F51B5"
+        android:text="@string/text_lable_login_google"
+        android:textColor="@color/blue"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/textView6"
+        app:layout_constraintEnd_toEndOf="@+id/buttonLoginEmailPassword"
+        app:layout_constraintTop_toTopOf="@+id/textView6"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="76dp"
+        android:layout_height="27dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/text_label_login_with"
+        app:layout_constraintEnd_toEndOf="@+id/buttonLoginEmailPassword"
+        app:layout_constraintHorizontal_bias="0.341"
+        app:layout_constraintStart_toStartOf="@+id/buttonLoginEmailPassword"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLoginEmailPassword" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

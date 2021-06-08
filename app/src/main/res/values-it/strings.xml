@@ -93,10 +93,11 @@
     <string name="text_Labelsign_in">Registrati</string>
     <string name="text_label_insert_credential">Inserisci le tue credenziali.</string>
     <string name="text_label_login">Accedi</string>
-    <string name="text_lable_login_google">Accedi con Google</string>
+    <string name="text_label_login_with">Accedi con  </string>
+    <string name="text_lable_login_google">Google</string>
     <string name="Text_label_here">qui</string>
     <string name="text_label_or">oppure</string>
-    <string name="text_label_question">Non hai ancora un account? registrati</string>
+    <string name="text_label_question">Non hai ancora un account?  </string>
     <string name="text_lable_shake_tutorial">Condividi con uno shake</string>
 
     <string name="label_Dialog_Header">Informazione</string>

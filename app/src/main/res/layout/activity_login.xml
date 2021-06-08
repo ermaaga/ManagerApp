@@ -9,8 +9,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/email_input_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="275dp"
-        android:layout_height="77dp"
+        android:layout_width="274dp"
+        android:layout_height="89dp"
         android:layout_marginTop="20dp"
         android:hint="@string/text_hint_email_user"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
@@ -29,8 +29,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/password_input_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="275dp"
-        android:layout_height="77dp"
+        android:layout_width="274dp"
+        android:layout_height="95dp"
         android:layout_marginTop="20dp"
         android:hint="@string/text_hint_password_user"
         app:endIconMode="password_toggle"
@@ -52,7 +52,7 @@
         style="@style/Primary"
         android:layout_width="275dp"
         android:layout_height="50dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:text="@string/text_label_login"
         app:iconTint="@color/lightGrey"
         app:layout_constraintEnd_toEndOf="@+id/password_input_layout"
@@ -60,29 +60,6 @@
         app:layout_constraintStart_toStartOf="@+id/password_input_layout"
         app:layout_constraintTop_toBottomOf="@+id/password_input_layout"
         tools:ignore="MissingConstraints" />
-
-    <Button
-        android:id="@+id/buttonLoginGoogle"
-        style="@style/Primary"
-        android:layout_width="179dp"
-        android:layout_height="42dp"
-        android:layout_marginBottom="40dp"
-        android:text="@string/text_lable_login_google"
-        app:layout_constraintBottom_toTopOf="@+id/textView5"
-        app:layout_constraintEnd_toEndOf="@+id/buttonLoginEmailPassword"
-        app:layout_constraintHorizontal_bias="0.489"
-        app:layout_constraintStart_toStartOf="@+id/buttonLoginEmailPassword" />
-
-    <Button
-        android:id="@+id/goButtonCreateAccount"
-        style="@style/Primary"
-        android:layout_width="72dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
-        android:text="@string/Text_label_here"
-        app:layout_constraintStart_toEndOf="@+id/textView5"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLoginGoogle" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -106,29 +83,63 @@
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.068"
+        app:layout_constraintVertical_bias="0.166"
         app:srcCompat="@mipmap/ic_launcher_round" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="@string/text_label_or"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonLoginGoogle"
-        app:layout_constraintEnd_toEndOf="@+id/buttonLoginEmailPassword"
-        app:layout_constraintHorizontal_bias="0.493"
-        app:layout_constraintStart_toStartOf="@+id/buttonLoginEmailPassword"
-        app:layout_constraintTop_toBottomOf="@+id/buttonLoginEmailPassword" />
 
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:layout_marginBottom="12dp"
         android:text="@string/text_label_question"
         app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintStart_toStartOf="@+id/buttonLoginEmailPassword" />
+
+    <TextView
+        android:id="@+id/goTextViewCreateAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:shadowColor="#3F51B5"
+        android:text="@string/text_Labelsign_in"
+        android:textColor="@color/blue"
+        android:textStyle="bold"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/textView5"
+        app:layout_constraintEnd_toEndOf="@+id/buttonLoginEmailPassword"
+        app:layout_constraintHorizontal_bias="0.081"
+        app:layout_constraintStart_toEndOf="@+id/textView5"
+        app:layout_constraintTop_toTopOf="@+id/textView5"
+        app:layout_constraintVertical_bias="0.0"
+        android:focusable="true" />
+
+    <TextView
+        android:id="@+id/TextViewloginGoogle"
+        android:layout_width="wrap_content"
+        android:layout_height="19dp"
+        android:layout_marginEnd="80dp"
+        android:shadowColor="#3F51B5"
+        android:text="@string/text_lable_login_google"
+        android:textColor="@color/blue"
+        android:textStyle="bold"
+        android:clickable="true"
+        app:layout_constraintBottom_toBottomOf="@+id/textView6"
+        app:layout_constraintEnd_toEndOf="@+id/buttonLoginEmailPassword"
+        app:layout_constraintTop_toTopOf="@+id/textView6"
+        app:layout_constraintVertical_bias="0.0"
+        android:focusable="true" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/text_label_login_with"
+        app:layout_constraintBottom_toTopOf="@+id/textView5"
+        app:layout_constraintHorizontal_bias="0.902"
+        app:layout_constraintStart_toStartOf="@+id/buttonLoginEmailPassword"
+        app:layout_constraintTop_toBottomOf="@+id/buttonLoginEmailPassword"
+        app:layout_constraintVertical_bias="0.028" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

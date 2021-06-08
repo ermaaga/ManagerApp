@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -53,9 +54,10 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
     private FirebaseDatabase database;
     private DatabaseReference usersReference;
 
-    private Button goCreateAccountButton;
+    private TextView loginGoogleTextView;
+    private TextView goCreateAccountTextView;
+
     private Button loginEmailPassButton;
-    private Button loginGoogleButton;
     private TextInputEditText emailEditText;
     private TextInputEditText passwordEditText;
 
@@ -69,9 +71,9 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        goCreateAccountButton = (Button) findViewById(R.id.goButtonCreateAccount);
+        goCreateAccountTextView = (TextView) findViewById(R.id.goTextViewCreateAccount);
         loginEmailPassButton = (Button) findViewById(R.id.buttonLoginEmailPassword);
-        loginGoogleButton = (Button) findViewById(R.id.buttonLoginGoogle);
+        loginGoogleTextView = (TextView) findViewById(R.id.TextViewloginGoogle);
 
         emailEditText = (TextInputEditText) findViewById(R.id.email_edit_text);
         passwordEditText = (TextInputEditText) findViewById(R.id.password_edit_text);
@@ -83,9 +85,9 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
 
         mAuth = FirebaseAuth.getInstance();
 
-        goCreateAccountButton.setOnClickListener(this);
+        goCreateAccountTextView.setOnClickListener(this);
         loginEmailPassButton.setOnClickListener(this);
-        loginGoogleButton.setOnClickListener(this);
+        loginGoogleTextView.setOnClickListener(this);
 
 
         gso = LoginHelper.getOptions(this);
@@ -232,9 +234,9 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
         int id = v.getId();
         if (id == R.id.buttonLoginEmailPassword) {
             loginEmailPassword(emailEditText.getText().toString(), passwordEditText.getText().toString());
-        } else if (id == R.id.buttonLoginGoogle) {
+        } else if (id == R.id.TextViewloginGoogle) {
             loginGoogle();
-        } else if (id == R.id.goButtonCreateAccount) {
+        } else if (id == R.id.goTextViewCreateAccount) {
             goCreateAccount();
         } else {
             throw new IllegalStateException("Unexpected value: " + v.getId());
