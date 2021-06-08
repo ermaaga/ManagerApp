@@ -24,9 +24,10 @@
         android:layout_height="76dp"
         android:layout_marginTop="88dp"
         android:hint="@string/text_hint_name_studycase"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="36dp">
+        tools:ignore="MissingConstraints">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/name_edit_text"
@@ -43,9 +44,10 @@
         android:layout_height="148dp"
         android:layout_marginTop="28dp"
         android:hint="@string/text_hint_desc_study_case"
+        app:layout_constraintEnd_toEndOf="@+id/name_input_layout"
+        app:layout_constraintStart_toStartOf="@+id/name_input_layout"
         app:layout_constraintTop_toBottomOf="@+id/name_input_layout"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="36dp">
+        tools:ignore="MissingConstraints">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/desc_edit_text"
@@ -61,11 +63,10 @@
         android:id="@+id/button_create_study_case"
         android:layout_width="251dp"
         android:layout_height="57dp"
-        android:layout_marginBottom="20dp"
         android:text="@string/text_button_create_study_case"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="@+id/file_card"
+        app:layout_constraintStart_toStartOf="@+id/file_card"
         app:layout_constraintTop_toBottomOf="@+id/file_card"
         app:layout_constraintVertical_bias="0.296" />
 
@@ -82,8 +83,8 @@
         android:layout_width="336dp"
         android:layout_height="173dp"
         android:layout_marginTop="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/desc_input_layout"
+        app:layout_constraintStart_toStartOf="@+id/desc_input_layout"
         app:layout_constraintTop_toBottomOf="@+id/desc_input_layout">
 
 
@@ -144,18 +145,19 @@
 
             <ImageButton
                 android:id="@+id/button_delete"
-                android:layout_width="48dp"
-                android:layout_height="50dp"
+                android:layout_width="44dp"
+                android:layout_height="42dp"
                 android:layout_marginStart="107dp"
                 android:layout_marginTop="4dp"
-                android:layout_marginBottom="139dp"
                 android:backgroundTint="@color/white"
                 android:tint="@color/purple_500"
                 android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/file_type_image_view"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.0"
                 app:srcCompat="@drawable/ic_baseline_cancel_24" />
 
             <TextView
@@ -165,8 +167,11 @@
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:visibility="invisible"
-                tools:layout_editor_absoluteX="148dp"
-                tools:layout_editor_absoluteY="147dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/file_name_text_view"
+                app:layout_constraintVertical_bias="1.0"
                 tools:text="16MB" />
 
 

@@ -160,7 +160,6 @@
                 android:layout_height="50dp"
                 android:layout_marginStart="107dp"
                 android:layout_marginTop="4dp"
-                android:layout_marginBottom="139dp"
                 android:backgroundTint="@color/white"
                 android:tint="@color/purple_500"
                 android:visibility="invisible"
@@ -179,8 +178,10 @@
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:visibility="invisible"
-                tools:layout_editor_absoluteX="148dp"
-                tools:layout_editor_absoluteY="147dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/upload_text_view"
                 tools:text="16MB" />
 
 
