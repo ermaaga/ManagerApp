@@ -1,12 +1,11 @@
 package it.uniba.di.sms2021.managerapp.firebase;
 
-import androidx.annotation.NonNull;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 
 public class FirebaseDbHelper {
     public static final String TABLE_USERS = "users";
@@ -84,5 +83,15 @@ public class FirebaseDbHelper {
      */
     public static DatabaseReference getPendingExamRequests (String uid) {
         return getDBInstance().getReference(TABLE_PENDING_REQUESTS).child(uid).child("exams");
+    }
+
+    public static StorageReference getStudyCaseFileReference(StudyCase studyCase,
+                                                             String fileName) {
+        return getStudyCasePathReference(studyCase).child(fileName);
+    }
+
+    public static StorageReference getStudyCasePathReference(StudyCase studyCase) {
+        return FirebaseStorage.getInstance().getReference().child("Exam" + studyCase.getEsame())
+                .child("StudyCase" + studyCase.getId());
     }
 }

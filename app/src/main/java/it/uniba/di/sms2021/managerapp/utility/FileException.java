@@ -14,6 +14,7 @@ import it.uniba.di.sms2021.managerapp.R;
 public class FileException extends Exception {
 
     public static final int NO_INTENT_FOUND = 1;
+    public static final int NO_STORAGE_ACCESS = 2;
 
     private final int errorCode;
 

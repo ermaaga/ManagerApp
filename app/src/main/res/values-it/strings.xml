@@ -58,7 +58,7 @@
     <string name="text_label_year">Anno</string>
     <string name="text_label_dialog_title_departments">Seleziona i dipartimenti</string>
     <string name="text_label_dialog_title_courses">Seleziona i corsi</string>
-    <string name="text_label_upload_file">Carica file</string>
+    <string name="text_label_upload_file">Carica file (Mass. 1MB)</string>
     <string name="text_label_permissions">Permessi</string>
     <string name="text_label_evaluate">Valuta progetto</string>
     <string name="text_label_update_evaluate">Aggiorna valutazione</string>
@@ -211,6 +211,8 @@
     <string name="text_message_downloaded_file_not_supported">Il file selezionato non è supportato dal tuo dispositivo.</string>
     <string name="text_message_projects_empty">Al momento non hai progetti. Prova ad unirti ad un gruppo o a crearne uno per un esame a tua scelta.</string>
     <string name="text_message_project_lists_empty">Al momento non hai ricevuto liste di progetti</string>
+    <string name="text_message_study_case_file_too_big">Il file selezionato è troppo grande.</string>
+    <string name="text_message_study_case_couldnt_find_file">Impossibile trovare il file per questo caso di studio. Assicurati di avere una connessione internet funzionante.</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 

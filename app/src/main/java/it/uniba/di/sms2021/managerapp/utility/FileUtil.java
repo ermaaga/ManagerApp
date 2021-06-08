@@ -1,7 +1,9 @@
 package it.uniba.di.sms2021.managerapp.utility;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
@@ -110,9 +112,14 @@ public class FileUtil {
      * @param uri l'uri del file in memoria da aprire
      * @param mimeType il tipo mime del file
      * @throws FileException ha errorCode "NO_INTENT_FOUND" se non è stato trovato alcun intent
-     *      capace di aprire la tipologia di file
+     *      capace di aprire la tipologia di file.<br>
+     *          ha errorCode "NO_STORAGE_ACCESS" se l'app non dispone dei permessi di storage
      */
     public static void openFileWithViewIntent(Context context, Uri uri, String mimeType) throws FileException {
+        if (requiresStorageAccess(context)) {
+            throw new FileException(FileException.NO_STORAGE_ACCESS);
+        }
+
         if (mimeType.equals(("application/vnd.android.package-archive"))) {
             openApkWithPackageManager(context, uri);
             return;
@@ -156,6 +163,15 @@ public class FileUtil {
             return chooser;
         } else {
             throw new FileException(FileException.NO_INTENT_FOUND);
+        }
+    }
+
+    public static boolean requiresStorageAccess (Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED;
+        } else {
+            return false;
         }
     }
 

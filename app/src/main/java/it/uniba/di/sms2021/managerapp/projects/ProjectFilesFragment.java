@@ -504,12 +504,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     }
 
     private boolean requiresStorageAccess() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                    != PackageManager.PERMISSION_GRANTED;
-        } else {
-            return false;
-        }
+        return FileUtil.requiresStorageAccess(getContext());
     }
 
     private ManagerCloudFile fileToBeDownloaded;
@@ -712,14 +707,6 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     }
 
     /**
-     * Apre la cartella in cui vengono scaricati i file di questo progetto.<br>
-     * Permette all'utente di scegliere il file manager da usare.
-     */
-    private void openDownloadFolder() {
-        Toast.makeText(getContext(), R.string.text_message_not_yet_implemented, Toast.LENGTH_LONG).show();
-    }
-
-    /**
      * Implementazione delle azioni effettuabili su ogni file della lista
      */
     private class ProjectFilesFileActionsListener implements FilesRecyclerAdapter.OnActionListener {
@@ -731,7 +718,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
             //Scarica il file temporaneo e lo visualizza usando un app esterna
             new TemporaryFileDownloader(getContext()) {
                 @Override
-                protected void showDownloadSuggestion(int messageRes) {
+                protected void showDownloadFailedMessage(int messageRes) {
                     //Mostra un messaggio qualora il file non sia scaricabile come file temporaneo
                     ProjectFilesFragment.this.showDownloadSuggestion(messageRes, file);
                 }
@@ -742,7 +729,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
 
                     previewFile(uri, file);
                 }
-            }.downloadTempFile(file, project);
+            }.downloadTempProjectFile(file, project);
         }
 
         /**
@@ -873,7 +860,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
             //mezzo di condivisione.
             new TemporaryFileDownloader(getContext()) {
                 @Override
-                protected void showDownloadSuggestion(int messageRes) {
+                protected void showDownloadFailedMessage(int messageRes) {
                     ProjectFilesFragment.this.showDownloadSuggestion(messageRes, file);
                 }
 
@@ -896,7 +883,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
                         startActivity(Intent.createChooser(intentShareFile, "Share File"));
                     }
                 }
-            }.downloadTempFile(file, project);
+            }.downloadTempProjectFile(file, project);
 
 
         }

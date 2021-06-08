@@ -1,13 +1,11 @@
 package it.uniba.di.sms2021.managerapp.exams;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,11 +20,9 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnPausedListener;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
-import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import it.uniba.di.sms2021.managerapp.R;
@@ -40,11 +36,10 @@ import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 public class NewStudyCaseActivity extends AbstractFormActivity implements View.OnClickListener {
     static final int REQUEST_IMAGE_GET = 1;
     private static final String TAG = "NewStudyCaseActivity";
+    private static final Long MAX_FILE_SIZE_IN_MB = 1L;
 
     private FirebaseDatabase database;
     private DatabaseReference studycasesReference;
-
-    StorageReference storageRef;
 
     Button buttoncreate;
     ImageButton buttonchoose;
@@ -106,8 +101,6 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
         Intent intent=getIntent();
         idExam = intent.getStringExtra(Exam.Keys.ID);
 
-        storageRef = FirebaseStorage.getInstance().getReference();
-
     }
     
    private boolean validate(String textname, String textdesc){
@@ -155,9 +148,9 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
                         .setContentType(FileUtil.getMimeTypeFromUri(NewStudyCaseActivity.this, fullFileUri))
                         .build();
 
-                // Upload file and metadata to the path 'images/mountains.jpg'
-                UploadTask uploadTask = storageRef.child("Exam" + idExam).child("StudyCase" + newElement.getKey())
-                        .child(FileUtil.getFileNameFromURI(NewStudyCaseActivity.this, fullFileUri))
+                UploadTask uploadTask = FirebaseDbHelper.getStudyCaseFileReference(
+                        studycase,
+                            FileUtil.getFileNameFromURI(this, fullFileUri))
                         .putFile(fullFileUri, metadata);
 
                 // Listen for state changes, errors, and completion of the upload.
@@ -216,11 +209,15 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK) {
-            Bitmap thumbnail = data.getParcelableExtra("data"); /*TODO farci qualcosa come mostrare una finestra di dialogo
-                                                                         che mostri il progresso dell'upload e che usi il thumbnail*/
             fullFileUri = data.getData();
 
             Long size =  FileUtil.getFileSizeFromURI(NewStudyCaseActivity.this, fullFileUri);
+
+            if (size > MAX_FILE_SIZE_IN_MB * 1024 * 1024) {
+                Toast.makeText(this, R.string.text_message_study_case_file_too_big,
+                        Toast.LENGTH_LONG).show();
+                return;
+            }
 
             nameTextView.setText(FileUtil.getFileNameFromURI(NewStudyCaseActivity.this, fullFileUri));
             sizeTextView.setText(FileUtil.getFormattedSize(NewStudyCaseActivity.this, size));
@@ -230,8 +227,8 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
             sizeTextView.setVisibility(View.VISIBLE);
             typeImageView.setVisibility(View.VISIBLE);
             buttondelete.setVisibility(View.VISIBLE);
-            buttonchoose.setVisibility(View.INVISIBLE);
-            uploadTextView.setVisibility(View.INVISIBLE);
+            buttonchoose.setVisibility(View.GONE);
+            uploadTextView.setVisibility(View.GONE);
         }
     }
 
