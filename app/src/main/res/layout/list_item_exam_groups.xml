@@ -54,7 +54,7 @@
                 tools:text="4/12" />
 
             <ImageView
-                android:id="@+id/exam_group_join_action"
+                android:id="@+id/exam_new_group_action"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
@@ -64,7 +64,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_group_join_32"
+                app:srcCompat="@drawable/ic_baseline_group_join_24"
                 app:tint="@color/black" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

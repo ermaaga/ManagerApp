@@ -61,11 +61,12 @@
 
                     <TextView
                         android:id="@+id/about_subtitle_value_study_case"
-                        style="@style/TextAppearance.AppCompat.Medium"
+                        style="@style/Secondary"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:textColor="@color/blue"
+                        app:layout_constraintBottom_toBottomOf="@+id/about_subtitle_label_study_case"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/about_subtitle_label_study_case"

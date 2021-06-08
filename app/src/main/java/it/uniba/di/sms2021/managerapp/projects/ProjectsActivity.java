@@ -406,20 +406,8 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
 
     private void actionShareList(){
         if (!bluetoothAdapter.isEnabled()){
-            new AlertDialog.Builder(this)
-                    .setMessage(R.string.label_Dialog_turn_on_bluetooth)
-                    .setPositiveButton(R.string.text_button_ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                            startActivityForResult(intent, REQUEST_ENABLE_BT);
-                        }
-                    }).setNeutralButton(R.string.text_button_no_thanks, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            }).show();
+             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+             startActivityForResult(intent, REQUEST_ENABLE_BT);
 
         } else {
             Log.d(TAG, "Bluetooth is already on ");

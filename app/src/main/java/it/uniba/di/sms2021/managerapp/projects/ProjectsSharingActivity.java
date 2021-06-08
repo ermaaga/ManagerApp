@@ -20,11 +20,9 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -131,7 +129,7 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.dialog_list_name, null);
         EditText editText = (EditText) dialogView.findViewById(R.id.editTextNameList);
-        CheckBox continueCheckbox = (CheckBox) dialogView.findViewById(R.id.checkBoxContinue);
+        CheckBox viewListCheckbox = (CheckBox) dialogView.findViewById(R.id.checkBoxViewList);
 
         new AlertDialog.Builder(this)
                 .setTitle(R.string.label_Dialog_title_name_list)
@@ -139,8 +137,8 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
                 .setPositiveButton(R.string.text_button_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Boolean wantsContinue = continueCheckbox.isChecked();
-                        saveListProjects(editText.getText().toString(), message, wantsContinue);
+                        Boolean wantsViewList = viewListCheckbox.isChecked();
+                        saveListProjects(editText.getText().toString(), message, wantsViewList);
                     }
                 }).setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
             @Override
@@ -150,7 +148,7 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
         }).show();
     }
 
-    private void saveListProjects(String nameList, String message, Boolean wantsContinue) {
+    private void saveListProjects(String nameList, String message, Boolean wantsViewList) {
         Log.d(TAG, "saveListProjects");
         String[] messageSplit = message.split(",");
 
@@ -170,7 +168,7 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
                public void onSuccess(Void aVoid) {
                    Toast.makeText(ProjectsSharingActivity.this, getString(R.string.text_message_list_saving_success, nameList), Toast.LENGTH_SHORT).show();
 
-                   if(!wantsContinue){
+                   if(wantsViewList){
                        bluetoothConnection.stop();
                        Intent intent = new Intent(getApplicationContext(), ProjectsActivity.class);
                        startActivity(intent);
@@ -489,9 +487,9 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
                 // funzionalità. Alla riposta positiva (l'utente accetta di dare i permessi)
                 // andremo a richiedere i permessi.
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle("Permission necessary");
-                builder.setMessage("Permission is required to send your project list.");
-                builder.setPositiveButton("Retry", new DialogInterface.OnClickListener(){
+                builder.setTitle(R.string.label_Dialog_title_gps_permission_necessary);
+                builder.setMessage(R.string.label_Dialog_message_gps_permission_necessary);
+                builder.setPositiveButton(R.string.text_button_retry, new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ActivityCompat.requestPermissions(ProjectsSharingActivity.this,
@@ -499,7 +497,7 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
                                 REQUEST_LOCATION_PERMISSIONS);
                     }
                 });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                builder.setNegativeButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
@@ -539,9 +537,9 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
                     // Non collegare a impostazioni di sistema nel tentativo di convincere l'utente
                     //a modificare la propria decisione.
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Permission denied");
-                    builder.setMessage("Without permission the app is unable to send your project list.");
-                    builder.setPositiveButton("Ok", null);
+                    builder.setTitle(R.string.label_Dialog_title_gps_permission_denied);
+                    builder.setMessage(R.string.label_Dialog_message_gps_permission_denied);
+                    builder.setPositiveButton(R.string.text_button_ok, null);
                     builder.show();
                     Log.d(TAG, "PERMISSION_DENIED");
                 }

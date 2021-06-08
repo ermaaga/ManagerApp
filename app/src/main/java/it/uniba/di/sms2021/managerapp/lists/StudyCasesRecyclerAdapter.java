@@ -50,13 +50,13 @@ public class StudyCasesRecyclerAdapter extends ListAdapter<StudyCase, RecyclerVi
         titleTextView.setText(studyCase.getNome());
         descriptionTextView.setText(studyCase.getDescrizione());
 
-        ImageView infoImageView = itemView.findViewById(R.id.file_type_image_view);
-        infoImageView.setOnClickListener(view -> listener.onInfo(studyCase));
+        ImageView newGroupImageView = itemView.findViewById(R.id.exam_new_group_action);
+        newGroupImageView.setOnClickListener(view -> listener.onNewGroup(studyCase));
     }
 
     public interface OnActionListener {
         void onClick (StudyCase studyCase);
-        void onInfo (StudyCase studyCase);
+        void onNewGroup (StudyCase studyCase);
     }
 
     static class DiffCallback extends DiffUtil.ItemCallback<StudyCase> {

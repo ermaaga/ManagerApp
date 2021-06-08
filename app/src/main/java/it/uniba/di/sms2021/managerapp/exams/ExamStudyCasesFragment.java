@@ -63,8 +63,8 @@ public class ExamStudyCasesFragment extends Fragment {
             }
 
             @Override
-            public void onInfo(StudyCase studyCase) {
-                showStudyCaseInfo(studyCase);
+            public void onNewGroup(StudyCase studyCase) {
+                createGroup(studyCase);
             }
         });
         studyCasesRecyclerView.setAdapter(adapter);
@@ -114,8 +114,11 @@ public class ExamStudyCasesFragment extends Fragment {
         startActivity(intent);
     }
 
-    //TODO implementare visualizzazione del pdf di info
-    private void showStudyCaseInfo(StudyCase studyCase) {
-        Toast.makeText(requireContext(), R.string.text_message_not_yet_implemented, Toast.LENGTH_SHORT).show();
+
+    public void createGroup(StudyCase studyCase){
+        Intent intent = new Intent(getContext(), NewGroupActivity.class);
+        intent.putExtra(StudyCase.Keys.ID, studyCase.getId());
+        intent.putExtra(Exam.Keys.EXAM, ((ExamDetailActivity)getActivity()).getSelectedExam().getId());
+        startActivity(intent);
     }
 }

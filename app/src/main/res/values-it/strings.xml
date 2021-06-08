@@ -108,12 +108,16 @@
     <string name="label_Dialog_title_departments">Seleziona Dipartimenti</string>
     <string name="label_Dialog_confimation_message_join_necessary">A causa di impostazioni sui permessi, questo gruppo può
          essere aperto solo dai propri membri. Vuoi far parte di questo gruppo studio?</string>
-    <string name="label_dialog_group_creation">Creazione gruppo</string>
+    <string name="label_Dialog_group_creation">Creazione gruppo</string>
     <string name="label_Dialog_title_name_list">Salva la lista ricevuta</string>
     <string name="label_Dialog_turn_on_bluetooth">Per condividere la lista è necessario accendere il bluetooth</string>
     <string name="label_Dialog_turn_on_gps">Per cercare i dispositivi Bluetooth disponibili è necessario accendere il GPS</string>
+    <string name="label_Dialog_title_gps_permission_necessary">Permesso necessario</string>
+    <string name="label_Dialog_message_gps_permission_necessary">Il permesso è necessario  per inviare la lista di progetti.</string>
+    <string name="label_Dialog_title_gps_permission_denied">Permesso negato</string>
+    <string name="label_Dialog_message_gps_permission_denied">Senza il permesso l\'app non è in grado di inviare la lista dei tuoi progetti.</string>
 
-    <string name="text_checkbox_dialog_continue_with_sharing">Continua con la condivisione</string>
+    <string name="text_checkbox_dialog_view_list">Visualizza la lista ricevuta</string>
 
     <string name="registration_success">Registrazione avvenuta con successo</string>
     <string name="send_verification_email_success">Email di verifica inviata a </string>
@@ -220,7 +224,7 @@
     <string name="text_button_download">Scarica</string>
     <string name="text_button_confirm">Conferma</string>
     <string name="text_button_cancel">Annulla</string>
-    <string name="text_buttom_create_study_case">Crea</string>
+    <string name="text_button_create_study_case">Crea</string>
     <string name="text_button_edit_profile">Modifica</string>
     <string name="text_button_save_profile">Salva</string>
     <string name="text_button_retry">Riprova</string>
@@ -238,7 +242,7 @@
     <string name="text_button_search_device">Ricerca</string>
     <string name="text_button_make_discoverable">Rendi rilevabile</string>
     <string name="text_button_receive_list">Ricevi</string>
-    <string name="text_button_no_thanks">No, thanks</string>
+    <string name="text_button_no_thanks">No, Grazie</string>
     <string name="text_button_open_project_download_folder">Apri Cartella</string>
     <string name="text_button_yes">Si</string>
     <string name="text_button_no">No</string>

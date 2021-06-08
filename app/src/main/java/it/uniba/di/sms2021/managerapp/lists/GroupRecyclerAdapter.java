@@ -62,7 +62,7 @@ public class GroupRecyclerAdapter extends ListAdapter<Group, RecyclerView.ViewHo
                     group.getMembri().size(), group.getPermissions().getMaxMembers()));
         }
 
-        ImageView joinActionImageView = itemView.findViewById(R.id.exam_group_join_action);
+        ImageView joinActionImageView = itemView.findViewById(R.id.exam_new_group_action);
         if (group.getMembri().contains(LoginHelper.getCurrentUser().getAccountId())) {
             joinActionImageView.setVisibility(View.GONE);
         } else {

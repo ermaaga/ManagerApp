@@ -35,10 +35,14 @@
     <string name="label_Dialog_failed">Error while adding to the group: </string>
     <string name="label_Dialog_title_departments">Select departments</string>
     <string name="label_Dialog_confimation_message_join_necessary">Due to permission settings, this group can only be opened by members. Do you want to be part of this study group?</string>
-    <string name="label_dialog_group_creation">Group creation</string>
+    <string name="label_Dialog_group_creation">Group creation</string>
     <string name="label_Dialog_title_name_list">Save the received list</string>
     <string name="label_Dialog_turn_on_bluetooth">To share the list you need to turn on the bluetooth</string>
     <string name="label_Dialog_turn_on_gps">To search for available Bluetooth devices, you need to turn on the GPS</string>
+    <string name="label_Dialog_title_gps_permission_necessary">Permission necessary</string>
+    <string name="label_Dialog_message_gps_permission_necessary">Permission is required to send your project list.</string>
+    <string name="label_Dialog_title_gps_permission_denied">Permission denied</string>
+    <string name="label_Dialog_message_gps_permission_denied">Without permission the app is unable to send your project list.</string>
 
     <string name="text_error_validation">The group name cannot have much than 20 characters</string>
     <string name="text_error_max_review_report">The review cannot have much than 800 characters</string>
@@ -99,7 +103,7 @@
     <string name="text_label_dialog_title_courses">Select courses</string>
     <string name="text_label_upload_file">Upload file</string>
 
-    <string name="text_checkbox_dialog_continue_with_sharing">Continue with sharing</string>
+    <string name="text_checkbox_dialog_view_list">View the list received</string>
 
     <string name="text_label_submit_review">Enter your review</string>
     <string name="text_label_submit_report">Enter your report</string>
@@ -229,7 +233,7 @@
     <string name="text_button_download">Download</string>
     <string name="text_button_confirm">Confirm</string>
     <string name="text_button_cancel">Cancel</string>
-    <string name="text_buttom_create_study_case">Create</string>
+    <string name="text_button_create_study_case">Create</string>
     <string name="text_button_edit_profile">Edit</string>
     <string name="text_button_save_profile">Save</string>
     <string name="text_button_retry">Retry</string>
