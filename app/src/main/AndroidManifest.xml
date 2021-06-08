@@ -27,49 +27,64 @@
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".login.UserRoleActivity" />
+        <activity android:name=".login.UserRoleActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".exams.NewGroupActivity"
-            android:label="@string/activity_label_new_group" />
+            android:label="@string/activity_label_new_group"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".exams.ExamDetailActivity"
-            android:label="Esame 1 (rendere dinamico)" />
+            android:label="Esame 1 (rendere dinamico)"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".NotificationsActivity"
-            android:label="@string/activity_label_notifications" />
+            android:label="@string/activity_label_notifications"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".projects.ProjectDetailActivity"
-            android:label="Gruppo 1 (rendere dinamico)" />
+            android:label="Gruppo 1 (rendere dinamico)"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".projects.ProjectEvaluationActivity"
-            android:label="@string/activity_label_evaluate_project"/>
+            android:label="@string/activity_label_evaluate_project"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".projects.ProjectNewReviewActivity"
-            android:label="@string/activity_label_project_new_review"/>
+            android:label="@string/activity_label_project_new_review"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".projects.ProjectNewReportActivity"
-            android:label="@string/activity_label_project_new_report"/>
+            android:label="@string/activity_label_project_new_report"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".projects.ProjectReviewsActivity"
-            android:label="@string/activity_label_project_reviews"/>
+            android:label="@string/activity_label_project_reviews"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".projects.ProjectReportsActivity"
-            android:label="@string/activity_label_project_reports"/>
+            android:label="@string/activity_label_project_reports"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".projects.OpinionRepliesActivity"
-            android:label="@string/activity_label_report_replies"/>
+            android:label="@string/activity_label_report_replies"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".projects.ProjectPermissionsActivity"
-            android:label="@string/activity_label_project_permissions" />
+            android:label="@string/activity_label_project_permissions"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".login.DepartmentActivity"
-            android:label="@string/activity_label_department" />
+            android:label="@string/activity_label_department"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".login.DegreeCoursesActivity"
-            android:label="@string/activity_label_degree_courses" />
+            android:label="@string/activity_label_degree_courses"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".login.LoginActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -78,34 +93,44 @@
         </activity>
         <activity
             android:name=".login.SignInActivity"
-            android:label="@string/activity_label_sign_in" />
+            android:label="@string/activity_label_sign_in"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".projects.ProjectsActivity"
-            android:label="@string/activity_label_projects" />
+            android:label="@string/activity_label_projects"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".projects.ProjectsSharingActivity"
-            android:label="@string/activity_label_projects_sharing" />
+            android:label="@string/activity_label_projects_sharing"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".projects.ProjectsListDetailActivity"
-            android:label="@string/activity_label_projects" />
+            android:label="@string/activity_label_projects"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".exams.ExamsActivity"
-            android:label="@string/activity_label_exams" />
+            android:label="@string/activity_label_exams"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".exams.NewStudyCaseActivity"
-            android:label="@string/activity_label_create_studycase" />
+            android:label="@string/activity_label_create_studycase"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".exams.NewExamActivity"
-            android:label="@string/activity_label_create_newExam" />
+            android:label="@string/activity_label_create_newExam"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".exams.StudyCaseDetailActivity"
-            android:label="@string/activity_label_detail_study_case" />
+            android:label="@string/activity_label_detail_study_case"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".exams.ExamsPartecipantsActivity"
-            android:label="@string/activity_label_exam_partecipants" />
+            android:label="@string/activity_label_exam_partecipants"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".ProfileActivity"
-            android:label="@string/activity_label_user_profile" />
+            android:label="@string/activity_label_user_profile"
+            android:windowSoftInputMode="adjustPan"/>
         <!--
  Provider che gestisce le richieste di acquisizione di Uri per file presenti nella
              cartella interna dell'app.
