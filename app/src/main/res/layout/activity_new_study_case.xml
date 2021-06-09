@@ -22,9 +22,10 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="338dp"
         android:layout_height="76dp"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="60dp"
         android:hint="@string/text_hint_name_studycase"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         tools:ignore="MissingConstraints">
@@ -66,9 +67,10 @@
         android:text="@string/text_button_create_study_case"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="@+id/file_card"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="@+id/file_card"
         app:layout_constraintTop_toBottomOf="@+id/file_card"
-        app:layout_constraintVertical_bias="0.296" />
+        app:layout_constraintVertical_bias="0.553" />
 
     <include
         android:id="@+id/bottom_navigation"

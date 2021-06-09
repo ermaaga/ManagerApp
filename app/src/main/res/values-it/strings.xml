@@ -99,6 +99,7 @@
     <string name="text_label_or">oppure</string>
     <string name="text_label_question">Non hai ancora un account?  </string>
     <string name="text_lable_shake_tutorial">Condividi con uno shake</string>
+    <string name="text_lable_click">Tocca il documento per visualizzare il dettaglio.</string>
 
     <string name="label_Dialog_Header">Informazione</string>
     <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>
