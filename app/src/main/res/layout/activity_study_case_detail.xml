@@ -7,6 +7,18 @@
     android:layout_height="match_parent">
 
 
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/text_label_exam_description"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/textView_desc_study_case"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView_desc_study_case"
+        app:layout_constraintTop_toBottomOf="@+id/textView_name_study_case" />
+
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar_main"
@@ -18,46 +30,49 @@
 
     <TextView
         android:id="@+id/textView_name_study_case"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="168dp"
-        android:layout_marginEnd="250dp"
+        android:layout_width="330dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/textview_border"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintHorizontal_bias="0.44"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <TextView
         android:id="@+id/textView_desc_study_case"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
-        android:layout_marginEnd="250dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView_name_study_case" />
+        android:layout_width="330dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/textview_border"
+        app:layout_constraintEnd_toEndOf="@+id/textView_name_study_case"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView_name_study_case"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <Button
         android:id="@+id/button_create_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="140dp"
+        android:layout_marginTop="28dp"
         android:onClick="createGroup"
         android:text="@string/text_button_go_create_group"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.527"
-        app:layout_constraintStart_toEndOf="@+id/file_type_image_view"
-        app:layout_constraintTop_toBottomOf="@+id/textView_desc_study_case" />
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="@+id/file_type_image_view"
+        app:layout_constraintHorizontal_bias="0.428"
+        app:layout_constraintStart_toStartOf="@+id/file_type_image_view"
+        app:layout_constraintTop_toBottomOf="@+id/file_type_image_view"
+        app:layout_constraintVertical_bias="0.424" />
 
     <ImageView
         android:id="@+id/file_type_image_view"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="136dp"
+        android:layout_width="137dp"
+        android:layout_height="82dp"
+        android:layout_marginTop="28dp"
         android:contentDescription="@string/description_case_study_info"
+        app:layout_constraintEnd_toEndOf="@+id/textView_desc_study_case"
         app:layout_constraintStart_toStartOf="@+id/textView_desc_study_case"
-        app:layout_constraintTop_toBottomOf="@+id/textView_desc_study_case"
+        app:layout_constraintTop_toBottomOf="@+id/textView2"
         app:srcCompat="@drawable/ic_pdf" />
 
     <include
@@ -68,5 +83,29 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/text_lable_click"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/textView_desc_study_case"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView_desc_study_case"
+        app:layout_constraintTop_toBottomOf="@+id/textView_desc_study_case" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="@string/text_label_exam_name"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/textView_name_study_case"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView_name_study_case"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

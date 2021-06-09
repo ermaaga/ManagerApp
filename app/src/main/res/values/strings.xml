@@ -119,6 +119,7 @@
     <string name="text_label_or">Or</string>
     <string name="text_label_question">Do you not have an account?  </string>
     <string name="text_lable_shake_tutorial">Share with a shake</string>
+    <string name="text_lable_click">Touch the file for more infos</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
