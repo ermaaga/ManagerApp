@@ -41,11 +41,6 @@ public class ProjectEvaluationActivity extends AbstractFormActivity {
         return R.layout.activity_project_evaluation;
     }
 
-    @Override
-    protected int getBottomNavigationMenuItemId() {
-        return R.id.nav_exams;
-    }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

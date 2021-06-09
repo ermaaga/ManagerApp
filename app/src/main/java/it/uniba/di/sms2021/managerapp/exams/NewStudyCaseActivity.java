@@ -66,10 +66,6 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
         return R.layout.activity_new_study_case;
     }
 
-    @Override
-    protected int getBottomNavigationMenuItemId() {
-        return R.id.nav_exams;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -60,11 +60,6 @@ public class NewExamActivity extends AbstractFormActivity {
     }
 
     @Override
-    protected int getBottomNavigationMenuItemId() {
-        return R.id.nav_exams;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //initialize global variables

@@ -52,11 +52,6 @@ public class SignInActivity extends AbstractFormActivity {
     }
 
     @Override
-    protected int getBottomNavigationMenuItemId() {
-        return R.id.nav_exams;
-    }
-
-    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         findViewById(R.id.bottom_navigation).setVisibility(View.GONE);

@@ -45,11 +45,6 @@ public class ProjectNewReportActivity extends AbstractFormActivity implements Vi
     }
 
     @Override
-    protected int getBottomNavigationMenuItemId() {
-        return R.id.nav_projects;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 

@@ -20,10 +20,19 @@ import it.uniba.di.sms2021.managerapp.R;
  * Richiede che il layout includa la toolbar e la bottom navigation bar, attraverso il tag
  * include e utilizzando i layout già presenti.
  */
-public abstract class AbstractFormActivity extends AbstractBottomNavigationActivity {
+public abstract class AbstractFormActivity extends AbstractBaseActivity {
+
+    /**
+     * Ritorna l'id del layout da associare all'activity
+     */
+    protected abstract int getLayoutId();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(getLayoutId());
+
+        MenuUtil.setIncludedToolbar(this);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);

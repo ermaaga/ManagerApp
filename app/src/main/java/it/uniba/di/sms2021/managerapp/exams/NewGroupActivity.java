@@ -58,8 +58,6 @@ public class NewGroupActivity extends AbstractFormActivity {
 
     @Override
     protected int getLayoutId() { return R.layout.activity_new_group; }
-    @Override
-    protected int getBottomNavigationMenuItemId() { return R.id.nav_exams; }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
