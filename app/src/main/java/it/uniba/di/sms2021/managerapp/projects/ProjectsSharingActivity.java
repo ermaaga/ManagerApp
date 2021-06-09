@@ -158,7 +158,7 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
             listId.add(id);
         }
 
-        DatabaseReference listReference = FirebaseDbHelper.getListsProjectsReference(LoginHelper.getCurrentUser().getAccountId());
+        DatabaseReference listReference = FirebaseDbHelper.getReceivedProjectListsReference(LoginHelper.getCurrentUser().getAccountId());
         DatabaseReference newElement=listReference.push();
 
         ListProjects list = new ListProjects( newElement.getKey(), nameList, listId );

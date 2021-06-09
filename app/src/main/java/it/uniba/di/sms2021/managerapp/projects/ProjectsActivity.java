@@ -189,7 +189,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                 DividerItemDecoration.VERTICAL));
         listProjectsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        listIdReference = FirebaseDbHelper.getListsProjectsReference(LoginHelper.getCurrentUser().getAccountId());
+        listIdReference = FirebaseDbHelper.getReceivedProjectListsReference(LoginHelper.getCurrentUser().getAccountId());
 
         listIdProjectsListener = new ValueEventListener() {
             @Override
