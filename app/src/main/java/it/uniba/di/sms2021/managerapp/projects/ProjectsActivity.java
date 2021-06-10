@@ -295,10 +295,10 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     private void addDataListenerToMyProjects() {
         //Ottengo i dati con cui riempire la lista.
         groupsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS);
-        projects = new ArrayList<>();
         projectListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                projects = new ArrayList<>();
                 for (DataSnapshot child : snapshot.getChildren()) {
                     Group group = child.getValue(Group.class);
                     String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
