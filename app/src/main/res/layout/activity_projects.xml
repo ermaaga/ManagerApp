@@ -468,7 +468,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/header_tried_card_view">
+                app:layout_constraintTop_toBottomOf="@+id/header_evaluated_card_view">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/evaluated_recycler_view"
@@ -505,7 +505,7 @@
                 app:cardElevation="1dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tried_projects_layout">
+                app:layout_constraintTop_toBottomOf="@+id/evaluated_projects_layout">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"

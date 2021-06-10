@@ -253,5 +253,8 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
 
     private void initialize() {
         btn_CreateNewExam = findViewById(R.id.exam_add_floating_action_button);
+        if (LoginHelper.getCurrentUser().getRuolo() != User.ROLE_PROFESSOR) {
+            btn_CreateNewExam.setVisibility(View.GONE);
+        }
     }
 }

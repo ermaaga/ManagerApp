@@ -38,13 +38,13 @@ public class FirebaseDbHelper {
     public static final String TABLE_REPLIES_REPORT = "replies_report";
     public static final String TABLE_NEW_REPORT = "new_report";
     public static final String TABLE_NEW_REPLY_REPORT = "new_reply_report";
+    public static final String TABLE_PENDING_REQUESTS = "pending_requests";
 
     private static final String TABLE_LISTS_PROJECTS= "lists_projects";
-    private static final String TABLE_PENDING_REQUESTS = "pending_requests";
-    private static final String TABLE_RECEIVED_PROJECT_LISTS = "received_project_lists";
-    private static final String TABLE_FAVOURITE_PROJECTS = "favourite_projects";
-    private static final String TABLE_TRIED_PROJECTS = "tried_projects";
-    private static final String TABLE_EVALUATED_PROJECTS = "evaluated_projects";
+    public static final String TABLE_RECEIVED_PROJECT_LISTS = "received_project_lists";
+    public static final String TABLE_FAVOURITE_PROJECTS = "favourite_projects";
+    public static final String TABLE_TRIED_PROJECTS = "tried_projects";
+    public static final String TABLE_EVALUATED_PROJECTS = "evaluated_projects";
 
     private static FirebaseDatabase INSTANCE;
     public static FirebaseDatabase getDBInstance() {
