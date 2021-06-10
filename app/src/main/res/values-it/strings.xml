@@ -100,6 +100,9 @@
     <string name="text_label_question">Non hai ancora un account?  </string>
     <string name="text_lable_shake_tutorial">Condividi con uno shake</string>
     <string name="text_lable_click">Tocca il documento per visualizzare il dettaglio.</string>
+    <string name="text_label_favourite_projects_title">Progetti Preferiti</string>
+    <string name="text_label_tried_projects_title">Progetti Provati</string>
+    <string name="text_label_evaluated_projects_title">Progetti Valutati</string>
 
     <string name="label_Dialog_Header">Informazione</string>
     <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>
@@ -144,6 +147,11 @@
     <string name="description_preview_action">Preview</string>
     <string name="description_share_list">Share List</string>
     <string name="description_bluetooth_device">Dispositivo Bluetooth</string>
+    <string name="description_minimize_my_projects">Minimizza Miei Progetti</string>
+    <string name="description_minimize_received_project_lists">Minimizza Liste dei Progetti Ricevuti</string>
+    <string name="description_minimize_tried_projects">Minimizza Progetti Provati</string>
+    <string name="description_minimize_favourite_projects">Minimizza Progetti Preferiti</string>
+    <string name="description_minimize_evaluated_projects">Minimizza Progetti Valutati</string>
 
     <string name="text_message_not_yet_implemented">Funzionalità non ancora implementata</string>
     <string name="text_message_study_case_created">Il caso di studio è stato creato</string>
@@ -215,6 +223,9 @@
     <string name="text_message_project_lists_empty">Al momento non hai ricevuto liste di progetti</string>
     <string name="text_message_study_case_file_too_big">Il file selezionato è troppo grande.</string>
     <string name="text_message_study_case_couldnt_find_file">Impossibile trovare il file per questo caso di studio. Assicurati di avere una connessione internet funzionante.</string>
+    <string name="text_message_tried_projects_empty">Non hai ancora provato nessun progetto</string>
+    <string name="text_message_favourite_projects_empty">Non hai impostato nessun progetto come preferito</string>
+    <string name="text_message_evaluated_projects_empty">Non hai ancora valutato nessun progetto</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 

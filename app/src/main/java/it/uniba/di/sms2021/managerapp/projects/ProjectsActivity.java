@@ -2,6 +2,7 @@ package it.uniba.di.sms2021.managerapp.projects;
 
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,6 +24,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -67,6 +70,10 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
 
     private TextView myProjectsEmptyTextView;
     private TextView listProjectsEmptyTextView;
+    private ImageView myProjectsMinimizeButton;
+    private boolean myProjectsExpanded = true;
+    private ImageView receivedProjectListsMinimizeButton;
+    private boolean receivedListsExpanded = true;
 
     private static final String TAG = "ProjectsActivity";
     private DatabaseReference groupsReference;
@@ -82,6 +89,8 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
 
     private List<Project> projects = new ArrayList<>();
     private List<ListProjects> idLists;
+
+    private Context context = ProjectsActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +108,8 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
 
         myProjectsEmptyTextView = findViewById(R.id.my_projects_empty_text_view);
         listProjectsEmptyTextView = findViewById(R.id.project_lists_empty_text_view);
+        myProjectsMinimizeButton = findViewById(R.id.my_projects_minimize_button);
+        receivedProjectListsMinimizeButton = findViewById(R.id.projects_received_minimize_button);
 
         //controlla se il bluetooth è supportato dal device
         //se non supportato non fa vedere icona di condivisione
@@ -119,6 +130,63 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         firstStart = prefs.getBoolean("firstStart", true);
 
+        initialiseRecyclerViews();
+        initialiseListExpansionButtons();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        groupsReference.removeEventListener(projectListener);
+        listIdReference.removeEventListener(listIdProjectsListener);
+    }
+
+    protected void onResume() {
+        super.onResume();
+        ShakeUtil.registerShakeListener(this);
+    }
+
+    public void onPause() {
+        super.onPause();
+        ShakeUtil.unRegisterShakeListener(this);
+    }
+
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_projects;
+    }
+
+    @Override
+    protected int getBottomNavigationMenuItemId() {
+        return R.id.nav_projects;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_projects, menu);
+        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
+
+        //Impostazioni per la barra di ricerca.
+        SearchView searchView = (SearchView) searchMenuItem.getActionView();
+        ViewGroup searchFilters = findViewById(R.id.searchFilterScrollView);
+        SearchUtil.setUpSearchBar(this, searchView, searchFilters,
+                R.string.text_hint_search_project, onSearchListener);
+
+        return true;
+    }
+
+    private void initialiseRecyclerViews() {
+        initialiseMyProjectRecyclerView();
+        addDataListenerToMyProjects();
+
+        //initialiseFavouriteProjectsRecyclerView();
+        //initialiseTriedProjectsRecyclerView();
+        //initialiseEvaluatedProjectsRecyclerView();
+        initialiseReceivedProjectsRecyclerView();
+        addDataListenerToProjectLists();
+    }
+
+    private void initialiseMyProjectRecyclerView() {
         //Creo l'adapter che crea gli elementi con i relativi dati.
         myProjectsAdapter = new ProjectsRecyclerAdapter(new ProjectsRecyclerAdapter.OnActionListener() {
             @Override
@@ -130,7 +198,9 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         myProjectsRecyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
         myProjectsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
 
+    private void addDataListenerToMyProjects() {
         //Ottengo i dati con cui riempire la lista.
         groupsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS);
         projectListener = new ValueEventListener() {
@@ -168,7 +238,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                     shareProjects.setVisibility(View.GONE);
                 }
 
-                setProjectsViewVisible(myProjectsExist);
+                setProjectsViewHasData(myProjectsExist);
             }
 
             @Override
@@ -177,7 +247,9 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
             }
         };
         groupsReference.addValueEventListener(projectListener);
+    }
 
+    private void initialiseReceivedProjectsRecyclerView() {
         listProjectsAdapter = new ListProjectsRecyclerAdapter(new ListProjectsRecyclerAdapter.OnActionListener() {
             @Override
             public void onItemClicked(ListProjects list) {
@@ -188,7 +260,9 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         listProjectsRecyclerView.addItemDecoration(new DividerItemDecoration(this,
                 DividerItemDecoration.VERTICAL));
         listProjectsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
 
+    private void addDataListenerToProjectLists() {
         listIdReference = FirebaseDbHelper.getReceivedProjectListsReference(LoginHelper.getCurrentUser().getAccountId());
 
         listIdProjectsListener = new ValueEventListener() {
@@ -203,9 +277,9 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                     listProjectsAdapter.submitList(idLists);
                     Log.d(TAG, "listId: "+ idLists.toString());
 
-                    setProjectListsViewVisible(true);
+                    setReceivedListsViewHasData(true);
                 } else {
-                    setProjectListsViewVisible(false);
+                    setReceivedListsViewHasData(false);
                 }
             }
 
@@ -217,21 +291,58 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         listIdReference.addValueEventListener(listIdProjectsListener);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        groupsReference.removeEventListener(projectListener);
-        listIdReference.removeEventListener(listIdProjectsListener);
+    private void initialiseListExpansionButtons() {
+        myProjectsMinimizeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (myProjectsExpanded) {
+                    myProjectsExpanded = false;
+                    myProjectsMinimizeButton.setImageDrawable(
+                            ContextCompat.getDrawable(context, R.drawable.ic_baseline_expand_24));
+                    setMyProjectsExpanded(false);
+                } else {
+                    myProjectsExpanded = true;
+                    myProjectsMinimizeButton.setImageDrawable(
+                            ContextCompat.getDrawable(context, R.drawable.ic_baseline_minimize_24));
+                    setMyProjectsExpanded(true);
+                }
+            }
+        });
+
+        receivedProjectListsMinimizeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (receivedListsExpanded) {
+                    receivedListsExpanded = false;
+                    receivedProjectListsMinimizeButton.setImageDrawable(
+                            ContextCompat.getDrawable(context, R.drawable.ic_baseline_expand_24));
+                    setReceivedProjectsExpanded(false);
+                } else {
+                    receivedListsExpanded = true;
+                    receivedProjectListsMinimizeButton.setImageDrawable(
+                            ContextCompat.getDrawable(context, R.drawable.ic_baseline_minimize_24));
+                    setReceivedProjectsExpanded(true);
+                }
+            }
+        });
     }
 
-    protected void onResume() {
-        super.onResume();
-        ShakeUtil.registerShakeListener(this);
+    private void setMyProjectsExpanded(boolean expanded) {
+        ConstraintLayout myProjectsLayout = findViewById(R.id.my_projects_layout);
+        if (expanded) {
+            myProjectsLayout.setVisibility(View.VISIBLE);
+        } else {
+            myProjectsLayout.setVisibility(View.GONE);
+        }
     }
 
-    public void onPause() {
-        super.onPause();
-        ShakeUtil.unRegisterShakeListener(this);
+    private void setReceivedProjectsExpanded(boolean expanded) {
+        ConstraintLayout receivedProjectsLayout = findViewById(R.id.received_project_lists_layout);
+        if (expanded) {
+            receivedProjectsLayout.setVisibility(View.VISIBLE);
+        } else {
+            receivedProjectsLayout.setVisibility(View.GONE);
+        }
     }
 
     //Utilizzato per mostrare il tutorial della condivisione tramite lo scuotimento
@@ -284,30 +395,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("firstStart", false);
         editor.apply();
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_projects;
-    }
-
-    @Override
-    protected int getBottomNavigationMenuItemId() {
-        return R.id.nav_projects;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_projects, menu);
-        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
-
-        //Impostazioni per la barra di ricerca.
-        SearchView searchView = (SearchView) searchMenuItem.getActionView();
-        ViewGroup searchFilters = findViewById(R.id.searchFilterScrollView);
-        SearchUtil.setUpSearchBar(this, searchView, searchFilters,
-                R.string.text_hint_search_project, onSearchListener);
-
-        return true;
     }
 
     private SearchUtil.OnSearchListener onSearchListener = new SearchUtil.OnSearchListener() {
@@ -404,6 +491,18 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         actionShareList();
     }
 
+    public void share_favourite_list(View view) {
+        //TODO implementare
+    }
+
+    public void share_tried_list(View view) {
+        //TODO implementare
+    }
+
+    public void share_evaluated_list(View view) {
+        //TODO implementare
+    }
+
     private void actionShareList(){
         if (!bluetoothAdapter.isEnabled()){
              Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -471,8 +570,8 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 
-    private void setProjectsViewVisible (boolean visible) {
-        if (visible) {
+    private void setProjectsViewHasData(boolean hasData) {
+        if (hasData) {
             myProjectsRecyclerView.setVisibility(View.VISIBLE);
             myProjectsEmptyTextView.setVisibility(View.GONE);
         } else {
@@ -481,8 +580,20 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         }
     }
 
-    private void setProjectListsViewVisible (boolean visible) {
-        if (visible) {
+    private void setFavouriteProjectsViewHasData (boolean hasData) {
+        //TODO implementare
+    }
+
+    private void setTriedProjectsViewHasData (boolean hasData) {
+        //TODO implementare
+    }
+
+    private void setEvaluatedProjectsViewHasData (boolean hasData) {
+        //TODO implementare
+    }
+
+    private void setReceivedListsViewHasData(boolean hasData) {
+        if (hasData) {
             listProjectsRecyclerView.setVisibility(View.VISIBLE);
             listProjectsEmptyTextView.setVisibility(View.GONE);
         } else {
@@ -490,5 +601,4 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
             listProjectsEmptyTextView.setVisibility(View.VISIBLE);
         }
     }
-
 }

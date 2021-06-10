@@ -43,7 +43,7 @@
     </HorizontalScrollView>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/header_card_view"
+        android:id="@+id/header_projects_card_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardElevation="1dp"
@@ -98,7 +98,7 @@
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/header_card_view"
+        app:layout_constraintTop_toBottomOf="@+id/header_projects_card_view"
         tools:listitem="@layout/list_item_project" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

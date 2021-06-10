@@ -120,6 +120,9 @@
     <string name="text_label_question">Do you not have an account?  </string>
     <string name="text_lable_shake_tutorial">Share with a shake</string>
     <string name="text_lable_click">Touch the file for more infos</string>
+    <string name="text_label_favourite_projects_title">Favourite Projects</string>
+    <string name="text_label_tried_projects_title">Tried Projects</string>
+    <string name="text_label_evaluated_projects_title">Evaluated Projects</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
@@ -151,6 +154,11 @@
     <string name="description_preview_action">Preview</string>
     <string name="description_share_list">Share List</string>
     <string name="description_bluetooth_device">Device Bluetooth</string>
+    <string name="description_minimize_my_projects">Minimize My Projects</string>
+    <string name="description_minimize_received_project_lists">Minimize Received Project Lists</string>
+    <string name="description_minimize_tried_projects">Minimize Tried Projects</string>
+    <string name="description_minimize_favourite_projects">Minimize Favourite Projects</string>
+    <string name="description_minimize_evaluated_projects">Minimize Evaluated Projects</string>
 
     <string name="text_message_not_yet_implemented">Feature not yet implemented</string>
     <string name="text_message_study_case_created">The study case was created</string>
@@ -224,6 +232,9 @@
     <string name="text_message_project_lists_empty">You haven\'t received any project lists yet.</string>
     <string name="text_message_study_case_file_too_big">The selected file is too big.</string>
     <string name="text_message_study_case_couldnt_find_file">Can\'t find the file for this studyCase. Make sure you have a working internet connection.</string>
+    <string name="text_message_tried_projects_empty">You haven\'t tried any projects yet</string>
+    <string name="text_message_favourite_projects_empty">You haven\'t set any project as favourite</string>
+    <string name="text_message_evaluated_projects_empty">You haven\'t evaluated any projects yet</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
