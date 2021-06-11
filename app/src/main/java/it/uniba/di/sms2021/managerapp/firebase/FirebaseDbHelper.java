@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -123,5 +124,10 @@ public class FirebaseDbHelper {
     public static StorageReference getStudyCasePathReference(StudyCase studyCase) {
         return FirebaseStorage.getInstance().getReference().child("Exam" + studyCase.getEsame())
                 .child("StudyCase" + studyCase.getId());
+    }
+
+    public static void addProjectToTriedProjects(Project project) {
+        DatabaseReference reference = getTriedProjectsReference(LoginHelper.getCurrentUser().getAccountId());
+        reference.child(project.getId()).setValue(true);
     }
 }

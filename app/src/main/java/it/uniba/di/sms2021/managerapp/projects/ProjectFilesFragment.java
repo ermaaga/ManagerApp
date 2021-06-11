@@ -54,6 +54,7 @@ import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.file.ManagerFile;
 import it.uniba.di.sms2021.managerapp.enitities.file.ManagerLocalFile;
 import it.uniba.di.sms2021.managerapp.firebase.FileDownloader;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.firebase.TemporaryFileDownloader;
 import it.uniba.di.sms2021.managerapp.enitities.file.ManagerCloudFile;
@@ -715,6 +716,10 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
          */
         @Override
         public void onClick(ManagerCloudFile file) {
+            if (project.getReleaseNumber(file.getName()) != 0) {
+                FirebaseDbHelper.addProjectToTriedProjects(project);
+            }
+
             //Scarica il file temporaneo e lo visualizza usando un app esterna
             new TemporaryFileDownloader(getContext()) {
                 @Override
@@ -890,6 +895,10 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
 
         @Override
         public void onDownload(ManagerCloudFile file) {
+            if (project.getReleaseNumber(file.getName()) != 0) {
+                FirebaseDbHelper.addProjectToTriedProjects(project);
+            }
+
             downloadWithWarning(file);
         }
     }

@@ -272,12 +272,12 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
                                 usersReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                       @Override
                                       public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                          for (DataSnapshot child : snapshot.getChildren()) {
-                                              if (child.getKey().equals(task.getResult().getUser().getUid())) {
-                                                  LoginHelper.setCurrentUser(child.getValue(User.class));
-                                                  break;
-                                              }
-                                          }
+                                          User user = snapshot
+                                                  .child(task.getResult().getUser().getUid())
+                                                  .getValue(User.class);
+                                          LoginHelper.setCurrentUser(user);
+                                          Intent intent = new Intent(LoginActivity.this, ExamsActivity.class);
+                                          startActivity(intent);
                                       }
 
                                       @Override
@@ -285,9 +285,6 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
 
                                       }
                                 });
-
-                                Intent intent = new Intent(LoginActivity.this, ExamsActivity.class);
-                                startActivity(intent);
                             }
                             else {
                                 Log.e(TAG, getString(R.string.login_failed));

@@ -105,6 +105,9 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     private List<Project> favouriteProjects;
     private List<Project> triedProjects;
     private List<Project> evaluatedProjects;
+    private List<String> favouriteProjectsIds;
+    private List<String> triedProjectsIds;
+    private List<String> evaluatedProjectsIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -349,9 +352,9 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 initialiseFavouriteProjects(snapshot.child(FirebaseDbHelper.TABLE_FAVOURITE_PROJECTS));
-                initialiseTriedProjects(snapshot.child(FirebaseDbHelper.TABLE_FAVOURITE_PROJECTS));
+                initialiseTriedProjects(snapshot.child(FirebaseDbHelper.TABLE_TRIED_PROJECTS));
                 if (isProfessor) {
-                    initialiseEvaluatedProjects(snapshot.child(FirebaseDbHelper.TABLE_FAVOURITE_PROJECTS));
+                    initialiseEvaluatedProjects(snapshot.child(FirebaseDbHelper.TABLE_EVALUATED_PROJECTS));
                 }
                 initialiseReceivedProjectLists(snapshot.child(FirebaseDbHelper.TABLE_RECEIVED_PROJECT_LISTS));
             }
@@ -365,72 +368,116 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     }
 
     private void initialiseFavouriteProjects(DataSnapshot snapshot) {
+        favouriteProjectsIds = new ArrayList<>();
         if (snapshot.getChildrenCount() == 0) {
             favouriteProjectsRecyclerViewManager.setShareable(false);
             favouriteProjectsRecyclerViewManager.setProjectsViewHasData(false);
             return;
         }
 
-        favouriteProjects = new ArrayList<>();
         for (DataSnapshot dataSnapshot: snapshot.getChildren()) {
-            new Project.Initialiser() {
-                @Override
-                public void onProjectInitialised(Project project) {
-                    favouriteProjects.add(project);
-                    favouriteProjectsAdapter.submitList(favouriteProjects);
-                    favouriteProjectsAdapter.notifyDataSetChanged();
-                }
-            }.initialiseProject(dataSnapshot.getValue(Group.class));
+            favouriteProjectsIds.add(dataSnapshot.getKey());
         }
 
         favouriteProjectsRecyclerViewManager.setShareable(true);
         favouriteProjectsRecyclerViewManager.setProjectsViewHasData(true);
+        addProjectsToRecyclerViews();
     }
 
     private void initialiseTriedProjects(DataSnapshot snapshot) {
+        triedProjectsIds = new ArrayList<>();
         if (snapshot.getChildrenCount() == 0) {
             triedProjectsRecyclerViewManager.setShareable(false);
             triedProjectsRecyclerViewManager.setProjectsViewHasData(false);
             return;
         }
 
-        triedProjects = new ArrayList<>();
         for (DataSnapshot dataSnapshot: snapshot.getChildren()) {
-            new Project.Initialiser() {
-                @Override
-                public void onProjectInitialised(Project project) {
-                    triedProjects.add(project);
-                    triedProjectsAdapter.submitList(triedProjects);
-                    triedProjectsAdapter.notifyDataSetChanged();
-                }
-            }.initialiseProject(dataSnapshot.getValue(Group.class));
+            triedProjectsIds.add(dataSnapshot.getKey());
         }
 
         triedProjectsRecyclerViewManager.setShareable(true);
         triedProjectsRecyclerViewManager.setProjectsViewHasData(true);
+        addProjectsToRecyclerViews();
     }
 
     private void initialiseEvaluatedProjects(DataSnapshot snapshot) {
+        evaluatedProjectsIds = new ArrayList<>();
         if (snapshot.getChildrenCount() == 0) {
             evaluatedProjectsRecyclerViewManager.setShareable(false);
             evaluatedProjectsRecyclerViewManager.setProjectsViewHasData(false);
             return;
         }
 
-        evaluatedProjects = new ArrayList<>();
         for (DataSnapshot dataSnapshot: snapshot.getChildren()) {
-            new Project.Initialiser() {
-                @Override
-                public void onProjectInitialised(Project project) {
-                    evaluatedProjects.add(project);
-                    evaluatedProjectsAdapter.submitList(evaluatedProjects);
-                    evaluatedProjectsAdapter.notifyDataSetChanged();
-                }
-            }.initialiseProject(dataSnapshot.getValue(Group.class));
+            evaluatedProjectsIds.add(dataSnapshot.getKey());
         }
 
         evaluatedProjectsRecyclerViewManager.setShareable(true);
         evaluatedProjectsRecyclerViewManager.setProjectsViewHasData(true);
+        addProjectsToRecyclerViews();
+    }
+
+    private void addProjectsToRecyclerViews() {
+        if (projectsInitializationEnded()) {
+            FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            favouriteProjects = new ArrayList<>();
+                            for (String key: favouriteProjectsIds) {
+                                Group group = snapshot.child(key).getValue(Group.class);
+                                new Project.Initialiser() {
+                                    @Override
+                                    public void onProjectInitialised(Project project) {
+                                        favouriteProjects.add(project);
+                                        favouriteProjectsAdapter.submitList(favouriteProjects);
+                                        favouriteProjectsAdapter.notifyDataSetChanged();
+                                    }
+                                }.initialiseProject(group);
+                            }
+
+                            triedProjects = new ArrayList<>();
+                            for (String key: triedProjectsIds) {
+                                Group group = snapshot.child(key).getValue(Group.class);
+                                new Project.Initialiser() {
+                                    @Override
+                                    public void onProjectInitialised(Project project) {
+                                        triedProjects.add(project);
+                                        triedProjectsAdapter.submitList(triedProjects);
+                                        triedProjectsAdapter.notifyDataSetChanged();
+                                    }
+                                }.initialiseProject(group);
+                            }
+
+                            if (isProfessor) {
+                                evaluatedProjects = new ArrayList<>();
+                                for (String key: evaluatedProjectsIds) {
+                                    Group group = snapshot.child(key).getValue(Group.class);
+                                    new Project.Initialiser() {
+                                        @Override
+                                        public void onProjectInitialised(Project project) {
+                                            evaluatedProjects.add(project);
+                                            evaluatedProjectsAdapter.submitList(evaluatedProjects);
+                                            evaluatedProjectsAdapter.notifyDataSetChanged();
+                                        }
+                                    }.initialiseProject(group);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+        }
+    }
+
+    private boolean projectsInitializationEnded() {
+        return favouriteProjectsIds != null &&
+                triedProjectsIds != null &&
+                (evaluatedProjectsIds != null || !isProfessor);
     }
 
     public void initialiseReceivedProjectLists(DataSnapshot snapshot) {
