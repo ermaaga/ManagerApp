@@ -7,20 +7,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.List;
+
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
+import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.Report;
 import it.uniba.di.sms2021.managerapp.enitities.Review;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
@@ -32,35 +39,37 @@ import it.uniba.di.sms2021.managerapp.firebase.Project;
 public class ProjectAboutFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "ProjectAboutFragment";
 
-    ImageButton addReviewButton;
-    ImageButton addReportButton;
+    private ImageView favouriteImageView;
 
-    TextView textVote;
-    TextView textComment;
-    TextView seeReviewButton;
-    TextView seeReportButton;
-    TextView avarageTextView;
-    TextView noneRevievsTextView;
-    TextView noneReportsTextView;
-    TextView lastReportTextView;
-    TextView studycaseTextView;
-    TextView noneEvaluationTextView;
-    TextView voteTextView;
-    TextView commentTextView;
+    private ImageButton addReviewButton;
+    private ImageButton addReportButton;
 
-    View reviewDivider;
-    View reportDivider;
+    private TextView textVote;
+    private TextView textComment;
+    private TextView seeReviewButton;
+    private TextView seeReportButton;
+    private TextView avarageTextView;
+    private TextView noneRevievsTextView;
+    private TextView noneReportsTextView;
+    private TextView lastReportTextView;
+    private TextView studycaseTextView;
+    private TextView noneEvaluationTextView;
+    private TextView voteTextView;
+    private TextView commentTextView;
 
-    RatingBar avarageRatingBar;
+    private View reviewDivider;
+    private View reportDivider;
 
-    Project project;
+    private RatingBar avarageRatingBar;
+
+    private Project project;
 
     private String idgroup;
 
-    float avarage;
-    String lastReview;
-    String commentReport;
-    float numOfReviews;
+    private float avarage;
+    private String lastReview;
+    private String commentReport;
+    private float numOfReviews;
     
     @Override
     public void onAttach(@NonNull Context context) {
@@ -85,6 +94,7 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
         textVote = (TextView) view.findViewById(R.id.about_subtitle_value_vote);
         textComment = (TextView) view.findViewById(R.id.about_subtitle_value_comment);
 
+        favouriteImageView = (ImageView) view.findViewById(R.id.favourite_action);
         addReviewButton = (ImageButton) view.findViewById(R.id.add_review_button);
         addReportButton = (ImageButton) view.findViewById(R.id.add_report_button);
         seeReviewButton = (TextView) view.findViewById(R.id.reviews_clickable_text_view);
@@ -103,6 +113,7 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
 
         avarageRatingBar = (RatingBar) view.findViewById(R.id.stars_average);
 
+        favouriteImageView.setOnClickListener(this);
         addReviewButton.setOnClickListener(this);
         addReportButton.setOnClickListener(this);
         seeReviewButton.setOnClickListener(this);
@@ -115,6 +126,12 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
         super.onStart();
 
         project = ((ProjectDetailActivity)getActivity()).getSelectedProject();
+
+        if(project.isPreferred()){
+            favouriteImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_star_24, getContext().getTheme()));
+        }else{
+            favouriteImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_star_border_24, getContext().getTheme()));
+        }
 
         if(!project.getGroup().getMembri().contains(LoginHelper.getCurrentUser().getAccountId())){
             addReviewButton.setVisibility(View.VISIBLE);
@@ -248,9 +265,10 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
             seeMoreReviews();
         }else if(v.getId()== R.id.reports_clickable_text_view) {
             saveMoreReports();
-        }
-        else if(v.getId()== R.id.about_subtitle_value_study_case) {
+        }else if(v.getId()== R.id.about_subtitle_value_study_case) {
             goToStudyCase();
+        }else if(v.getId()== R.id.favourite_action) {
+            addOrRemoveFavourite();
         }
     }
 
@@ -285,4 +303,59 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
         startActivity(intent);
     }
 
+    private void addOrRemoveFavourite() {
+
+        List<String> whoPrefers = project.getWhoPrefers();
+        DatabaseReference  favouriteReference =  FirebaseDbHelper.getFavouriteProjectsReference(LoginHelper.getCurrentUser().getAccountId());
+        Object value;
+
+        if(project.isPreferred()){
+            //se il progetto è nei preferiti lo rimuove dai preferiti
+            whoPrefers.remove(LoginHelper.getCurrentUser().getAccountId());
+            value = null;
+
+        }else{
+            //se non è nei preferiti allora lo aggiunge ai preferiti
+            whoPrefers.add(LoginHelper.getCurrentUser().getAccountId());
+            value = true;
+        }
+
+
+         favouriteReference.child(project.getGroup().getId()).setValue(value)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                            FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS)
+                            .child(project.getGroup().getId()).child(Group.Keys.WHO_PREFERS).setValue(whoPrefers)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    project.setWhoPrefers(whoPrefers);
+                                   if(project.isPreferred()){
+                                       favouriteImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_star_24, getContext().getTheme()));
+                                       Toast.makeText(getContext(), "Aggiunto ai preferiti", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                       favouriteImageView.setImageDrawable(getResources().getDrawable(R.drawable.ic_baseline_star_border_24, getContext().getTheme()));
+                                       Toast.makeText(getContext(), "Rimosso dai preferiti", Toast.LENGTH_SHORT).show();
+                                   }
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+
+                                }
+                            });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+
+                    }
+                });
+
+
+
+
+
+    }
 }

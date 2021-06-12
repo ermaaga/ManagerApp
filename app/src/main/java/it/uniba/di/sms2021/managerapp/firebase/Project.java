@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -265,6 +266,14 @@ public class Project implements Parcelable {
                 .child(Group.Keys.RELEASE_NAMES).setValue(releaseNames);
     }
 
+    public List<String> getWhoPrefers() {
+        return group.getWhoPrefers();
+    }
+
+    public void setWhoPrefers(List<String> whoPrefers) {
+        group.setWhoPrefers(whoPrefers);
+    }
+
     public boolean isEvaluated() {
         return getEvaluation() != null;
     }
@@ -293,6 +302,13 @@ public class Project implements Parcelable {
      */
     public boolean isCreator() {
         return getMembri().get(0).contains(LoginHelper.getCurrentUser().getAccountId());
+    }
+
+    /**
+     * Ritorna true se l'utente corrente preferisce il progetto
+     */
+    public boolean isPreferred () {
+       return getWhoPrefers().contains(LoginHelper.getCurrentUser().getAccountId());
     }
 
     /**

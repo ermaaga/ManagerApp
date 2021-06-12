@@ -652,7 +652,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     }
 
     public void chooseProject(Project project) {
-        Log.d(TAG, "vote click project: " + project.getGroup().getEvaluation());
+        Log.d(TAG, " chooseProject vote and prefers: " + project.getEvaluation()+ " " +project.getWhoPrefers());
         Intent intent = new Intent(this, ProjectDetailActivity.class);
         intent.putExtra(Project.KEY, project);
         startActivity(intent);

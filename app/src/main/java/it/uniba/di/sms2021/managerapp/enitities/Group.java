@@ -32,6 +32,9 @@ public class Group implements Parcelable {
     private Evaluation evaluation;
     private List<String> releaseNames;
 
+    //chi preferisce questo gruppo
+    private List<String> whoPrefers;
+
     public Group(String id, String name, String studyCase, String exam, List<String> membri) {
         this();
         this.id = id;
@@ -84,6 +87,14 @@ public class Group implements Parcelable {
 
     public void setMembri(List<String> membri) {
         this.membri = membri;
+    }
+
+    public List<String> getWhoPrefers() {
+        return whoPrefers;
+    }
+
+    public void setWhoPrefers(List<String> whoPrefers) {
+        this.whoPrefers = whoPrefers;
     }
 
     @Exclude
@@ -140,13 +151,14 @@ public class Group implements Parcelable {
                 Objects.equals(exam, group.exam) &&
                 Objects.equals(membri, group.membri) &&
                 Objects.equals(permissions, group.permissions) &&
-                Objects.equals(releaseNames, group.releaseNames)&&
-                Objects.equals(evaluation, group.evaluation);
+                Objects.equals(evaluation, group.evaluation) &&
+                Objects.equals(releaseNames, group.releaseNames) &&
+                Objects.equals(whoPrefers, group.whoPrefers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, studyCase, exam, membri, permissions, evaluation, releaseNames);
+        return Objects.hash(id, name, studyCase, exam, membri, permissions, evaluation, releaseNames, whoPrefers);
     }
 
     @Override
@@ -161,6 +173,7 @@ public class Group implements Parcelable {
                 ", studyCaseName='" + studyCaseName + '\'' +
                 ", evaluation=" + evaluation +
                 ", releaseNames=" + releaseNames +
+                ", whoPrefers=" + whoPrefers +
                 '}';
     }
 
@@ -179,6 +192,7 @@ public class Group implements Parcelable {
         dest.writeParcelable(permissions, 0);
         dest.writeParcelable(evaluation,0);
         dest.writeList(releaseNames);
+        dest.writeList(whoPrefers);
     }
 
     public static final Parcelable.Creator<Group> CREATOR
@@ -202,6 +216,10 @@ public class Group implements Parcelable {
             in.readList(releases, String.class.getClassLoader());
             group.setReleaseNames(releases);
 
+            List<String> whoPrefers = new ArrayList<>();
+            in.readList(whoPrefers, String.class.getClassLoader());
+            group.setWhoPrefers(whoPrefers);
+
             return group;
         }
 
@@ -217,5 +235,6 @@ public class Group implements Parcelable {
         String STUDYCASE = "studyCase";
         String MEMBERS = "membri";
         String RELEASE_NAMES = "releaseNames";
+        String WHO_PREFERS = "whoPrefers";
     }
 }
