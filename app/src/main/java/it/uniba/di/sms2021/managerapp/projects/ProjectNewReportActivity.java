@@ -47,6 +47,7 @@ public class ProjectNewReportActivity extends AbstractFormActivity implements Vi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
 
         reportEditText = (TextInputEditText) findViewById(R.id.report_edit_text);
         reportInputLayout = (TextInputLayout) findViewById(R.id.report_input_layout);

@@ -72,6 +72,7 @@ public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 

@@ -70,6 +70,7 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
 
         buttoncreate = (Button) findViewById(R.id.button_create_study_case);
         buttonchoose = (ImageButton) findViewById(R.id.button_select_file);

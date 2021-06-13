@@ -52,6 +52,7 @@ public class ProjectNewReviewActivity extends AbstractFormActivity implements Vi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
 
         reviewRatingBar = (RatingBar) findViewById(R.id.ratingBar_new_review);
         reviewEditText = (TextInputEditText) findViewById(R.id.review_edit_text);

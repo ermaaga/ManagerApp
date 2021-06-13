@@ -62,6 +62,7 @@ public class NewExamActivity extends AbstractFormActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
         //initialize global variables
         initialize();
 

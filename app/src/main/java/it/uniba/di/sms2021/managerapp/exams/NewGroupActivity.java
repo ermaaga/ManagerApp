@@ -62,6 +62,7 @@ public class NewGroupActivity extends AbstractFormActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        findViewById(R.id.bottom_navigation).setVisibility(View.GONE);
 
         name = findViewById(R.id.name_edit_text);
         nameInputLayout = findViewById(R.id.name_input_layout);
