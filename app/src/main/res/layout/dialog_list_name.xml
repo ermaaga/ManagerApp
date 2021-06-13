@@ -25,19 +25,20 @@
         android:inputType="text"
         android:text="@string/text_default_name_list_received"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.126"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/textView"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <CheckBox
         android:id="@+id/checkBoxViewList"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/text_checkbox_dialog_view_list"
+        android:layout_marginTop="4dp"
         android:checked="true"
+        android:text="@string/text_checkbox_dialog_view_list"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.102"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/editTextNameList"
         app:layout_constraintTop_toBottomOf="@+id/editTextNameList" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -247,6 +247,7 @@
                         android:id="@+id/add_review_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
                         android:backgroundTint="@color/white"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@+id/reviews_title_text_view"

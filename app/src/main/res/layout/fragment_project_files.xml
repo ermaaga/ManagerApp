@@ -17,7 +17,6 @@
         android:contentDescription="@string/description_add_file"
         android:focusable="true"
         android:src="@drawable/ic_baseline_add_24"
-        app:backgroundTint="#5472d3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:layout_conversion_absoluteHeight="56dp"
