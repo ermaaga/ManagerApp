@@ -14,6 +14,7 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
 
 import java.util.HashMap;
+import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
@@ -35,6 +36,7 @@ public class ProjectEvaluationActivity extends AbstractFormActivity {
 
     private Project project;
     private DatabaseReference groupsReference;
+    private  DatabaseReference evaluatedProjectsReference;
 
     @Override
     protected int getLayoutId() {
@@ -55,6 +57,7 @@ public class ProjectEvaluationActivity extends AbstractFormActivity {
         project = getIntent().getParcelableExtra(Project.KEY);
 
        groupsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS);
+       evaluatedProjectsReference =  FirebaseDbHelper.getEvaluatedProjectsReference(LoginHelper.getCurrentUser().getAccountId());
 
     }
 
@@ -68,6 +71,7 @@ public class ProjectEvaluationActivity extends AbstractFormActivity {
     }
 
     public void evaluateProject(View v){
+
         if(validate(voteEditText.getText().toString(), commentEditText.getText().toString())){
             float votefloat = Float.parseFloat(voteEditText.getText().toString());
 
@@ -81,7 +85,27 @@ public class ProjectEvaluationActivity extends AbstractFormActivity {
             groupsReference.child(idgroup).updateChildren(childUpdates).addOnSuccessListener(new OnSuccessListener() {
                 @Override
                 public void onSuccess(Object o) {
-                    Toast.makeText(getApplicationContext(), R.string.text_message_project_evaluated, Toast.LENGTH_SHORT).show();
+                    evaluatedProjectsReference.child(project.getGroup().getId()).setValue(true)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(getApplicationContext(), R.string.text_message_project_evaluated, Toast.LENGTH_SHORT).show();
+                                    sendEvaluation();
+
+                                    project.setEvaluation(evaluation);
+
+                                    Intent resultIntent = new Intent();
+                                    resultIntent.putExtra(Project.KEY, project);
+                                    setResult(RESULT_OK, resultIntent);
+                                    finish();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+
+                        }
+                    });
+
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -91,16 +115,9 @@ public class ProjectEvaluationActivity extends AbstractFormActivity {
                 }
             });
 
-            sendEvaluation();
-
-            project.setEvaluation(evaluation);
-
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra(Project.KEY, project);
-            setResult(RESULT_OK, resultIntent);
-            finish();
-
         }
+
+
     }
 
     private boolean validate(String textRate, String textComment){
