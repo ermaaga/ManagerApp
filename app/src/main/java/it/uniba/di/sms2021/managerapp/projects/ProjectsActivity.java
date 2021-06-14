@@ -379,7 +379,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
             favouriteProjectsIds.add(dataSnapshot.getKey());
         }
 
-        favouriteProjectsRecyclerViewManager.setShareable(true);
         favouriteProjectsRecyclerViewManager.setProjectsViewHasData(true);
         addProjectsToRecyclerViews();
     }
@@ -396,7 +395,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
             triedProjectsIds.add(dataSnapshot.getKey());
         }
 
-        triedProjectsRecyclerViewManager.setShareable(true);
         triedProjectsRecyclerViewManager.setProjectsViewHasData(true);
         addProjectsToRecyclerViews();
     }
@@ -413,7 +411,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
             evaluatedProjectsIds.add(dataSnapshot.getKey());
         }
 
-        evaluatedProjectsRecyclerViewManager.setShareable(true);
         evaluatedProjectsRecyclerViewManager.setProjectsViewHasData(true);
         addProjectsToRecyclerViews();
     }
