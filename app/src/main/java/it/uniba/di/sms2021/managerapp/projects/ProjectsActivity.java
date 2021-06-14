@@ -312,9 +312,11 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                         new Project.Initialiser() {
                             @Override
                             public void onProjectInitialised(Project project) {
-                                projects.add(project);
-                                myProjectsAdapter.submitList(projects);
-                                myProjectsAdapter.notifyDataSetChanged();
+                                if (!projects.contains(project)) {
+                                    projects.add(project);
+                                    myProjectsAdapter.submitList(projects);
+                                    myProjectsAdapter.notifyDataSetChanged();
+                                }
                             }
                         }.initialiseProject(group);
                     }
@@ -427,9 +429,11 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                                 new Project.Initialiser() {
                                     @Override
                                     public void onProjectInitialised(Project project) {
-                                        favouriteProjects.add(project);
-                                        favouriteProjectsAdapter.submitList(favouriteProjects);
-                                        favouriteProjectsAdapter.notifyDataSetChanged();
+                                        if (!favouriteProjects.contains(project)) {
+                                            favouriteProjects.add(project);
+                                            favouriteProjectsAdapter.submitList(favouriteProjects);
+                                            favouriteProjectsAdapter.notifyDataSetChanged();
+                                        }
                                     }
                                 }.initialiseProject(group);
                             }
@@ -440,9 +444,11 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                                 new Project.Initialiser() {
                                     @Override
                                     public void onProjectInitialised(Project project) {
-                                        triedProjects.add(project);
-                                        triedProjectsAdapter.submitList(triedProjects);
-                                        triedProjectsAdapter.notifyDataSetChanged();
+                                        if (!triedProjects.contains(project)) {
+                                            triedProjects.add(project);
+                                            triedProjectsAdapter.submitList(triedProjects);
+                                            triedProjectsAdapter.notifyDataSetChanged();
+                                        }
                                     }
                                 }.initialiseProject(group);
                             }
@@ -454,9 +460,11 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                                     new Project.Initialiser() {
                                         @Override
                                         public void onProjectInitialised(Project project) {
-                                            evaluatedProjects.add(project);
-                                            evaluatedProjectsAdapter.submitList(evaluatedProjects);
-                                            evaluatedProjectsAdapter.notifyDataSetChanged();
+                                            if (!evaluatedProjects.contains(project)) {
+                                                evaluatedProjects.add(project);
+                                                evaluatedProjectsAdapter.submitList(evaluatedProjects);
+                                                evaluatedProjectsAdapter.notifyDataSetChanged();
+                                            }
                                         }
                                     }.initialiseProject(group);
                                 }
