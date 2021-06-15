@@ -374,6 +374,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         if (snapshot.getChildrenCount() == 0) {
             favouriteProjectsRecyclerViewManager.setShareable(false);
             favouriteProjectsRecyclerViewManager.setProjectsViewHasData(false);
+            addProjectsToRecyclerViews();
             return;
         }
 
