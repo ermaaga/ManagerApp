@@ -76,7 +76,7 @@ public class ReportsRecyclerAdapter extends ListAdapter<Report, ReportsRecyclerA
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView repliesTextView;
+        Button repliesButton;
         Button replyButton;
         MaterialCardView containerCard;
         TextView userTextView;
@@ -98,9 +98,9 @@ public class ReportsRecyclerAdapter extends ListAdapter<Report, ReportsRecyclerA
                     listener.onReply(list.get(getAdapterPosition()));
                 }
             });
-            repliesTextView = itemView.findViewById(R.id.replies_TextView);
+            repliesButton = itemView.findViewById(R.id.replies_Button);
 
-            repliesTextView.setOnClickListener(new View.OnClickListener() {
+            repliesButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onClick(list.get(getAdapterPosition()),
@@ -111,7 +111,7 @@ public class ReportsRecyclerAdapter extends ListAdapter<Report, ReportsRecyclerA
                             messageTextView);
                 }
             });
-            setViewReplies(repliesTextView, list);
+            setViewReplies(repliesButton, list);
         }
 
         private void setViewReplies(TextView repliesTextView, List<Report> list){
