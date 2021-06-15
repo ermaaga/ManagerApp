@@ -390,6 +390,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         if (snapshot.getChildrenCount() == 0) {
             triedProjectsRecyclerViewManager.setShareable(false);
             triedProjectsRecyclerViewManager.setProjectsViewHasData(false);
+            addProjectsToRecyclerViews();
             return;
         }
 
@@ -406,6 +407,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         if (snapshot.getChildrenCount() == 0) {
             evaluatedProjectsRecyclerViewManager.setShareable(false);
             evaluatedProjectsRecyclerViewManager.setProjectsViewHasData(false);
+            addProjectsToRecyclerViews();
             return;
         }
 
