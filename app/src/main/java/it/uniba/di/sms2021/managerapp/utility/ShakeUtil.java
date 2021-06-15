@@ -9,23 +9,23 @@ import android.os.Build;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.util.Log;
+import java.util.Calendar;
 
 public class ShakeUtil {
     private static final String TAG = "ShakeUtil";
 
     private static SensorManager mSensorManager;
     private static Sensor sensor;
+    private static boolean isAccelerometerAvailable = false;
     private static float x, y, z;
     private static boolean itIsNotFirstTime = false;
+    private static boolean wasShaken = false;
     private static float accelerationPrev= 0.0f;
     private static float acceleration = 0.0f;
+    private static Calendar timeOfShaking=null;
 
-    //Soglia massima della variazione di accelerazione affinchè venga considerato lo scuotimento
-    private static final float THRESHOLD = 5f;
-    //Soglia minima della accelerazione corrente affinchè venga considerato lo scuotimento
-    private static final float THRESHOLD_ACCELERATION = 15f;
-    //Soglia minima della accelerazione precedente affinchè venga considerato lo scuotimento
-    private static final float THRESHOLD_ACCELERATION_PREV = 15f;
+    //Soglia minima della variazione di accelerazione affinchè venga considerato lo scuotimento
+    private static final float THRESHOLD = 18f;
 
     private static Vibrator vibrator;
 
@@ -33,25 +33,35 @@ public class ShakeUtil {
 
         //Inizializza mSensorManager che gestisce il sensore
         mSensorManager = (SensorManager)context.getSystemService(Context.SENSOR_SERVICE);
-        //Inizializza sensor, usata per incapsulare il sensore. In questo caso l'accelerometro
-        sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
+        //Inizializza variabile sensor, usata per incapsulare il sensore (accelerometro), nel caso in cui esso sia disponibile.
+        if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null){
+            sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            isAccelerometerAvailable=true;
+        }else{
+            Log.d(TAG, "Accelerometer sensor is not available");
+            isAccelerometerAvailable=false;
+        }
         vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
 
         /*Stabilisce i valori di riferimento per determinare le accelerazioni.
-        In questo caso uguale per tutte e due le variabili:la gravità terrestre*/
+        In questo caso uguale per tutte e due le variabili:la gravità terrestre.*/
         accelerationPrev = SensorManager.GRAVITY_EARTH;
         acceleration = SensorManager.GRAVITY_EARTH;
     }
 
     public static void registerShakeListener(SensorEventListener listener){
-        //Registrazione del Listener per il sensore
-        mSensorManager.registerListener(listener, sensor,SensorManager.SENSOR_DELAY_NORMAL);
+        //Registrazione del Listener per il sensore, nel caso in cui esso sia disponibile.
+        if(isAccelerometerAvailable){
+            mSensorManager.registerListener(listener, sensor,SensorManager.SENSOR_DELAY_NORMAL);
+        }
     }
 
     public static void unRegisterShakeListener(SensorEventListener listener) {
-        //Cancellazione del Listener per il sensore
-        mSensorManager.unregisterListener(listener);
+        //Cancellazione del Listener per il sensore, nel caso in cui esso sia disponibile.
+        if(isAccelerometerAvailable){
+            mSensorManager.unregisterListener(listener);
+        }
     }
 
     public static void checkShake(SensorEvent sensorEvent, OnShakeListener onShakeListener) {
@@ -65,10 +75,10 @@ public class ShakeUtil {
         accelerationPrev = acceleration;
 
         if (itIsNotFirstTime) {
-            /*Calcola la somma delle componenti cartesiane x, y e z in valore
-            assoluto per determinare l'accelerazione corrente.
-            Accelerazione: a = a_x + a_y + a_z */
-            acceleration = Math.abs(x + y + z);
+            /*Calcola la radice quadrata della somma dei quadrati delle componenti
+            cartesiane x, y e z, per determinare l'accelerazione corrente.
+            Accelerazione: a = √((a_x)^2+(a_y)^2 +(a_z)^2) */
+            acceleration = (float) Math.sqrt(x*x + y*y + z*z);
             Log.d(TAG, "accelerazione" + acceleration);
             Log.d(TAG, "accelerationPrev" + accelerationPrev);
 
@@ -76,11 +86,20 @@ public class ShakeUtil {
             float differenceAcc = Math.abs(acceleration - accelerationPrev);
             Log.d(TAG, "differenza accelerazione" + differenceAcc);
 
-                /*Lo scuotimento viene rilevato nel caso in cui:
-                 -la differenza delle accelerazioni è minore di una soglia (in questo caso 5)
-                 tale per cui i valori di entrambe le accelerazioni applicate non si discostino di molto;
-                 - I valori delle accelerazioni applicate siano maggiori di una certa soglia (in queso caso 20)*/
-            if (differenceAcc < THRESHOLD && acceleration > THRESHOLD_ACCELERATION && accelerationPrev > THRESHOLD_ACCELERATION_PREV) {
+            float resolution = sensor.getResolution();
+            float maximumRange = sensor.getMaximumRange();
+            float version = sensor.getVersion();
+
+            Log.d(TAG, "RESOLUTION = "+resolution+"      MAXIMUM_RANGE = "+maximumRange+"        VERSION = "+version);
+
+            /*Lo scuotimento viene rilevato nel caso in cui:
+              -la differenza delle accelerazioni è maggiore di una soglia (in questo caso 18)*
+              -Siano passati almeno 6 secondi dal precedente scuotimento, se esso è stato già rilevato*/
+            if (differenceAcc > THRESHOLD) {
+                Calendar now = Calendar.getInstance();
+                if(wasShaken==true && now.before(timeOfShaking)){
+                    return;
+                }
 
                 //Se si sta eseguendo su Oreo (Api level 26) o successivi
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -89,6 +108,17 @@ public class ShakeUtil {
                     //Deprecato in Api 26
                     vibrator.vibrate(500);
                 }
+
+                /*Memorizza l'istante in cui si potrà iniziare a rilevare il prossimo scuotimento
+                  (dopo sei secondi dall'ultimo), in modo da evitare di rilevare più scuotimenti
+                  e, di conseguenza, eseguire l'azione più volte.
+                 */
+                timeOfShaking = Calendar.getInstance();
+                timeOfShaking.setTimeInMillis(now.getTimeInMillis());
+                timeOfShaking.add(Calendar.SECOND, 6);
+
+                //Usato per indicare che in precedenza c'è stato almeno uno scuotimento
+                wasShaken = true;
                 onShakeListener.doActionAfterShake();
             }
         }
