@@ -40,7 +40,6 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //TODO vedere se serve gestirlo in caso di cambi di configurazioni
         exam = getIntent().getParcelableExtra(Exam.Keys.EXAM);
 
         Log.d("ExamDetailActivity", exam.toString());

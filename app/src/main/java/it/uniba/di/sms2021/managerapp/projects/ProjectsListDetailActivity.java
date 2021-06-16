@@ -240,12 +240,12 @@ public class ProjectsListDetailActivity extends AbstractBottomNavigationActivity
 
         @Override
         public void onFilterAdded(String filter) {
-            //TODO implementare
+            //Non ci sono filri
         }
 
         @Override
         public void onFilterRemoved(String filter) {
-            //TODO implementare
+            //Non ci sono filri
         }
     };
 

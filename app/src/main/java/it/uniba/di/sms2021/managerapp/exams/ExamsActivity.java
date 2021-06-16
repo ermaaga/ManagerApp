@@ -240,17 +240,6 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
         FirebaseDbHelper.getPendingExamRequests(currentUser.getAccountId()).child(exam.getId()).setValue(true);
     }
 
-    //TODO rimuovere questo codice nella versione finale.
-    public void test () {
-        DatabaseReference userRef = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS);
-        DatabaseReference tableRef = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_EXAMS);
-
-        userRef.child("ABC").setValue(new User("ABC", "Fabrizio", "Balducci", "Email@email.com",
-                User.ROLE_PROFESSOR, Arrays.asList("dipart informatica"),  Arrays.asList("Informatica e Tecnologie per la produzione del software")));
-        DatabaseReference newElement = tableRef.push();
-        newElement.setValue(new Exam(newElement.getKey(), "SMS20-21", Arrays.asList("ABC"), null, 2020));
-    }
-
     private void initialize() {
         btn_CreateNewExam = findViewById(R.id.exam_add_floating_action_button);
         if (LoginHelper.getCurrentUser().getRuolo() != User.ROLE_PROFESSOR) {

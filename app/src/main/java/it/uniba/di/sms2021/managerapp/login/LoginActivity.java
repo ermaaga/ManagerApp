@@ -192,15 +192,9 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
         try {
             googleSignInAccount = completedTask.getResult(ApiException.class);
 
-            //Mi ero scordato di fare effettivamente l'accesso a firebase, così da poter usare
-            //auth nelle regole del db.
-            //TODO rimuovere questo commento in seguito
             loginWithGoogleCredentials();
 
         } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            //TODO tradurre commento in italiano
             if (e.getStatusCode() == GoogleSignInStatusCodes.SIGN_IN_FAILED) {
                 Toast.makeText(this, R.string.error_sha1_not_found, Toast.LENGTH_SHORT).show();
             }
@@ -299,57 +293,4 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
             Log.e(TAG, "not validate");
         }
     }
-
-
-   /* metodi  duplicati sia in questa activity che in SignInActivity
-   per questo motivo è stata creta la classe utility FormUtil (da migliorare)
-
-    private boolean validate(String email, String password) {
-
-        boolean valid = true;
-
-        if (!isEmailValid(email)) {
-            valid = false;
-        } else {
-            emailInputLayout.setError(null);
-        }
-
-        if (!isPasswordValid(password)) {
-            valid = false;
-        } else {
-            passwordInputLayout.setError(null);
-        }
-
-        return valid;
-    }
-
-    private boolean isPasswordValid(String password) {
-        boolean valid = true;
-        if (TextUtils.isEmpty(password)) {
-            passwordInputLayout.setError(getString(R.string.required_field));
-            valid = false;
-        } else {
-            if(password.length() < 8){
-                passwordInputLayout.setError(getString(R.string.error_password));
-                valid = false;
-            }
-        }
-        return valid;
-    }
-
-    private boolean isEmailValid(String email) {
-        boolean valid = true;
-        if (TextUtils.isEmpty(email)) {
-            emailInputLayout.setError(getString(R.string.required_field));
-            valid = false;
-        } else {
-            if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-                emailInputLayout.setError(getString(R.string.error_email));
-                valid = false;
-            }
-        }
-        return valid;
-    }
-  */
-    //TODO rimuovere commento in seguito
 }

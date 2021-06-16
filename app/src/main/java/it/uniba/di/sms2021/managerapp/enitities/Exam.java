@@ -115,7 +115,6 @@ public class Exam implements Parcelable {
         this.studyCases = studyCases;
     }
 
-    //TODO reimplementare equals con i parametri che servono
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

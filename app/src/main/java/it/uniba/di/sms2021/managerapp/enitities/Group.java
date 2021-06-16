@@ -25,8 +25,6 @@ public class Group implements Parcelable {
     private List<String> membri;
     private ProjectPermissions permissions;
 
-    // Campo duplicato per usarlo in ExamGroupsFragment senza rompere il resto del programma
-    // TODO usare project al posto di questo campo
     private String studyCaseName;
 
     private Evaluation evaluation;

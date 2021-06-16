@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!--TODO Rimuovere risorsa inutilizzata?-->
-    <string-array name="list_degree_courses">
-        <item>@string/list_degree_courses_informatica</item>
-        <item>@string/list_degree_courses_itps</item>
-    </string-array>
-</resources>

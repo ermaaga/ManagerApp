@@ -72,8 +72,6 @@ public class ExamStudyCasesFragment extends Fragment {
                 DividerItemDecoration.VERTICAL));
         studyCasesRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        //TODO far si che i casi di studio siano legati ad un esame e leggere solo i casi
-        // di studio di un esame
         Exam selectedExam = ((ExamDetailActivity) getActivity()).getSelectedExam();
         studyCasesReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_STUDYCASES);
         studyCasesListener = new ValueEventListener() {

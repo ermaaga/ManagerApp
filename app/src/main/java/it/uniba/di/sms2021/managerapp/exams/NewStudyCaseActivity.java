@@ -32,7 +32,6 @@ import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 import it.uniba.di.sms2021.managerapp.utility.AbstractFormActivity;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 
-//TODO renderlo un fragment?
 public class NewStudyCaseActivity extends AbstractFormActivity implements View.OnClickListener {
     static final int REQUEST_IMAGE_GET = 1;
     private static final String TAG = "NewStudyCaseActivity";

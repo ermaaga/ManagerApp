@@ -206,7 +206,6 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
         fromLink= getIntent().getBooleanExtra("fromLinkBoolean", false);
         userFromLink = getIntent().getParcelableExtra(User.KEY);
 
-        //TODO considerare l'utilizzo di LoginHelper.getCurrentUser()
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         /*Se viene visualizzato il profilo di un altro utente, invece che il profilo corrente,

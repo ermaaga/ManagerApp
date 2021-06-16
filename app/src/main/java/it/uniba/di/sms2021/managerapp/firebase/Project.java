@@ -72,7 +72,6 @@ public class Project implements Parcelable {
                                 }
                             }
                             if (!found) {
-                                //TODO testare per fare in modo che questa eccezione non venga mai lanciata
                                 throw new RuntimeException("Impossibile trovare l'esame con l'id "
                                         + group.getExam() + " nel progetto di id " + project.getId());
                             }
@@ -103,7 +102,6 @@ public class Project implements Parcelable {
                                 }
                             }
                             if (!found) {
-                                //TODO testare per fare in modo che questa eccezione non venga mai lanciata
                                 throw new RuntimeException("Impossibile trovare il caso di studio con l'id "
                                         + group.getStudyCase() + " nel progetto di id " + project.getId());
                             }

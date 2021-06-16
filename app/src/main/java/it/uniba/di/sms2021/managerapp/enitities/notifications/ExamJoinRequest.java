@@ -1,6 +1,7 @@
 package it.uniba.di.sms2021.managerapp.enitities.notifications;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -123,6 +124,7 @@ public class ExamJoinRequest implements Notifiable {
     @Override
     public void onNotificationClick(Context context, @Nullable OnActionDoneListener listener) {
         //TODO mostra profilo utente
+        Toast.makeText(context, R.string.text_message_not_yet_implemented, Toast.LENGTH_LONG).show();
 
         if (listener != null) {
             listener.onActionDone();
