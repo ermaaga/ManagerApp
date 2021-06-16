@@ -50,7 +50,6 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
     TextInputLayout nameInputlayout;
     TextInputLayout descInputlayout;
 
-    MaterialCardView cardView;
     ImageView typeImageView;
     TextView nameTextView;
     TextView sizeTextView;
@@ -85,7 +84,6 @@ public class NewStudyCaseActivity extends AbstractFormActivity implements View.O
         nameInputlayout = (TextInputLayout) findViewById(R.id.name_input_layout);
         descInputlayout = (TextInputLayout) findViewById(R.id.desc_input_layout);
 
-        cardView = (MaterialCardView) findViewById(R.id.file_card);
         typeImageView = (ImageView) findViewById(R.id.file_type_image_view);
         nameTextView = (TextView) findViewById(R.id.file_name_text_view);
         sizeTextView = (TextView) findViewById(R.id.file_size_text_view);

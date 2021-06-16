@@ -53,7 +53,6 @@ public class ReviewsRecyclerAdapter extends ListAdapter<Review, ReviewsRecyclerA
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        View itemView = holder.itemView;
         review = getItem(position);
 
         setUserName(holder.userTextView, review);

@@ -31,8 +31,6 @@ import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 
 public class ConfirmGroupDialog  extends AppCompatDialogFragment {
 
-    private FirebaseDatabase database;
-    private DatabaseReference groupsRef;
     private Context context;
 
     private Group group;
@@ -106,69 +104,6 @@ public class ConfirmGroupDialog  extends AppCompatDialogFragment {
                             Toast.LENGTH_LONG).show();
                 }
             });
-    }
-
-    private boolean updateMembers(){
-        boolean result = false;
-        try {
-            List<String> members = group.getMembri();
-            if (members == null) {
-                members = new ArrayList<>();
-            }
-            members.add(currentUserId);
-            FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS)
-                    .child(group.getId()).child(Group.Keys.MEMBERS).setValue(members, new DatabaseReference.CompletionListener() {
-                @Override
-                public void onComplete(@Nullable DatabaseError error, @NonNull DatabaseReference ref) {
-                    System.err.println("Value was set. Error = "+error);
-                }
-            });
-            result = true;
-
-        } catch (Exception e) {
-            result = false;
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    private List<String> getMembers(String groupId) {
-        List<Group> lstGroups = new ArrayList<>();
-        List<String> lstGroupMembers = new ArrayList<>();
-        try {
-            FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                            for (DataSnapshot child: snapshot.getChildren()) {
-                                Group currentGroups = child.getValue(Group.class);
-
-                                if (currentGroups.getId().equals(groupId)) {
-                                    lstGroups.add(currentGroups);
-                                }
-                            }
-                            Log.i("groups", String.valueOf(lstGroups));
-                            for(Group itemGroup : lstGroups){
-                                for(String member : itemGroup.getMembri()){
-                                    Log.i("member", member);
-                                    lstGroupMembers.add(member);
-                                    Log.i("memberin", String.valueOf(lstGroupMembers));
-                                }
-                            }
-                        }
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.d("error","errore in getStudyCasesGroup" );
-        }
-        Log.i("memberout", String.valueOf(lstGroupMembers));
-        return  lstGroupMembers;
-
     }
 
 

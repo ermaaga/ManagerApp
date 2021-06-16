@@ -34,7 +34,6 @@ public class ExamStudyCasesFragment extends Fragment {
     private RecyclerView studyCasesRecyclerView;
     private StudyCasesRecyclerAdapter adapter;
 
-    private FloatingActionButton addStudyCaseFloatingActionButton;
     private DatabaseReference studyCasesReference;
     private ValueEventListener studyCasesListener;
 

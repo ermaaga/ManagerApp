@@ -138,15 +138,6 @@ public class DepartmentActivity extends AbstractBaseActivity {
     startActivity(intent);
 }
 
-    public void test () {
-        DatabaseReference dipartRef = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_DEPARTMENTS);
-
-        for(int i=0; i<10; i++){
-            String id = dipartRef.push().getKey();
-            dipartRef.child(id).setValue(new Department(id,"dipartiments"+i));
-        }
-    }
-
 }
 
 

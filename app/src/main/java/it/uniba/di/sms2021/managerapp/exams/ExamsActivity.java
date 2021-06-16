@@ -54,7 +54,6 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        java.text.DateFormat dateFormat = android.text.format.DateFormat.getDateFormat(getApplicationContext());
         // initialize components
 
         initialize();
@@ -199,7 +198,6 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
         String notificationId = null;
         User currentUser = LoginHelper.getCurrentUser();
 
-        boolean sent = true;
         for (String professorId: exam.getProfessors()) {
             DatabaseReference reference;
             if (notificationId == null) {

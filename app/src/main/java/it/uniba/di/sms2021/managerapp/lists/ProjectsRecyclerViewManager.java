@@ -33,10 +33,6 @@ public class ProjectsRecyclerViewManager {
         return new Builder(recyclerView);
     }
 
-    public RecyclerView getRecyclerView() {
-        return recyclerView;
-    }
-
     public ImageView getShareButton() {
         return shareButton;
     }
