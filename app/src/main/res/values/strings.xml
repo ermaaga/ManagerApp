@@ -235,6 +235,7 @@
     <string name="text_message_tried_projects_empty">You haven\'t tried any projects yet</string>
     <string name="text_message_favourite_projects_empty">You haven\'t set any project as favourite</string>
     <string name="text_message_evaluated_projects_empty">You haven\'t evaluated any projects yet</string>
+    <string name="text_message_unsaved_changes">There are unsaved changes. Do you want to save them?</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 

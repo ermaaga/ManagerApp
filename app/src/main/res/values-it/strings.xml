@@ -226,6 +226,7 @@
     <string name="text_message_tried_projects_empty">Non hai ancora provato nessun progetto</string>
     <string name="text_message_favourite_projects_empty">Non hai impostato nessun progetto come preferito</string>
     <string name="text_message_evaluated_projects_empty">Non hai ancora valutato nessun progetto</string>
+    <string name="text_message_unsaved_changes">Ci sono modifiche non salvate. Vuoi salvarle?</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 

@@ -48,7 +48,9 @@ import java.util.List;
 import it.uniba.di.sms2021.managerapp.enitities.Course;
 import it.uniba.di.sms2021.managerapp.enitities.Department;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.exams.ExamsActivity;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.projects.ProjectsActivity;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
@@ -56,6 +58,9 @@ import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 public class ProfileActivity extends AbstractBottomNavigationActivity implements View.OnClickListener {
     private static final String TAG = "ProfileActivityTag";
     static final int REQUEST_IMAGE_GET = 1;
+    private static final String PROFILE_ACTIVITY = "ProfileActivity";
+    private static final String EXAMS_ACTIVITY = "ExamsActivity";
+    private static final String PROJECTS_ACTIVITY = "ProjectsActivity";
 
     private FirebaseDatabase database;
     private DatabaseReference usersReference;
@@ -69,6 +74,8 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
     String currentUserId;
     User userFromLink;
     boolean fromLink;
+
+    String activityIntent;
 
     TextView textName;
     TextView textSurname;
@@ -136,21 +143,29 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
             item.setVisible(false);
             iconSave.setVisible(true);
         }
+        /*Se viene selezionata l'icona "spunta" le eventuali modifiche vengono salvate
+        e viene aggiornata l'activity.*/
         if(menuId == R.id.action_save){
-            saveProfile();
+            activityIntent=PROFILE_ACTIVITY;
+            saveProfile(activityIntent);
             item.setVisible(false);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        if(editPhotoButton.getVisibility()==View.VISIBLE){
-            Intent refresh = new Intent(ProfileActivity.this, ProfileActivity.class);
-            startActivity(refresh);
-            finish();
+        /*Se ci si trova in modifica profilo, ma non ci sono modifiche apportate,
+        * si ritorna in visualizza profilo.
+        * Nel caso in cui ci siano modifiche apportate (quindi non ancora salvate),
+        * viene visualizzato un dialog di conferma delle modifiche.*/
+        if(editPhotoButton.getVisibility()==View.VISIBLE && !thereAreUnsavedChanges()){
+            ProfileActivity.this.recreate();
+        } else if(editPhotoButton.getVisibility()==View.VISIBLE && thereAreUnsavedChanges()){
+            Log.d(TAG, "thereAreUnsavedChanges"+thereAreUnsavedChanges());
+            activityIntent=PROFILE_ACTIVITY;
+            displaySaveRequestDialog(activityIntent);
         } else if (fragmentManager.getBackStackEntryCount() == 0) {
             finish();
         } else {
@@ -158,6 +173,71 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
         }
 
         return super.onSupportNavigateUp();
+    }
+
+    /*Override del metodo per controllare la navigazione all'interno della bottom navigation
+    * in questa specifica activity. In particolare viene coperto il caso
+    * in cui ci si sposta tra le activity senza aver salvato le eventuali
+    * modifiche del profilo*/
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.nav_profile) {
+            ProfileActivity.this.recreate();
+        } else if (itemId == R.id.nav_exams) {
+            activityIntent=EXAMS_ACTIVITY;
+            if(editPhotoButton.getVisibility()==View.VISIBLE && thereAreUnsavedChanges()){
+                displaySaveRequestDialog(activityIntent);
+            }else{
+                goIntent(activityIntent);
+            }
+        } else if (itemId == R.id.nav_projects) {
+            activityIntent=PROJECTS_ACTIVITY;
+            if(editPhotoButton.getVisibility()==View.VISIBLE && thereAreUnsavedChanges()){
+                displaySaveRequestDialog(activityIntent);
+            }else{
+                goIntent(activityIntent);
+            }
+        }
+        return false;
+    }
+
+    //Metodo utilizzato per mostrare il dialog di conferma delle modifiche di profilo effettuate
+    private void displaySaveRequestDialog(String activityIntent) {
+        Log.d(TAG, "displaySaveRequestDialog");
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.text_message_unsaved_changes)
+                .setPositiveButton(R.string.text_button_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        saveProfile(activityIntent);
+                    }
+                })
+                .setNegativeButton(R.string.text_button_no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        goIntent(activityIntent);
+                    }
+                })
+                .setNeutralButton(R.string.text_button_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .show();
+    }
+
+    //Metodo utilizzato verificare se ci sono state modifiche del profilo.
+    private boolean thereAreUnsavedChanges() {
+
+        return !editName.getText().toString().equals(user.getNome()) ||
+                !editSurname.getText().toString().equals(user.getCognome()) ||
+                currentListDepartment!=null ||
+                currentListCourse!=null ||
+                //Viene controllato prima se l'immagine è stata modificata e dopo, in caso affermativo, se essa è diversa dalla vecchia.
+                (fullFileUri!=null &&
+                !FileUtil.getFileNameFromURI(ProfileActivity.this, fullFileUri).equals(user.getProfileImage()));
     }
 
     @Override
@@ -234,6 +314,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
                 Toast.makeText(ProfileActivity.this, "Failed", Toast.LENGTH_LONG).show();
             }
         }else {
+
             userListenerCreate = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -262,13 +343,10 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
                 }
             };
             currentUserReference.addListenerForSingleValueEvent(userListenerCreate);
         }
-
-
 
         userListener = new ValueEventListener() {
             @Override
@@ -306,13 +384,14 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
                 textDepartments.setText("");
                 //Se non è stata modificata la lista dei dipartimenti
                 if(currentListDepartment==null) {
-                    // Iterazione tra i vari elementi appartenenti al nodo "departments"
+                    /* Iterazione tra i vari elementi appartenenti al nodo "departments"
+                     in RealtimeDatabase e selezione dei soli dipartimenti appartenenti
+                     all'utente corrente*/
                     for (String dep : user.getDipartimenti()) {
                         for (DataSnapshot child : snapshot.getChildren()) {
                             if (child.getKey().equals(dep)) {
-                                Log.d(TAG, "Id of child: " + child.getKey());
                                 Department department = child.getValue(Department.class);
-
+                                //Aggiunta del dipartimento alla textView
                                 textDepartments.append(department.getName() + "\n");
 
                                 //Lista dei dipartimenti dell'utente
@@ -321,26 +400,22 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
                         }
                     }
                 }else{
-                    //Iterazione tra i vari elementi presenti nella lista dei dipartimenti correnti
+                    /*Iterazione tra i vari elementi presenti nella lista dei dipartimenti correnti
+                    (lista utilizzata per salvare i dipartimenti dopo la loro modifica)*/
                     for (String depart: currentListDepartment){
                         for (DataSnapshot child : snapshot.getChildren()) {
                             if (child.getKey().equals(depart)) {
-                                Log.d(TAG, "Id of child: " + child.getKey());
                                 Department department = child.getValue(Department.class);
-
+                                //Aggiunta del dipartimento alla textView
                                 textDepartments.append(department.getName() + "\n");
-
                             }
                         }
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
-
         };
         departmentsReference.addValueEventListener(departmentsListener);
 
@@ -350,13 +425,14 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
                 textCourses.setText("");
                 //se non è stata modificata la lista dei corsi
                 if(currentListCourse==null) {
-                    // Iterazione tra i vari elementi presenti nel nodo "courses" dell'utente
+                    /*Iterazione tra i vari elementi presenti nel nodo "courses"
+                    in RealtimeDatabase e selezione dei soli corsi appartenenti
+                    all'utente corrente*/
                     for (String c : user.getCorsi()) {
                         for (DataSnapshot child : snapshot.getChildren()) {
                             if (child.getKey().equals(c)) {
-                                Log.d(TAG, "Id of child: " + child.getKey());
                                 Course course = child.getValue(Course.class);
-
+                                //Aggiunta del corso alla textView
                                 textCourses.append(course.getName() + "\n");
 
                                 //Lista dei corsi dell'utente
@@ -365,25 +441,22 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
                         }
                     }
                 }else{
-                    //Iterazione tra i vari elementi presenti nella lista dei corsi correnti
+                    /*Iterazione tra i vari elementi presenti nella lista dei corsi correnti
+                    (lista utilizzata per salvare i corsi dopo la loro modifica)*/
                     for (String c: currentListCourse){
                         for (DataSnapshot child : snapshot.getChildren()) {
                             if (child.getKey().equals(c)) {
-                                Log.d(TAG, "Id of child: " + child.getKey());
                                 Course course = child.getValue(Course.class);
-
+                                //Aggiunta del corso alla textView
                                 textCourses.append(course.getName() + "\n");
                             }
                         }
                     }
                 }
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
-
         };
         coursesReference.addValueEventListener(coursesListener);
 
@@ -457,7 +530,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
         editSurname.setText(textSurname.getText());
     }
 
-    public void saveProfile() {
+    public void saveProfile(String activityIntent) {
 
         childUpdates = new HashMap();
 
@@ -472,7 +545,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
         usersReference.child(user.getAccountId()).updateChildren(childUpdates);
 
         if(fullFileUri==null){
-            ProfileActivity.this.recreate();
+            goIntent(activityIntent);
         }else if(fullFileUri!= null) {
 
             //Eliminazione della foto profilo eventualmente già presente nello storage
@@ -529,9 +602,19 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
                     Log.d(TAG, "File caricato con successo");
                     childUpdates.put("/profileImage/", FileUtil.getFileNameFromURI(ProfileActivity.this, fullFileUri));
                     usersReference.child(user.getAccountId()).updateChildren(childUpdates);
-                    ProfileActivity.this.recreate();
+                    goIntent(activityIntent);
                 }
             });
+        }
+    }
+
+    private void goIntent(String activityIntent) {
+        if(activityIntent.equals(PROFILE_ACTIVITY)){
+            ProfileActivity.this.recreate();
+        }else if(activityIntent.equals(EXAMS_ACTIVITY)){
+            startActivity(new Intent(this, ExamsActivity.class));
+        }else if(activityIntent.equals(PROJECTS_ACTIVITY)){
+            startActivity(new Intent(this, ProjectsActivity.class));
         }
     }
 
