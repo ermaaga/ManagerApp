@@ -66,6 +66,12 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     boolean myProjectsExist = false;
 
     private static final int REQUEST_ENABLE_BT = 1;
+    private static final int MY_PROJECTS = 2 ;
+    private static final int FAVOURITE_PROJECTS = 3;
+    private static final int TRIED_PROJECTS = 4;
+    private static final int EVALUATED_PROJECTS = 5;
+
+    private int typeSharedList = 0;
 
     private ProjectsRecyclerViewManager myProjectsRecyclerViewManager;
     private ProjectsRecyclerViewManager.Builder myProjectsRecyclerViewManagerBuilder;
@@ -101,7 +107,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     private String lastQuery = "";
     private final Set<String> searchFilters = new HashSet<>();
 
-    private List<Project> projects;
+    private List<Project> myProjects;
     private List<Project> favouriteProjects;
     private List<Project> triedProjects;
     private List<Project> evaluatedProjects;
@@ -170,7 +176,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     @Override
     protected void onStart() {
         super.onStart();
-
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         firstStart = prefs.getBoolean("firstStart", true);
 
@@ -301,7 +306,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         projectListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                projects = new ArrayList<>();
+                myProjects = new ArrayList<>();
                 for (DataSnapshot child : snapshot.getChildren()) {
                     Group group = child.getValue(Group.class);
                     String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -312,9 +317,9 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                         new Project.Initialiser() {
                             @Override
                             public void onProjectInitialised(Project project) {
-                                if (!projects.contains(project)) {
-                                    projects.add(project);
-                                    myProjectsAdapter.submitList(projects);
+                                if (!myProjects.contains(project)) {
+                                    myProjects.add(project);
+                                    myProjectsAdapter.submitList(myProjects);
                                     myProjectsAdapter.notifyDataSetChanged();
                                 }
                             }
@@ -596,7 +601,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
             String releaseFilter = getString(R.string.text_filter_projects_withrelease).toLowerCase();
             String evaluatedFilter = getString(R.string.text_filter_projects_hasevaluation).toLowerCase();
 
-            for (Project project: projects) {
+            for (Project project: myProjects) {
                 boolean toAdd = true;
 
                 if (!query.isEmpty()) {
@@ -674,20 +679,28 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         startActivity(intent);
     }
 
-    public void share_list_project(View view){
+    public void share_my_project_list(View view){
+        typeSharedList = MY_PROJECTS;
         actionShareList();
     }
 
     public void share_favourite_list(View view) {
-        //TODO implementare
+        typeSharedList = FAVOURITE_PROJECTS;
+        actionShareList();
     }
 
     public void share_tried_list(View view) {
-        //TODO implementare
+        typeSharedList = TRIED_PROJECTS;
+        actionShareList();
     }
 
     public void share_evaluated_list(View view) {
-        //TODO implementare
+        typeSharedList = EVALUATED_PROJECTS;
+        actionShareList();
+    }
+
+    public void reciveList(View view){
+        actionShareList();
     }
 
     private void actionShareList(){
@@ -721,19 +734,46 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
 
     public void go_sharing_activity(){
         Log.d(TAG, "goSharingActivity");
+        List<Project> Listprojects = null;
 
-        String projectsId = new String();
+        switch(typeSharedList){
+            case MY_PROJECTS:
+                Listprojects = myProjects;
+                break;
+            case FAVOURITE_PROJECTS:
+                Listprojects = favouriteProjects;
+                break;
+            case TRIED_PROJECTS:
+                Listprojects = triedProjects;
+                break;
+            case EVALUATED_PROJECTS:
+                Listprojects = evaluatedProjects;
+                break;
+        }
 
-        for(Project proj: projects){
-            if(projectsId.isEmpty()){
-                projectsId = proj.getId();
-            }else {
-                projectsId = projectsId + "," + proj.getId();
+        typeSharedList = 0;
+        String projectsId=null;
+
+        //se Listprojects è diverso da null vuol dire che l'utente
+        // ha cliccato su condividi di una delle tipologie delle liste.
+        // Altrimenti se Listprojects è null ha cliccato su ricevi.
+        if( Listprojects != null) {
+
+            projectsId = new String();
+
+            for (Project proj : Listprojects) {
+                if (projectsId.isEmpty()) {
+                    projectsId = proj.getId();
+                } else {
+                    projectsId = projectsId + "," + proj.getId();
+                }
             }
         }
 
-        Log.d(TAG, "groupsId: "+projectsId);
+        Log.d(TAG, "projectsId: "+projectsId);
         Intent intent = new Intent(this, ProjectsSharingActivity.class);
+       //se projectsId è uguale a null vuol dire che ha cliccato su ricevi
+       // e quindi non deve condividere nessuna lista
         intent.putExtra(Project.KEY, projectsId);
         startActivity(intent);
     }
@@ -741,6 +781,8 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     private ShakeUtil.OnShakeListener onShakeListener = new ShakeUtil.OnShakeListener() {
         @Override
         public void doActionAfterShake() {
+            //todo decidere quale lista condividere
+            typeSharedList = MY_PROJECTS;
             actionShareList();
         }
     };

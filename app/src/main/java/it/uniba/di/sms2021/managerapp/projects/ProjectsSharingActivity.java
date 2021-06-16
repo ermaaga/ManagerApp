@@ -67,7 +67,7 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
     private TextView emptyPairedMessageTextView;
 
     private Context context;
-    private Button buttonSendMessage;
+    private Button buttonSend;
     private Button buttonSearch;
     private Button buttonDiscoverable;
     private String connectedDevice;
@@ -304,11 +304,17 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
         stateAvailableMessageTextView = findViewById(R.id.available_devices_empty_state_message_text_view);
         emptyPairedMessageTextView = findViewById(R.id.paired_devices_empty_state_message_text_view);
 
-        buttonSendMessage = findViewById(R.id.button_send);
+        buttonSend = findViewById(R.id.button_send);
         buttonSearch = findViewById(R.id.button_search);
         buttonDiscoverable = findViewById(R.id.button_discoverable);
 
         projectsId = getIntent().getStringExtra(Project.KEY);
+
+        //se è null vuol dire che l'utente ha avviato quest'activity
+        // dal bottone ricevi quindi non deve condividere nessuna lista
+        if( projectsId == null){
+            buttonSend.setVisibility(View.GONE);
+        }
 
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -330,7 +336,7 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
             }
         });
 
-        buttonSendMessage.setOnClickListener(new View.OnClickListener() {
+        buttonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Controlla se il dispositivo è effettivamente connesso prima di provare a inviare la lista dei progetti

@@ -70,7 +70,7 @@
                 android:clickable="true"
                 android:contentDescription="@string/description_share_list"
                 android:focusable="true"
-                android:onClick="share_list_project"
+                android:onClick="share_my_project_list"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
