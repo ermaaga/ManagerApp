@@ -62,21 +62,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:layout_marginBottom="10dp"
-                android:maxLength="18"
                 android:text="@string/text_button_reply_review"
-                android:textColor="#002171"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/date_TextView"
                 app:layout_constraintTop_toBottomOf="@+id/message_TextView"
-                app:layout_constraintVertical_bias="0.0"
-                tools:text="Rispondi" />
+                app:layout_constraintVertical_bias="0.0"/>
 
-            <TextView
-                android:id="@+id/replies_TextView"
-                style="@android:style/TextAppearance.Material.Medium"
-                android:layout_width="0dp"
+            <Button
+                android:id="@+id/replies_Button"
+                android:textAllCaps="false"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxLines="3"
                 android:text="@string/text_button_view_answers"
                 android:visibility="invisible"
                 app:layout_constraintTop_toTopOf="@+id/reply_button"

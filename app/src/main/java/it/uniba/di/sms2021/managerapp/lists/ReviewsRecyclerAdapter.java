@@ -78,7 +78,7 @@ public class ReviewsRecyclerAdapter extends ListAdapter<Review, ReviewsRecyclerA
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView repliesTextView;
+        TextView repliesButton;
         Button replyButton;
         TextView userTextView;
         TextView dateTextView;
@@ -103,9 +103,9 @@ public class ReviewsRecyclerAdapter extends ListAdapter<Review, ReviewsRecyclerA
                 }
             });
 
-            repliesTextView = itemView.findViewById(R.id.review_replies_TextView);
+            repliesButton= itemView.findViewById(R.id.review_replies_button);
 
-            repliesTextView.setOnClickListener(new View.OnClickListener() {
+            repliesButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onClick(list.get(getAdapterPosition()),
@@ -118,7 +118,7 @@ public class ReviewsRecyclerAdapter extends ListAdapter<Review, ReviewsRecyclerA
                 }
             });
 
-            setViewReplies(repliesTextView, list);
+            setViewReplies(repliesButton, list);
         }
 
         private void setViewReplies(TextView repliesTextView, List<Review> list){
