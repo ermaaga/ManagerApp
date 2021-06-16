@@ -675,7 +675,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         startActivity(intent);
     }
 
-    public void share_list_project(View view){
+    public void share_my_project_list(View view){
         actionShareList(myProjects);
     }
 
