@@ -217,7 +217,7 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                //TODO aggiungere messaggio di errore visibile
+                Toast.makeText(LoginActivity.this, R.string.login_failed, Toast.LENGTH_LONG).show();
                 Log.i(TAG, "Login failed: " + e.getMessage());
             }
         });

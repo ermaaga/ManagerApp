@@ -34,7 +34,6 @@ import it.uniba.di.sms2021.managerapp.lists.CourseRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBaseActivity;
 
 public class DegreeCoursesActivity extends AbstractBaseActivity {
-    private static final String TAG = "DegreeCoursesActivity";
     private RecyclerView recyclerView;
     private CourseRecyclerAdapter adapter;
 
@@ -189,23 +188,4 @@ public class DegreeCoursesActivity extends AbstractBaseActivity {
         DegreeCoursesActivity.this.finish();
     }
 
-    private int getUserCourseFromString (String course) {
-        if (course.equals(getString(R.string.list_degree_courses_informatica))) {
-            return User.COURSE_INFORMATICA;
-        } else if (course.equals(getString(R.string.list_degree_courses_itps))) {
-            return User.COURSE_ITPS;
-        } else {
-            throw new IllegalStateException("Aggiungere i corsi nel metodo, rispettando quanti" +
-                    "corsi possono essere scelti nell'app.");
-        }
-    }
-
-    public void test () {
-        DatabaseReference courseRef = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_COURSES);
-
-        for(int i=0; i<5; i++){
-            String id = courseRef.push().getKey();
-            courseRef.child(id).setValue(new Course(id,"course"+i,"department"+i));
-        }
-    }
 }

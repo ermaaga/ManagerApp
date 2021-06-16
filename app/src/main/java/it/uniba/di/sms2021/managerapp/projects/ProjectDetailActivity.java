@@ -47,7 +47,6 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     // Elementi della seach view presente nell'action bar
     private SearchView searchView;
     private HorizontalScrollView searchFilters;
-    private SearchView.OnQueryTextListener queryTextListener;
 
     //Listener implementato nei fragment al momento della loro creazione
     private ConnectionCheckBroadcastReceiver.OnConnectionChangeListener connectionChangeListener;

@@ -66,12 +66,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     boolean myProjectsExist = false;
 
     private static final int REQUEST_ENABLE_BT = 1;
-    private static final int MY_PROJECTS = 2 ;
-    private static final int FAVOURITE_PROJECTS = 3;
-    private static final int TRIED_PROJECTS = 4;
-    private static final int EVALUATED_PROJECTS = 5;
-
-    private int typeSharedList = 0;
 
     private ProjectsRecyclerViewManager myProjectsRecyclerViewManager;
     private ProjectsRecyclerViewManager.Builder myProjectsRecyclerViewManagerBuilder;
@@ -114,6 +108,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     private List<String> favouriteProjectsIds;
     private List<String> triedProjectsIds;
     private List<String> evaluatedProjectsIds;
+    private List<Project> shareableProjectList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,6 +171,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     @Override
     protected void onStart() {
         super.onStart();
+
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         firstStart = prefs.getBoolean("firstStart", true);
 
@@ -679,37 +675,35 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         startActivity(intent);
     }
 
-    public void share_my_project_list(View view){
-        typeSharedList = MY_PROJECTS;
-        actionShareList();
+    public void share_list_project(View view){
+        actionShareList(myProjects);
     }
 
     public void share_favourite_list(View view) {
-        typeSharedList = FAVOURITE_PROJECTS;
-        actionShareList();
+        actionShareList(favouriteProjects);
     }
 
     public void share_tried_list(View view) {
-        typeSharedList = TRIED_PROJECTS;
-        actionShareList();
+        actionShareList(triedProjects);
     }
 
     public void share_evaluated_list(View view) {
-        typeSharedList = EVALUATED_PROJECTS;
-        actionShareList();
+        actionShareList(evaluatedProjects);
     }
 
     public void reciveList(View view){
-        actionShareList();
+        actionShareList(null);
     }
 
-    private void actionShareList(){
+    private void actionShareList(List<Project> projectList){
         if (!bluetoothAdapter.isEnabled()){
              Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            shareableProjectList = projectList;
              startActivityForResult(intent, REQUEST_ENABLE_BT);
 
         } else {
             Log.d(TAG, "Bluetooth is already on ");
+            shareableProjectList = projectList;
             go_sharing_activity();
         }
     }
@@ -734,34 +728,15 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
 
     public void go_sharing_activity(){
         Log.d(TAG, "goSharingActivity");
-        List<Project> Listprojects = null;
 
-        switch(typeSharedList){
-            case MY_PROJECTS:
-                Listprojects = myProjects;
-                break;
-            case FAVOURITE_PROJECTS:
-                Listprojects = favouriteProjects;
-                break;
-            case TRIED_PROJECTS:
-                Listprojects = triedProjects;
-                break;
-            case EVALUATED_PROJECTS:
-                Listprojects = evaluatedProjects;
-                break;
-        }
-
-        typeSharedList = 0;
         String projectsId=null;
 
-        //se Listprojects è diverso da null vuol dire che l'utente
+        //se shareableProjectList è diverso da null vuol dire che l'utente
         // ha cliccato su condividi di una delle tipologie delle liste.
-        // Altrimenti se Listprojects è null ha cliccato su ricevi.
-        if( Listprojects != null) {
-
+        // Altrimenti se shareableProjectList è null ha cliccato su ricevi.
+        if( shareableProjectList != null) {
             projectsId = new String();
-
-            for (Project proj : Listprojects) {
+            for (Project proj : shareableProjectList) {
                 if (projectsId.isEmpty()) {
                     projectsId = proj.getId();
                 } else {
@@ -782,8 +757,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         @Override
         public void doActionAfterShake() {
             //todo decidere quale lista condividere
-            typeSharedList = MY_PROJECTS;
-            actionShareList();
+            actionShareList(myProjects);
         }
     };
 

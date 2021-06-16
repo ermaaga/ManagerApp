@@ -41,7 +41,6 @@ public class ExamGroupsFragment extends Fragment {
 
     private RecyclerView groupRecyclerView;
     private GroupRecyclerAdapter adapter;
-    private DatabaseReference mDatabase;
 
     private Exam exam;
 
@@ -184,13 +183,6 @@ public class ExamGroupsFragment extends Fragment {
         }
         return  lstStudyCases;
 
-    }
-
-    private void showGruoupsInfo(Group group) {
-        CharSequence text = "GroupsInfo";
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(getContext(), text, duration);
-        toast.show();
     }
 
     private void doJoinGroupAction(Group group) {

@@ -52,8 +52,6 @@ public class NewExamActivity extends AbstractFormActivity {
     private FirebaseDatabase database;
     private DatabaseReference examsRef;
 
-    private UserSelectionRecyclerAdapter adapter;
-
     @Override
     protected int getLayoutId() {
         return R.layout.activity_new_exam;

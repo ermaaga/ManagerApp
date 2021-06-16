@@ -42,12 +42,9 @@ public class ReplyFragment extends BottomSheetDialogFragment implements View.OnC
     TextInputEditText reply_edit_text;
     TextInputLayout reply_text_input;
 
-    String idgroup;
     String user;
     String idReport;
     String idReply;
-
-    ProjectReviewsActivity activity;
 
     public ReplyFragment() {
         //Costruttore pubblico vuoto richiesto

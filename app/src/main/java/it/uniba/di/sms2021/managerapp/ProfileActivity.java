@@ -100,7 +100,6 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
     boolean[] courseIsChecked;
 
     HashMap childUpdates;
-    HashMap childUpdatesImage;
 
     private ValueEventListener userListener;
     private ValueEventListener userListenerCreate;
