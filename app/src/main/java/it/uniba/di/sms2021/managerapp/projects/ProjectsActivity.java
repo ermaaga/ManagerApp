@@ -108,6 +108,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     private List<String> favouriteProjectsIds;
     private List<String> triedProjectsIds;
     private List<String> evaluatedProjectsIds;
+    private List<Project> shareableProjectList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -675,28 +676,30 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     }
 
     public void share_list_project(View view){
-        actionShareList();
+        actionShareList(projects);
     }
 
     public void share_favourite_list(View view) {
-        //TODO implementare
+        actionShareList(favouriteProjects);
     }
 
     public void share_tried_list(View view) {
-        //TODO implementare
+        actionShareList(triedProjects);
     }
 
     public void share_evaluated_list(View view) {
-        //TODO implementare
+        actionShareList(evaluatedProjects);
     }
 
-    private void actionShareList(){
+    private void actionShareList(List<Project> projectList){
         if (!bluetoothAdapter.isEnabled()){
              Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            shareableProjectList = projectList;
              startActivityForResult(intent, REQUEST_ENABLE_BT);
 
         } else {
             Log.d(TAG, "Bluetooth is already on ");
+            shareableProjectList = projectList;
             go_sharing_activity();
         }
     }
@@ -724,7 +727,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
 
         String projectsId = new String();
 
-        for(Project proj: projects){
+        for(Project proj: shareableProjectList){
             if(projectsId.isEmpty()){
                 projectsId = proj.getId();
             }else {
@@ -741,7 +744,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     private ShakeUtil.OnShakeListener onShakeListener = new ShakeUtil.OnShakeListener() {
         @Override
         public void doActionAfterShake() {
-            actionShareList();
+            actionShareList(projects);
         }
     };
 
