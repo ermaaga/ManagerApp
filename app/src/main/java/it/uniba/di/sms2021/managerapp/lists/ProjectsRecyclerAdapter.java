@@ -1,5 +1,7 @@
 package it.uniba.di.sms2021.managerapp.lists;
 
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,8 +48,21 @@ public class ProjectsRecyclerAdapter extends ListAdapter<Project, RecyclerView.V
 
         TextView titleTextView = itemView.findViewById(R.id.project_title_text_view);
         TextView descriptionTextView = itemView.findViewById(R.id.project_exam_text_view);
+        TextView voteTextView = itemView.findViewById(R.id.project_text_vote);
+
         titleTextView.setText(String.format("%s - %s", project.getName(), project.getStudyCaseName()));
         descriptionTextView.setText(project.getExamName());
+
+        /*Viene visualizzata la valutazione del progetto nel caso in cui esso abbia una valutazione
+          e l'utente corrente ne faccia parte*/
+        if(project.getEvaluation()!=null && project.isMember()){
+            voteTextView.setText("" + project.getEvaluation().getVote());
+
+            SpannableString content = new SpannableString("" + project.getEvaluation().getVote());
+            content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+            voteTextView.setText(content);
+            voteTextView.setVisibility(View.VISIBLE);
+        }
     }
 
     public interface OnActionListener {

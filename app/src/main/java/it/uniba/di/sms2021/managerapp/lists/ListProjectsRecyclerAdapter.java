@@ -10,10 +10,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
-
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.ListProjects;
 
 public class ListProjectsRecyclerAdapter extends ListAdapter<ListProjects, RecyclerView.ViewHolder> {
@@ -31,6 +28,7 @@ public class ListProjectsRecyclerAdapter extends ListAdapter<ListProjects, Recyc
                 parent, false);
 
         //Nota: volendo si può creare una classe ViewHolder a parte.
+        //TODO vedere se eliminare il commento
         return new RecyclerView.ViewHolder(view) {
             @Override
             public String toString() {
