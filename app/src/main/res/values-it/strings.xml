@@ -103,6 +103,7 @@
     <string name="text_label_favourite_projects_title">Progetti Preferiti</string>
     <string name="text_label_tried_projects_title">Progetti Provati</string>
     <string name="text_label_evaluated_projects_title">Progetti Valutati</string>
+    <string name="text_label_abandon_project">Abbandona progetto</string>
 
     <string name="label_Dialog_Header">Informazione</string>
     <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>
@@ -121,6 +122,7 @@
     <string name="label_Dialog_message_gps_permission_necessary">Il permesso è necessario  per inviare la lista di progetti.</string>
     <string name="label_Dialog_title_gps_permission_denied">Permesso negato</string>
     <string name="label_Dialog_message_gps_permission_denied">Senza il permesso l\'app non è in grado di inviare la lista dei tuoi progetti.</string>
+    <string name="label_Dialog_title_abandon_project">Sei sicuro di voler abbandonare il progetto?</string>
 
     <string name="text_checkbox_dialog_view_list">Visualizza la lista ricevuta</string>
 
@@ -227,6 +229,8 @@
     <string name="text_message_favourite_projects_empty">Non hai impostato nessun progetto come preferito</string>
     <string name="text_message_evaluated_projects_empty">Non hai ancora valutato nessun progetto</string>
     <string name="text_message_unsaved_changes">Ci sono modifiche non salvate. Vuoi salvarle?</string>
+    <string name="text_message_abandoned_project">Hai abbandonato il progetto</string>
+    <string name="text_message_project_abandonment_error">Si è verificato un errore. Per favore riprova più tardi</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 

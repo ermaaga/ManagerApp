@@ -1,5 +1,7 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
@@ -8,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.HorizontalScrollView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,10 +20,18 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DatabaseReference;
+
+import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.enitities.Group;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivity;
 import it.uniba.di.sms2021.managerapp.utility.ConnectionCheckBroadcastReceiver;
@@ -138,7 +149,6 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         MenuItem  evaluateMenuItem = menu.findItem(R.id.action_evaluate_project);
         if(project.isProfessor() && project.getEvaluation()==null){
             evaluateMenuItem.setVisible(true);
-
         }else{
             if(project.isProfessor() && project.getEvaluation()!=null){
                 evaluateMenuItem.setTitle(R.string.text_label_update_evaluate);
@@ -146,6 +156,12 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
             }
 
         }
+
+        MenuItem  abandonMenuItem = menu.findItem(R.id.action_abandon_project);
+        if(project.isMember()){
+            abandonMenuItem.setVisible(true);
+        }
+
         return true;
     }
 
@@ -166,6 +182,64 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
             Intent intent = new Intent(this, ProjectEvaluationActivity.class);
             intent.putExtra(Project.KEY, project);
             startActivityForResult(intent, REQUEST_EVALUATION);
+        }else if(menuId == R.id.action_abandon_project){
+
+            new AlertDialog.Builder(this)
+                .setTitle(R.string.label_Dialog_title_abandon_project)
+                .setPositiveButton(R.string.text_button_yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            List<String> members = project.getMembri();
+                            if (members == null) {
+                                throw new RuntimeException("Questo non dovrebbe mai accadere");
+                            }
+                            members.remove(LoginHelper.getCurrentUser().getAccountId());
+
+                            DatabaseReference groupReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS).child(project.getId());
+
+                            if(members.size()!=0){
+                                //se la lista dei membri non è vuota quindi vuol dire che c'è ancora almeno un membro allora aggiorna la lista dei membri
+                                groupReference.child(Group.Keys.MEMBERS).setValue(members)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                onSupportNavigateUp();
+                                                Toast.makeText(getApplicationContext(), R.string.text_message_abandoned_project, Toast.LENGTH_LONG).show();
+
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Toast.makeText(getApplicationContext(), R.string.text_message_project_abandonment_error, Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }else{
+                                //se l'ultimo membro rimasto ha abbandonato rimuove completamento l'intero gruppo
+                                groupReference.removeValue()
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void aVoid) {
+                                            onSupportNavigateUp();
+                                            Toast.makeText(getApplicationContext(), R.string.text_message_abandoned_project , Toast.LENGTH_LONG).show();
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Toast.makeText(getApplicationContext(),R.string.text_message_project_abandonment_error , Toast.LENGTH_LONG).show();
+                                        }
+                                    });
+                            }
+
+
+                        }
+                    }).setNegativeButton(R.string.text_button_no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            }).show();
+
         }
         return super.onOptionsItemSelected(item);
     }
