@@ -183,7 +183,12 @@ public class ProfileActivity extends AbstractBottomNavigationActivity implements
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
         if (itemId == R.id.nav_profile) {
-            ProfileActivity.this.recreate();
+            activityIntent=PROFILE_ACTIVITY;
+            if(editPhotoButton.getVisibility()==View.VISIBLE && thereAreUnsavedChanges()) {
+                displaySaveRequestDialog(activityIntent);
+            }else{
+                goIntent(activityIntent);
+            }
         } else if (itemId == R.id.nav_exams) {
             activityIntent=EXAMS_ACTIVITY;
             if(editPhotoButton.getVisibility()==View.VISIBLE && thereAreUnsavedChanges()){
