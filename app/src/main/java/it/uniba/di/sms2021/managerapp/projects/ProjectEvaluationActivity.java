@@ -2,6 +2,8 @@ package it.uniba.di.sms2021.managerapp.projects;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
@@ -56,9 +58,50 @@ public class ProjectEvaluationActivity extends AbstractFormActivity {
 
         project = getIntent().getParcelableExtra(Project.KEY);
 
-       groupsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS);
-       evaluatedProjectsReference =  FirebaseDbHelper.getEvaluatedProjectsReference(LoginHelper.getCurrentUser().getAccountId());
+        groupsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS);
+        evaluatedProjectsReference =  FirebaseDbHelper.getEvaluatedProjectsReference(LoginHelper.getCurrentUser().getAccountId());
 
+        voteEditText.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+
+            public void afterTextChanged(Editable arg0) {
+                String str = voteEditText.getText().toString();
+                if (str.isEmpty()) return;
+                String str2 = PerfectDecimal(str, 3, 2);
+
+                if (!str2.equals(str)) {
+                    voteEditText.setText(str2);
+                    int pos = voteEditText.getText().length();
+                    voteEditText.setSelection(pos);
+                }
+            }
+        });
+    }
+
+    public String PerfectDecimal(String str, int MAX_BEFORE_POINT, int MAX_DECIMAL){
+        if(str.charAt(0) == '.') str = "0"+str;
+        int max = str.length();
+
+        String rFinal = "";
+        boolean after = false;
+        int i = 0, up = 0, decimal = 0; char t;
+        while(i < max){
+            t = str.charAt(i);
+            if(t != '.' && after == false){
+                up++;
+                if(up > MAX_BEFORE_POINT) return rFinal;
+            }else if(t == '.'){
+                after = true;
+            }else{
+                decimal++;
+                if(decimal > MAX_DECIMAL)
+                    return rFinal;
+            }
+            rFinal = rFinal + t;
+            i++;
+        }return rFinal;
     }
 
     @Override
