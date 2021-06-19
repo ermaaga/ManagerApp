@@ -1,19 +1,20 @@
 package it.uniba.di.sms2021.managerapp.exams;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,14 +26,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import it.uniba.di.sms2021.managerapp.Application;
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.notifications.ExamJoinRequest;
-import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.ExamJoinRequest;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.lists.ExamsRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.notifications.NotificationChecker;
@@ -50,9 +51,32 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
     private DatabaseReference examsReference;
     private ValueEventListener examsListener;
 
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Carica dati dummy solo se Application.LOAD_DUMMY_DATA è true
+        Application application = (Application) getApplication();
+        if (application.shouldLoadData()) {
+            int permission = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+            if (application.shouldUploadFiles() && permission != PackageManager.PERMISSION_GRANTED) {
+                // We don't have permission so prompt the user
+                ActivityCompat.requestPermissions(
+                        this,
+                        PERMISSIONS_STORAGE,
+                        REQUEST_EXTERNAL_STORAGE
+                );
+            } else {
+                loadDummyData(application);
+            }
+        }
 
         // initialize components
 
@@ -242,6 +266,20 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
         btn_CreateNewExam = findViewById(R.id.exam_add_floating_action_button);
         if (LoginHelper.getCurrentUser().getRuolo() != User.ROLE_PROFESSOR) {
             btn_CreateNewExam.setVisibility(View.GONE);
+        }
+    }
+
+    private void loadDummyData(Application application) {
+        application.getDataLoader().loadData(application);
+        application.stopLoadingData();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_EXTERNAL_STORAGE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                loadDummyData((Application) getApplication());
+            }
         }
     }
 }

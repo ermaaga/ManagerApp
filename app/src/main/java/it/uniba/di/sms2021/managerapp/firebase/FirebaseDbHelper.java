@@ -1,22 +1,10 @@
 package it.uniba.di.sms2021.managerapp.firebase;
 
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import it.uniba.di.sms2021.managerapp.enitities.ListProjects;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 
 public class FirebaseDbHelper {
@@ -41,11 +29,13 @@ public class FirebaseDbHelper {
     public static final String TABLE_NEW_REPLY_REPORT = "new_reply_report";
     public static final String TABLE_PENDING_REQUESTS = "pending_requests";
 
-    private static final String TABLE_LISTS_PROJECTS= "lists_projects";
+    public static final String TABLE_LISTS_PROJECTS= "lists_projects";
     public static final String TABLE_RECEIVED_PROJECT_LISTS = "received_project_lists";
     public static final String TABLE_FAVOURITE_PROJECTS = "favourite_projects";
     public static final String TABLE_TRIED_PROJECTS = "tried_projects";
     public static final String TABLE_EVALUATED_PROJECTS = "evaluated_projects";
+
+    public static final String GROUPS_FOLDER = "Groups";
 
     private static FirebaseDatabase INSTANCE;
     public static FirebaseDatabase getDBInstance() {
@@ -118,12 +108,18 @@ public class FirebaseDbHelper {
 
     public static StorageReference getStudyCaseFileReference(StudyCase studyCase,
                                                              String fileName) {
-        return getStudyCasePathReference(studyCase).child(fileName);
+        return getOldStudyCasePathReference(studyCase).child(fileName);
+    }
+
+    //TODO rimuovere dopo aver aggiunto dati dummy
+    public static StorageReference getOldStudyCasePathReference(StudyCase studyCase) {
+        return FirebaseStorage.getInstance().getReference().child("Exam" + studyCase.getEsame())
+                .child("StudyCase" + studyCase.getId());
     }
 
     public static StorageReference getStudyCasePathReference(StudyCase studyCase) {
-        return FirebaseStorage.getInstance().getReference().child("Exam" + studyCase.getEsame())
-                .child("StudyCase" + studyCase.getId());
+        return FirebaseStorage.getInstance().getReference("StudyCases")
+                .child("Exam" + studyCase.getEsame()).child("StudyCase" + studyCase.getId());
     }
 
     public static void addProjectToTriedProjects(Project project) {

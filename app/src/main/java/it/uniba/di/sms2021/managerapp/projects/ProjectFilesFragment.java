@@ -8,21 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,6 +17,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -51,13 +48,13 @@ import java.util.List;
 import java.util.Set;
 
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.enitities.file.ManagerCloudFile;
 import it.uniba.di.sms2021.managerapp.enitities.file.ManagerFile;
 import it.uniba.di.sms2021.managerapp.enitities.file.ManagerLocalFile;
 import it.uniba.di.sms2021.managerapp.firebase.FileDownloader;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.firebase.TemporaryFileDownloader;
-import it.uniba.di.sms2021.managerapp.enitities.file.ManagerCloudFile;
 import it.uniba.di.sms2021.managerapp.lists.FilesRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.ConnectionCheckBroadcastReceiver;
 import it.uniba.di.sms2021.managerapp.utility.FileException;
@@ -74,7 +71,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     private static final int REQUEST_PERMISSION_PREVIEW = 2;
     private static final int REQUEST_PERMISSION_LOCAL_FILES = 3;
 
-    private static final String GROUPS_FOLDER = "Groups";
+    private static final String GROUPS_FOLDER = FirebaseDbHelper.GROUPS_FOLDER;
 
     private StorageReference projectStorageRef;
     private Set<StorageReference> elaboratingReferences;

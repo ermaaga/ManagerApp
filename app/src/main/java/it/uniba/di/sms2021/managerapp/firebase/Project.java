@@ -6,16 +6,10 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.ListResult;
-import com.google.firebase.storage.StorageMetadata;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +20,6 @@ import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.ProjectPermissions;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
-import it.uniba.di.sms2021.managerapp.projects.ProjectFilesFragment;
 
 /**
  * Classe di utility che popolerà tutte le informazioni utili per un progetto a partire da query
@@ -41,6 +34,7 @@ public class Project implements Parcelable {
     public static final String KEY = "project";
 
     public static abstract class Initialiser {
+        private static final String TAG = "Project.Initialiser";
         Project project;
 
         /**
@@ -62,18 +56,19 @@ public class Project implements Parcelable {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             boolean found = false;
 
-                            for (DataSnapshot child: snapshot.getChildren()) {
-                                if (child.getKey().equals(group.getExam())) {
-                                    Exam exam = child.getValue(Exam.class);
-                                    project.examName = exam.getName();
-                                    project.professorsId = exam.getProfessors();
-                                    found = true;
-                                    break;
-                                }
+                            if (project.getGroup() == null) {
+                                return;
+                            }
+                            DataSnapshot child = snapshot.child(project.getExam());
+                            if (child.exists()) {
+                                Exam exam = child.getValue(Exam.class);
+                                project.examName = exam.getName();
+                                project.professorsId = exam.getProfessors();
+                                found = true;
                             }
                             if (!found) {
-                                throw new RuntimeException("Impossibile trovare l'esame con l'id "
-                                        + group.getExam() + " nel progetto di id " + project.getId());
+                                Log.e(TAG, "Impossibile trovare l'esame con l'id "
+                                        + project.getExam() + " nel progetto di id " + project.getId());
                             }
 
                             if (project.isInitialisationDone()) {
@@ -94,7 +89,8 @@ public class Project implements Parcelable {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             boolean found = false;
                             for (DataSnapshot child: snapshot.getChildren()) {
-                                if (child.getKey().equals(group.getStudyCase())) {
+                                found = true;
+                                if (group != null && child.getKey().equals(group.getStudyCase())) {
                                     StudyCase studyCase = child.getValue(StudyCase.class);
                                     project.studyCaseName = studyCase.getNome();
                                     found = true;
