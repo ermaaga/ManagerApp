@@ -35,10 +35,11 @@ import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 
 public class DummyDataLoader implements DataLoader {
     private static final String TAG = "DummyDataLoader";
-    private List<StorageMetadata> metadataList = new ArrayList<>();
-    private List<Uri> uriList = new ArrayList<>();
-    private List<StorageReference> referencesList = new ArrayList<>();
+    private final List<StorageMetadata> metadataList = new ArrayList<>();
+    private final List<Uri> uriList = new ArrayList<>();
+    private final List<StorageReference> referencesList = new ArrayList<>();
     private int nextInUploadQueue = 0;
+    private int currentlyUploading = -1;
 
     @Override
     public void loadData(Application application) {
@@ -314,7 +315,12 @@ public class DummyDataLoader implements DataLoader {
     }
 
     private void uploadNextItem() {
-        if (uriList.size() > nextInUploadQueue) {
+        if (uriList.size() <= nextInUploadQueue) {
+            Log.i(TAG, "Finished uploading files");
+            return;
+        }
+        if (nextInUploadQueue != currentlyUploading) {
+            currentlyUploading = nextInUploadQueue;
             Uri uri = uriList.get(nextInUploadQueue);
             referencesList.get(nextInUploadQueue).child(uri.getLastPathSegment())
                     .putFile(uri, metadataList.get(nextInUploadQueue)).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
@@ -323,14 +329,14 @@ public class DummyDataLoader implements DataLoader {
                     new Handler().postAtTime(() -> {
                         nextInUploadQueue++;
                         uploadNextItem();
-                    }, 1000);
+                    }, 100);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
                     new Handler().postAtTime(() -> {
                         uploadNextItem();
-                    }, 2000);
+                    }, 1000);
                 }
             });
         }
