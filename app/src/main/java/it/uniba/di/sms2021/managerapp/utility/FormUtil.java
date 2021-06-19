@@ -33,7 +33,7 @@ public class FormUtil {
         return valid;
     }
 
-    private static boolean isEmailValid(String email, TextInputLayout emailInputLayout, Context context) {
+    public static boolean isEmailValid(String email, TextInputLayout emailInputLayout, Context context) {
         boolean valid = true;
         if (TextUtils.isEmpty(email)) {
             emailInputLayout.setError( context.getResources().getString(R.string.required_field) );

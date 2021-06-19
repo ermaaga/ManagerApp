@@ -23,6 +23,7 @@
     <string name="activity_label_project_reviews">Recensioni</string>
     <string name="activity_label_projects_sharing">Seleziona il dispositivo</string>
     <string name="activity_label_report_replies">Risposte</string>
+    <string name="activity_label_forgot_password" >Inserisci la tua email</string>
 
     <string name="activity_subtitle_not_connected_bluetooth">Non connesso</string>
     <string name="activity_subtitle_connecting_bluetooth">Connessione...</string>
@@ -104,6 +105,7 @@
     <string name="text_label_tried_projects_title">Progetti Provati</string>
     <string name="text_label_evaluated_projects_title">Progetti Valutati</string>
     <string name="text_label_abandon_project">Abbandona progetto</string>
+    <string name="text_label_forgot_password">Hai dimenticato la tua password?</string>
 
     <string name="label_Dialog_Header">Informazione</string>
     <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>
@@ -231,6 +233,8 @@
     <string name="text_message_unsaved_changes">Ci sono modifiche non salvate. Vuoi salvarle?</string>
     <string name="text_message_abandoned_project">Hai abbandonato il progetto</string>
     <string name="text_message_project_abandonment_error">Si è verificato un errore. Per favore riprova più tardi</string>
+    <string name="test_message_reset_email">L\'email per resettare la password è stata inviata</string>
+    <string name="test_message_email_not_exist">Non esiste nessun account con quest\'email</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -266,6 +270,7 @@
     <string name="text_button_open_project_download_folder">Apri Cartella</string>
     <string name="text_button_yes">Si</string>
     <string name="text_button_no">No</string>
+    <string name="text_button_send_email">Invia email</string>
 
     <string name="text_hint_name_studycase">Nome</string>
     <string name="text_hint_name_group">Nome</string>

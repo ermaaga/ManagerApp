@@ -22,6 +22,7 @@
     <string name="activity_label_project_reviews">Reviews</string>
     <string name="activity_label_projects_sharing">Select the device</string>
     <string name="activity_label_report_replies">Replies</string>
+    <string name="activity_label_forgot_password">Insert your email</string>
 
     <string name="activity_subtitle_not_connected_bluetooth">Not connected</string>
     <string name="activity_subtitle_connecting_bluetooth">Connecting...</string>
@@ -125,6 +126,7 @@
     <string name="text_label_tried_projects_title">Tried Projects</string>
     <string name="text_label_evaluated_projects_title">Evaluated Projects</string>
     <string name="text_label_abandon_project">Abandon project</string>
+    <string name="text_label_forgot_password">Did you forget your password?</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
@@ -240,6 +242,8 @@
     <string name="text_message_unsaved_changes">There are unsaved changes. Do you want to save them?</string>
     <string name="text_message_abandoned_project">You abandoned the project</string>
     <string name="text_message_project_abandonment_error">An error has occurred. Please try again later</string>
+    <string name="test_message_reset_email">The password reset email has been sent</string>
+    <string name="test_message_email_not_exist">There is no account with this email</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -276,6 +280,7 @@
     <string name="text_button_open_project_download_folder">Open Folder</string>
     <string name="text_button_yes">Yes</string>
     <string name="text_button_no">No</string>
+    <string name="text_button_send_email">Send email</string>
 
     <string name="text_hint_email_user" translatable="false">Email</string>
     <string name="text_hint_password_user" translatable="false">Password</string>

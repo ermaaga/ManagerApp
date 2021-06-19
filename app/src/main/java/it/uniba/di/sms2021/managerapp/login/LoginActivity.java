@@ -56,6 +56,7 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
 
     private TextView loginGoogleTextView;
     private TextView goCreateAccountTextView;
+    private TextView forgotPasswordTextView;
 
     private Button loginEmailPassButton;
     private TextInputEditText emailEditText;
@@ -74,6 +75,7 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
         goCreateAccountTextView = (TextView) findViewById(R.id.goTextViewCreateAccount);
         loginEmailPassButton = (Button) findViewById(R.id.buttonLoginEmailPassword);
         loginGoogleTextView = (TextView) findViewById(R.id.TextViewloginGoogle);
+        forgotPasswordTextView = (TextView) findViewById(R.id.goTextViewForgotPassword);
 
         emailEditText = (TextInputEditText) findViewById(R.id.email_edit_text);
         passwordEditText = (TextInputEditText) findViewById(R.id.password_edit_text);
@@ -88,6 +90,7 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
         goCreateAccountTextView.setOnClickListener(this);
         loginEmailPassButton.setOnClickListener(this);
         loginGoogleTextView.setOnClickListener(this);
+        forgotPasswordTextView.setOnClickListener(this);
 
 
         gso = LoginHelper.getOptions(this);
@@ -232,6 +235,8 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
             loginGoogle();
         } else if (id == R.id.goTextViewCreateAccount) {
             goCreateAccount();
+        } else if(id == R.id.goTextViewForgotPassword){
+            goForgotPassword();
         } else {
             throw new IllegalStateException("Unexpected value: " + v.getId());
         }
@@ -240,6 +245,11 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
     private void goCreateAccount() {
         Intent signInIntent = new Intent(this, SignInActivity.class);
         startActivity(signInIntent);
+    }
+
+    private void goForgotPassword() {
+        Intent forgotPasswordIntent = new Intent(this, ForgotPasswordActivity.class);
+        startActivity(forgotPasswordIntent);
     }
 
     //TODO da migliorare

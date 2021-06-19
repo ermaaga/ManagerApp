@@ -96,6 +96,12 @@
             android:name=".login.SignInActivity"
             android:label="@string/activity_label_sign_in"
             android:windowSoftInputMode="adjustPan"/>
+
+        <activity
+            android:name=".login.ForgotPasswordActivity"
+            android:label="@string/activity_label_forgot_password"
+            android:windowSoftInputMode="adjustPan"/>
+
         <activity
             android:name=".projects.ProjectsActivity"
             android:label="@string/activity_label_projects"
