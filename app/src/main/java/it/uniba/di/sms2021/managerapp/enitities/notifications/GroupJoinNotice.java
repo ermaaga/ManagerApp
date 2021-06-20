@@ -30,6 +30,17 @@ public class GroupJoinNotice implements Notifiable {
     public GroupJoinNotice() {
     }
 
+    /**
+     *
+     * @param uid l'id dell'utente che riceve la nitifica
+     * @param noticeId l'id della notifica
+     * @param user l'utente che si è unito al gruppo
+     * @param group il gruppo a cui si è unito l'utente
+     * @param isRequester true se la notifica è indirizzata a chi si è unito al gruppo (per notificare
+     *                    di essere stato accettato), false altrimenti (per notificare gli altri membri
+     *                    del gruppo)
+     * @param timeSent l'ora in cui è stata inviata la notifica
+     */
     public GroupJoinNotice(String uid, String noticeId, User user, Group group, boolean isRequester, long timeSent) {
         this.uid = uid;
         this.noticeId = noticeId;

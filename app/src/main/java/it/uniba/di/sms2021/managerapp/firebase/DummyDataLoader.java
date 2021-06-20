@@ -16,10 +16,13 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 import it.uniba.di.sms2021.managerapp.Application;
 import it.uniba.di.sms2021.managerapp.enitities.Course;
@@ -29,8 +32,18 @@ import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.ListProjects;
 import it.uniba.di.sms2021.managerapp.enitities.ProjectPermissions;
+import it.uniba.di.sms2021.managerapp.enitities.Reply;
+import it.uniba.di.sms2021.managerapp.enitities.Report;
+import it.uniba.di.sms2021.managerapp.enitities.Review;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.ExamJoinRequest;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinNotice;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewEvaluation;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewReplyReportNotice;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewReportNotice;
+import it.uniba.di.sms2021.managerapp.notifications.EvaluationNotification;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 
 public class DummyDataLoader implements DataLoader {
@@ -158,7 +171,7 @@ public class DummyDataLoader implements DataLoader {
                 new Exam(null, "Tesi di Laurea",
                         Arrays.asList(userArray[0].getAccountId()),
                         Arrays.asList(userArray[4].getAccountId(), userArray[5].getAccountId(),
-                                userArray[6].getAccountId(), userArray[7].getAccountId(),
+                                userArray[7].getAccountId(),
                                 userArray[8].getAccountId()),
                         2020),
         };
@@ -201,7 +214,10 @@ public class DummyDataLoader implements DataLoader {
                         examArrays[4].getId()),
                 new StudyCase(null, "Studio IOT",
                         "Studio IOT presso azienda.",
-                        examArrays[4].getId())
+                        examArrays[4].getId()),
+                new StudyCase(null, "Progettazione Sito Turismo",
+                        "Progettare un'interfaccia grafica per un sito dedito al turismo.",
+                        examArrays[1].getId())
         };
         File caseStudyFile = new File("/sdcard/Download/Elenco casi di studio 20-21.pdf");
         if (!caseStudyFile.exists()) {
@@ -251,11 +267,14 @@ public class DummyDataLoader implements DataLoader {
         tesiMarcoMarrone.setPermissions(new ProjectPermissions());
         tesiMarcoMarrone.setReleaseNames(Arrays.asList("link github.txt"));
         tesiMarcoMarrone.setEvaluation(new Evaluation(100, "Bella tesi, complimenti."));
+        Group turismTech = new Group(null, "TurismTech", studyCasesArray[6].getId(),
+                examArrays[1].getId(), Arrays.asList(userArray[0].getAccountId()));
         Group[] groupsArray = {
                 mobileTechs,
                 skyMind,
                 tesiGiuseppeGialli,
-                tesiMarcoMarrone
+                tesiMarcoMarrone,
+                turismTech
         };
         File[] groupFiles = {
                 new File("/sdcard/Download/link github.txt"),
@@ -283,6 +302,7 @@ public class DummyDataLoader implements DataLoader {
         scheduleUpload(application, storageReference.child(groupsArray[2].getId()), groupFiles[0]);
         scheduleUpload(application, storageReference.child(groupsArray[3].getId()), groupFiles[0]);
 
+        root.child(FirebaseDbHelper.TABLE_LISTS_PROJECTS).setValue(null);
         FirebaseDbHelper.getFavouriteProjectsReference(userArray[0].getAccountId())
                 .child(groupsArray[0].getId()).setValue(true);
         FirebaseDbHelper.getTriedProjectsReference(userArray[0].getAccountId())
@@ -296,7 +316,105 @@ public class DummyDataLoader implements DataLoader {
         listProjects.setIdList(projectListPush.getKey());
         projectListPush.setValue(listProjects);
 
+        //2 Report -> Uno per gruppo mobileTechs ed uno per testiGiuseppeGialli
+        DatabaseReference reportsReference = root.child(FirebaseDbHelper.TABLE_REPORTS);
+        reportsReference.setValue(null);
+        String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
+        Report[] reportArray = {
+                new Report(null, userArray[1].getAccountId(), date,
+                mobileTechs.getId(), "Assicuratevi di aver aggiunto la mia email" +
+                        " a quelle autorizzate a visualizzare la cartella drive"),
+                new Report(null, userArray[0].getAccountId(), date,
+                        tesiGiuseppeGialli.getId(), "Consegna entro la prossima settimana" +
+                        " o salterai la sessione di laurea.")
+        };
+        for (Report report: reportArray) {
+            DatabaseReference reportPush = reportsReference
+                    .child(FirebaseDbHelper.CHILD_REPORTS_LIST).push();
+            report.setReportId(reportPush.getKey());
+            reportPush.setValue(report);
+            reportsReference.child(FirebaseDbHelper.CHILD_LATEST_REPORTS)
+                    .child(report.getGroupId()).setValue(reportPush.getKey());
+        }
 
+        root.child(FirebaseDbHelper.TABLE_REPLIES_REPORT).setValue(null);
+        DatabaseReference reportReplyReference = root.child(FirebaseDbHelper.TABLE_REPLIES_REPORT)
+                .push();
+        Reply reply = new Reply(reportReplyReference.getKey(), userArray[4].getAccountId(),
+                date, "D'accordo, consegnerò fra due giorni al massimo.",
+                reportArray[1].getReportId());
+        reportReplyReference.setValue(reply);
+
+
+        //Varie notifiche
+        root.child(FirebaseDbHelper.TABLE_NOTIFICATIONS).setValue(null);
+        Log.d(TAG, examArrays[4].getName());
+        DatabaseReference examRequestReference = FirebaseDbHelper.getExamJoinRequestReference(userArray[0].getAccountId()).push();
+        ExamJoinRequest examRequest = new ExamJoinRequest(examRequestReference.getKey(), userArray[6].getAccountId(),
+                userArray[6].getFullName(), examArrays[4], System.currentTimeMillis());
+        examRequestReference.setValue(examRequest);
+
+        DatabaseReference groupJoinNoticeReference = FirebaseDbHelper
+                .getGroupUserJoinNoticeReference(userArray[0].getAccountId()).push();
+        GroupJoinNotice notice = new GroupJoinNotice(userArray[0].getAccountId(), groupJoinNoticeReference.getKey(),
+                userArray[7], groupsArray[0], false, System.currentTimeMillis());
+        groupJoinNoticeReference.setValue(notice);
+
+        DatabaseReference groupJoinRequestReference = FirebaseDbHelper
+                .getGroupJoinRequestReference(userArray[0].getAccountId()).push();
+        GroupJoinRequest groupRequest = new GroupJoinRequest(groupJoinRequestReference.getKey(),
+                userArray[4].getAccountId(), turismTech.getId(), userArray[0].getAccountId());
+        groupJoinRequestReference.setValue(groupRequest);
+
+        DatabaseReference newEvaluationReference = FirebaseDbHelper
+                .getNewEvaluationReference(userArray[0].getAccountId()).push();
+        EvaluationNotification evaluationNotification = new EvaluationNotification(
+                new NewEvaluation(newEvaluationReference.getKey(), userArray[1].getAccountId(),
+                        mobileTechs.getId(), false));
+        newEvaluationReference.setValue(evaluationNotification);
+
+        DatabaseReference newReportReference = FirebaseDbHelper
+                .getNewReportReference(userArray[0].getAccountId()).push();
+        NewReportNotice newReportNotice = new NewReportNotice(reportArray[0].getReportId(),
+                reportArray[0].getUserId(), reportArray[0].getGroupId());
+        newReportReference.setValue(newReportNotice);
+
+        DatabaseReference newReplyReportReference = FirebaseDbHelper
+                .getNewReplyReportReference(userArray[0].getAccountId()).push();
+        NewReplyReportNotice newReplyReportNotice = new NewReplyReportNotice(reply.getReplyId(),
+                reply.getUserId(), reply.getOriginId(), tesiGiuseppeGialli.getId());
+        newReplyReportReference.setValue(newReplyReportNotice);
+
+
+        //Recensioni
+        DatabaseReference reviews = root.child(FirebaseDbHelper.TABLE_REVIEWS);
+        reviews.setValue(null);
+        Review[] reviewArray = {
+                new Review(null, userArray[4].getAccountId(), date, 3, groupsArray[0].getId(),
+                        "Da quello che ho visto l'app sembra essere discreta."),
+                new Review(null, userArray[5].getAccountId(), date, 5, groupsArray[0].getId(),
+                        "Non vedo l'ora di provarla, continuate così!")
+        };
+        for (Review review: reviewArray) {
+            DatabaseReference push = reviews.push();
+            review.setReviewId(push.getKey());
+            push.setValue(review);
+        }
+
+        DatabaseReference reviewReplies = root.child(FirebaseDbHelper.TABLE_REPLIES_REVIEW);
+        reviewReplies.setValue(null);
+        Reply[] reviewReplyArray = {
+                new Reply(null, userArray[7].getAccountId(), date,
+                        "Grazie, facciamo del nostro meglio.", reviewArray[1].getReviewId()),
+                new Reply(null, userArray[8].getAccountId(), date,
+                        "Faremo in modo di mettere l'apk finale così che potrete provarla.",
+                        reviewArray[1].getReviewId()),
+        };
+        for (Reply reviewReply : reviewReplyArray) {
+            DatabaseReference push = reviewReplies.push();
+            reviewReply.setReplyId(push.getKey());
+            push.setValue(reviewReply);
+        }
     }
 
     private void scheduleUpload(Application application, StorageReference reference, File file) {

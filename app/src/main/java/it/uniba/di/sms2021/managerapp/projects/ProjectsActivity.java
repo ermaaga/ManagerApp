@@ -10,7 +10,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -433,7 +432,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
                                 new Project.Initialiser() {
                                     @Override
                                     public void onProjectInitialised(Project project) {
-                                        if (!favouriteProjects.contains(project)) {
+                                        if (project != null && !favouriteProjects.contains(project)) {
                                             favouriteProjects.add(project);
                                             favouriteProjectsAdapter.submitList(favouriteProjects);
                                             favouriteProjectsAdapter.notifyDataSetChanged();

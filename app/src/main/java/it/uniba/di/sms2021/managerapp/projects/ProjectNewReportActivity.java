@@ -82,10 +82,11 @@ public class ProjectNewReportActivity extends AbstractFormActivity implements Vi
             idgroup = project.getGroup().getId();
             String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
 
-            DatabaseReference newElement=reportReference.child("reportsList").push();
+            DatabaseReference newElement=reportReference.child(FirebaseDbHelper.CHILD_REPORTS_LIST).push();
             Report report  = new Report(newElement.getKey(), user, date, idgroup, reportComment);
             newElement.setValue(report);
-            reportReference.child("latestReports").child(idgroup).setValue(newElement.getKey());
+            reportReference.child(FirebaseDbHelper.CHILD_LATEST_REPORTS).child(idgroup)
+                    .setValue(newElement.getKey());
 
             sendReport();
             Toast.makeText(getApplicationContext(), R.string.text_message_project_report_submitted, Toast.LENGTH_SHORT).show();

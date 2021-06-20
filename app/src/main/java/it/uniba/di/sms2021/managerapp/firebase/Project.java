@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,7 +41,7 @@ public class Project implements Parcelable {
         /**
          * Definire cosa fare una volta che il progetto è stato inizializzato
          */
-        public abstract void onProjectInitialised (Project project);
+        public abstract void onProjectInitialised (@Nullable Project project);
 
         /**
          * Initializza il progetto con tutti i campi necessari a partire dal gruppo
@@ -57,6 +58,8 @@ public class Project implements Parcelable {
                             boolean found = false;
 
                             if (project.getGroup() == null) {
+                                Log.e(TAG, "Trovato un progetto con valore null, verrà saltata" +
+                                        "la sua inizializzazione");
                                 return;
                             }
                             DataSnapshot child = snapshot.child(project.getExam());

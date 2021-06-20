@@ -29,6 +29,9 @@ public class FirebaseDbHelper {
     public static final String TABLE_NEW_REPLY_REPORT = "new_reply_report";
     public static final String TABLE_PENDING_REQUESTS = "pending_requests";
 
+    public static final String CHILD_REPORTS_LIST = "reportsList";
+    public static final String CHILD_LATEST_REPORTS = "latestReports";
+
     public static final String TABLE_LISTS_PROJECTS= "lists_projects";
     public static final String TABLE_RECEIVED_PROJECT_LISTS = "received_project_lists";
     public static final String TABLE_FAVOURITE_PROJECTS = "favourite_projects";
