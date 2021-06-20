@@ -4,11 +4,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.HorizontalScrollView;
 import android.widget.Toast;
 
@@ -16,13 +14,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.chip.Chip;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DatabaseReference;
 
@@ -157,9 +153,9 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
 
         }
 
-        MenuItem  abandonMenuItem = menu.findItem(R.id.action_abandon_project);
+        MenuItem  abandonProjectMenuItem = menu.findItem(R.id.action_abandons_project);
         if(project.isMember()){
-            abandonMenuItem.setVisible(true);
+            abandonProjectMenuItem.setVisible(true);
         }
 
         return true;
@@ -182,66 +178,70 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
             Intent intent = new Intent(this, ProjectEvaluationActivity.class);
             intent.putExtra(Project.KEY, project);
             startActivityForResult(intent, REQUEST_EVALUATION);
-        }else if(menuId == R.id.action_abandon_project){
+        }else if(menuId == R.id.action_abandons_project){
+            showDialogAbandonsProject();
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-            new AlertDialog.Builder(this)
-                .setTitle(R.string.label_Dialog_title_abandon_project)
-                .setPositiveButton(R.string.text_button_yes, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            List<String> members = project.getMembri();
-                            if (members == null) {
-                                throw new RuntimeException("Questo non dovrebbe mai accadere");
+    private void showDialogAbandonsProject() {
+
+        new AlertDialog.Builder(this)
+            .setTitle(R.string.label_Dialog_title_abandon_project)
+            .setPositiveButton(R.string.text_button_yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    List<String> members = project.getMembri();
+                    if (members == null) {
+                        throw new RuntimeException("Questo non dovrebbe mai accadere");
+                    }
+                    members.remove(LoginHelper.getCurrentUser().getAccountId());
+
+                    DatabaseReference groupReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS).child(project.getId());
+
+                    if(members.size()!=0){
+                        //se la lista dei membri non è vuota quindi vuol dire che c'è ancora almeno un membro allora aggiorna la lista dei membri
+                        groupReference.child(Group.Keys.MEMBERS).setValue(members)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        onSupportNavigateUp();
+                                        Toast.makeText(getApplicationContext(), R.string.text_message_abandoned_project, Toast.LENGTH_LONG).show();
+
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(getApplicationContext(), R.string.text_message_abandonment_error, Toast.LENGTH_LONG).show();
                             }
-                            members.remove(LoginHelper.getCurrentUser().getAccountId());
-
-                            DatabaseReference groupReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS).child(project.getId());
-
-                            if(members.size()!=0){
-                                //se la lista dei membri non è vuota quindi vuol dire che c'è ancora almeno un membro allora aggiorna la lista dei membri
-                                groupReference.child(Group.Keys.MEMBERS).setValue(members)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                onSupportNavigateUp();
-                                                Toast.makeText(getApplicationContext(), R.string.text_message_abandoned_project, Toast.LENGTH_LONG).show();
-
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
+                        });
+                    }else{
+                        //se l'ultimo membro rimasto ha abbandonato rimuove completamento l'intero gruppo
+                        groupReference.removeValue()
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        onSupportNavigateUp();
+                                        Toast.makeText(getApplicationContext(), R.string.text_message_abandoned_project , Toast.LENGTH_LONG).show();
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
                                     @Override
                                     public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getApplicationContext(), R.string.text_message_project_abandonment_error, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(),R.string.text_message_abandonment_error, Toast.LENGTH_LONG).show();
                                     }
                                 });
-                            }else{
-                                //se l'ultimo membro rimasto ha abbandonato rimuove completamento l'intero gruppo
-                                groupReference.removeValue()
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            onSupportNavigateUp();
-                                            Toast.makeText(getApplicationContext(), R.string.text_message_abandoned_project , Toast.LENGTH_LONG).show();
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Toast.makeText(getApplicationContext(),R.string.text_message_project_abandonment_error , Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-                            }
+                    }
 
 
-                        }
-                    }).setNegativeButton(R.string.text_button_no, new DialogInterface.OnClickListener() {
+                }
+            }).setNegativeButton(R.string.text_button_no, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
 
                 }
             }).show();
 
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

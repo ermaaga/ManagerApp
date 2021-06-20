@@ -104,8 +104,9 @@
     <string name="text_label_favourite_projects_title">Progetti Preferiti</string>
     <string name="text_label_tried_projects_title">Progetti Provati</string>
     <string name="text_label_evaluated_projects_title">Progetti Valutati</string>
-    <string name="text_label_abandon_project">Abbandona progetto</string>
+    <string name="text_label_abandons_project">Abbandona progetto</string>
     <string name="text_label_forgot_password">Hai dimenticato la tua password?</string>
+    <string name="text_label_abandons_exam">Abbandona esame</string>
 
     <string name="label_Dialog_Header">Informazione</string>
     <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>
@@ -125,6 +126,7 @@
     <string name="label_Dialog_title_gps_permission_denied">Permesso negato</string>
     <string name="label_Dialog_message_gps_permission_denied">Senza il permesso l\'app non è in grado di inviare la lista dei tuoi progetti.</string>
     <string name="label_Dialog_title_abandon_project">Sei sicuro di voler abbandonare il progetto?</string>
+    <string name="label_Dialog_title_abandon_exam">Sei sicuro di voler abbandonare l\' esame?</string>
 
     <string name="text_checkbox_dialog_view_list">Visualizza la lista ricevuta</string>
 
@@ -232,7 +234,7 @@
     <string name="text_message_evaluated_projects_empty">Non hai ancora valutato nessun progetto</string>
     <string name="text_message_unsaved_changes">Ci sono modifiche non salvate. Vuoi salvarle?</string>
     <string name="text_message_abandoned_project">Hai abbandonato il progetto</string>
-    <string name="text_message_project_abandonment_error">Si è verificato un errore. Per favore riprova più tardi</string>
+    <string name="text_message_abandonment_error">Si è verificato un errore. Per favore riprova più tardi</string>
     <string name="test_message_reset_email">L\'email per resettare la password è stata inviata</string>
     <string name="test_message_email_not_exist">Non esiste nessun account con quest\'email</string>
 
@@ -324,6 +326,7 @@
     <string name="text_filter_projects_created">Creati</string>
     <string name="text_filter_projects_withrelease">Con Rilasci</string>
     <string name="text_filter_projects_hasevaluation">Valutati</string>
+    <string name="text_message_abandoned_exam">You abandoned the exam</string>
 
 
     <plurals name="text_notification_title_feed">

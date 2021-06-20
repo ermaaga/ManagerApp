@@ -45,6 +45,7 @@
     <string name="label_Dialog_title_gps_permission_denied">Permission denied</string>
     <string name="label_Dialog_message_gps_permission_denied">Without permission the app is unable to send your project list.</string>
     <string name="label_Dialog_title_abandon_project">Are you sure you want to abandon the project?</string>
+    <string name="label_Dialog_title_abandon_exam">Are you sure you want to abandon the exam?</string>
 
     <string name="text_error_validation">The group name cannot have much than 20 characters</string>
     <string name="text_error_max_review_report">The review cannot have much than 800 characters</string>
@@ -125,8 +126,9 @@
     <string name="text_label_favourite_projects_title">Favourite Projects</string>
     <string name="text_label_tried_projects_title">Tried Projects</string>
     <string name="text_label_evaluated_projects_title">Evaluated Projects</string>
-    <string name="text_label_abandon_project">Abandon project</string>
+    <string name="text_label_abandons_project">Abandons project</string>
     <string name="text_label_forgot_password">Did you forget your password?</string>
+    <string name="text_label_abandons_exam">Abandons exam</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
@@ -241,7 +243,7 @@
     <string name="text_message_evaluated_projects_empty">You haven\'t evaluated any projects yet</string>
     <string name="text_message_unsaved_changes">There are unsaved changes. Do you want to save them?</string>
     <string name="text_message_abandoned_project">You abandoned the project</string>
-    <string name="text_message_project_abandonment_error">An error has occurred. Please try again later</string>
+    <string name="text_message_abandonment_error">An error has occurred. Please try again later</string>
     <string name="test_message_reset_email">The password reset email has been sent</string>
     <string name="test_message_email_not_exist">There is no account with this email</string>
 
@@ -341,6 +343,7 @@
     <string name="text_filter_projects_created">Created</string>
     <string name="text_filter_projects_withrelease">With Releases</string>
     <string name="text_filter_projects_hasevaluation">Evaluated</string>
+    <string name="text_message_abandoned_exam">You abandoned the exam</string>
 
 
     <plurals name="text_notification_title_feed">

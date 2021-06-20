@@ -26,11 +26,11 @@
         android:visible="false"
         android:title="@string/text_label_evaluate" />
     <item
-        android:id="@+id/action_abandon_project"
+        android:id="@+id/action_abandons_project"
         android:enabled="true"
         app:showAsAction="never"
         android:visible="false"
-        android:title="@string/text_label_abandon_project"/>
+        android:title="@string/text_label_abandons_project"/>
     <item
         android:id="@+id/action_logout"
         android:enabled="true"
