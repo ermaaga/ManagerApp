@@ -12,19 +12,22 @@ import it.uniba.di.sms2021.managerapp.R;
 
 public class FormUtil {
     private static final String TAG ="FormUtil" ;
+    private static TextInputLayout  emailInputLayout;
+    private static TextInputLayout  passwordInputLayout;
 
-    //TODO migliorare questa classe per gestire la validazione dei campi in maniera più elegante
-
-    public static boolean validateEmailPassword(String email, String password, Context context, TextInputLayout  emailInputLayout, TextInputLayout  passwordInputLayout) {
+    public static boolean validateEmailPassword(String email, String password, AppCompatActivity activity) {
         boolean valid = true;
 
-        if (!isEmailValid(email,emailInputLayout, context)) {
+        emailInputLayout = activity.findViewById(R.id.email_input_layout);
+        passwordInputLayout =  activity.findViewById(R.id.password_input_layout);
+
+        if (!isEmailValid(email, activity)) {
             valid = false;
         } else {
             emailInputLayout.setError(null);
         }
 
-        if (!isPasswordValid(password, passwordInputLayout, context)) {
+        if (!isPasswordValid(password, activity)) {
             valid = false;
         } else {
             passwordInputLayout.setError(null);
@@ -33,28 +36,34 @@ public class FormUtil {
         return valid;
     }
 
-    public static boolean isEmailValid(String email, TextInputLayout emailInputLayout, Context context) {
+    public static boolean validateEmail(String email, AppCompatActivity activity){
+        emailInputLayout = activity.findViewById(R.id.email_input_layout);
+        return isEmailValid(email, activity);
+    }
+
+    private static boolean isEmailValid(String email, AppCompatActivity activity) {
         boolean valid = true;
+
         if (TextUtils.isEmpty(email)) {
-            emailInputLayout.setError( context.getResources().getString(R.string.required_field) );
+            emailInputLayout.setError( activity.getResources().getString(R.string.required_field) );
             valid = false;
         } else {
             if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-                emailInputLayout.setError(context.getResources().getString(R.string.error_email));
+                emailInputLayout.setError(activity.getResources().getString(R.string.error_email));
                 valid = false;
             }
         }
         return valid;
     }
 
-    private static boolean isPasswordValid(String password,TextInputLayout  passwordInputLayout, Context context) {
+    private static boolean isPasswordValid(String password, AppCompatActivity activity ) {
         boolean valid = true;
         if (TextUtils.isEmpty(password)) {
-            passwordInputLayout.setError( context.getResources().getString(R.string.required_field) );
+            passwordInputLayout.setError( activity.getResources().getString(R.string.required_field) );
             valid = false;
         } else {
             if(password.length() < 8){
-                passwordInputLayout.setError(context.getResources().getString(R.string.error_password));
+                passwordInputLayout.setError(activity.getResources().getString(R.string.error_password));
                 valid = false;
             }
         }

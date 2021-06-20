@@ -79,7 +79,7 @@ public class SignInActivity extends AbstractFormActivity {
         String surname = surnameEditText.getText().toString().trim();
 
         Log.d(TAG, "createAccount method:" + email);
-        if (FormUtil.validateEmailPassword(email, password, getApplicationContext(), emailInputLayout,passwordInputLayout )) {
+        if (FormUtil.validateEmailPassword(email, password, this )) {
 
             progressBar.setVisibility(View.VISIBLE);
             Log.d(TAG, "is validate");
@@ -156,56 +156,6 @@ public class SignInActivity extends AbstractFormActivity {
                 });
 
     }
-
-    /* metodi  duplicati sia in questa activity che in LoginActivity
-    per questo motivo è stata creta la classe utility FormUtil (da migliorare)
-
-    private boolean validate(String email, String password) {
-        boolean valid = true;
-
-        if (!isEmailValid(email)) {
-            valid = false;
-        } else {
-            emailInputLayout.setError(null);
-        }
-
-        if (!isPasswordValid(password)) {
-            valid = false;
-        } else {
-            passwordInputLayout.setError(null);
-        }
-
-        return valid;
-    }
-
-    private boolean isPasswordValid(String password) {
-        boolean valid = true;
-        if (TextUtils.isEmpty(password)) {
-            passwordInputLayout.setError(getString(R.string.required_field));
-            valid = false;
-        } else {
-            if(password.length() < 8){
-                passwordInputLayout.setError(getString(R.string.error_password));
-                valid = false;
-            }
-        }
-        return valid;
-    }
-
-    private boolean isEmailValid(String email) {
-        boolean valid = true;
-        if (TextUtils.isEmpty(email)) {
-            emailInputLayout.setError(getString(R.string.required_field));
-            valid = false;
-        } else {
-            if(!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-                emailInputLayout.setError(getString(R.string.error_email));
-                valid = false;
-            }
-        }
-        return valid;
-    }
-*/
 
 }
 

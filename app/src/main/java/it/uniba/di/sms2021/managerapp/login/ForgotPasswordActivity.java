@@ -55,7 +55,7 @@ public class ForgotPasswordActivity extends AbstractBaseActivity{
 
         String email=emailEditText.getText().toString();
 
-        if(FormUtil.isEmailValid(email, emailInputLayout, getApplicationContext())){
+        if(FormUtil.validateEmail(email,this)){
             emailInputLayout.setError(null);
             mAuth.sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override

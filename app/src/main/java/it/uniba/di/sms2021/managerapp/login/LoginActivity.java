@@ -256,7 +256,7 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
     private void loginEmailPassword(String email, String password) {
         Log.d(TAG, "signIn:" + email);
 
-        if (FormUtil.validateEmailPassword(email, password, getApplicationContext(), emailInputLayout, passwordInputLayout )) {
+        if (FormUtil.validateEmailPassword(email, password, this )) {
 
             progressBar.setVisibility(View.VISIBLE);
 
