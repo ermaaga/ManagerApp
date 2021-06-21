@@ -111,13 +111,7 @@ public class FirebaseDbHelper {
 
     public static StorageReference getStudyCaseFileReference(StudyCase studyCase,
                                                              String fileName) {
-        return getOldStudyCasePathReference(studyCase).child(fileName);
-    }
-
-    //TODO rimuovere dopo aver aggiunto dati dummy
-    public static StorageReference getOldStudyCasePathReference(StudyCase studyCase) {
-        return FirebaseStorage.getInstance().getReference().child("Exam" + studyCase.getEsame())
-                .child("StudyCase" + studyCase.getId());
+        return getStudyCasePathReference(studyCase).child(fileName);
     }
 
     public static StorageReference getStudyCasePathReference(StudyCase studyCase) {
