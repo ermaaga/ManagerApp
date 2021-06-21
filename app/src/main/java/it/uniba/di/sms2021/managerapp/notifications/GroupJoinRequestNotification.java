@@ -1,6 +1,7 @@
 package it.uniba.di.sms2021.managerapp.notifications;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,11 +21,13 @@ import java.util.Objects;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
-import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinNotice;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
+import it.uniba.di.sms2021.managerapp.firebase.Project;
+import it.uniba.di.sms2021.managerapp.projects.ProjectDetailActivity;
 
 /**
  * Classe wrapper di una richiesta di partecipazione ad un gruppo che inizializza tutti i campi
@@ -142,8 +145,18 @@ public class GroupJoinRequestNotification implements Notifiable {
 
     @Override
     public void onNotificationClick(Context context, @Nullable OnActionDoneListener listener) {
-        //TODO mostra profilo utente
-        Toast.makeText(context, R.string.text_message_not_yet_implemented, Toast.LENGTH_LONG).show();
+        new Project.Initialiser() {
+            @Override
+            public void onProjectInitialised(Project project) {
+                Intent intent = new Intent(context, ProjectDetailActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(Project.KEY, project);
+                intent.putExtra(ProjectDetailActivity.INITIAL_TAB_POSITION_KEY,
+                        ProjectDetailActivity.ABOUT_TAB_POSITION);
+
+                context.startActivity(intent);
+            }
+        }.initialiseProject(group);
 
         if (listener != null) {
             listener.onActionDone();
