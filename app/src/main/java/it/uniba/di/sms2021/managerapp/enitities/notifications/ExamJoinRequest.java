@@ -1,7 +1,7 @@
 package it.uniba.di.sms2021.managerapp.enitities.notifications;
 
 import android.content.Context;
-import android.widget.Toast;
+import android.content.Intent;
 
 import androidx.annotation.Nullable;
 
@@ -14,6 +14,7 @@ import java.util.Objects;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
+import it.uniba.di.sms2021.managerapp.exams.ExamDetailActivity;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.notifications.Notifiable;
 import it.uniba.di.sms2021.managerapp.notifications.OnActionDoneListener;
@@ -123,8 +124,9 @@ public class ExamJoinRequest implements Notifiable {
 
     @Override
     public void onNotificationClick(Context context, @Nullable OnActionDoneListener listener) {
-        //TODO mostra profilo utente
-        Toast.makeText(context, R.string.text_message_not_yet_implemented, Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(context, ExamDetailActivity.class);
+        intent.putExtra(Exam.Keys.EXAM, exam);
+        context.startActivity(intent);
 
         if (listener != null) {
             listener.onActionDone();

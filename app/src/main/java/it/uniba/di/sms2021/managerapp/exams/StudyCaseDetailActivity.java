@@ -123,7 +123,7 @@ public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
     }
 
     private void initialiseFileImageView() throws RuntimeException {
-        FirebaseDbHelper.getOldStudyCasePathReference(studyCase).listAll()
+        FirebaseDbHelper.getStudyCasePathReference(studyCase).listAll()
                 .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                     @Override
                     public void onSuccess(ListResult listResult) {
