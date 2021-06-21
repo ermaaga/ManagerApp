@@ -72,6 +72,10 @@ public class UserRecyclerAdapter extends ListAdapter<User, RecyclerView.ViewHold
         TextView fullNameTextView = itemView.findViewById(R.id.fullname_TextView);
         TextView emailTextView = itemView.findViewById(R.id.email_TextView);
         ImageView photoProfile = itemView.findViewById(R.id.image_account);
+        ImageView imgStar= itemView.findViewById(R.id.img_star);
+        if (position == 0){
+            imgStar.setVisibility(View.VISIBLE);
+        }
 
         fullNameTextView.setText(user.getFullName());
         emailTextView.setText(user.getEmail());
