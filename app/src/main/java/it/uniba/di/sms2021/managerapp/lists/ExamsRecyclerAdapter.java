@@ -1,8 +1,10 @@
 package it.uniba.di.sms2021.managerapp.lists;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,6 +13,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,6 +23,7 @@ import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 
 public class ExamsRecyclerAdapter extends ListAdapter<Exam, RecyclerView.ViewHolder> {
 
@@ -34,7 +38,6 @@ public class ExamsRecyclerAdapter extends ListAdapter<Exam, RecyclerView.ViewHol
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_exam, parent, false);
-
         //Nota: volendo si può creare una classe ViewHolder a parte.
         return new RecyclerView.ViewHolder(view) {
             @Override
@@ -53,13 +56,22 @@ public class ExamsRecyclerAdapter extends ListAdapter<Exam, RecyclerView.ViewHol
 
         TextView titleTextView = itemView.findViewById(R.id.exam_title_text_view);
         TextView professorTextView = itemView.findViewById(R.id.exam_professor_text_view);
+        ImageView greenCircleIV = itemView.findViewById(R.id.greenCicle);
 
         Exam exam = getItem(position);
         if (exam != null) {
             titleTextView.setText(exam.getName());
             setFirstProfessorName(professorTextView, exam);
+            setGreenCircle(greenCircleIV,exam);
         }
     }
+
+    private void setGreenCircle(ImageView greenCircleIV, Exam exam) {
+        if (exam.getStudents().contains(LoginHelper.getCurrentUser().getAccountId())) {
+               greenCircleIV.setVisibility(View.VISIBLE);
+           }
+    }
+
 
     static class ExamDiffCallback extends DiffUtil.ItemCallback<Exam> {
 
