@@ -47,7 +47,7 @@
         android:id="@+id/searchFilterScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="#5472d3"
+        android:background="#0d47a1"
         android:fillViewport="true"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tab_layout"

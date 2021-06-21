@@ -90,9 +90,11 @@
                 android:layout_width="78dp"
                 android:layout_height="31dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="40dp"
                 android:text="@string/text_label_name_account"
                 android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/label_surname_account"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -123,18 +125,18 @@
                 android:id="@+id/label_surname_account"
                 android:layout_width="131dp"
                 android:layout_height="20dp"
-                android:layout_marginTop="32dp"
                 android:layout_marginEnd="28dp"
                 android:text="@string/text_label_surname_account"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@+id/label_name_account" />
 
             <TextView
                 android:id="@+id/value_surname_account_text_view"
                 android:layout_width="129dp"
                 android:layout_height="26dp"
                 android:layout_marginTop="4dp"
+                app:layout_constraintEnd_toEndOf="@+id/label_surname_account"
                 app:layout_constraintStart_toStartOf="@+id/label_surname_account"
                 app:layout_constraintTop_toBottomOf="@+id/label_surname_account"
                 tools:text="TextView" />
@@ -149,9 +151,11 @@
                 android:id="@+id/label_email_account"
                 android:layout_width="71dp"
                 android:layout_height="19dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="28dp"
                 android:text="@string/text_label_email_account"
                 android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/value_name_account_text_view"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/value_name_account_text_view"
                 app:layout_constraintTop_toBottomOf="@+id/value_name_account_text_view" />
 
@@ -180,15 +184,17 @@
                 android:layout_width="134dp"
                 android:layout_height="29dp"
                 android:textStyle="bold"
-                tools:layout_editor_absoluteX="193dp"
-                tools:layout_editor_absoluteY="107dp"
+                app:layout_constraintEnd_toEndOf="@+id/value_surname_account_text_view"
+                app:layout_constraintHorizontal_bias="0.8"
+                app:layout_constraintStart_toStartOf="@+id/value_surname_account_text_view"
+                app:layout_constraintTop_toTopOf="@+id/label_email_account"
                 tools:text="TextView" />
 
             <TextView
                 android:id="@+id/value_department"
                 android:layout_width="136dp"
                 android:layout_height="48dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:inputType="textMultiLine"
                 android:lines="4"
                 app:layout_constraintEnd_toEndOf="@+id/label_departments"
@@ -196,7 +202,6 @@
                 app:layout_constraintStart_toStartOf="@+id/label_departments"
                 app:layout_constraintTop_toBottomOf="@+id/label_departments"
                 tools:text="TextView" />
-
 
             <TextView
                 android:id="@+id/label_courses"
@@ -218,7 +223,7 @@
                 android:layout_marginTop="4dp"
                 android:inputType="textMultiLine"
                 android:lines="4"
-                app:layout_constraintEnd_toEndOf="@+id/value_department"
+                app:layout_constraintEnd_toEndOf="@+id/label_courses"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/label_courses"
                 app:layout_constraintTop_toBottomOf="@+id/label_courses"
@@ -264,12 +269,4 @@
 
     </ScrollView>
 
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="?android:attr/listDivider"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:layout_editor_absoluteX="371dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
