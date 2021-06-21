@@ -30,7 +30,7 @@
         android:layout_height="150dp"
         android:layout_gravity="center"
         android:layout_marginTop="30dp"
-        app:cardCornerRadius="60dp"
+        app:cardCornerRadius="75dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/scrollView2"
@@ -40,7 +40,7 @@
             android:layout_width="146dp"
             android:layout_height="150dp"
             android:layout_gravity="center"
-            app:cardCornerRadius="60dp">
+            app:cardCornerRadius="75dp">
 
             <ImageView
                 android:id="@+id/image_account"
