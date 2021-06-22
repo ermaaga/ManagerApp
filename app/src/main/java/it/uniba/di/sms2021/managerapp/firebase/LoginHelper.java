@@ -2,6 +2,7 @@ package it.uniba.di.sms2021.managerapp.firebase;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -13,6 +14,7 @@ import it.uniba.di.sms2021.managerapp.login.LoginActivity;
 import it.uniba.di.sms2021.managerapp.notifications.NotificationChecker;
 
 public class LoginHelper {
+    private static final String TAG = "LoginHelper";
     private static User user;
 
     public static GoogleSignInOptions getOptions (Context context) {
@@ -24,7 +26,7 @@ public class LoginHelper {
 
     public static User getCurrentUser () {
         if (user == null) {
-            throw new RuntimeException("Utente corrente non inizializzato. Al momento del login" +
+            Log.e(TAG, "Utente corrente non inizializzato. Al momento del login" +
                     " si dovrebbe usare LoginHelper.setCurrentUser() per inizializzare la variabile");
         }
         return user;

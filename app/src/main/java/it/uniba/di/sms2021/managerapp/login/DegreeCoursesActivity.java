@@ -2,6 +2,7 @@ package it.uniba.di.sms2021.managerapp.login;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -34,6 +35,7 @@ import it.uniba.di.sms2021.managerapp.lists.CourseRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBaseActivity;
 
 public class DegreeCoursesActivity extends AbstractBaseActivity {
+    private static final String TAG = "DegreeCoursesActivity";
     private RecyclerView recyclerView;
     private CourseRecyclerAdapter adapter;
 
@@ -71,7 +73,6 @@ public class DegreeCoursesActivity extends AbstractBaseActivity {
             public void onClick(View v) {
                 listcourses = adapter.selectedCourses();
                 submitUser();
-                goToHome();
             }
         });
     }
@@ -153,6 +154,8 @@ public class DegreeCoursesActivity extends AbstractBaseActivity {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             // Setta l'utente attuale in una variabile accessibile nel resto dell'applicazione
                             LoginHelper.setCurrentUser(snapshot.getValue(User.class));
+                            Log.d(TAG, snapshot.getValue(User.class).toString());
+                            goToHome();
                         }
 
                         @Override
@@ -172,6 +175,7 @@ public class DegreeCoursesActivity extends AbstractBaseActivity {
 
                 // Setta l'utente attuale in una variabile accessibile nel resto dell'applicazione
                 LoginHelper.setCurrentUser(user);
+                goToHome();
             }
         }
 

@@ -21,8 +21,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.utility.AbstractFormActivity;
 import it.uniba.di.sms2021.managerapp.utility.FormUtil;
 
@@ -113,14 +113,15 @@ public class SignInActivity extends AbstractFormActivity {
                                         } else {
                                             Log.e(TAG, getString(R.string.registration_failed));
                                             Toast.makeText(SignInActivity.this, getString(R.string.registration_failed), Toast.LENGTH_SHORT).show();
+                                            return;
                                         }
+
+                                        sendEmailVerification();
+
+                                        Intent intent = new Intent(SignInActivity.this, LoginActivity.class);
+                                        startActivity(intent);
                                     }
                                 });
-
-                                sendEmailVerification();
-
-                                Intent intent = new Intent(SignInActivity.this, LoginActivity.class);
-                                startActivity(intent);
                             }
                             else {
                                 Log.e(TAG, getString(R.string.registration_failed));
