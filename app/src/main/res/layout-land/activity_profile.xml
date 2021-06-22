@@ -53,22 +53,25 @@
 
     </androidx.cardview.widget.CardView>
 
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/button_uplod_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
         android:layout_marginStart="90dp"
         android:layout_marginTop="90dp"
-        android:backgroundTint="@color/purple_500"
-        android:visibility="gone"
-        app:srcCompat="@drawable/ic_baseline_add_a_photo_24"
-        app:maxImageSize="20dp"
+        android:backgroundTint="@color/blue"
+        android:clickable="true"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/card_image"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.902"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/card_image"/>
-
+        app:layout_constraintTop_toTopOf="@+id/card_image"
+        app:layout_constraintVertical_bias="1.0"
+        app:maxImageSize="20dp"
+        app:srcCompat="@drawable/ic_baseline_add_a_photo_24"
+        app:tint="@color/white" />
 
     <ScrollView
         android:id="@+id/scrollView2"
@@ -87,10 +90,10 @@
 
             <TextView
                 android:id="@+id/label_name_account"
-                android:layout_width="78dp"
-                android:layout_height="31dp"
+                android:layout_width="130dp"
+                android:layout_height="34dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/text_label_name_account"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toStartOf="@+id/label_surname_account"
@@ -100,9 +103,9 @@
 
             <TextView
                 android:id="@+id/value_name_account_text_view"
-                android:layout_width="108dp"
-                android:layout_height="24dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="130dp"
+                android:layout_height="34dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="@+id/label_name_account"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/label_name_account"
@@ -123,19 +126,20 @@
 
             <TextView
                 android:id="@+id/label_surname_account"
-                android:layout_width="131dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="28dp"
+                android:layout_width="130dp"
+                android:layout_height="34dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="24dp"
                 android:text="@string/text_label_surname_account"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/label_name_account" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/value_surname_account_text_view"
-                android:layout_width="129dp"
-                android:layout_height="26dp"
-                android:layout_marginTop="4dp"
+                android:layout_width="130dp"
+                android:layout_height="34dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="@+id/label_surname_account"
                 app:layout_constraintStart_toStartOf="@+id/label_surname_account"
                 app:layout_constraintTop_toBottomOf="@+id/label_surname_account"
@@ -149,9 +153,9 @@
 
             <TextView
                 android:id="@+id/label_email_account"
-                android:layout_width="71dp"
-                android:layout_height="19dp"
-                android:layout_marginTop="28dp"
+                android:layout_width="130dp"
+                android:layout_height="31dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/text_label_email_account"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/value_name_account_text_view"
@@ -161,9 +165,9 @@
 
             <TextView
                 android:id="@+id/value_email_account_text_view"
-                android:layout_width="88dp"
-                android:layout_height="24dp"
-                android:layout_marginTop="5dp"
+                android:layout_width="129dp"
+                android:layout_height="34dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="@+id/label_email_account"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/label_email_account"
@@ -181,19 +185,20 @@
 
             <TextView
                 android:id="@+id/label_departments"
-                android:layout_width="134dp"
+                android:layout_width="130dp"
                 android:layout_height="29dp"
+                android:layout_marginTop="32dp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/value_surname_account_text_view"
                 app:layout_constraintHorizontal_bias="0.8"
                 app:layout_constraintStart_toStartOf="@+id/value_surname_account_text_view"
-                app:layout_constraintTop_toTopOf="@+id/label_email_account"
+                app:layout_constraintTop_toBottomOf="@+id/value_surname_account_text_view"
                 tools:text="TextView" />
 
             <TextView
                 android:id="@+id/value_department"
-                android:layout_width="136dp"
-                android:layout_height="48dp"
+                android:layout_width="130dp"
+                android:layout_height="34dp"
                 android:layout_marginTop="8dp"
                 android:inputType="textMultiLine"
                 android:lines="4"
@@ -205,9 +210,9 @@
 
             <TextView
                 android:id="@+id/label_courses"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="48dp"
+                android:layout_width="130dp"
+                android:layout_height="31dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/text_label_corso_account"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@+id/value_email_account_text_view"
@@ -220,7 +225,7 @@
                 android:id="@+id/value_course"
                 android:layout_width="309dp"
                 android:layout_height="50dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:inputType="textMultiLine"
                 android:lines="4"
                 app:layout_constraintEnd_toEndOf="@+id/label_courses"
