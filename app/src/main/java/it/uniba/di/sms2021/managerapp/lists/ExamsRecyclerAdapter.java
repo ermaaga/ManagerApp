@@ -1,6 +1,5 @@
 package it.uniba.di.sms2021.managerapp.lists;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +12,15 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 
 public class ExamsRecyclerAdapter extends ListAdapter<Exam, RecyclerView.ViewHolder> {
@@ -67,7 +65,9 @@ public class ExamsRecyclerAdapter extends ListAdapter<Exam, RecyclerView.ViewHol
     }
 
     private void setGreenCircle(ImageView greenCircleIV, Exam exam) {
-        if (exam.getStudents().contains(LoginHelper.getCurrentUser().getAccountId())) {
+        if (exam.getProfessors().contains(LoginHelper.getCurrentUser().getAccountId()) ||
+                exam.getStudents() != null &&
+                exam.getStudents().contains(LoginHelper.getCurrentUser().getAccountId())) {
                greenCircleIV.setVisibility(View.VISIBLE);
            }
     }
