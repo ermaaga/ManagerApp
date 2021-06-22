@@ -85,15 +85,9 @@ public class ProjectMembersFragment extends Fragment {
             List<User> lstUsers = new ArrayList<>();
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                for (DataSnapshot child: snapshot.getChildren()) {
-                    User currentUser = child.getValue(User.class);
-
-                    for(String userId : lstMembers) {
-                        if(currentUser.getAccountId().equals(userId)){
-                            lstUsers.add(currentUser);
-                        }
-                    }
+                for (String userId: lstMembers) {
+                    User user = snapshot.child(userId).getValue(User.class);
+                    lstUsers.add(user);
                 }
                 adapter.submitList(lstUsers);
             }

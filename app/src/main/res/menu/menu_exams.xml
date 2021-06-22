@@ -14,16 +14,15 @@
         app:showAsAction="ifRoom"
         android:title="@string/text_label_notifications" />
     <item
+        android:id="@+id/action_abandons_exam"
+        android:enabled="true"
+        android:title="@string/text_label_abandons_exam"
+        android:visible="false"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_logout"
         android:enabled="true"
         app:showAsAction="never"
         android:title="@string/text_label_logout" />
-
-    <item
-        android:id="@+id/action_abandons_exam"
-        android:enabled="true"
-        app:showAsAction="never"
-        android:visible="false"
-        android:title="@string/text_label_abandons_exam" />
 
 </menu>

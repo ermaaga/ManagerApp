@@ -1,6 +1,7 @@
 package it.uniba.di.sms2021.managerapp.projects;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,12 +21,23 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.ListResult;
+import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
+import it.uniba.di.sms2021.managerapp.enitities.ListProjects;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinNotice;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
@@ -57,6 +69,8 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
 
     //Listener implementato nei fragment al momento della loro creazione
     private ConnectionCheckBroadcastReceiver.OnConnectionChangeListener connectionChangeListener;
+
+    private final Context context = ProjectDetailActivity.this;
 
     @Override
     protected Fragment getInitialFragment() {
@@ -158,6 +172,11 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
             abandonProjectMenuItem.setVisible(true);
         }
 
+        if (project.getMembri().get(0).equals(LoginHelper.getCurrentUser().getAccountId())
+            || project.isProfessor()) {
+            menu.findItem(R.id.action_delete_project).setVisible(true);
+        }
+
         return true;
     }
 
@@ -180,6 +199,8 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
             startActivityForResult(intent, REQUEST_EVALUATION);
         }else if(menuId == R.id.action_abandons_project){
             showDialogAbandonsProject();
+        }else if(menuId == R.id.action_delete_project) {
+            showDeleteProjectDialog();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -242,6 +263,159 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
                 }
             }).show();
 
+    }
+
+    private void showDeleteProjectDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.label_dialog_title_delete_project)
+                .setMessage(R.string.text_message_delete_project)
+                .setPositiveButton(R.string.text_button_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteProject();
+                    }
+                }).setNegativeButton(R.string.text_button_no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        }).show();
+    }
+
+    private void deleteProject() {
+        FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS)
+                .child(project.getId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.i(TAG, "Deleted Project");
+                deleteProjectFromLists();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context, R.string.text_message_project_deletion_failed, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void deleteProjectFromLists() {
+        FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_LISTS_PROJECTS)
+                .runTransaction(new Transaction.Handler() {
+                    @NonNull
+                    @Override
+                    public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                        for (MutableData userSnapshot: currentData.getChildren()) {
+                            MutableData favouriteList =
+                                    userSnapshot.child(FirebaseDbHelper.TABLE_FAVOURITE_PROJECTS);
+                            if (favouriteList.hasChild(project.getId())) {
+                                favouriteList.child(project.getId()).setValue(null);
+                            }
+                            MutableData triedList =
+                                    userSnapshot.child(FirebaseDbHelper.TABLE_TRIED_PROJECTS);
+                            if (triedList.hasChild(project.getId())) {
+                                triedList.child(project.getId()).setValue(null);
+                            }
+                            MutableData evaluatedList =
+                                    userSnapshot.child(FirebaseDbHelper.TABLE_EVALUATED_PROJECTS);
+                            if (evaluatedList.hasChild(project.getId())) {
+                                evaluatedList.child(project.getId()).setValue(null);
+                            }
+
+                            for (MutableData receivedListsSnapshot:
+                                    userSnapshot.child(FirebaseDbHelper.TABLE_RECEIVED_PROJECT_LISTS)
+                                            .getChildren()) {
+                                ListProjects listProjects = receivedListsSnapshot.getValue(ListProjects.class);
+                                if (listProjects.getIdProjects().contains(project.getId())) {
+                                    listProjects.getIdProjects().remove(project.getId());
+                                    FirebaseDbHelper.getReceivedProjectListsReference(userSnapshot.getKey())
+                                            .child(receivedListsSnapshot.getKey()).setValue(listProjects);
+                                }
+                            }
+                        }
+
+                        Log.i(TAG, "Deleted Project From List");
+                        return Transaction.success(currentData);
+                    }
+
+                    @Override
+                    public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                        Log.d(TAG, "postTransaction:onComplete:" + error);
+                        deleteNotifications();
+                    }
+                });
+    }
+
+    private void deleteNotifications() {
+        FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_NOTIFICATIONS)
+                .runTransaction(new Transaction.Handler() {
+                    @NonNull
+                    @Override
+                    public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                        for (String userId: project.getMembri()) {
+                            for (MutableData groupJoinNoticeData: currentData.child(userId)
+                                    .child(FirebaseDbHelper.TABLE_GROUP_JOIN_NOTICE)
+                                    .getChildren()) {
+                                GroupJoinNotice notice = groupJoinNoticeData.getValue(GroupJoinNotice.class);
+                                if (notice.getGroup().equals(project.getId())) {
+                                    groupJoinNoticeData.setValue(null);
+                                }
+                            }
+                        }
+
+                        for (MutableData groupJoinRequestData :currentData
+                                .child(project.getMembri().get(0))
+                                .child(FirebaseDbHelper.TABLE_GROUP_JOIN_REQUESTS)
+                                .getChildren()) {
+                            GroupJoinRequest request = groupJoinRequestData.getValue(GroupJoinRequest.class);
+                            if (request.getGroupId().equals(project.getId())) {
+                                groupJoinRequestData.setValue(null);
+                            }
+                        }
+
+                        Log.i(TAG, "Deleted Project Notifications");
+                        return Transaction.success(currentData);
+                    }
+
+                    @Override
+                    public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                        deleteProjectFiles();
+                    }
+                });
+    }
+
+    private void deleteProjectFiles() {
+        FirebaseStorage.getInstance().getReference()
+                .child(FirebaseDbHelper.GROUPS_FOLDER).child(project.getId()).listAll()
+                .addOnSuccessListener(new OnSuccessListener<ListResult>() {
+                    @Override
+                    public void onSuccess(ListResult listResult) {
+                        List<StorageReference> filesToDelete = new ArrayList<>();
+
+                        if (listResult.getItems().size() == 0) {
+                            Log.i(TAG, "Deleted Project Files");
+                            onProjectDeleted ();
+                        }
+
+                        for (StorageReference file: listResult.getItems()) {
+                            filesToDelete.add(file);
+                            file.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    filesToDelete.remove(file);
+                                    if (filesToDelete.isEmpty()) {
+                                        Log.i(TAG, "Deleted Project Files");
+                                        onProjectDeleted ();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+    }
+
+    private void onProjectDeleted() {
+        Toast.makeText(context, R.string.text_message_project_successfully_deleted, Toast.LENGTH_LONG).show();
+        finish();
     }
 
     @Override
