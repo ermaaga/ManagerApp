@@ -3,9 +3,11 @@ package it.uniba.di.sms2021.managerapp.exams;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -46,6 +48,7 @@ public class NewGroupActivity extends AbstractFormActivity {
     private EditText name;
     private TextInputLayout nameInputLayout;
     private Button button;
+    private TextView textViewSelectMembers;
 
     private RecyclerView userRecyclerView;
     private UserSelectionRecyclerAdapter adapter;
@@ -66,6 +69,7 @@ public class NewGroupActivity extends AbstractFormActivity {
 
         name = findViewById(R.id.name_edit_text);
         nameInputLayout = findViewById(R.id.name_input_layout);
+        textViewSelectMembers = findViewById(R.id.text_view_select_members);
 
         button = findViewById(R.id.button_create_new_group);
         userRecyclerView = findViewById(R.id.group_members_recycler_view);
@@ -109,30 +113,29 @@ public class NewGroupActivity extends AbstractFormActivity {
         userRecyclerView.setAdapter(adapter);
 
         userReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_USERS);
-        examMembersListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<User> students = new ArrayList<>();
+           examMembersListener = new ValueEventListener() {
+               @Override
+               public void onDataChange(@NonNull DataSnapshot snapshot) {
+                   List<User> students = new ArrayList<>();
+                   String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                   for (DataSnapshot child : snapshot.getChildren()) {
+                       if ( exam.getStudents() != null  && exam.getStudents().contains(child.getKey()) && !child.getKey().equals(currentUser)){
+                           students.add(child.getValue(User.class));
+                       }
+                   }
+                   adapter.submitList(students);
+                   if(adapter.getCurrentList().isEmpty()){
+                       userRecyclerView.setVisibility(View.GONE);
+                       textViewSelectMembers.setVisibility(View.GONE);
+                   }
+               }
 
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    if (exam.getStudents().contains(child.getKey())) {
-                        String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
+               @Override
+               public void onCancelled(@NonNull DatabaseError error) {
 
-                        if (!child.getKey().equals(currentUser)) {
-                            students.add(child.getValue(User.class));
-                        }
-                    }
-                }
-                adapter.submitList(students);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        };
-        userReference.addValueEventListener(examMembersListener);
-
+               }
+           };
+           userReference.addValueEventListener(examMembersListener);
 
        button.setOnClickListener(new View.OnClickListener() {
             @Override
