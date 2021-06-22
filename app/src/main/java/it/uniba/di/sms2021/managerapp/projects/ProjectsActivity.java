@@ -566,7 +566,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
 
         builder.setView(view)
                 .setTitle(R.string.text_lable_shake_tutorial)
-                .setMessage(R.string.text_message_shake_tutorial)
+                .setMessage(R.string.text_message_shake_tutorial_my_projects)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

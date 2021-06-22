@@ -71,7 +71,6 @@
     <string name="text_label_name_account">NAME</string>
     <string name="text_label_surname_account">SURNAME</string>
     <string name="text_label_email_account" translatable="false">EMAIL</string>
-    <string name="text_label_corso_account">Course</string>
     <string name="text_label_exam_partecipants">Partecipants</string>
     <string name="text_label_edit_profile">Edit profile</string>
     <string name="text_label_save_profile">Save changes</string>
@@ -231,7 +230,8 @@
     <string name="text_message_file_deletion">File being deleted</string>
     <string name="text_message_file_deletion_stopped">File restored successfully</string>
     <string name="text_message_file_permission_denied">Storage Permissions Denied</string>
-    <string name="text_message_shake_tutorial">Shake your device to share a list quickly.</string>
+    <string name="text_message_shake_tutorial_my_projects">Shake your device to share quickly your projects list.</string>
+    <string name="text_message_shake_tutorial">Shake your device to share quickly the projects list.</string>
     <string name="text_message_gps_not_turned_on">The GPS was not turned on</string>
     <string name="text_message_local_files_require_storage_permissions">There is no internet connection. Do you want the app to show the files you previously downloaded?\nIf yes you will be asked for storage permissions.</string>
     <string name="text_message_file_local_delete">You are about to the delete the file on your device.\nThe file in the cloud won\'t be affected by this action.</string>
