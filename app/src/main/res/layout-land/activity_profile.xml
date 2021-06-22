@@ -62,7 +62,7 @@
         android:layout_marginTop="90dp"
         android:backgroundTint="@color/blue"
         android:clickable="true"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/card_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.902"
