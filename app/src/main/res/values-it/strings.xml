@@ -49,9 +49,8 @@
     <string name="text_label_exam_description">Descrizione:</string>
     <string name="text_label_name_study_case">Nome</string>
     <string name="text_label_desc_study_case">Descrizione</string>
-    <string name="text_label_name_account">Nome</string>
-    <string name="text_label_surname_account">Cognome</string>
-    <string name="text_label_corso_account">Corso</string>
+    <string name="text_label_name_account">NOME</string>
+    <string name="text_label_surname_account">COGNOME</string>
     <string name="text_label_exam_partecipants">Partecipanti</string>
     <string name="text_label_edit_profile">Modifica profilo</string>
     <string name="text_label_save_profile">Salva modifiche</string>
@@ -341,13 +340,13 @@
     </plurals>
 
     <plurals name="numberOfDepartments">
-        <item quantity="one">Dipartimento</item>
-        <item quantity="other">Dipartimenti</item>
+        <item quantity="one">DIPARTIMENTO</item>
+        <item quantity="other">DIPARTIMENTI</item>
     </plurals>
 
     <plurals name="numberOfCourses">
-        <item quantity="one">Corso</item>
-        <item quantity="other">Corsi</item>
+        <item quantity="one">CORSO</item>
+        <item quantity="other">CORSI</item>
     </plurals>
 
     <plurals name="numberOfNotifications">

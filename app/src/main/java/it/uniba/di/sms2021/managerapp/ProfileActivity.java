@@ -294,7 +294,6 @@ public class ProfileActivity extends AbstractBottomNavigationActivity {
         userFromLink = getIntent().getParcelableExtra(User.KEY);
 
         currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
         /*Se viene visualizzato il profilo di un altro utente, invece che il profilo corrente,
          * l'id dell'utente viene ottenuto dall'oggetto passato tramite Intent*/
         if(fromLink){
