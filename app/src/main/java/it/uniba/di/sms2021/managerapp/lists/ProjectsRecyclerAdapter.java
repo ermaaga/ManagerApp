@@ -8,11 +8,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
+
+import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
@@ -20,9 +23,28 @@ import it.uniba.di.sms2021.managerapp.firebase.Project;
 public class ProjectsRecyclerAdapter extends ListAdapter<Project, RecyclerView.ViewHolder>  {
     OnActionListener listener;
 
+    private ProjectsRecyclerViewManager recyclerViewManager;
+
     public ProjectsRecyclerAdapter(OnActionListener listener) {
         super(new DiffCallback());
         this.listener = listener;
+    }
+
+    public void setRecyclerViewManager(ProjectsRecyclerViewManager recyclerViewManager) {
+        this.recyclerViewManager = recyclerViewManager;
+    }
+
+    @Override
+    public void submitList(@Nullable List<Project> list) {
+        super.submitList(list);
+
+        if (recyclerViewManager != null) {
+            if (list == null) {
+                recyclerViewManager.setProjectsViewHasData(false);
+            } else {
+                recyclerViewManager.setProjectsViewHasData(!list.isEmpty());
+            }
+        }
     }
 
     @NonNull

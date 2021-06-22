@@ -225,13 +225,13 @@
     <string name="text_message_file_local_delete">Stai per cancellare il file sul tuo dispositivo.\nIl file nel cloud non sarà modificato al seguito di questa azione.</string>
     <string name="text_message_files_local_files_displayed">I file mostrati sono file scaricati.\nPotrebbero differire dai file nel cloud.</string>
     <string name="text_message_downloaded_file_not_supported">Il file selezionato non è supportato dal tuo dispositivo.</string>
-    <string name="text_message_projects_empty">Al momento non hai progetti. Prova ad unirti ad un gruppo o a crearne uno per un esame a tua scelta.</string>
+    <string name="text_message_projects_empty">Non è stato trovato alcun progetto</string>
     <string name="text_message_project_lists_empty">Al momento non hai ricevuto liste di progetti</string>
     <string name="text_message_study_case_file_too_big">Il file selezionato è troppo grande.</string>
     <string name="text_message_study_case_couldnt_find_file">Impossibile trovare il file per questo caso di studio. Assicurati di avere una connessione internet funzionante.</string>
-    <string name="text_message_tried_projects_empty">Non hai ancora provato nessun progetto</string>
-    <string name="text_message_favourite_projects_empty">Non hai impostato nessun progetto come preferito</string>
-    <string name="text_message_evaluated_projects_empty">Non hai ancora valutato nessun progetto</string>
+    <string name="text_message_tried_projects_empty">Non è stato trovato alcun progetto provato</string>
+    <string name="text_message_favourite_projects_empty">Non è stato trovato alcun progetto preferito</string>
+    <string name="text_message_evaluated_projects_empty">Non è stato trovato alcun progetto valutato</string>
     <string name="text_message_unsaved_changes">Ci sono modifiche non salvate. Vuoi salvarle?</string>
     <string name="text_message_abandoned_project">Hai abbandonato il progetto</string>
     <string name="text_message_abandonment_error">Si è verificato un errore. Per favore riprova più tardi</string>

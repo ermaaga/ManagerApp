@@ -214,7 +214,7 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         SearchView searchView = (SearchView) searchMenuItem.getActionView();
         ViewGroup searchFilters = findViewById(R.id.searchFilterScrollView);
         SearchUtil.setUpSearchBar(this, searchView, searchFilters,
-                R.string.text_hint_search_project, onSearchListener);
+                R.string.text_hint_search_project, new ProjectsSearchListener());
 
         return true;
     }
@@ -584,73 +584,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         editor.apply();
     }
 
-    private SearchUtil.OnSearchListener onSearchListener = new SearchUtil.OnSearchListener() {
-        @Override
-        public void onSearchAction(String query) {
-            lastQuery = query;
-
-            String[] keyWords = query.toLowerCase().split(" ");
-
-            List<Project> searchProjects = new ArrayList<>();
-            String createdFilter = getString(R.string.text_filter_projects_created).toLowerCase();
-            String releaseFilter = getString(R.string.text_filter_projects_withrelease).toLowerCase();
-            String evaluatedFilter = getString(R.string.text_filter_projects_hasevaluation).toLowerCase();
-
-            for (Project project: myProjects) {
-                boolean toAdd = true;
-
-                if (!query.isEmpty()) {
-                    for (String string: keyWords) {
-                        //Se il file non include una delle parole chiavi, non verrà mostrato.
-                        //Verrà sempre mostrato sempre invece se la query è vuota
-                        if (toAdd) {
-                            toAdd = // Va aggiunto se il nome corrisponde alla query
-                                    project.getName().toLowerCase().contains(string) ||
-                                    // Va aggiunto se il nome del gruppo corrisponde alla query
-                                    project.getStudyCaseName().toLowerCase().contains(string);
-                        }
-                    }
-                }
-
-                if (toAdd && !searchFilters.isEmpty()) {
-                    // Il file va aggiunto se include almeno uno dei filtri
-                    boolean containsFilter = false;
-                    for (String string: searchFilters) {
-                        containsFilter =    // Filtro per i progetti creati dall'utente
-                                (string.contains(createdFilter) && project.isCreator()) ||
-                                // Filtro per i progetti con rilasci
-                                (string.contains(releaseFilter) && project.hasReleases()) ||
-                                // Filtro per i progetti valutati dal professore
-                                (string.contains(evaluatedFilter) && project.isEvaluated());
-
-                        if (containsFilter) {
-                            break;
-                        }
-                    }
-
-                    toAdd = containsFilter;
-                }
-
-                if (toAdd) {
-                    searchProjects.add(project);
-                }
-            }
-            myProjectsAdapter.submitList(searchProjects);
-        }
-
-        @Override
-        public void onFilterAdded(String filter) {
-            searchFilters.add(filter.toLowerCase());
-            onSearchListener.onSearchAction(lastQuery);
-        }
-
-        @Override
-        public void onFilterRemoved(String filter) {
-            searchFilters.remove(filter.toLowerCase());
-            onSearchListener.onSearchAction(lastQuery);
-        }
-    };
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int menuId = item.getItemId();
@@ -779,6 +712,87 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
         } else {
             listProjectsRecyclerView.setVisibility(View.GONE);
             listProjectsEmptyTextView.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private class ProjectsSearchListener implements SearchUtil.OnSearchListener {
+        private final String createdFilter =
+                getString(R.string.text_filter_projects_created).toLowerCase();
+        private final String releaseFilter =
+                getString(R.string.text_filter_projects_withrelease).toLowerCase();
+        private final String evaluatedFilter =
+                getString(R.string.text_filter_projects_hasevaluation).toLowerCase();
+
+        @Override
+        public void onSearchAction(String query) {
+            lastQuery = query;
+
+            filterProjects(query, myProjects, myProjectsAdapter);
+            filterProjects(query, favouriteProjects, favouriteProjectsAdapter);
+            filterProjects(query, triedProjects, triedProjectsAdapter);
+            if (isProfessor) {
+                filterProjects(query, evaluatedProjects, evaluatedProjectsAdapter);
+            }
+        }
+
+        private void filterProjects(String query, List<Project> projects,
+                                    ProjectsRecyclerAdapter adapter) {
+            String[] keyWords = query.toLowerCase().split(" ");
+
+            List<Project> searchProjects = new ArrayList<>();
+
+            for (Project project: projects) {
+                boolean toAdd = true;
+
+                if (!query.isEmpty()) {
+                    for (String string: keyWords) {
+                        //Se il file non include una delle parole chiavi, non verrà mostrato.
+                        //Verrà sempre mostrato sempre invece se la query è vuota
+                        if (toAdd) {
+                            toAdd = // Va aggiunto se il nome corrisponde alla query
+                                    project.getName().toLowerCase().contains(string) ||
+                                            // Va aggiunto se il nome del gruppo corrisponde alla query
+                                            project.getStudyCaseName().toLowerCase().contains(string);
+                        }
+                    }
+                }
+
+                if (toAdd && !searchFilters.isEmpty()) {
+                    // Il file va aggiunto se include almeno uno dei filtri
+                    boolean containsFilter = false;
+                    for (String string: searchFilters) {
+                        containsFilter =    // Filtro per i progetti creati dall'utente
+                                (string.contains(createdFilter) && project.isCreator()) ||
+                                        // Filtro per i progetti con rilasci
+                                        (string.contains(releaseFilter) && project.hasReleases()) ||
+                                        // Filtro per i progetti valutati dal professore
+                                        (string.contains(evaluatedFilter) && project.isEvaluated());
+
+                        if (containsFilter) {
+                            break;
+                        }
+                    }
+
+                    toAdd = containsFilter;
+                }
+
+                if (toAdd) {
+                    searchProjects.add(project);
+                }
+            }
+            adapter.submitList(searchProjects);
+        }
+
+        @Override
+        public void onFilterAdded(String filter) {
+            searchFilters.add(filter.toLowerCase());
+            onSearchAction(lastQuery);
+        }
+
+        @Override
+        public void onFilterRemoved(String filter) {
+            searchFilters.remove(filter.toLowerCase());
+            onSearchAction(lastQuery);
         }
     }
 }

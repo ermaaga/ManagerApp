@@ -73,76 +73,78 @@ public class ProjectsRecyclerViewManager {
     }
 
     public static class Builder {
-        private ProjectsRecyclerViewManager projectsRecyclerView;
+        private ProjectsRecyclerViewManager projectsRecyclerViewManager;
         private Context context;
 
         public Builder(RecyclerView recyclerView) {
-            this.projectsRecyclerView = new ProjectsRecyclerViewManager();
-            this.projectsRecyclerView.recyclerView = recyclerView;
+            this.projectsRecyclerViewManager = new ProjectsRecyclerViewManager();
+            this.projectsRecyclerViewManager.recyclerView = recyclerView;
             this.context = recyclerView.getContext();
         }
 
         public ProjectsRecyclerViewManager build () {
-            if (!projectsRecyclerView.shareable) {
-                projectsRecyclerView.shareButton.setVisibility(View.GONE);
+            if (!projectsRecyclerViewManager.shareable) {
+                projectsRecyclerViewManager.shareButton.setVisibility(View.GONE);
             }
 
-            projectsRecyclerView.recyclerView.setAdapter(projectsRecyclerView.projectsAdapter);
-            projectsRecyclerView.recyclerView.addItemDecoration(new DividerItemDecoration(context,
+            projectsRecyclerViewManager.recyclerView.setAdapter(projectsRecyclerViewManager.projectsAdapter);
+            projectsRecyclerViewManager.recyclerView.addItemDecoration(new DividerItemDecoration(context,
                     DividerItemDecoration.VERTICAL));
-            projectsRecyclerView.recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            projectsRecyclerViewManager.recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
             initialiseExpandButton ();
 
-            return projectsRecyclerView;
+            return projectsRecyclerViewManager;
         }
 
         private void initialiseExpandButton() {
-            projectsRecyclerView.minimizeButton.setOnClickListener(new View.OnClickListener() {
+            projectsRecyclerViewManager.minimizeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (projectsRecyclerView.expanded) {
-                        projectsRecyclerView.expanded = false;
-                        projectsRecyclerView.minimizeButton.setImageDrawable(
+                    if (projectsRecyclerViewManager.expanded) {
+                        projectsRecyclerViewManager.expanded = false;
+                        projectsRecyclerViewManager.minimizeButton.setImageDrawable(
                                 ContextCompat.getDrawable(context, R.drawable.ic_baseline_expand_24));
-                        projectsRecyclerView.setProjectsExpanded(false);
+                        projectsRecyclerViewManager.setProjectsExpanded(false);
                     } else {
-                        projectsRecyclerView.expanded = true;
-                        projectsRecyclerView.minimizeButton.setImageDrawable(
+                        projectsRecyclerViewManager.expanded = true;
+                        projectsRecyclerViewManager.minimizeButton.setImageDrawable(
                                 ContextCompat.getDrawable(context, R.drawable.ic_baseline_minimize_24));
-                        projectsRecyclerView.setProjectsExpanded(true);
+                        projectsRecyclerViewManager.setProjectsExpanded(true);
                     }
                 }
             });
         }
 
         public Builder withShareButton (ImageView shareButton) {
-            projectsRecyclerView.shareButton = shareButton;
+            projectsRecyclerViewManager.shareButton = shareButton;
             return this;
         }
 
         public Builder shareable (boolean shareable) {
-            projectsRecyclerView.shareable = shareable;
+            projectsRecyclerViewManager.shareable = shareable;
             return this;
         }
 
         public Builder withEmptyTextView(TextView emptyTextView) {
-            projectsRecyclerView.emptyTextView = emptyTextView;
+            projectsRecyclerViewManager.emptyTextView = emptyTextView;
             return this;
         }
 
         public Builder withMinimizeButton(ImageView minimizeButton) {
-            projectsRecyclerView.minimizeButton = minimizeButton;
+            projectsRecyclerViewManager.minimizeButton = minimizeButton;
             return this;
         }
 
         public Builder withAdapter(ProjectsRecyclerAdapter projectsAdapter) {
-            projectsRecyclerView.projectsAdapter = projectsAdapter;
+            projectsRecyclerViewManager.projectsAdapter = projectsAdapter;
+            projectsAdapter.setRecyclerViewManager(projectsRecyclerViewManager);
+
             return this;
         }
 
         public Builder withProjectsLayout (ConstraintLayout projectsLayout) {
-            projectsRecyclerView.projectsLayout = projectsLayout;
+            projectsRecyclerViewManager.projectsLayout = projectsLayout;
             return this;
         }
     }

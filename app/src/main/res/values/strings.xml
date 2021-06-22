@@ -234,13 +234,13 @@
     <string name="text_message_file_local_delete">You are about to the delete the file on your device.\nThe file in the cloud won\'t be affected by this action.</string>
     <string name="text_message_files_local_files_displayed">Displayed files are downloaded files.\nThey may differ from files in the cloud.</string>
     <string name="text_message_downloaded_file_not_supported">The selected file isn\'t supported by your device.</string>
-    <string name="text_message_projects_empty">You currently have no projects. Try joining a group or creating one for an exam of your choice.</string>
+    <string name="text_message_projects_empty">No projects found</string>
     <string name="text_message_project_lists_empty">You haven\'t received any project lists yet.</string>
     <string name="text_message_study_case_file_too_big">The selected file is too big.</string>
     <string name="text_message_study_case_couldnt_find_file">Can\'t find the file for this studyCase. Make sure you have a working internet connection.</string>
-    <string name="text_message_tried_projects_empty">You haven\'t tried any projects yet</string>
-    <string name="text_message_favourite_projects_empty">You haven\'t set any project as favourite</string>
-    <string name="text_message_evaluated_projects_empty">You haven\'t evaluated any projects yet</string>
+    <string name="text_message_tried_projects_empty">No tried projects found</string>
+    <string name="text_message_favourite_projects_empty">No favourite projects found</string>
+    <string name="text_message_evaluated_projects_empty">No evaluated projects found</string>
     <string name="text_message_unsaved_changes">There are unsaved changes. Do you want to save them?</string>
     <string name="text_message_abandoned_project">You abandoned the project</string>
     <string name="text_message_abandonment_error">An error has occurred. Please try again later</string>

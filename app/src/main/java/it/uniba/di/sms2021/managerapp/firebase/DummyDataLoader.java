@@ -433,11 +433,15 @@ public class DummyDataLoader implements DataLoader {
     }
 
     private void uploadNextItem() {
+        if (nextInUploadQueue == 0 && currentlyUploading != 0) {
+            Log.i(TAG, "Started uploading files...");
+        }
         if (uriList.size() <= nextInUploadQueue) {
-            Log.i(TAG, "Finished uploading files");
+            Log.i(TAG, "Finished uploading files.");
             return;
         }
         if (nextInUploadQueue != currentlyUploading) {
+            Log.i(TAG, "Still uploading files...");
             currentlyUploading = nextInUploadQueue;
             Uri uri = uriList.get(nextInUploadQueue);
             referencesList.get(nextInUploadQueue).child(uri.getLastPathSegment())
