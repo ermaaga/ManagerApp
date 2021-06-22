@@ -140,14 +140,17 @@
         android:id="@+id/goTextViewForgotPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="30dp"
         android:clickable="true"
         android:focusable="true"
         android:shadowColor="#3F51B5"
         android:text="@string/text_label_forgot_password"
         android:textColor="@color/blue"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintEnd_toEndOf="@+id/buttonLoginEmailPassword"
+        app:layout_constraintHorizontal_bias="0.475"
         app:layout_constraintStart_toStartOf="@+id/buttonLoginEmailPassword"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>

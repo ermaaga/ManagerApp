@@ -237,7 +237,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
                             }
                         });
                     }else{
-                        //se l'ultimo membro rimasto ha abbandonato rimuove completamento l'intero gruppo
+                        //se l'ultimo membro rimasto ha abbandonato rimuove completamente l'intero gruppo
                         groupReference.removeValue()
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
