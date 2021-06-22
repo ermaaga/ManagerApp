@@ -186,6 +186,7 @@
     <string name="text_message_file_download_message">You are about to download the file in the external storage, making it accessible to other apps.</string>
     <string name="text_message_alert_dialog_department">Please, select at least one department.</string>
     <string name="text_message_alert_dialog_course">Please, select at least one course.</string>
+    <string name="text_message_alert_dialog_department_no_remove">It is not possible to remove a department if your only courses have it.</string>
     <string name="text_message_group_not_joinable">The selected group is either full or doesn\'t accept new members</string>
     <string name="text_message_max_members_exceeds_actual">The value entered exceeds the current number of members.</string>
     <string name="text_message_files_are_private">The files in the project are set to private</string>

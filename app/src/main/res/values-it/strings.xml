@@ -177,6 +177,7 @@
     <string name="text_message_file_download_message">Stai per scaricare il file nella memoria esterna, rendendolo accessibile ad altre app.</string>
     <string name="text_message_alert_dialog_department">Per favore, selezionare almeno un dipartimento.</string>
     <string name="text_message_alert_dialog_course">Per favore, selezionare almeno un corso.</string>
+    <string name="text_message_alert_dialog_department_no_remove">Non è possibile rimuovere un dipartimento se i tuoi unici corsi gli appartengono.</string>
     <string name="text_message_group_not_joinable">Il gruppo selezionato è pieno o non accetta nuovi membri</string>
     <string name="text_message_max_members_exceeds_actual">Il valore inserito eccede il numero attuale di membri</string>
     <string name="text_message_files_are_private">I file del progetto sono stati impostati come privati</string>
