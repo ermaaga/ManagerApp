@@ -284,10 +284,12 @@ public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
                 .setPositiveButton(R.string.text_button_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        deleteStudyCaseGroups(context, studyCase, new OnStudyCaseDeletedListener() {
+                        deleteStudyCaseAndGroups(context, studyCase, new OnStudyCaseDeletedListener() {
                             @Override
                             public void onStudyCaseDeleted(StudyCase studyCase) {
-                                StudyCaseDetailActivity.this.onStudyCaseDeleted();
+                                if (studyCase != null) {
+                                    StudyCaseDetailActivity.this.onStudyCaseDeleted();
+                                }
                             }
                         });
                     }
@@ -297,6 +299,10 @@ public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
 
             }
         }).show();
+    }
+
+    public static void deleteStudyCaseAndGroups(Context context, StudyCase studyCase, OnStudyCaseDeletedListener listener) {
+        deleteStudyCaseGroups(context, studyCase, listener);
     }
 
     private static void deleteStudyCaseGroups(Context context, StudyCase studyCase, OnStudyCaseDeletedListener listener) {
@@ -327,6 +333,7 @@ public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
                                         Toast.makeText(context,
                                                 R.string.text_message_studycase_deletion_error,
                                                 Toast.LENGTH_LONG).show();
+                                        listener.onStudyCaseDeleted(null);
                                         return;
                                     }
 
@@ -343,7 +350,7 @@ public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-
+                        listener.onStudyCaseDeleted(null);
                     }
                 });
     }
@@ -362,6 +369,7 @@ public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
                 Toast.makeText(context,
                         R.string.text_message_studycase_deletion_error,
                         Toast.LENGTH_LONG).show();
+                listener.onStudyCaseDeleted(null);
             }
         });
     }
@@ -377,7 +385,17 @@ public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
                         Log.i(TAG, "Deleted Studycase File");
                         listener.onStudyCaseDeleted(studyCase);
                     }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        listener.onStudyCaseDeleted(null);
+                    }
                 });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                listener.onStudyCaseDeleted(null);
             }
         });
     }
@@ -396,6 +414,11 @@ public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
     }
 
     public interface OnStudyCaseDeletedListener {
+        /**
+         * Specifica l'azione da fare quando il caso di studio è stato cancellato o l'azione
+         * è stata annullata
+         * @param studyCase il caso di studio cancellato o null se l'azione è stata annullata
+         */
         void onStudyCaseDeleted (StudyCase studyCase);
     }
 }

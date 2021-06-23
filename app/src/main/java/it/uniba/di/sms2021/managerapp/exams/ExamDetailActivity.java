@@ -1,10 +1,7 @@
 package it.uniba.di.sms2021.managerapp.exams;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,24 +11,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
+import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
-import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
@@ -44,6 +46,7 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
     //I frammenti sottostanti useranno metodi presenti in questa classe che opereranno su
     // questo campo.
     private Exam exam;
+    private final Context context = ExamDetailActivity.this;
 
     @Override
     protected Fragment getInitialFragment() {
@@ -103,8 +106,13 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
         getMenuInflater().inflate(R.menu.menu_exams, menu);
 
         MenuItem  abandonExamMenuItem = menu.findItem(R.id.action_abandons_exam);
-        if(exam.getStudents().contains(LoginHelper.getCurrentUser().getAccountId())){
+        if(exam.getStudents() != null &&
+                exam.getStudents().contains(LoginHelper.getCurrentUser().getAccountId())){
             abandonExamMenuItem.setVisible(true);
+        }
+
+        if (exam.getProfessors().contains(LoginHelper.getCurrentUser().getAccountId())) {
+            menu.findItem(R.id.action_delete_exam).setVisible(true);
         }
         return true;
     }
@@ -119,6 +127,8 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
             startActivity(intent);
         }else if(menuId == R.id.action_abandons_exam){
             showDialogAbandonsExam();
+        } else if (menuId == R.id.action_delete_exam) {
+            showDialogDeleteExam();
         }
 
         return super.onOptionsItemSelected(item);
@@ -229,6 +239,90 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
                         }
                     });
         }
+    }
+
+    private void showDialogDeleteExam() {
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.label_Dialog_title_delete_exam)
+                .setMessage(R.string.text_message_delete_exam)
+                .setPositiveButton(R.string.text_button_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteStudyCases();
+                    }
+                }).setNegativeButton(R.string.text_button_no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+    }
+
+    private void deleteStudyCases() {
+        FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_STUDYCASES)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Set<String> studyCaseToDelete = new HashSet<>();
+                        List<StudyCase> studyCases = new ArrayList<>();
+                        for (DataSnapshot child: snapshot.getChildren()) {
+                            StudyCase studyCase = child.getValue(StudyCase.class);
+                            if (studyCase.getEsame().equals(exam.getId())) {
+                                studyCases.add(studyCase);
+                                studyCaseToDelete.add(studyCase.getId());
+
+                                StudyCaseDetailActivity.deleteStudyCaseAndGroups(context,
+                                        studyCase, new StudyCaseDetailActivity.OnStudyCaseDeletedListener() {
+                                            @Override
+                                            public void onStudyCaseDeleted(StudyCase studyCase) {
+                                                if (studyCase == null) {
+                                                    Toast.makeText(context,
+                                                            R.string.text_message_exam_deletion_failed,
+                                                            Toast.LENGTH_LONG).show();
+                                                    return;
+                                                }
+
+                                                studyCaseToDelete.remove(studyCase.getId());
+                                                if (studyCaseToDelete.isEmpty()) {
+                                                    Log.i(TAG, "Deleted Studycases");
+                                                    deleteExam();
+                                                }
+                                            }
+                                        });
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Toast.makeText(context,
+                                R.string.text_message_exam_deletion_failed,
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    private void deleteExam() {
+        FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_EXAMS)
+                .child(exam.getId()).setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                onExamDeleted();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context,
+                        R.string.text_message_exam_deletion_failed,
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void onExamDeleted() {
+        Toast.makeText(context, R.string.text_message_exam_deleted_successfully,
+                Toast.LENGTH_LONG).show();
+        finish();
     }
 
     @Override
