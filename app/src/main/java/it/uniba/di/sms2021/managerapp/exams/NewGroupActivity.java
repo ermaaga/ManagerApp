@@ -80,7 +80,7 @@ public class NewGroupActivity extends AbstractFormActivity {
     protected void onStart() {
         super.onStart();
 
-        idexam = getIntent().getParcelableExtra(Exam.Keys.EXAM);
+        idexam = getIntent().getStringExtra(Exam.Keys.EXAM);
 
         examReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_EXAMS)
                 .child(idexam);

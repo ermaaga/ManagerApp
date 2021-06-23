@@ -113,7 +113,7 @@ public class ExamStudyCasesFragment extends Fragment {
     public void createGroup(StudyCase studyCase){
         Intent intent = new Intent(getContext(), NewGroupActivity.class);
         intent.putExtra(StudyCase.Keys.ID, studyCase.getId());
-        intent.putExtra(Exam.Keys.EXAM, ((ExamDetailActivity)getActivity()).getSelectedExam());
+        intent.putExtra(Exam.Keys.EXAM, ((ExamDetailActivity)getActivity()).getSelectedExam().getId());
         startActivity(intent);
     }
 }

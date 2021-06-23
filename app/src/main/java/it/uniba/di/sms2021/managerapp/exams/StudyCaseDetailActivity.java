@@ -391,7 +391,7 @@ public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
     public void createGroup(View v){
         Intent intent = new Intent(this, NewGroupActivity.class);
         intent.putExtra(StudyCase.Keys.ID, studyCase.getId());
-        intent.putExtra(Exam.Keys.EXAM, exam);
+        intent.putExtra(Exam.Keys.EXAM, exam.getId());
         startActivity(intent);
     }
 
