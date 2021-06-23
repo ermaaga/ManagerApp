@@ -62,10 +62,7 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
     private TextInputEditText emailEditText;
     private TextInputEditText passwordEditText;
 
-    private TextInputLayout emailInputLayout;
-    private TextInputLayout passwordInputLayout;
-
-    ProgressBar progressBar;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,9 +76,6 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
 
         emailEditText = (TextInputEditText) findViewById(R.id.email_edit_text);
         passwordEditText = (TextInputEditText) findViewById(R.id.password_edit_text);
-
-        emailInputLayout = (TextInputLayout) findViewById(R.id.email_input_layout);
-        passwordInputLayout = (TextInputLayout) findViewById(R.id.password_input_layout);
 
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
@@ -106,11 +100,10 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
     protected void onStart() {
         super.onStart();
 
+        //se si è effettuato l'accesso con email risulta che googleSignInAccount == null
         if(mAuth.getCurrentUser()!=null && googleSignInAccount == null){
             checkIfUserExistsAndGoToHome(mAuth.getCurrentUser().getUid());
-        }
-
-        if (googleSignInAccount != null) {
+        }else if (googleSignInAccount != null) {
             loginWithGoogleCredentials();
         }
     }
@@ -130,18 +123,12 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
                 // Iterazione tra i vari elementi appartenenti al nodo "users"
                 for (DataSnapshot child : snapshot.getChildren()) {
                     if (child.getKey().equals(id)) {
-                        /*
-                        User user = child.getValue(User.class);       //Se serve il riferimento all'utente
-                        if (user.getRuolo() == User.ROLE_PROFESSOR) {
-
-                        }
-                         */
 
                         Log.d(TAG, "Id of child: " + child.getKey());
                         found = true;
                         User user = child.getValue(User.class);
 
-                        /*Se non ha effettuato l'accesso con Google l'utente è presente sia in Authentication
+                        /*Se ha effettuato l'accesso con Email l'utente è presente sia in Authentication
                          * che in Realtime Database senza ruolo e corso quindi deve permettere la scelta di quest'ultimi
                          */
                         if(user.getRuolo() == 0){
@@ -252,15 +239,12 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
         startActivity(forgotPasswordIntent);
     }
 
-    //TODO da migliorare
+
     private void loginEmailPassword(String email, String password) {
-        Log.d(TAG, "signIn:" + email);
 
         if (FormUtil.validateEmailPassword(email, password, this )) {
 
             progressBar.setVisibility(View.VISIBLE);
-
-            Log.d(TAG, "is validate");
 
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -271,7 +255,6 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
                                 Log.d(TAG, getString(R.string.login_success));
                                 Toast.makeText(getApplicationContext(), getString(R.string.login_success), Toast.LENGTH_LONG).show();
 
-
                                 // Setta l'utente attuale in una variabile accessibile nel resto dell'applicazione
                                 usersReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                       @Override
@@ -279,9 +262,16 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
                                           User user = snapshot
                                                   .child(task.getResult().getUser().getUid())
                                                   .getValue(User.class);
-                                          LoginHelper.setCurrentUser(user);
-                                          Intent intent = new Intent(LoginActivity.this, ExamsActivity.class);
-                                          startActivity(intent);
+
+                                          if(user.getRuolo() == 0){
+                                              Intent intent = new Intent(LoginActivity.this, UserRoleActivity.class);
+                                              startActivity(intent);
+                                          }else{
+                                              // Setta l'utente attuale in una variabile accessibile nel resto dell'applicazione
+                                              LoginHelper.setCurrentUser(user);
+                                              startActivity(new Intent(LoginActivity.this, ExamsActivity.class));
+                                          }
+
                                       }
 
                                       @Override
@@ -291,7 +281,6 @@ public class LoginActivity extends AbstractBaseActivity implements View.OnClickL
                                 });
                             }
                             else {
-                                Log.e(TAG, getString(R.string.login_failed));
                                 Log.e(TAG, task.getException().getMessage());
                                 Toast.makeText(getApplicationContext(), getString(R.string.login_failed), Toast.LENGTH_LONG).show();
                             }

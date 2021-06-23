@@ -51,6 +51,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     public static final int FILES_TAB_POSITION = 1;
     public static final int MEMBERS_TAB_POSITION = 2;
     public static final String INITIAL_TAB_POSITION_KEY = "initial_position";
+    public static boolean abandonsProject = false;
 
     private static final int REQUEST_EVALUATION = 1;
 
@@ -209,6 +210,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
 
         new AlertDialog.Builder(this)
             .setTitle(R.string.label_Dialog_title_abandon_project)
+            .setMessage(R.string.label_Dialog_message_abandon_project)
             .setPositiveButton(R.string.text_button_yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -226,7 +228,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
-                                        onSupportNavigateUp();
+                                        finish();
                                         Toast.makeText(getApplicationContext(), R.string.text_message_abandoned_project, Toast.LENGTH_LONG).show();
 
                                     }
@@ -238,20 +240,15 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
                         });
                     }else{
                         //se l'ultimo membro rimasto ha abbandonato rimuove completamente l'intero gruppo
-                        groupReference.removeValue()
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        onSupportNavigateUp();
-                                        Toast.makeText(getApplicationContext(), R.string.text_message_abandoned_project , Toast.LENGTH_LONG).show();
-                                    }
-                                })
-                                .addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Toast.makeText(getApplicationContext(),R.string.text_message_abandonment_error, Toast.LENGTH_LONG).show();
-                                    }
-                                });
+                        abandonsProject=true;
+                        deleteProject(context, project.getGroup(), new OnProjectDeletedListener() {
+                            @Override
+                            public void onProjectDeleted(Group project) {
+                                if (project != null) {
+                                    ProjectDetailActivity.this.onProjectDeleted(context);
+                                }
+                            }
+                        });
                     }
 
 
@@ -300,7 +297,12 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context, R.string.text_message_project_deletion_failed, Toast.LENGTH_LONG).show();
+               if(abandonsProject){
+                   Toast.makeText(context, R.string.text_message_abandonment_error, Toast.LENGTH_LONG).show();
+               }else{
+                   Toast.makeText(context, R.string.text_message_project_deletion_failed, Toast.LENGTH_LONG).show();
+               }
+
                 listener.onProjectDeleted(null);
             }
         });
@@ -422,7 +424,11 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     }
 
     private void onProjectDeleted(Context context) {
-        Toast.makeText(context, R.string.text_message_project_successfully_deleted, Toast.LENGTH_LONG).show();
+        if(abandonsProject){
+            Toast.makeText(context, R.string.text_message_abandoned_project, Toast.LENGTH_LONG).show();
+        }else{
+            Toast.makeText(context, R.string.text_message_project_successfully_deleted, Toast.LENGTH_LONG).show();
+        }
         finish();
     }
 

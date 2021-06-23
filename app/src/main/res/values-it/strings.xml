@@ -132,6 +132,7 @@
     <string name="label_dialog_title_delete_project">Cancellazione Progetto</string>
     <string name="label_Dialog_title_delete_studycase">Cancellazione Caso di Studio</string>
     <string name="label_Dialog_title_delete_exam">Cancellazione Esame</string>
+    <string name="label_Dialog_message_abandon_project">Se sei l\'unico membro del progetto, verranno eliminati definitivamente anche il gruppo e i file associati al progetto.</string>
 
     <string name="text_checkbox_dialog_view_list">Visualizza la lista ricevuta</string>
 

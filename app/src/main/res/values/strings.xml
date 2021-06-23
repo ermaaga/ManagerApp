@@ -49,6 +49,7 @@
     <string name="label_dialog_title_delete_project">Project Deletion</string>
     <string name="label_Dialog_title_delete_studycase">Studycase Deletion</string>
     <string name="label_Dialog_title_delete_exam">Exam Deletion</string>
+    <string name="label_Dialog_message_abandon_project">If you are the only member of the project, the group and files associated to the project will also be permanently deleted.</string>
 
     <string name="text_error_validation">The group name cannot have much than 20 characters</string>
     <string name="text_error_max_review_report">The review cannot have much than 800 characters</string>

@@ -39,12 +39,7 @@ public class SignInActivity extends AbstractFormActivity {
     private TextInputEditText nameEditText;
     private TextInputEditText surnameEditText;
 
-    private TextInputLayout emailInputLayout;
-    private TextInputLayout passwordInputLayout;
-    private TextInputLayout nameInputLayout;
-    private TextInputLayout surnameInputLayout;
-
-    ProgressBar progressBar;
+    private ProgressBar progressBar;
 
     @Override
     protected int getLayoutId() {
@@ -63,11 +58,6 @@ public class SignInActivity extends AbstractFormActivity {
         nameEditText = (TextInputEditText) findViewById(R.id.name_edit_text);
         surnameEditText = (TextInputEditText) findViewById(R.id.surname_edit_text);
 
-        emailInputLayout = (TextInputLayout) findViewById(R.id.email_input_layout);
-        passwordInputLayout = (TextInputLayout) findViewById(R.id.password_input_layout);
-        nameInputLayout = (TextInputLayout) findViewById(R.id.name_input_layout);
-        surnameInputLayout = (TextInputLayout) findViewById(R.id.surname_input_layout);
-
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
     }
@@ -78,11 +68,9 @@ public class SignInActivity extends AbstractFormActivity {
         String name = nameEditText.getText().toString().trim();
         String surname = surnameEditText.getText().toString().trim();
 
-        Log.d(TAG, "createAccount method:" + email);
         if (FormUtil.validateEmailPassword(email, password, this )) {
 
             progressBar.setVisibility(View.VISIBLE);
-            Log.d(TAG, "is validate");
 
             mAuth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -111,8 +99,7 @@ public class SignInActivity extends AbstractFormActivity {
                                             Log.d(TAG, getString(R.string.registration_success));
                                             Toast.makeText(SignInActivity.this, getString(R.string.registration_success), Toast.LENGTH_SHORT).show();
                                         } else {
-                                            Log.e(TAG, getString(R.string.registration_failed));
-                                            Toast.makeText(SignInActivity.this, getString(R.string.registration_failed), Toast.LENGTH_SHORT).show();
+                                            Log.e(TAG, getString(R.string.registration_failed)+ task.getException().getMessage());
                                             return;
                                         }
 
@@ -124,8 +111,7 @@ public class SignInActivity extends AbstractFormActivity {
                                 });
                             }
                             else {
-                                Log.e(TAG, getString(R.string.registration_failed));
-                                Log.e(TAG, task.getException().getMessage());
+                                Log.e(TAG, getString(R.string.registration_failed)+ task.getException().getMessage());
                                 Toast.makeText(SignInActivity.this, getString(R.string.registration_failed), Toast.LENGTH_LONG).show();
                             }
                         }
@@ -145,12 +131,10 @@ public class SignInActivity extends AbstractFormActivity {
                     public void onComplete(@NonNull Task<Void> task) {
 
                         if (task.isSuccessful()) {
-                            Log.d(TAG, getString(R.string.send_verification_email_success));
-                            Toast.makeText(SignInActivity.this, getString(R.string.send_verification_email_success) + user.getEmail(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignInActivity.this, getString(R.string.send_verification_email_success) + user.getEmail(), Toast.LENGTH_LONG).show();
                         } else {
-                            Log.e(TAG, getString(R.string.send_verification_email_failed));
-                            Log.e(TAG, task.getException().getMessage());
-                            Toast.makeText(SignInActivity.this, getString(R.string.send_verification_email_failed), Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, getString(R.string.send_verification_email_failed)+ task.getException().getMessage());
+                            Toast.makeText(SignInActivity.this, getString(R.string.send_verification_email_failed), Toast.LENGTH_LONG).show();
                         }
 
                     }
