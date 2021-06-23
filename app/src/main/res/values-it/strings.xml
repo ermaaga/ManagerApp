@@ -107,6 +107,7 @@
     <string name="text_label_forgot_password">Hai dimenticato la tua password?</string>
     <string name="text_label_abandons_exam">Abbandona esame</string>
     <string name="text_label_delete_project">Elimina Progetto</string>
+    <string name="text_label_delete_studycase">Elimina Caso di Studio</string>
 
     <string name="label_Dialog_Header">Informazione</string>
     <string name="label_Dialog_confimation_message">Vuoi far parte di questo gruppo studio?</string>
@@ -128,6 +129,7 @@
     <string name="label_Dialog_title_abandon_project">Sei sicuro di voler abbandonare il progetto?</string>
     <string name="label_Dialog_title_abandon_exam">Sei sicuro di voler abbandonare l\' esame?</string>
     <string name="label_dialog_title_delete_project">Cancellazione Progetto</string>
+    <string name="label_Dialog_title_delete_studycase">Cancellazione Caso di Studio</string>
 
     <string name="text_checkbox_dialog_view_list">Visualizza la lista ricevuta</string>
 
@@ -243,6 +245,9 @@
     <string name="text_message_delete_project">Sei sicuro di voler cancellare il progetto?\n Questa azione cancellerà permanentemente anche il gruppo ed i file associati al progetto.</string>
     <string name="text_message_project_deletion_failed">La cancellazione del progetto è fallita, riprova successivamente.</string>
     <string name="text_message_project_successfully_deleted">Il progetto è stato cancellato.</string>
+    <string name="text_message_study_case_deletion">Stai per cancellare il caso di studio. Questa azione cancelletà anche tutti i gruppi associati al caso di studio.\nSei sicuro di voler continuare?</string>
+    <string name="text_message_studycase_deletion_error">Un errore ha prevenuto la cancellazione del caso di studio. Riprova in seguito.</string>
+    <string name="text_message_study_case_deleted_successfully">Caso di studio cancellato con successo.</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 

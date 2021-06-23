@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -29,10 +28,10 @@ import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
-import it.uniba.di.sms2021.managerapp.enitities.User;
-import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
+import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
 import it.uniba.di.sms2021.managerapp.lists.UserSelectionRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.projects.ProjectPermissionsActivity;
@@ -81,18 +80,15 @@ public class NewGroupActivity extends AbstractFormActivity {
     protected void onStart() {
         super.onStart();
 
-        idexam = getIntent().getStringExtra(Exam.Keys.EXAM);
+        idexam = getIntent().getParcelableExtra(Exam.Keys.EXAM);
 
-        examReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_EXAMS);
+        examReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_EXAMS)
+                .child(idexam);
         examListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    if (child.getKey().equals(idexam)) {
-                        exam = child.getValue(Exam.class);
-                    }
-                }
+                exam = snapshot.getValue(Exam.class);
+                userReference.addValueEventListener(examMembersListener);
             }
 
             @Override
@@ -116,6 +112,11 @@ public class NewGroupActivity extends AbstractFormActivity {
            examMembersListener = new ValueEventListener() {
                @Override
                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                   if (exam == null) {
+                       Log.e(TAG, "Exam is null");
+                       return;
+                   }
+
                    List<User> students = new ArrayList<>();
                    String currentUser = FirebaseAuth.getInstance().getCurrentUser().getUid();
                    for (DataSnapshot child : snapshot.getChildren()) {
@@ -130,12 +131,11 @@ public class NewGroupActivity extends AbstractFormActivity {
                    }
                }
 
-               @Override
-               public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-               }
-           };
-           userReference.addValueEventListener(examMembersListener);
+            }
+        };
 
        button.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -272,7 +272,14 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
                 .setPositiveButton(R.string.text_button_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        deleteProject();
+                        deleteProject(context, project.getGroup(), new OnProjectDeletedListener() {
+                            @Override
+                            public void onProjectDeleted(Group project) {
+                                if (project != null) {
+                                    ProjectDetailActivity.this.onProjectDeleted(context);
+                                }
+                            }
+                        });
                     }
                 }).setNegativeButton(R.string.text_button_no, new DialogInterface.OnClickListener() {
             @Override
@@ -282,23 +289,24 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         }).show();
     }
 
-    private void deleteProject() {
+    public static void deleteProject(Context context, Group project, OnProjectDeletedListener listener) {
         FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS)
                 .child(project.getId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 Log.i(TAG, "Deleted Project");
-                deleteProjectFromLists();
+                deleteProjectFromLists(context, project, listener);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(context, R.string.text_message_project_deletion_failed, Toast.LENGTH_LONG).show();
+                listener.onProjectDeleted(null);
             }
         });
     }
 
-    private void deleteProjectFromLists() {
+    private static void deleteProjectFromLists(Context context, Group project, OnProjectDeletedListener listener) {
         FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_LISTS_PROJECTS)
                 .runTransaction(new Transaction.Handler() {
                     @NonNull
@@ -340,12 +348,12 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
                     @Override
                     public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
                         Log.d(TAG, "postTransaction:onComplete:" + error);
-                        deleteNotifications();
+                        deleteNotifications(context, project, listener);
                     }
                 });
     }
 
-    private void deleteNotifications() {
+    private static void deleteNotifications(Context context, Group project, OnProjectDeletedListener listener) {
         FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_NOTIFICATIONS)
                 .runTransaction(new Transaction.Handler() {
                     @NonNull
@@ -378,12 +386,12 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
 
                     @Override
                     public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
-                        deleteProjectFiles();
+                        deleteProjectFiles(context, project, listener);
                     }
                 });
     }
 
-    private void deleteProjectFiles() {
+    private static void deleteProjectFiles(Context context, Group project, OnProjectDeletedListener listener) {
         FirebaseStorage.getInstance().getReference()
                 .child(FirebaseDbHelper.GROUPS_FOLDER).child(project.getId()).listAll()
                 .addOnSuccessListener(new OnSuccessListener<ListResult>() {
@@ -393,7 +401,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
 
                         if (listResult.getItems().size() == 0) {
                             Log.i(TAG, "Deleted Project Files");
-                            onProjectDeleted ();
+                            listener.onProjectDeleted(project);
                         }
 
                         for (StorageReference file: listResult.getItems()) {
@@ -404,7 +412,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
                                     filesToDelete.remove(file);
                                     if (filesToDelete.isEmpty()) {
                                         Log.i(TAG, "Deleted Project Files");
-                                        onProjectDeleted ();
+                                        listener.onProjectDeleted(project);
                                     }
                                 }
                             });
@@ -413,7 +421,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
                 });
     }
 
-    private void onProjectDeleted() {
+    private void onProjectDeleted(Context context) {
         Toast.makeText(context, R.string.text_message_project_successfully_deleted, Toast.LENGTH_LONG).show();
         finish();
     }
@@ -484,5 +492,9 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         //Inizializza la barra di ricerca ed i filtri
         SearchUtil.setUpSearchBar(this, searchView, searchFilters,
                 R.string.text_hint_search_file, onSearchListener);
+    }
+
+    public interface OnProjectDeletedListener {
+        void onProjectDeleted (Group project);
     }
 }

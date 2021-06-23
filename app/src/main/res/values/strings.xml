@@ -47,6 +47,7 @@
     <string name="label_Dialog_title_abandon_project">Are you sure you want to abandon the project?</string>
     <string name="label_Dialog_title_abandon_exam">Are you sure you want to abandon the exam?</string>
     <string name="label_dialog_title_delete_project">Project Deletion</string>
+    <string name="label_Dialog_title_delete_studycase">Studycase Deletion</string>
 
     <string name="text_error_validation">The group name cannot have much than 20 characters</string>
     <string name="text_error_max_review_report">The review cannot have much than 800 characters</string>
@@ -130,6 +131,7 @@
     <string name="text_label_forgot_password">Did you forget your password?</string>
     <string name="text_label_abandons_exam">Abandons exam</string>
     <string name="text_label_delete_project">Delete Project</string>
+    <string name="text_label_delete_studycase">Delete Studycase</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
@@ -252,6 +254,9 @@
     <string name="text_message_delete_project">Are you sure you want to delete the project?\n This will also delete permanently the group and all the files associated to the project.</string>
     <string name="text_message_project_deletion_failed">Failed to delete the project, try again later.</string>
     <string name="text_message_project_successfully_deleted">The project has been deleted.</string>
+    <string name="text_message_study_case_deletion">You are about to delete this studycase. This will also delete all groups associated to the studycase.\n Are you sure you want to continue?</string>
+    <string name="text_message_studycase_deletion_error">An error has occured while deleting the studycase. Try again later.</string>
+    <string name="text_message_study_case_deleted_successfully">Studycase deleted successfully</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 

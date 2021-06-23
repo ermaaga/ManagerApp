@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,7 +13,6 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
+import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.lists.StudyCasesRecyclerAdapter;
 
 public class ExamStudyCasesFragment extends Fragment {
@@ -115,7 +113,7 @@ public class ExamStudyCasesFragment extends Fragment {
     public void createGroup(StudyCase studyCase){
         Intent intent = new Intent(getContext(), NewGroupActivity.class);
         intent.putExtra(StudyCase.Keys.ID, studyCase.getId());
-        intent.putExtra(Exam.Keys.EXAM, ((ExamDetailActivity)getActivity()).getSelectedExam().getId());
+        intent.putExtra(Exam.Keys.EXAM, ((ExamDetailActivity)getActivity()).getSelectedExam());
         startActivity(intent);
     }
 }
