@@ -226,8 +226,8 @@
     <string name="text_message_file_deletion">Cancellazione del File</string>
     <string name="text_message_file_deletion_stopped">File ripristinato con successo</string>
     <string name="text_message_file_permission_denied">Permessi di Archiviazione Rifiutati</string>
-    <string name="text_message_shake_tutorial_my_projects">Scuoti il tuo dispositivo per condividere rapidamente l\'elenco dei tuoi progetti. </string>
-    <string name="text_message_shake_tutorial">Scuoti il tuo dispositivo per condividere velocemente l\'elenco dei progetti.</string>
+    <string name="text_message_shake_tutorial_my_projects">Scuoti il tuo dispositivo per condividere rapidamente la lista \"I miei progetti\". </string>
+    <string name="text_message_shake_tutorial">Scuoti il tuo dispositivo per condividere velocemente la lista dei progetti.</string>
     <string name="text_message_gps_not_turned_on">Il GPS non è stato attivato</string>
     <string name="text_message_local_files_require_storage_permissions">Non è presente la connessione ad internet. Vuoi che l\'app mostri i file precedentemente scaricati?\n Se sì ti verranno chiesti i permessi per il disco.</string>
     <string name="text_message_file_local_delete">Stai per cancellare il file sul tuo dispositivo.\nIl file nel cloud non sarà modificato al seguito di questa azione.</string>

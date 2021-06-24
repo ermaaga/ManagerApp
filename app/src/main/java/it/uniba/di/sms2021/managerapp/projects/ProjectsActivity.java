@@ -112,7 +112,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         ShakeUtil.inizializeShake(getApplicationContext());
 
         animRotate = AnimationUtils.loadAnimation(this, R.anim.shake_animation);
@@ -170,7 +169,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     @Override
     protected void onStart() {
         super.onStart();
-
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         firstStart = prefs.getBoolean("firstStart", true);
 
@@ -643,7 +641,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult");
         switch (requestCode){
             case REQUEST_ENABLE_BT:
                 if (resultCode == RESULT_OK){
@@ -659,8 +656,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     }
 
     public void go_sharing_activity(){
-        Log.d(TAG, "goSharingActivity");
-
         String projectsId=null;
 
         //se shareableProjectList è diverso da null vuol dire che l'utente
@@ -688,7 +683,6 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     private ShakeUtil.OnShakeListener onShakeListener = new ShakeUtil.OnShakeListener() {
         @Override
         public void doActionAfterShake() {
-            //todo decidere quale lista condividere
             actionShareList(myProjects);
         }
     };

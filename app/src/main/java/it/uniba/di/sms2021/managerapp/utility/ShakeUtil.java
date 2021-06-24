@@ -101,6 +101,16 @@ public class ShakeUtil {
                     return;
                 }
 
+                /*Memorizza l'istante in cui si potrà iniziare a rilevare il prossimo scuotimento
+                 (dopo sei secondi dall'ultimo), in modo da evitare di rilevare più scuotimenti
+                  e, di conseguenza, eseguire l'azione più volte.*/
+                timeOfShaking = Calendar.getInstance();
+                timeOfShaking.setTimeInMillis(now.getTimeInMillis());
+                timeOfShaking.add(Calendar.SECOND, 6);
+
+                //Usato per indicare che in precedenza c'è stato almeno uno scuotimento
+                wasShaken = true;
+
                 //Se si sta eseguendo su Oreo (Api level 26) o successivi
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     vibrator.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE));
@@ -109,16 +119,6 @@ public class ShakeUtil {
                     vibrator.vibrate(500);
                 }
 
-                /*Memorizza l'istante in cui si potrà iniziare a rilevare il prossimo scuotimento
-                  (dopo sei secondi dall'ultimo), in modo da evitare di rilevare più scuotimenti
-                  e, di conseguenza, eseguire l'azione più volte.
-                 */
-                timeOfShaking = Calendar.getInstance();
-                timeOfShaking.setTimeInMillis(now.getTimeInMillis());
-                timeOfShaking.add(Calendar.SECOND, 6);
-
-                //Usato per indicare che in precedenza c'è stato almeno uno scuotimento
-                wasShaken = true;
                 onShakeListener.doActionAfterShake();
             }
         }

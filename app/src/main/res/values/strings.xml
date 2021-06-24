@@ -235,7 +235,7 @@
     <string name="text_message_file_deletion">File being deleted</string>
     <string name="text_message_file_deletion_stopped">File restored successfully</string>
     <string name="text_message_file_permission_denied">Storage Permissions Denied</string>
-    <string name="text_message_shake_tutorial_my_projects">Shake your device to share quickly your projects list.</string>
+    <string name="text_message_shake_tutorial_my_projects">Shake your device to quickly share \"My Projects\" list.</string>
     <string name="text_message_shake_tutorial">Shake your device to share quickly the projects list.</string>
     <string name="text_message_gps_not_turned_on">The GPS was not turned on</string>
     <string name="text_message_local_files_require_storage_permissions">There is no internet connection. Do you want the app to show the files you previously downloaded?\nIf yes you will be asked for storage permissions.</string>
