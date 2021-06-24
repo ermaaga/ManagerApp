@@ -51,11 +51,11 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     public static final int FILES_TAB_POSITION = 1;
     public static final int MEMBERS_TAB_POSITION = 2;
     public static final String INITIAL_TAB_POSITION_KEY = "initial_position";
-    public static boolean abandonsProject = false;
 
     private static final int REQUEST_EVALUATION = 1;
 
     private static final String TAG = "ProjectDetailActivity";
+    private static final int ONE_MEMBER = 1;
 
     private Project project;
 
@@ -207,50 +207,22 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     }
 
     private void showDialogAbandonsProject() {
-
+        Log.d(TAG, "ABANDONS PROJECT"+project.toString());
         new AlertDialog.Builder(this)
             .setTitle(R.string.label_Dialog_title_abandon_project)
             .setMessage(R.string.label_Dialog_message_abandon_project)
             .setPositiveButton(R.string.text_button_yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    List<String> members = project.getMembri();
-                    if (members == null) {
-                        throw new RuntimeException("Questo non dovrebbe mai accadere");
-                    }
-                    members.remove(LoginHelper.getCurrentUser().getAccountId());
 
-                    DatabaseReference groupReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS).child(project.getId());
-
-                    if(members.size()!=0){
-                        //se la lista dei membri non è vuota quindi vuol dire che c'è ancora almeno un membro allora aggiorna la lista dei membri
-                        groupReference.child(Group.Keys.MEMBERS).setValue(members)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        finish();
-                                        Toast.makeText(getApplicationContext(), R.string.text_message_abandoned_project, Toast.LENGTH_LONG).show();
-
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(getApplicationContext(), R.string.text_message_abandonment_error, Toast.LENGTH_LONG).show();
+                    abandonsProject(context, project.getGroup(), new OnProjectAbandonedListener(){
+                        @Override
+                        public void onProjectAbandoned(Group project) {
+                            if (project != null) {
+                                ProjectDetailActivity.this.onProjectAbandoned(context);
                             }
-                        });
-                    }else{
-                        //se l'ultimo membro rimasto ha abbandonato rimuove completamente l'intero gruppo
-                        abandonsProject=true;
-                        deleteProject(context, project.getGroup(), new OnProjectDeletedListener() {
-                            @Override
-                            public void onProjectDeleted(Group project) {
-                                if (project != null) {
-                                    ProjectDetailActivity.this.onProjectDeleted(context);
-                                }
-                            }
-                        });
-                    }
-
+                        }
+                    });
 
                 }
             }).setNegativeButton(R.string.text_button_no, new DialogInterface.OnClickListener() {
@@ -262,7 +234,49 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
 
     }
 
+   public static void abandonsProject(Context context, Group project, OnProjectAbandonedListener listener){
+        List<String> members = project.getMembri();
+        if (members == null) {
+            throw new RuntimeException("Questo non dovrebbe mai accadere");
+        }
+
+        DatabaseReference groupReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS).child(project.getId());
+
+        if(members.size() > ONE_MEMBER){
+            //se nella lista c'è ancora almeno un membro allora aggiorna la lista dei membri
+            Log.d(TAG, "IL GRUPPO HA ANCORA DEI MEMBRI");
+            members.remove(LoginHelper.getCurrentUser().getAccountId());
+
+            groupReference.child(Group.Keys.MEMBERS).setValue(members)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            listener.onProjectAbandoned(project);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    listener.onProjectAbandoned(null);
+                }
+            });
+        }else{
+            Log.d(TAG, "IL GRUPPO HA SOLO UN MEMBRO "+ project.toString());
+            //se il membro che abbandona è l'ultimo membro rimasto rimuove completamente l'intero gruppo
+            deleteProject(context, project, new OnProjectDeletedListener() {
+                @Override
+                public void onProjectDeleted(Group project) {
+                    if (project == null) {
+                        Toast.makeText(context, R.string.text_message_project_abandonment_error, Toast.LENGTH_LONG).show();
+                        listener.onProjectAbandoned(null);
+                        return;
+                    }
+                    listener.onProjectAbandoned(project);
+                }
+            });
+        }
+}
     private void showDeleteProjectDialog() {
+        Log.d(TAG, "DELETE PROJECT dialog"+project.toString());
         new AlertDialog.Builder(this)
                 .setTitle(R.string.label_dialog_title_delete_project)
                 .setMessage(R.string.text_message_delete_project)
@@ -287,6 +301,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     }
 
     public static void deleteProject(Context context, Group project, OnProjectDeletedListener listener) {
+        Log.d(TAG, "DELETE PROJECT method"+project.toString());
         FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS)
                 .child(project.getId()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -297,18 +312,14 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-               if(abandonsProject){
-                   Toast.makeText(context, R.string.text_message_abandonment_error, Toast.LENGTH_LONG).show();
-               }else{
-                   Toast.makeText(context, R.string.text_message_project_deletion_failed, Toast.LENGTH_LONG).show();
-               }
-
+                Toast.makeText(context, R.string.text_message_project_deletion_failed, Toast.LENGTH_LONG).show();
                 listener.onProjectDeleted(null);
             }
         });
     }
 
     private static void deleteProjectFromLists(Context context, Group project, OnProjectDeletedListener listener) {
+        Log.d(TAG, "DELETE LIST " +project.toString());
         FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_LISTS_PROJECTS)
                 .runTransaction(new Transaction.Handler() {
                     @NonNull
@@ -356,6 +367,7 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     }
 
     private static void deleteNotifications(Context context, Group project, OnProjectDeletedListener listener) {
+        Log.d(TAG, "DELETE NOTICATIONS " +project.toString());
         FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_NOTIFICATIONS)
                 .runTransaction(new Transaction.Handler() {
                     @NonNull
@@ -423,12 +435,13 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
                 });
     }
 
+    private void onProjectAbandoned(Context context) {
+        Toast.makeText(context, R.string.text_message_abandoned_project, Toast.LENGTH_LONG).show();
+        finish();
+    }
+
     private void onProjectDeleted(Context context) {
-        if(abandonsProject){
-            Toast.makeText(context, R.string.text_message_abandoned_project, Toast.LENGTH_LONG).show();
-        }else{
-            Toast.makeText(context, R.string.text_message_project_successfully_deleted, Toast.LENGTH_LONG).show();
-        }
+        Toast.makeText(context, R.string.text_message_project_successfully_deleted, Toast.LENGTH_LONG).show();
         finish();
     }
 
@@ -501,6 +514,20 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
     }
 
     public interface OnProjectDeletedListener {
+        /**
+         * Specifica l'azione da fare quando è stato eliminato un progetto o l'azione
+         * è stata annullata
+         * @param project il progetto è stato eliminato o null se l'azione è stata annullata
+         */
         void onProjectDeleted (Group project);
+    }
+
+    public interface OnProjectAbandonedListener {
+        /**
+         * Specifica l'azione da fare quando è stato abbandonato un progetto o l'azione
+         * è stata annullata
+         * @param project il progetto è stato abbandonato o null se l'azione è stata annullata
+         */
+        void onProjectAbandoned (Group project);
     }
 }

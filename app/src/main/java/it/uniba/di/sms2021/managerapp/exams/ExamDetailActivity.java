@@ -34,6 +34,7 @@ import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
+import it.uniba.di.sms2021.managerapp.projects.ProjectDetailActivity;
 import it.uniba.di.sms2021.managerapp.utility.AbstractTabbedNavigationHubActivity;
 import it.uniba.di.sms2021.managerapp.utility.MenuUtil;
 
@@ -138,57 +139,18 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
 
         new AlertDialog.Builder(this)
                 .setTitle(R.string.label_Dialog_title_abandon_exam)
+                .setMessage(R.string.label_Dialog_message_abandon_exam)
                 .setPositiveButton(R.string.text_button_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                      List<String> partecipants = exam.getStudents();
-                        if (partecipants == null) {
-                            throw new RuntimeException("Questo non dovrebbe mai accadere");
-                        }
-                        partecipants.remove(LoginHelper.getCurrentUser().getAccountId());
-
-                        DatabaseReference examReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_EXAMS).child(exam.getId());
-                        DatabaseReference groupsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS);
-
-                        examReference.child(Exam.Keys.STUDENTS).setValue(partecipants)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-
-                                    ValueEventListener groupsListener = new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            for (DataSnapshot child : snapshot.getChildren()) {
-                                                Group group = child.getValue(Group.class);
-                                                String currentUserId = LoginHelper.getCurrentUser().getAccountId();
-                                                if (exam.getId().equals(group.getExam()) && group.getMembri().contains(currentUserId)) {
-
-                                                    removeParticipationGroups( child.getRef(), group.getMembri() );
-
-                                                }
-                                            }
-
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-
-                                        }
-                                    };
-                                    groupsReference.addValueEventListener(groupsListener);
-
-                                    onSupportNavigateUp();
-                                    Toast.makeText(getApplicationContext(), R.string.text_message_abandoned_exam, Toast.LENGTH_LONG).show();
-
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(getApplicationContext(), R.string.text_message_abandonment_error, Toast.LENGTH_LONG).show();
-                                }
-                        });
-
-
+                       abandonsExamAndGroups(context, exam, new OnExamAbandonedListener() {
+                           @Override
+                           public void onExamAbandoned(Exam exam) {
+                               if (exam != null) {
+                                   ExamDetailActivity.this.onExamAbandoned();
+                               }
+                           }
+                       });
 
                     }
                 }).setNegativeButton(R.string.text_button_no, new DialogInterface.OnClickListener() {
@@ -200,45 +162,93 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
 
     }
 
-    private void removeParticipationGroups(DatabaseReference groupReference, List<String> members){
-        if (members == null) {
-            throw new RuntimeException("Questo non dovrebbe mai accadere");
-        }
-        members.remove(LoginHelper.getCurrentUser().getAccountId());
+    public void abandonsExamAndGroups(Context context,Exam exam, OnExamAbandonedListener listener){
+        abandonsExamGroups(context,exam,listener);
+    }
+    private void abandonsExamGroups(Context context,Exam exam, OnExamAbandonedListener listener){
+        DatabaseReference groupsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS);
 
-        Log.d(TAG,members.toString());
-
-        if(members.size()!=0){
-            //se la lista dei membri non è vuota quindi vuol dire che c'è ancora almeno un membro allora aggiorna la lista dei membri
-            groupReference.child(Group.Keys.MEMBERS).setValue(members)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                           Log.d(TAG, getString(R.string.text_message_abandoned_project)+" "+groupReference.getKey());
-
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG, getString(R.string.text_message_abandonment_error)+" "+groupReference.getKey());
+        ValueEventListener groupsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Set<String> groupsToAbandon = new HashSet<>();
+                List<Group> groups = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    Group group = child.getValue(Group.class);
+                    String currentUserId = LoginHelper.getCurrentUser().getAccountId();
+                    if (exam.getId().equals(group.getExam()) && group.getMembri().contains(currentUserId)) {
+                        groups.add(group);
+                        groupsToAbandon.add(group.getId());
+                    }
                 }
-            });
-        }else{
-            //se l'ultimo membro rimasto ha abbandonato rimuove completamento l'intero gruppo
-            groupReference.removeValue()
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                if (groups.isEmpty()) {
+                    abandonsExam(context, exam, listener);
+                    return;
+                }
+
+                for (Group group: groups) {
+                    ProjectDetailActivity.abandonsProject(context, group, new ProjectDetailActivity.OnProjectAbandonedListener(){
                         @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d(TAG, getString(R.string.text_message_abandoned_project)+" "+groupReference.getKey());
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, getString(R.string.text_message_abandonment_error)+" "+groupReference.getKey());
+                        public void onProjectAbandoned(Group project) {
+                            if (project == null) {
+                                Toast.makeText(context,
+                                        R.string.text_message_exam_abandonment_error,
+                                        Toast.LENGTH_LONG).show();
+                                listener.onExamAbandoned(null);
+                                return;
+                            }
+
+                            Log.i(TAG, "Abandoned group " + group.getName());
+                            groupsToAbandon.remove(project.getId());
+                            if (groupsToAbandon.isEmpty()) {
+                                Log.i(TAG, "Finished abandonment groups.");
+                                abandonsExam(context, exam, listener);
+                            }
                         }
                     });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                listener.onExamAbandoned(null);
+            }
+        };
+        groupsReference.addListenerForSingleValueEvent(groupsListener);
+    }
+
+
+    private void abandonsExam(Context context, Exam exam, OnExamAbandonedListener listener){
+        List<String> partecipants = exam.getStudents();
+        if (partecipants == null) {
+            throw new RuntimeException("Questo non dovrebbe mai accadere");
         }
+        partecipants.remove(LoginHelper.getCurrentUser().getAccountId());
+
+        DatabaseReference examReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_EXAMS).child(exam.getId());
+
+        examReference.child(Exam.Keys.STUDENTS).setValue(partecipants)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                       listener.onExamAbandoned(exam);
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context,
+                        R.string.text_message_exam_abandonment_error,
+                        Toast.LENGTH_LONG).show();
+                listener.onExamAbandoned(null);
+            }
+        });
+
+    }
+
+    private void onExamAbandoned() {
+        Toast.makeText(getApplicationContext(), R.string.text_message_abandoned_exam, Toast.LENGTH_LONG).show();
+        finish();
     }
 
     private void showDialogDeleteExam() {
@@ -348,5 +358,14 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
 
     public Exam getSelectedExam () {
         return exam;
+    }
+
+  public interface OnExamAbandonedListener {
+        /**
+         * Specifica l'azione da fare quando è stato abbandonato un esame o l'azione
+         * è stata annullata
+         * @param exam l'esame è stato abbandonato o null se l'azione è stata annullata
+         */
+        void onExamAbandoned (Exam exam);
     }
 }

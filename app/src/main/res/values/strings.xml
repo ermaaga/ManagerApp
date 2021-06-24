@@ -50,6 +50,7 @@
     <string name="label_Dialog_title_delete_studycase">Studycase Deletion</string>
     <string name="label_Dialog_title_delete_exam">Exam Deletion</string>
     <string name="label_Dialog_message_abandon_project">If you are the only member of the project, the group and files associated to the project will also be permanently deleted.</string>
+    <string name="label_Dialog_message_abandon_exam">This action will also remove you from the group you belong to</string>
 
     <string name="text_error_validation">The group name cannot have much than 20 characters</string>
     <string name="text_error_max_review_report">The review cannot have much than 800 characters</string>
@@ -251,7 +252,7 @@
     <string name="text_message_evaluated_projects_empty">No evaluated projects found</string>
     <string name="text_message_unsaved_changes">There are unsaved changes. Do you want to save them?</string>
     <string name="text_message_abandoned_project">You abandoned the project</string>
-    <string name="text_message_abandonment_error">An error has occurred. Please try again later</string>
+    <string name="text_message_project_abandonment_error">Abandoned project failed. Please try again later</string>
     <string name="test_message_reset_email">The password reset email has been sent</string>
     <string name="test_message_email_not_exist">There is no account with this email</string>
     <string name="text_message_delete_project">Are you sure you want to delete the project?\n This will also delete permanently the group and all the files associated to the project.</string>
@@ -263,6 +264,7 @@
     <string name="text_message_delete_exam">You are about to delete this exam.\nThis will also delete all studycases and groups associated to the exam.\nAre you sure you want to continue?</string>
     <string name="text_message_exam_deletion_failed">Exam deletion failed. Try again later.</string>
     <string name="text_message_exam_deleted_successfully">Exam deleted successfully</string>
+    <string name="text_message_exam_abandonment_error">Abandoned exam failed. Please try again later</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
