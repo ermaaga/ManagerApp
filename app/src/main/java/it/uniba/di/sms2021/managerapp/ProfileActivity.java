@@ -546,6 +546,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity {
     public void editProfile() {
         textName.setVisibility(View.GONE);
         textSurname.setVisibility(View.GONE);
+        textEmail.setTextColor(getResources().getColor(R.color.grey, null));
 
         editName.setVisibility(View.VISIBLE);
         editSurname.setVisibility(View.VISIBLE);
