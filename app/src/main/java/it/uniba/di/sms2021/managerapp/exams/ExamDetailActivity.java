@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -21,6 +22,8 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -32,6 +35,7 @@ import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.ExamJoinRequest;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.projects.ProjectDetailActivity;
@@ -317,7 +321,7 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
                 .child(exam.getId()).setValue(null).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
-                onExamDeleted();
+                deleteExamNotifications();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -327,6 +331,34 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
                         Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void deleteExamNotifications() {
+        FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_NOTIFICATIONS)
+                .runTransaction(new Transaction.Handler() {
+                    @NonNull
+                    @Override
+                    public Transaction.Result doTransaction(@NonNull MutableData currentData) {
+                        for (String professorId: exam.getProfessors()) {
+                            for (MutableData examJoinRequestData :currentData
+                                    .child(professorId)
+                                    .child(FirebaseDbHelper.TABLE_EXAM_JOIN_REQUESTS)
+                                    .getChildren()) {
+                                ExamJoinRequest request = examJoinRequestData.getValue(ExamJoinRequest.class);
+                                if (request.getExam().getId().equals(exam.getId())) {
+                                    examJoinRequestData.setValue(null);
+                                }
+                            }
+                        }
+
+                        return Transaction.success(currentData);
+                    }
+
+                    @Override
+                    public void onComplete(@Nullable DatabaseError error, boolean committed, @Nullable DataSnapshot currentData) {
+                        onExamDeleted();
+                    }
+                });
     }
 
     private void onExamDeleted() {

@@ -38,6 +38,9 @@ import it.uniba.di.sms2021.managerapp.enitities.Group;
 import it.uniba.di.sms2021.managerapp.enitities.ListProjects;
 import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinNotice;
 import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewEvaluation;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewReplyReportNotice;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewReportNotice;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
@@ -380,6 +383,35 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
                                 GroupJoinNotice notice = groupJoinNoticeData.getValue(GroupJoinNotice.class);
                                 if (notice.getGroup().equals(project.getId())) {
                                     groupJoinNoticeData.setValue(null);
+                                }
+                            }
+
+                            for (MutableData newEvaulationData: currentData.child(userId)
+                                    .child(FirebaseDbHelper.TABLE_NEW_EVALUATION)
+                                    .getChildren()) {
+                                NewEvaluation newEvaluation = newEvaulationData.getValue(NewEvaluation.class);
+                                if (newEvaluation.getGroupId().equals(project.getId())) {
+                                    newEvaulationData.setValue(null);
+                                }
+                            }
+
+                            for (MutableData newReplyReportData: currentData.child(userId)
+                                    .child(FirebaseDbHelper.TABLE_NEW_REPLY_REPORT)
+                                    .getChildren()) {
+                                NewReplyReportNotice notice =
+                                        newReplyReportData.getValue(NewReplyReportNotice.class);
+                                if (notice.getGroupId().equals(project.getId())) {
+                                    newReplyReportData.setValue(null);
+                                }
+                            }
+
+                            for (MutableData newReportData: currentData.child(userId)
+                                    .child(FirebaseDbHelper.TABLE_NEW_REPORT)
+                                    .getChildren()) {
+                                NewReportNotice notice =
+                                        newReportData.getValue(NewReportNotice.class);
+                                if (notice.getGroupId().equals(project.getId())) {
+                                    newReportData.setValue(null);
                                 }
                             }
                         }
