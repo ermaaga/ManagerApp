@@ -102,8 +102,8 @@ public class ShakeUtil {
                 }
 
                 /*Memorizza l'istante in cui si potrà iniziare a rilevare il prossimo scuotimento
-                 (dopo sei secondi dall'ultimo), in modo da evitare di rilevare più scuotimenti
-                  e, di conseguenza, eseguire l'azione più volte.*/
+                 (dopo sei secondi dall'ultimo). In questo modo si evita il rilevamento di più scuotimenti
+                 nel lasso di tempo che precede l'esecuzione dell'azione.*/
                 timeOfShaking = Calendar.getInstance();
                 timeOfShaking.setTimeInMillis(now.getTimeInMillis());
                 timeOfShaking.add(Calendar.SECOND, 6);
@@ -124,6 +124,12 @@ public class ShakeUtil {
         }
         //Usato per indicare che in precedenza c'è stato almeno un rilevamento
         itIsNotFirstTime = true;
+    }
+
+    /*Metodo usato per resettare l'accelerazione, in modo che, la differenza di accelerazione dopo
+    *che l'azione è stata eseguita, non dipenda dall' accelerazione che ha causato lo scuotimento.*/
+    public static void resetAcceleration(){
+        acceleration = SensorManager.GRAVITY_EARTH;
     }
 
     /**

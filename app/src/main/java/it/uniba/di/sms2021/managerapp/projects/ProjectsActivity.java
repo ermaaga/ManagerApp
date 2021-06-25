@@ -626,11 +626,11 @@ public class ProjectsActivity extends AbstractBottomNavigationActivity implement
     }
 
     private void actionShareList(List<Project> projectList){
+        ShakeUtil.resetAcceleration();
         if (!bluetoothAdapter.isEnabled()){
              Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             shareableProjectList = projectList;
              startActivityForResult(intent, REQUEST_ENABLE_BT);
-
         } else {
             Log.d(TAG, "Bluetooth is already on ");
             shareableProjectList = projectList;

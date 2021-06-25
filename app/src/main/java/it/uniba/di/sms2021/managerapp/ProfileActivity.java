@@ -67,6 +67,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity {
     private DatabaseReference departmentsReference;
     private DatabaseReference coursesReference;
     private DatabaseReference currentUserReference;
+    private DatabaseReference examsReference;
     private StorageReference storageReference;
 
     User user;
@@ -117,6 +118,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity {
     private ValueEventListener userListenerCreate;
     private ValueEventListener departmentsListener;
     private ValueEventListener coursesListener;
+    private ValueEventListener examsListener;
 
     MenuItem iconSave;
     MenuItem iconEdit;
@@ -285,6 +287,7 @@ public class ProfileActivity extends AbstractBottomNavigationActivity {
         usersReference = database.getReference(FirebaseDbHelper.TABLE_USERS);
         departmentsReference = database.getReference(FirebaseDbHelper.TABLE_DEPARTMENTS);
         coursesReference = database.getReference(FirebaseDbHelper.TABLE_COURSES);
+        examsReference = database.getReference(FirebaseDbHelper.TABLE_EXAMS);
         storageReference = FirebaseStorage.getInstance().getReference();
 
         userDepartments = new ArrayList<String>();
