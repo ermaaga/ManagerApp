@@ -2,6 +2,7 @@ package it.uniba.di.sms2021.managerapp.notifications;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,6 +35,7 @@ import it.uniba.di.sms2021.managerapp.projects.ProjectDetailActivity;
  * necessari nelle operazioni che riguardano l'oggetto.
  */
 public class GroupJoinRequestNotification implements Notifiable {
+    private static final String TAG = "GroupJoinRequest";
     private GroupJoinRequest request;
     private User sender;
     private Group group;
@@ -173,7 +175,9 @@ public class GroupJoinRequestNotification implements Notifiable {
     public void onNotificationAction1Click(Context context, @Nullable OnActionDoneListener listener) {
         List<String> members = group.getMembri();
         if (members == null) {
-            throw new RuntimeException("Questo non dovrebbe mai accadere");
+            Log.e(TAG, "Lista membri del gruppo null");
+            Toast.makeText(context, R.string.text_message_generic_error, Toast.LENGTH_LONG).show();
+            return;
         }
         members.add(sender.getAccountId());
 
@@ -263,10 +267,11 @@ public class GroupJoinRequestNotification implements Notifiable {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     notification.sender = snapshot.getValue(User.class);
                     if (notification.sender == null) {
-                        throw new RuntimeException("Impossibile trovare l'utente con l'id "
+                        Log.e(TAG, "Impossibile trovare l'utente con l'id "
                                 + request.getRequestSenderId() +
                                 " nella richiesta di partecipazione gruppo di id " +
                                 request.getRequestId());
+                        return;
                     }
 
                     if (notification.isInitialised()) {
@@ -287,7 +292,7 @@ public class GroupJoinRequestNotification implements Notifiable {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             notification.group = snapshot.getValue(Group.class);
                             if (notification.group == null) {
-                                throw new RuntimeException("Impossibile trovare il gruppo con l'id "
+                                Log.e(TAG, "Impossibile trovare il gruppo con l'id "
                                         + request.getGroupId() +
                                         " nella richiesta di partecipazione gruppo di id " +
                                         request.getRequestId());

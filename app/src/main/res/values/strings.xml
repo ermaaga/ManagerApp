@@ -265,6 +265,8 @@
     <string name="text_message_exam_deletion_failed">Exam deletion failed. Try again later.</string>
     <string name="text_message_exam_deleted_successfully">Exam deleted successfully</string>
     <string name="text_message_exam_abandonment_error">Abandoned exam failed. Please try again later</string>
+    <string name="text_message_abandoned_exam">You abandoned the exam</string>
+    <string name="text_message_generic_error">An error has occured.</string>
 
     <string name="chooser_title_preview">Preview this file with</string>
 
@@ -362,7 +364,6 @@
     <string name="text_filter_projects_created">Created</string>
     <string name="text_filter_projects_withrelease">With Releases</string>
     <string name="text_filter_projects_hasevaluation">Evaluated</string>
-    <string name="text_message_abandoned_exam">You abandoned the exam</string>
 
 
     <plurals name="text_notification_title_feed">

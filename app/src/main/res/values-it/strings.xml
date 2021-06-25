@@ -256,6 +256,8 @@
     <string name="text_message_exam_deletion_failed">Cancellazione esame fallita. Riprova successivamente.</string>
     <string name="text_message_exam_deleted_successfully">Esame cancellato successivamente</string>
     <string name="text_message_exam_abandonment_error">Abbandono esame fallito. Per favore riprova più tardi</string>
+    <string name="text_message_abandoned_exam">Hai abbandonato l\'esame</string>
+    <string name="text_message_generic_error">Si è verificato un errore.</string>
 
     <string name="chooser_title_preview">Visualizza questo file con</string>
 
@@ -345,7 +347,6 @@
     <string name="text_filter_projects_created">Creati</string>
     <string name="text_filter_projects_withrelease">Con Rilasci</string>
     <string name="text_filter_projects_hasevaluation">Valutati</string>
-    <string name="text_message_abandoned_exam">You abandoned the exam</string>
 
 
     <plurals name="text_notification_title_feed">

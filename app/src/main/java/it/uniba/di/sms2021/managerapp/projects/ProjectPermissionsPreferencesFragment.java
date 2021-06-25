@@ -36,6 +36,7 @@ public class ProjectPermissionsPreferencesFragment extends PreferenceFragmentCom
     private static final String MAX_MEMBERS_KEY = "max_members";
     private static final String FILE_ACCESSIBILITY_KEY = "file_accessibility";
     public static final String CAN_ADD_FILES_KEY = "can_add_files";
+    private static final String TAG = "ProjectPermissionsPrefs";
 
     private Project project;
 
@@ -180,7 +181,8 @@ public class ProjectPermissionsPreferencesFragment extends PreferenceFragmentCom
             project.getPermissions().setCanAddFiles(selectedMembers);
         }
         else {
-            throw new RuntimeException("Preference key not found");
+            Log.e(TAG, "Preference key not found");
+            return;
         }
 
         Map<String, Object> map = new HashMap<>();

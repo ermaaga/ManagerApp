@@ -240,7 +240,8 @@ public class ProjectDetailActivity extends AbstractTabbedNavigationHubActivity {
    public static void abandonsProject(Context context, Group project, OnProjectAbandonedListener listener){
         List<String> members = project.getMembri();
         if (members == null) {
-            throw new RuntimeException("Questo non dovrebbe mai accadere");
+            Log.e(TAG, "Lista membri del gruppo null");
+            return;
         }
 
         DatabaseReference groupReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_GROUPS).child(project.getId());

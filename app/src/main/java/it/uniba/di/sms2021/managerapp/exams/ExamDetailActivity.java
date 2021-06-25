@@ -226,7 +226,7 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
     private void abandonsExam(Context context, Exam exam, OnExamAbandonedListener listener){
         List<String> partecipants = exam.getStudents();
         if (partecipants == null) {
-            throw new RuntimeException("Questo non dovrebbe mai accadere");
+            Log.e(TAG, "lista partecipanti esame null");
         }
         partecipants.remove(LoginHelper.getCurrentUser().getAccountId());
 

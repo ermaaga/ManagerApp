@@ -133,12 +133,7 @@ public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
                         textName.setText(studyCase.getNome());
                         textDesc.setText(studyCase.getDescrizione());
 
-                        try {
-                            initialiseFileImageView ();
-                        } catch (RuntimeException e) {
-                            Log.d(TAG, e.getMessage());
-                        }
-
+                        initialiseFileImageView ();
                     }
                 }
 
@@ -153,17 +148,17 @@ public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
         studyCaseReference.addValueEventListener(studyCaseListener);
     }
 
-    private void initialiseFileImageView() throws RuntimeException {
+    private void initialiseFileImageView() {
         FirebaseDbHelper.getStudyCasePathReference(studyCase).listAll()
                 .addOnSuccessListener(new OnSuccessListener<ListResult>() {
                     @Override
                     public void onSuccess(ListResult listResult) {
                         List<StorageReference> storageReferenceList = listResult.getItems();
                         if (storageReferenceList.size() > 1) {
-                            throw new RuntimeException("Presente più di un file quando ogni caso di studio" +
+                            Log.e(TAG, "Presente più di un file quando ogni caso di studio" +
                                     "ha solo un file che lo descrive.");
                         }
-                        if (storageReferenceList.size() == 0) {
+                        if (storageReferenceList.size() != 1) {
                             fileImageView.setVisibility(View.INVISIBLE);
                             return;
                         }

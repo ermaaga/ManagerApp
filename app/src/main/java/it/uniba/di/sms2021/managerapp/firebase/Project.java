@@ -91,6 +91,7 @@ public class Project implements Parcelable {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             boolean found = false;
+
                             for (DataSnapshot child: snapshot.getChildren()) {
                                 found = true;
                                 if (group != null && child.getKey().equals(group.getStudyCase())) {
@@ -101,8 +102,9 @@ public class Project implements Parcelable {
                                 }
                             }
                             if (!found) {
-                                throw new RuntimeException("Impossibile trovare il caso di studio con l'id "
+                                Log.e(TAG, "Impossibile trovare il caso di studio con l'id "
                                         + group.getStudyCase() + " nel progetto di id " + project.getId());
+                                return;
                             }
 
                             if (project.isInitialisationDone()) {

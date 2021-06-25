@@ -2,6 +2,7 @@ package it.uniba.di.sms2021.managerapp.notifications;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -217,7 +218,7 @@ public class ReplyNotification implements Notifiable {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             notification.sender = snapshot.getValue(User.class);
                             if (notification.sender == null) {
-                                throw new RuntimeException("Impossibile trovare l'utente con l'id "
+                                Log.e(TAG, "Impossibile trovare l'utente con l'id "
                                         + reply.getReplySenderId() +
                                         " nella nuova risposta di id " +
                                         reply.getReplyId());
@@ -241,10 +242,11 @@ public class ReplyNotification implements Notifiable {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             notification.group = snapshot.getValue(Group.class);
                             if (notification.group == null) {
-                                throw new RuntimeException("Impossibile trovare il gruppo con l'id "
+                                Log.e(TAG, "Impossibile trovare il gruppo con l'id "
                                         + reply.getGroupId() +
                                         " nella nuova risposta di id " +
                                         reply.getReplyId());
+                                return;
                             }
 
                             if (notification.isInitialised()) {
@@ -266,7 +268,7 @@ public class ReplyNotification implements Notifiable {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             notification.report = snapshot.getValue(Report.class);
                             if (notification.report == null) {
-                                throw new RuntimeException("Impossibile trovare la segnalazione con l'id "
+                                Log.e(TAG, "Impossibile trovare la segnalazione con l'id "
                                         + reply.getReportId() +
                                         " nella nuova risposta di id " +
                                         reply.getReplyId());

@@ -1,6 +1,7 @@
 package it.uniba.di.sms2021.managerapp.lists;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,17 +22,18 @@ import java.util.Collections;
 import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
+import it.uniba.di.sms2021.managerapp.enitities.file.FileComparator;
 import it.uniba.di.sms2021.managerapp.enitities.file.ManagerCloudFile;
 import it.uniba.di.sms2021.managerapp.enitities.file.ManagerFile;
 import it.uniba.di.sms2021.managerapp.enitities.file.ManagerLocalFile;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
-import it.uniba.di.sms2021.managerapp.enitities.file.FileComparator;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
 
 /**
  * Adapter di una recyclerView per una lista di file
  */
 public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView.ViewHolder> {
+    private static final String TAG = "FilesRecyclerAdapter";
     private final Context context;
     private final OnActionListener listener;
     private final Project project;
@@ -164,7 +166,7 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
                 } else if (item.getItemId() == R.id.file_download_action) {
                     listener.onDownload(file);
                 } else {
-                    throw new RuntimeException("Id Menù " + item.getItemId() + " non trovato");
+                    Log.e(TAG, "Id Menù " + item.getItemId() + " non trovato");
                 }
                 return false;
             }
@@ -194,7 +196,7 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
                 if (item.getItemId() == R.id.file_delete_action) {
                     listener.onDelete(file);
                 } else {
-                    throw new RuntimeException("Id Menù " + item.getItemId() + " non trovato");
+                    Log.e(TAG, "Id Menù " + item.getItemId() + " non trovato");
                 }
                 return false;
             }

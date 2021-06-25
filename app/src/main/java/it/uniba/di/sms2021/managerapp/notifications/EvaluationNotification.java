@@ -2,6 +2,7 @@ package it.uniba.di.sms2021.managerapp.notifications;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,8 +17,8 @@ import java.util.Objects;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Group;
-import it.uniba.di.sms2021.managerapp.enitities.notifications.NewEvaluation;
 import it.uniba.di.sms2021.managerapp.enitities.User;
+import it.uniba.di.sms2021.managerapp.enitities.notifications.NewEvaluation;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.firebase.Project;
@@ -214,10 +215,11 @@ public class EvaluationNotification  implements Notifiable {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             notification.sender = snapshot.getValue(User.class);
                             if (notification.sender == null) {
-                                throw new RuntimeException("Impossibile trovare l'utente con l'id "
+                                Log.e(TAG, "Impossibile trovare l'utente con l'id "
                                         + evaluation.getEvaluationSenderId() +
                                         " nella valutazione di id " +
                                         evaluation.getEvaluationId());
+                                return;
                             }
 
                             if (notification.isInitialised()) {
@@ -238,7 +240,7 @@ public class EvaluationNotification  implements Notifiable {
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             notification.group = snapshot.getValue(Group.class);
                             if (notification.group == null) {
-                                throw new RuntimeException("Impossibile trovare il gruppo con l'id "
+                                Log.e(TAG, "Impossibile trovare il gruppo con l'id "
                                         + evaluation.getGroupId() +
                                         " nella valutazione di id " +
                                         evaluation.getEvaluationId());
