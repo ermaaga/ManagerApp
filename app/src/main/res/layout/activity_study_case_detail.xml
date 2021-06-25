@@ -11,14 +11,13 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="@string/text_label_exam_description"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView_desc_study_case"
         app:layout_constraintEnd_toEndOf="@+id/textView_desc_study_case"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView_desc_study_case"
-        app:layout_constraintTop_toBottomOf="@+id/textView_name_study_case"
-        app:layout_constraintVertical_bias="0.836" />
+        app:layout_constraintTop_toBottomOf="@+id/textView_name_study_case" />
 
     <include
         android:id="@+id/toolbar"
@@ -32,37 +31,41 @@
     <TextView
         android:id="@+id/textView_name_study_case"
         android:layout_width="330dp"
-        android:layout_height="51dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:background="@drawable/textview_border"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.44"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="139dp" />
+        app:layout_constraintTop_toBottomOf="@+id/textView3"
+        tools:text="Lorem Ipsum" />
 
     <TextView
         android:id="@+id/textView_desc_study_case"
         android:layout_width="330dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:background="@drawable/textview_border"
+        android:maxLines="10"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="@+id/textView_name_study_case"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView_name_study_case"
-        app:layout_constraintTop_toBottomOf="@+id/textView_name_study_case" />
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris eget erat ac sapien pellentesque egestas. Cras iaculis interdum placerat. Quisque maximus lorem tortor, at dapibus mi cursus quis. Duis auctor, augue luctus maximus sodales, dui magna luctus ipsum, ut accumsan nisi libero non urna. Sed auctor odio non commodo gravida. Ut scelerisque dapibus erat a scelerisque. Donec vitae mollis nibh. Nam non nisi efficitur, consectetur sem eget, ornare justo. Donec accumsan nulla in augue tempor, auctor finibus enim ultricies. Integer elementum cursus fermentum. Vivamus sed consequat quam. Vestibulum in rhoncus augue. Proin lorem urna, ultricies eu mattis sed, varius vestibulum sapien." />
 
     <Button
         android:id="@+id/button_create_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginBottom="16dp"
         android:onClick="createGroup"
         android:text="@string/text_button_go_create_group"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="@+id/file_type_image_view"
         app:layout_constraintHorizontal_bias="0.428"
-        app:layout_constraintStart_toStartOf="@+id/file_type_image_view"
-        app:layout_constraintTop_toBottomOf="@+id/file_type_image_view"
-        app:layout_constraintVertical_bias="0.424" />
+        app:layout_constraintStart_toStartOf="@+id/file_type_image_view" />
 
     <ImageView
         android:id="@+id/file_type_image_view"
@@ -103,11 +106,9 @@
         android:layout_marginTop="40dp"
         android:text="@string/text_label_exam_name"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textView_name_study_case"
         app:layout_constraintEnd_toEndOf="@+id/textView_name_study_case"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/textView_name_study_case"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintVertical_bias="0.708" />
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
