@@ -296,6 +296,7 @@ public class GroupJoinRequestNotification implements Notifiable {
                                         + request.getGroupId() +
                                         " nella richiesta di partecipazione gruppo di id " +
                                         request.getRequestId());
+                                return;
                             }
 
                             if (notification.isInitialised()) {

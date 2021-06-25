@@ -222,6 +222,7 @@ public class ReplyNotification implements Notifiable {
                                         + reply.getReplySenderId() +
                                         " nella nuova risposta di id " +
                                         reply.getReplyId());
+                                return;
                             }
 
                             if (notification.isInitialised()) {
@@ -272,6 +273,7 @@ public class ReplyNotification implements Notifiable {
                                         + reply.getReportId() +
                                         " nella nuova risposta di id " +
                                         reply.getReplyId());
+                                return;
                             }
 
                             if (notification.isInitialised()) {

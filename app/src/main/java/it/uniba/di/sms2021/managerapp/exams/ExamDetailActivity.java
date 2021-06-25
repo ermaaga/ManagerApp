@@ -227,6 +227,7 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
         List<String> partecipants = exam.getStudents();
         if (partecipants == null) {
             Log.e(TAG, "lista partecipanti esame null");
+            return;
         }
         partecipants.remove(LoginHelper.getCurrentUser().getAccountId());
 

@@ -244,6 +244,7 @@ public class EvaluationNotification  implements Notifiable {
                                         + evaluation.getGroupId() +
                                         " nella valutazione di id " +
                                         evaluation.getEvaluationId());
+                                return;
                             }
 
                             if (notification.isInitialised()) {
