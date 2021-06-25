@@ -26,6 +26,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
@@ -39,6 +42,8 @@ public class UserRecyclerAdapter extends ListAdapter<User, RecyclerView.ViewHold
     private DatabaseReference usersReference;
     private FirebaseDatabase database;
     private Context context;
+
+    private final Set<String> leaderIds = new HashSet<>();
 
     public UserRecyclerAdapter(Context context, OnActionListener listener) {
         super(new UserDiffCallback());
@@ -73,7 +78,7 @@ public class UserRecyclerAdapter extends ListAdapter<User, RecyclerView.ViewHold
         TextView emailTextView = itemView.findViewById(R.id.email_TextView);
         ImageView photoProfile = itemView.findViewById(R.id.image_account);
         ImageView imgStar= itemView.findViewById(R.id.img_star);
-        if (position == 0){
+        if (leaderIds.contains(user.getAccountId())){
             imgStar.setVisibility(View.VISIBLE);
         }
 
@@ -119,6 +124,10 @@ public class UserRecyclerAdapter extends ListAdapter<User, RecyclerView.ViewHold
             }
         };
         currentUserReference.addListenerForSingleValueEvent(userListenerCreate);
+    }
+
+    public void setAsLeader (String userId) {
+        leaderIds.add(userId);
     }
 
     static class UserDiffCallback extends DiffUtil.ItemCallback<User> {

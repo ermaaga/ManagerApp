@@ -63,7 +63,6 @@ public class ProjectMembersFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         adapter = new UserRecyclerAdapter(getContext(), new UserRecyclerAdapter.OnActionListener(){
-
             @Override
             public void onItemClicked(User string) {
                 Intent intent = new Intent(getContext(), ProfileActivity.class);
@@ -89,6 +88,8 @@ public class ProjectMembersFragment extends Fragment {
                     User user = snapshot.child(userId).getValue(User.class);
                     lstUsers.add(user);
                 }
+
+                adapter.setAsLeader(lstMembers.get(0));
                 adapter.submitList(lstUsers);
             }
 

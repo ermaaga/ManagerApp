@@ -51,7 +51,7 @@ public class ExamsPartecipantsActivity extends AbstractBottomNavigationActivity 
 
         exam = getIntent().getParcelableExtra(Exam.Keys.EXAM);
 
-        adapter = new UserRecyclerAdapter(getApplicationContext(),new UserRecyclerAdapter.OnActionListener() {
+        adapter = new UserRecyclerAdapter(getApplicationContext(), new UserRecyclerAdapter.OnActionListener() {
             @Override
             public void onItemClicked(User string) {
                 Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
@@ -72,12 +72,23 @@ public class ExamsPartecipantsActivity extends AbstractBottomNavigationActivity 
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    if (exam.getStudents().contains(child.getKey())) {
-                        User user = child.getValue(User.class);
-                        partecipants.add(user);
-                    }
+                for (String professorId: exam.getProfessors()) {
+                    DataSnapshot professorData = snapshot.child(professorId);
+                    User professor = professorData.getValue(User.class);
+                    partecipants.add(professor);
+                    adapter.setAsLeader(professorId);
                 }
+
+                if (exam.getStudents() == null) {
+                    return;
+                }
+                for (String studentId: exam.getStudents()) {
+                    DataSnapshot userData = snapshot.child(studentId);
+                    User professor = userData.getValue(User.class);
+                    partecipants.add(professor);
+                }
+
+
                 adapter.submitList(partecipants);
             }
 
