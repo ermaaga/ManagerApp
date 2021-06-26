@@ -254,7 +254,7 @@
     <string name="text_message_study_case_deleted_successfully">Caso di studio cancellato con successo.</string>
     <string name="text_message_delete_exam">Stai per cancellare questo esame.\nQuesta azione cancellerà anche tutti i casi di studio e gruppi associati all\'esame.\nSei sicuro di voler continuare?</string>
     <string name="text_message_exam_deletion_failed">Cancellazione esame fallita. Riprova successivamente.</string>
-    <string name="text_message_exam_deleted_successfully">Esame cancellato successivamente</string>
+    <string name="text_message_exam_deleted_successfully">Esame cancellato con successo</string>
     <string name="text_message_exam_abandonment_error">Abbandono esame fallito. Per favore riprova più tardi</string>
     <string name="text_message_abandoned_exam">Hai abbandonato l\'esame</string>
     <string name="text_message_generic_error">Si è verificato un errore.</string>
