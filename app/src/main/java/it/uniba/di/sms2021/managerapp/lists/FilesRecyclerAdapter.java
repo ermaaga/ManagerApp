@@ -143,12 +143,10 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
         PopupMenu popup = new PopupMenu(context, view);
         popup.getMenuInflater().inflate(R.menu.cloud_file_action_popup_menu, popup.getMenu());
 
-        //Nasconde l'azione elimina nel caso l'utente non sia un un membro del gruppo
-        if (!project.isMember()) {
-            popup.getMenu().findItem(R.id.file_delete_action).setVisible(false);
-        }
+        //Nasconde l'azione elimina nel caso l'utente non possa modificare i files
         if (!project.canAddFiles()) {
             popup.getMenu().findItem(R.id.file_set_release_action).setVisible(false);
+            popup.getMenu().findItem(R.id.file_delete_action).setVisible(false);
         }
 
         boolean isRelease = project.getReleaseNumber(file.getName()) != 0;
