@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="LargeText" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textSize">20sp</item>
     </style>
     <style name="MaxiText" parent="TextAppearance.AppCompat.Large">
         <item name="android:textSize">50sp</item>
