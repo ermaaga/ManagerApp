@@ -147,6 +147,9 @@ public class FilesRecyclerAdapter  extends ListAdapter<ManagerFile, RecyclerView
         if (!project.isMember()) {
             popup.getMenu().findItem(R.id.file_delete_action).setVisible(false);
         }
+        if (!project.canAddFiles()) {
+            popup.getMenu().findItem(R.id.file_set_release_action).setVisible(false);
+        }
 
         boolean isRelease = project.getReleaseNumber(file.getName()) != 0;
         if (isRelease) {
