@@ -150,7 +150,7 @@ public class ProjectFilesFragment extends Fragment implements View.OnClickListen
     }
 
     public boolean userCantAddFiles() {
-        return project.isProfessor() || !project.isMember() || !project.canAddFiles();
+        return !project.isMember() || !project.canAddFiles();
     }
 
     public boolean userCanViewFiles() {
