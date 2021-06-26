@@ -298,6 +298,7 @@ public class DummyDataLoader implements DataLoader {
                         "verrà saltata l'aggiunta del file");
             }
             scheduleUpload(application, storageReference.child(groupsArray[0].getId()), file);
+            scheduleUpload(application, storageReference.child(groupsArray[1].getId()), file);
         }
         scheduleUpload(application, storageReference.child(groupsArray[2].getId()), groupFiles[0]);
         scheduleUpload(application, storageReference.child(groupsArray[3].getId()), groupFiles[0]);
