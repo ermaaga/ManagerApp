@@ -1,43 +1,30 @@
 package it.uniba.di.sms2021.managerapp.exams;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
 
 import it.uniba.di.sms2021.managerapp.R;
 import it.uniba.di.sms2021.managerapp.enitities.Exam;
-import it.uniba.di.sms2021.managerapp.enitities.Group;
-import it.uniba.di.sms2021.managerapp.enitities.StudyCase;
-import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
-import it.uniba.di.sms2021.managerapp.lists.UserSelectionRecyclerAdapter;
 import it.uniba.di.sms2021.managerapp.utility.AbstractFormActivity;
 
 public class NewExamActivity extends AbstractFormActivity {
@@ -84,10 +71,11 @@ public class NewExamActivity extends AbstractFormActivity {
 
         try {
             if (!(TextUtils.isEmpty(examName) || TextUtils.isEmpty(examYear) )) {
-                if (examName.length()<20){
+                if (examName.length()<tlExamName.getCounterMaxLength()){
                     result = true;
                 }else{
-                    tlExamName.setError(getString(R.string.text_error_validation));
+                    tlExamName.setError(getString(R.string.text_error_validation,
+                            tlExamName.getCounterMaxLength()));
                 }
 
             } else {

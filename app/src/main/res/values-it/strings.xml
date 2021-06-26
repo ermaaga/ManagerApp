@@ -30,7 +30,7 @@
     <string name="activity_subtitle_connected_bluetooth">Connesso a:</string>
 
     <string name="creation_exam_failed">Errore durante la creazione</string>
-    <string name="text_error_validation">Il nome del gruppo non può essere maggiore di 20 caratteri</string>
+    <string name="text_error_validation">Il nome del gruppo non può essere maggiore di %d caratteri</string>
     <string name="text_error_max_review_report">La recensione non può contenere più di 800 caratteri</string>
 
     <string name="text_label_exams">Esami</string>

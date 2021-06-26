@@ -52,7 +52,7 @@
     <string name="label_Dialog_message_abandon_project">If you are the only member of the project, the group and files associated to the project will also be permanently deleted.</string>
     <string name="label_Dialog_message_abandon_exam">This action will also remove you from the group you belong to</string>
 
-    <string name="text_error_validation">The group name cannot have much than 20 characters</string>
+    <string name="text_error_validation">The group name cannot have much than %d characters</string>
     <string name="text_error_max_review_report">The review cannot have much than 800 characters</string>
 
     <string name="text_label_exams">Exams</string>
