@@ -20,12 +20,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import it.uniba.di.sms2021.managerapp.NotificationsActivity;
 import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.notifications.GroupJoinRequest;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
 import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.utility.NotificationUtil;
@@ -140,6 +136,7 @@ public class NotificationService extends Service {
                             notificationsFound, notificationsFound))
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setContentIntent(pendingIntent)
+                    .setSmallIcon(R.drawable.ic_launcher_foreground)
                     .setOnlyAlertOnce(true)
                     .setAutoCancel(true);
 
