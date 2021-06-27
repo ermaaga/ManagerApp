@@ -95,8 +95,8 @@ public class DummyDataLoader implements DataLoader {
                         Arrays.asList(departmentIds.get(departmentNames[0])),
                         Arrays.asList(coursesIds.get(informaticaCourses[1]))),
                 //1
-                new User(null, "Paolo", "Buono",
-                        "paolo.buono@test.com", User.ROLE_PROFESSOR,
+                new User(null, "Andrea", "Bianchi",
+                        "andrea.bianchi@test.com", User.ROLE_PROFESSOR,
                         Arrays.asList(departmentIds.get(departmentNames[0])),
                         Arrays.asList(coursesIds.get(informaticaCourses[1]),
                                 coursesIds.get(informaticaCourses[0]))),
