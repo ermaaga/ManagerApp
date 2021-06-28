@@ -74,6 +74,7 @@
     <string name="text_label_name_list">Name list</string>
     <string name="text_label_study_case">Caso di studio</string>
     <string name="text_label_none_evaluation">There is no evaluation</string>
+    <string name="text_label_course">Corso di Laurea</string>
 
     <string name="text_label_project_preference_visibility">Chiunque può accedere al progetto</string>
     <string name="text_label_project_preference_free_join">Chiunque può unirsi al progetto</string>
@@ -149,7 +150,7 @@
     <string name="send_verification_email_failed">Invio dell\'email di verifica fallito.</string>
     <string name="registration_failed">Registrazione fallita</string>
     <string name="login_failed">Login fallito! Per favore riprova più tardi</string>
-    <string name="label_error_fields">Per poter proseguire è necessario inserire il nome e anno</string>
+    <string name="label_error_fields">Per poter proseguire è necessario inserire il nome, anno e corso di laurea</string>
     <string name="error_characters_evaluation_comment">Il commento non può contenere più di 125 caratteri</string>
 
     <string name="description_case_study_info">Apri Info</string>

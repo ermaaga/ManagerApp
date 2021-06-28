@@ -119,7 +119,10 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
                 List<Exam> exams = new ArrayList<>();
 
                 for (DataSnapshot child: snapshot.getChildren()) {
-                    exams.add(child.getValue(Exam.class));
+                    Exam exam = child.getValue(Exam.class);
+                    if (LoginHelper.getCurrentUser().getCorsi().contains(exam.getDegreeCourse())) {
+                        exams.add(exam);
+                    }
                 }
 
                 adapter.submitList(exams);  //Ogni volta che gli esami cambiano, la lista

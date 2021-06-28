@@ -19,16 +19,19 @@ public class Exam implements Parcelable {
     private List<String> students;
     @Nullable
     private List<String> studyCases;
+    private String degreeCourse;
     private int year;
 
     public Exam() {
     }
 
-    public Exam(String id, String name, List<String> professors, @Nullable List<String> students, int year) {
+    public Exam(String id, String name, List<String> professors, @Nullable List<String> students,
+                String degreeCourse, int year) {
         this.id = id;
         this.name = name;
         this.professors = professors;
         this.students = students;
+        this.degreeCourse = degreeCourse;
         this.year = year;
     }
 
@@ -76,6 +79,14 @@ public class Exam implements Parcelable {
         if (students != null) {
             students.remove(studentId);
         }
+    }
+
+    public String getDegreeCourse() {
+        return degreeCourse;
+    }
+
+    public void setDegreeCourse(String degreeCourse) {
+        this.degreeCourse = degreeCourse;
     }
 
     public int getYear() {
