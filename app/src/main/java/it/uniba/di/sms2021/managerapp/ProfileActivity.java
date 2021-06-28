@@ -559,8 +559,12 @@ public class ProfileActivity extends AbstractBottomNavigationActivity {
         childUpdates = new HashMap();
 
 
-        childUpdates.put("/nome/", editName.getText().toString());
-        childUpdates.put("/cognome/", editSurname.getText().toString());
+        String name = editName.getText().toString();
+        childUpdates.put("/nome/", name);
+        user.setNome(name);
+        String surname = editSurname.getText().toString();
+        childUpdates.put("/cognome/", surname);
+        user.setCognome(surname);
         //Se ci sono state modifiche dei dipartimenti
         if (departmentsAfterChange != null) {
             childUpdates.put("/dipartimenti/", departmentsAfterChange);
