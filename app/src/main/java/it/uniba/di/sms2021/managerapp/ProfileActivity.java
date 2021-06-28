@@ -50,6 +50,7 @@ import it.uniba.di.sms2021.managerapp.enitities.Department;
 import it.uniba.di.sms2021.managerapp.enitities.User;
 import it.uniba.di.sms2021.managerapp.exams.ExamsActivity;
 import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
+import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
 import it.uniba.di.sms2021.managerapp.projects.ProjectsActivity;
 import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 import it.uniba.di.sms2021.managerapp.utility.FileUtil;
@@ -565,18 +566,22 @@ public class ProfileActivity extends AbstractBottomNavigationActivity {
     public void saveProfile(String activityIntent) {
         childUpdates = new HashMap();
 
+
         childUpdates.put("/nome/", editName.getText().toString());
         childUpdates.put("/cognome/", editSurname.getText().toString());
         //Se ci sono state modifiche dei dipartimenti
         if (departmentsAfterChange != null) {
             childUpdates.put("/dipartimenti/", departmentsAfterChange);
+            user.setDipartimenti(departmentsAfterChange);
         }
         //Se ci sono state modifiche dei corsi
         if (coursesAfterChange != null) {
             childUpdates.put("/corsi/", coursesAfterChange);
+            user.setCorsi(coursesAfterChange);
         }
         //Aggiorna i nodi  nel database con i valori specificati.
         usersReference.child(user.getAccountId()).updateChildren(childUpdates);
+        LoginHelper.setCurrentUser(user);
 
         //Se l'immagine di profilo non è stata modificata, ritorna a visualizza profilo (ricaricando la pagina).
         if(fullFileUri==null){
