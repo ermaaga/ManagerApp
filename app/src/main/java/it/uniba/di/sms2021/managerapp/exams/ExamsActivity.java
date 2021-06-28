@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -108,8 +109,15 @@ public class ExamsActivity extends AbstractBottomNavigationActivity {
             }
         });
         recyclerView.setAdapter(adapter);
-        //Faccio sì che la lista venga visualizzata come una griglia su due colonne
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        //Faccio sì che la lista venga visualizzata come una griglia su due colonne o 3 colonne
+        //in base all'orientamento del dispositivo
+        int spanCount;
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+            spanCount = 2;
+        } else {
+            spanCount = 3;
+        }
+        recyclerView.setLayoutManager(new GridLayoutManager(this, spanCount));
 
         //Ottengo i dati con cui riempire la lista.
         examsReference = FirebaseDbHelper.getDBInstance().getReference(FirebaseDbHelper.TABLE_EXAMS);
