@@ -65,8 +65,7 @@ public class ShakeUtil {
     }
 
     public static void checkShake(SensorEvent sensorEvent, OnShakeListener onShakeListener) {
-        /*Inizializzati i valori delle accelerazioni
-            misurati per tutte e tre le dimensioni dello spazio*/
+        //Inizializzati i valori delle accelerazioni misurati per tutte e tre le dimensioni dello spazio
         x = sensorEvent.values[0];
         y = sensorEvent.values[1];
         z = sensorEvent.values[2];
@@ -79,21 +78,12 @@ public class ShakeUtil {
             cartesiane x, y e z, per determinare l'accelerazione corrente.
             Accelerazione: a = √((a_x)^2+(a_y)^2 +(a_z)^2) */
             acceleration = (float) Math.sqrt(x*x + y*y + z*z);
-            Log.d(TAG, "accelerazione" + acceleration);
-            Log.d(TAG, "accelerationPrev" + accelerationPrev);
 
             //Calcola la differenza tra accelerazione e accelerazione precendente in valore assoluto
             float differenceAcc = Math.abs(acceleration - accelerationPrev);
-            Log.d(TAG, "differenza accelerazione" + differenceAcc);
-
-            float resolution = sensor.getResolution();
-            float maximumRange = sensor.getMaximumRange();
-            float version = sensor.getVersion();
-
-            Log.d(TAG, "RESOLUTION = "+resolution+"      MAXIMUM_RANGE = "+maximumRange+"        VERSION = "+version);
 
             /*Lo scuotimento viene rilevato nel caso in cui:
-              -la differenza delle accelerazioni è maggiore di una soglia (in questo caso 18)*
+              -la differenza delle accelerazioni è maggiore di una soglia (in questo caso 18)
               -Siano passati almeno 6 secondi dal precedente scuotimento, se esso è stato già rilevato*/
             if (differenceAcc > THRESHOLD) {
                 Calendar now = Calendar.getInstance();
@@ -118,7 +108,6 @@ public class ShakeUtil {
                     //Deprecato in Api 26
                     vibrator.vibrate(500);
                 }
-
                 onShakeListener.doActionAfterShake();
             }
         }

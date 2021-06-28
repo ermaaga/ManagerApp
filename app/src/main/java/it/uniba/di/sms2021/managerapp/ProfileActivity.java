@@ -312,7 +312,6 @@ public class ProfileActivity extends AbstractBottomNavigationActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "on start");
 
         /*Se proviene dalla modifica dell'immagine, imposta l'immagine di profilo modificata,
          altrimenti la acquisisce dal database*/
@@ -322,7 +321,6 @@ public class ProfileActivity extends AbstractBottomNavigationActivity {
                 bitmap = BitmapFactory.decodeStream(inputStream);
                 photoProfile.setImageBitmap(bitmap);
             } catch (FileNotFoundException e) {
-                //TODO vedere cosa fare
                 Toast.makeText(ProfileActivity.this, "Failed", Toast.LENGTH_LONG).show();
             }
         }else {
@@ -411,7 +409,6 @@ public class ProfileActivity extends AbstractBottomNavigationActivity {
 
                                 //Lista dei dipartimenti dell'utente presenti nel database
                                 userDepartments.add(department.getId());
-                                Log.d(TAG, "userDepartments"+userDepartments.toString());
                             }
                         }
                     }
@@ -518,28 +515,23 @@ public class ProfileActivity extends AbstractBottomNavigationActivity {
         coursesReference.removeEventListener(coursesListener);
     }
 
-    //SCRIVERE COMMENTO
     private void selectImage() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("*/*");
         startActivityForResult(intent, REQUEST_IMAGE_GET);
     }
 
-    //SCRIVERE COMMENTO
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK) {
-            Bitmap thumbnail = data.getParcelableExtra("data"); /*TODO farci qualcosa come mostrare una finestra di dialogo
-                                                                        che mostri il progresso dell'upload e che usi il thumbnail*/
             fullFileUri = data.getData();
             try {
                 InputStream inputStream = getContentResolver().openInputStream(fullFileUri);
                 bitmap = BitmapFactory.decodeStream(inputStream);
                 photoProfile.setImageBitmap(bitmap);
             } catch (FileNotFoundException e) {
-                //TODO vedere cosa fare
                 Toast.makeText(ProfileActivity.this, "Failed", Toast.LENGTH_LONG).show();
             }
         }
@@ -600,7 +592,6 @@ public class ProfileActivity extends AbstractBottomNavigationActivity {
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            //TODO vedere cosa fare
                         }
                     });
 
