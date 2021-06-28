@@ -348,6 +348,7 @@
     <string name="text_filter_projects_created">Creati</string>
     <string name="text_filter_projects_withrelease">Con Rilasci</string>
     <string name="text_filter_projects_hasevaluation">Valutati</string>
+    <string name="label_reset_password">Inserisci la tua mail per resettare la password.</string>
 
 
     <plurals name="text_notification_title_feed">

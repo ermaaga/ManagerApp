@@ -365,6 +365,7 @@
     <string name="text_filter_projects_created">Created</string>
     <string name="text_filter_projects_withrelease">With Releases</string>
     <string name="text_filter_projects_hasevaluation">Evaluated</string>
+    <string name="label_reset_password">Enter your email to reset your password.</string>
 
 
     <plurals name="text_notification_title_feed">
