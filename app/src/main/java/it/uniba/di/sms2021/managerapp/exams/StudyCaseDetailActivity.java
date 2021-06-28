@@ -374,6 +374,10 @@ public class StudyCaseDetailActivity extends AbstractBottomNavigationActivity {
                 .addOnSuccessListener(new OnSuccessListener<ListResult>() {
             @Override
             public void onSuccess(ListResult listResult) {
+                if (listResult.getItems().isEmpty()) {
+                    Log.i(TAG, "No Studycase File to delete");
+                    listener.onStudyCaseDeleted(studyCase);
+                }
                 listResult.getItems().get(0).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {

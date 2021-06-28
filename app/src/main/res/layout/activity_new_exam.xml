@@ -77,6 +77,23 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tli_exam_degree_course"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:hint="@string/text_label_course"
+                    app:startIconDrawable="@drawable/ic_round_arrow_right_24">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/atc_exam_degree_course"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <Button
                     android:id="@+id/btn_create_NewExam"
                     style="@style/Widget.MaterialComponents.Button.UnelevatedButton"

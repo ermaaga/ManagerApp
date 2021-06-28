@@ -136,6 +136,7 @@
     <string name="text_label_delete_project">Delete Project</string>
     <string name="text_label_delete_studycase">Delete Studycase</string>
     <string name="text_label_delete_exam">Delete Exam</string>
+    <string name="text_label_course">Degree Course</string>
 
     <string name="list_degree_courses_informatica" translatable="false">Informatica</string>
     <string name="list_degree_courses_itps" translatable="false">Informatica e Tecnologie della Produzione del Software</string>
@@ -156,7 +157,7 @@
     <string name="registration_failed">Registration failed</string>
     <string name="login_failed">Login failed! Please try again later</string>
     <string name="creation_exam_failed">Error during exam creation</string>
-    <string name="label_error_fields">The Exam name and year are necessary</string>
+    <string name="label_error_fields">The Exam name, year and degree course are necessary</string>
     <string name="error_characters_evaluation_comment">The comment cannot be greater than 125 characters</string>
 
     <string name="description_case_study_info">Open Info</string>

@@ -306,6 +306,11 @@ public class ExamDetailActivity extends AbstractTabbedNavigationHubActivity {
                                         });
                             }
                         }
+
+                        if (studyCaseToDelete.isEmpty()) {
+                            Log.i(TAG, "Deleted Studycases");
+                            deleteExam();
+                        }
                     }
 
                     @Override

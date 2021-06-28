@@ -1,5 +1,7 @@
 package it.uniba.di.sms2021.managerapp.enitities;
 
+import androidx.annotation.NonNull;
+
 import java.util.Objects;
 
 public class Course {
@@ -49,6 +51,12 @@ public class Course {
         return Objects.equals(id, course.id) &&
                 Objects.equals(name, course.name) &&
                 Objects.equals(department, course.department);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return name;
     }
 
     @Override
