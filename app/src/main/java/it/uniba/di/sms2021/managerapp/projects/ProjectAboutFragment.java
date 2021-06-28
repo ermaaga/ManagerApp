@@ -149,7 +149,6 @@ public class ProjectAboutFragment extends Fragment implements View.OnClickListen
             }
 
         }else{
-            //todo controllare se servono
             voteTextView.setVisibility(View.GONE);
             textVote.setVisibility(View.GONE);
             commentTextView.setVisibility(View.GONE);

@@ -34,7 +34,6 @@ public class FileUtil {
          * move to the first row in the Cursor, get the data,
          * and display it.
          * Got from https://developer.android.com/training/secure-file-sharing/retrieve-info.html
-         * todo rimuovere commmento o tradurlo
          */
         int nameIndex = returnCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
         returnCursor.moveToFirst();
@@ -56,7 +55,6 @@ public class FileUtil {
          * move to the first row in the Cursor, get the data,
          * and display it.
          * Got from https://developer.android.com/training/secure-file-sharing/retrieve-info.html
-         * todo rimuovere commento o tradurlo
          */
         int sizeIndex = returnCursor.getColumnIndex(OpenableColumns.SIZE);
         returnCursor.moveToFirst();

@@ -123,7 +123,6 @@ public class ReplyFragment extends BottomSheetDialogFragment implements View.OnC
             }
 
             Toast.makeText(requireContext(), R.string.text_message_review_reply_submitted, Toast.LENGTH_SHORT).show();
-            //TODO inserire progress bar mentre ricarica la pagina?
             getActivity().recreate();
             dismiss();
         }

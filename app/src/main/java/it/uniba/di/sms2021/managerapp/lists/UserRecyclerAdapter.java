@@ -57,7 +57,6 @@ public class UserRecyclerAdapter extends ListAdapter<User, RecyclerView.ViewHold
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_user,
                 parent, false);
 
-        //TODO vedere Nota: volendo si può creare una classe ViewHolder a parte.
         return new RecyclerView.ViewHolder(view) {
             @Override
             public String toString() {

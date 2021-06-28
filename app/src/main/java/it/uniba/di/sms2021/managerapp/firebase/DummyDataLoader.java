@@ -85,7 +85,6 @@ public class DummyDataLoader implements DataLoader {
             coursesIds.put(name, push.getKey());
         }
 
-        //TODO aggiungere account nostri
         DatabaseReference users = root.child(FirebaseDbHelper.TABLE_USERS);
         users.setValue(null);
         User[] userArray = {

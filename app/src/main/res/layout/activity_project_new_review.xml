@@ -69,7 +69,6 @@
             android:lines="10"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- TODO vedere se togliere il bottone e inserire nella toolbar a destra la spunta + togliere bottom navigation-->
     <Button
         android:id="@+id/button_submit_review"
         android:layout_width="251dp"

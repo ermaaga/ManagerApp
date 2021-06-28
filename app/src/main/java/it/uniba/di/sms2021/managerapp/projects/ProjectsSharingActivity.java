@@ -1,54 +1,55 @@
   package it.uniba.di.sms2021.managerapp.projects;
 
-import android.Manifest;
-import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothClass;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
+  import android.Manifest;
+  import android.app.AlertDialog;
+  import android.bluetooth.BluetoothAdapter;
+  import android.bluetooth.BluetoothClass;
+  import android.bluetooth.BluetoothDevice;
+  import android.content.BroadcastReceiver;
+  import android.content.Context;
+  import android.content.DialogInterface;
+  import android.content.Intent;
+  import android.content.IntentFilter;
+  import android.content.pm.PackageManager;
+  import android.location.LocationManager;
+  import android.os.Build;
+  import android.os.Bundle;
+  import android.os.Handler;
+  import android.os.Message;
+  import android.provider.Settings;
+  import android.util.Log;
+  import android.view.LayoutInflater;
+  import android.view.View;
+  import android.widget.Button;
+  import android.widget.CheckBox;
+  import android.widget.EditText;
+  import android.widget.ProgressBar;
+  import android.widget.TextView;
+  import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+  import androidx.annotation.NonNull;
+  import androidx.core.app.ActivityCompat;
+  import androidx.core.content.ContextCompat;
+  import androidx.recyclerview.widget.DividerItemDecoration;
+  import androidx.recyclerview.widget.LinearLayoutManager;
+  import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.database.DatabaseReference;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+  import com.google.android.gms.tasks.OnFailureListener;
+  import com.google.android.gms.tasks.OnSuccessListener;
+  import com.google.firebase.database.DatabaseReference;
 
-import it.uniba.di.sms2021.managerapp.BluetoothConnection;
-import it.uniba.di.sms2021.managerapp.R;
-import it.uniba.di.sms2021.managerapp.enitities.ListProjects;
-import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
-import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
-import it.uniba.di.sms2021.managerapp.firebase.Project;
-import it.uniba.di.sms2021.managerapp.lists.DeviceRecyclerAdapter;
-import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
+  import java.util.ArrayList;
+  import java.util.List;
+  import java.util.Set;
+
+  import it.uniba.di.sms2021.managerapp.BluetoothConnection;
+  import it.uniba.di.sms2021.managerapp.R;
+  import it.uniba.di.sms2021.managerapp.enitities.ListProjects;
+  import it.uniba.di.sms2021.managerapp.firebase.FirebaseDbHelper;
+  import it.uniba.di.sms2021.managerapp.firebase.LoginHelper;
+  import it.uniba.di.sms2021.managerapp.firebase.Project;
+  import it.uniba.di.sms2021.managerapp.lists.DeviceRecyclerAdapter;
+  import it.uniba.di.sms2021.managerapp.utility.AbstractBottomNavigationActivity;
 
 public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
 
@@ -561,7 +562,6 @@ public class ProjectsSharingActivity extends AbstractBottomNavigationActivity {
      */
     public void checkLocationServicesIsNeededAndEnable() {
         Log.d(TAG, "checkLocationServicesIsNeededAndEnable");
-        //TODO controllare se anche per la versione 11 è necessario attivare la posizione per poter individuare i dispositivi disponibili
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
             Log.d(TAG, "android >= 10");
             LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
