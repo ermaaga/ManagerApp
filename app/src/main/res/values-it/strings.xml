@@ -37,7 +37,7 @@
     <string name="text_label_projects">Progetti</string>
     <string name="text_label_profile">Profilo</string>
     <string name="text_label_notifications">Notifiche</string>
-    <string name="text_label_project_files">Files</string>
+    <string name="text_label_project_files">File</string>
     <string name="text_label_project_members">Membri</string>
     <string name="text_label_exam_study_cases">Casi di Studio</string>
     <string name="text_label_exam_groups">Gruppi</string>
@@ -308,7 +308,7 @@
     <string name="text_hint_review_project">Cosa ne pensi di questo progetto?</string>
     <string name="text_hint_report_project">Cosa vorresti segnalare al gruppo?</string>
 
-    <string name="text_default_name_list_received">List received</string>
+    <string name="text_default_name_list_received">Lista ricevuta</string>
 
     <string name="text_action_delete_file">Elimina</string>
     <string name="text_action_share_file">Condividi</string>
