@@ -5,8 +5,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
-import android.widget.Toast;
 
 /**
  * Se avviato, ogni X minuti, assegnato in MINUTE_CHECKED, avvia NotificationService
@@ -36,5 +34,6 @@ public class NotificationChecker extends BroadcastReceiver {
         Intent intent = new Intent(context, NotificationChecker.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
         alarmManager.cancel(pendingIntent);
+        context.stopService(new Intent(context, NotificationService.class));
     }
 }
